@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil - Sistema de Componentes Químicos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="public/css/perfil.css">
+   <style>
+    :root {
+        --primary-color: #2c6baf;
+        --secondary-color: #34a853;
+        --accent-color: #ff6b35;
+        --dark-color: #2c3e50;
+        --light-bg: #f8f9fc;
+        --chem-light: #e8f5e9;
+        --chem-dark: #1b5e20;
+    }
+    
+    body {
+        background-color: var(--light-bg);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #333;
+    }
+    
+    .profile-card {
+        border-radius: 12px;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        background: white;
+    }
+    
+    .profile-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.2);
+    }
+    
+    .profile-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--chem-dark));
+        border-radius: 12px 12px 0 0;
+        padding: 2rem;
+        color: white;
+        text-align: center;
+        position: relative;
+    }
+    
+    .profile-img-container {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 1rem;
+    }
+    
+    .profile-img {
+        width: 150px;
+        height: 150px;
+        border: 5px solid rgba(255, 255, 255, 0.4);
+        object-fit: cover;
+        border-radius: 50%;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        background-color: #fff;
+        padding: 4px;
+    }
+    
+    .file-upload {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background: var(--accent-color);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+    }
+    
+    .file-upload:hover {
+        transform: scale(1.1);
+        background: #e85a20;
+    }
+    
+    .file-upload i {
+        color: white;
+        font-size: 18px;
+    }
+    
+    .file-upload input[type="file"] {
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+    }
+    
+    .nav-pills .nav-link {
+        color: var(--dark-color);
+        border-radius: 5px;
+        margin-right: 5px;
+        font-weight: 500;
+    }
+    
+    .nav-pills .nav-link.active {
+        background: linear-gradient(135deg, var(--primary-color), var(--chem-dark));
+        color: white;
+    }
+    
+    .stat-box {
+        background-color: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+        border-left: 4px solid var(--primary-color);
+    }
+    
+    .stat-box:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.15);
+    }
+    
+    .chem-badge {
+        background-color: var(--chem-light);
+        color: var(--chem-dark);
+        font-weight: 600;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+    }
+    
+    .progress {
+        height: 12px;
+        border-radius: 10px;
+        background-color: #e9ecef;
+    }
+    
+    .progress-bar {
+        background: linear-gradient(135deg, var(--primary-color), var(--chem-dark));
+        border-radius: 10px;
+    }
+    
+    .social-icon {
+        width: 40px;
+        height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background-color: var(--light-bg);
+        color: var(--primary-color);
+        transition: all 0.3s ease;
+    }
+    
+    .social-icon:hover {
+        background: linear-gradient(135deg, var(--primary-color), var(--chem-dark));
+        color: white;
+        transform: translateY(-3px);
+    }
+    
+    .activity-item {
+        border-left: 3px solid var(--primary-color);
+        padding-left: 25px;
+        position: relative;
+        padding-bottom: 25px;
+    }
+    
+    .activity-item:before {
+        content: '';
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        position: absolute;
+        left: -9px;
+        top: 0;
+        border: 3px solid white;
+        box-shadow: 0 0 0 2px var(--primary-color);
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color), var(--chem-dark));
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(44, 107, 175, 0.4);
+        background: linear-gradient(135deg, #255aa0, #164a16);
+    }
+    
+    .chem-bg {
+        background-color: var(--chem-light);
+        border-radius: 10px;
+        padding: 15px;
+    }
+    
+    .molecule-icon {
+        font-size: 1.5rem;
+        color: var(--chem-dark);
+        margin-right: 10px;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+        color: var(--dark-color);
+    }
+    
+    .badge-chem {
+        background-color: var(--accent-color);
+        color: white;
+    }
+    </style>
+  
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row">
+            <!-- Coluna lateral com informações do perfil -->
+            <div class="col-lg-4">
+                <div class="profile-card mb-4">
+                    <div class="profile-header">
+                        <div class="profile-img-container">
+                            <img src="https://ui-avatars.com/api/?name=Quimico+Analista&background=2c6baf&color=fff&size=150" 
+                                 class="profile-img" alt="Foto de Perfil" id="profile-picture">
+                            <div class="file-upload" title="Alterar foto">
+                                <i class="fas fa-camera"></i>
+                                <input type="file" id="upload-photo" accept="image/*">
+                            </div>
+                        </div>
+                        <h4 class="mb-0">Policate</h4>
+                        <p class="mb-0">Químico(a)</p>
+                        <p><i class="fas fa-map-marker-alt me-2"></i>Laboratório </p>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="mb-0">Complete seu perfil</h6>
+                            <span class="text-primary">75%</span>
+                        </div>
+                        <div class="progress mb-4">
+                            <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h6 class="mb-3">Detalhes de Contato</h6>
+                            <p class="mb-2"><i class="fas fa-envelope me-2 text-primary"></i>Policate.silva@quimicalab.com</p>
+                            <p class="mb-2"><i class="fas fa-phone me-2 text-primary"></i>(18) 99999-9999</p>
+                            <p class="mb-0"><i class="fas fa-clock me-2 text-primary"></i>Horário laboratorial: 8h-17:20h</p>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h6 class="mb-3">Especialidades</h6>
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="chem-badge">Cromatografia</span>
+                                <span class="chem-badge">Espectrometria</span>
+                                <span class="chem-badge">Titulação</span>
+                                <span class="chem-badge">Análise Química</span>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-primary w-100"><i class="fas fa-download me-2"></i>Gerar Relatório</button>
+                    </div>
+                </div>
+                
+                <div class="profile-card mb-4">
+                    <div class="card-body">
+                        <h6 class="mb-3">Estatísticas do Mês</h6>
+                        
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div>
+                                <p class="mb-0"><i class="fas fa-flask molecule-icon"></i>Análises Realizadas</p>
+                            </div>
+                            <span class="badge bg-success">42</span>
+                        </div>
+                        
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div>
+                                <p class="mb-0"><i class="fas fa-vial molecule-icon"></i>Testes de Qualidade</p>
+                            </div>
+                            <span class="badge bg-primary">128</span>
+                        </div>
+                        
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <p class="mb-0"><i class="fas fa-exclamation-triangle molecule-icon"></i>Alertas de Segurança</p>
+                            </div>
+                            <span class="badge bg-danger">5</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Conteúdo principal do perfil -->
+            <div class="col-lg-8">
+                <div class="profile-card mb-4">
+                    <div class="card-body">
+                        <ul class="nav nav-pills mb-4" id="profileTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="overview-tab" data-bs-toggle="pill" data-bs-target="#overview" type="button" role="tab">Visão Geral</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="settings-tab" data-bs-toggle="pill" data-bs-target="#settings" type="button" role="tab">Configurações</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="security-tab" data-bs-toggle="pill" data-bs-target="#security" type="button" role="tab">Segurança</button>
+                            </li>
+                        </ul>
+                        
+                        <div class="tab-content" id="profileTabsContent">
+                            <!-- Aba de Visão Geral -->
+                            <div class="tab-pane fade show active" id="overview" role="tabpanel">
+                                <h5 class="mb-4">Atividade Recente</h5>
+                                
+                                <div class="activity-list">
+                                    <div class="activity-item">
+                                        <div class="d-flex justify-content-between">
+                                            <h6>Análise de pureza do Ácido Sulfúrico</h6>
+                                            <small class="text-muted">2 horas atrás</small>
+                                        </div>
+                                        <p class="text-muted mb-0">Resultado: 98.7% de pureza - <span class="badge badge-chem">Aprovado</span></p>
+                                    </div>
+                                    
+                                    <div class="activity-item">
+                                        <div class="d-flex justify-content-between">
+                                            <h6>Teste de pH em amostra de água</h6>
+                                            <small class="text-muted">5 horas atrás</small>
+                                        </div>
+                                        <p class="text-muted mb-0">pH medido: 7.2 - dentro dos parâmetros</p>
+                                    </div>
+                                    
+                                    <div class="activity-item">
+                                        <div class="d-flex justify-content-between">
+                                            <h6>Calibração do espectrômetro</h6>
+                                            <small class="text-muted">Ontem, 08:45</small>
+                                        </div>
+                                        <p class="text-muted mb-0">Equipamento calibrado com solução padrão</p>
+                                    </div>
+                                    
+                                    <div class="activity-item">
+                                        <div class="d-flex justify-content-between">
+                                            <h6>Relatório de controle de qualidade</h6>
+                                            <small class="text-muted">12 de Out, 2023</small>
+                                        </div>
+                                        <p class="text-muted mb-0">Relatório mensal de setembro exportado em PDF</p>
+                                    </div>
+                                </div>
+                                
+                                <h5 class="my-4">Configurações Rápidas</h5>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="stat-box">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0 bg-primary bg-opacity-10 p-3 rounded">
+                                                    <i class="fas fa-vial text-primary fa-lg"></i>
+                                                </div>
+                                                <div class="flex-grow-1 ms-3">
+                                                    <h6 class="mb-0">Protocolos</h6>
+                                                    <p class="text-muted mb-0">Configurar métodos</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="stat-box">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0 bg-success bg-opacity-10 p-3 rounded">
+                                                    <i class="fas fa-chart-bar text-success fa-lg"></i>
+                                                </div>
+                                                <div class="flex-grow-1 ms-3">
+                                                    <h6 class="mb-0">Relatórios</h6>
+                                                    <p class="text-muted mb-0">Personalizar visualizações</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="stat-box">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0 bg-info bg-opacity-10 p-3 rounded">
+                                                    <i class="fas fa-flask text-info fa-lg"></i>
+                                                </div>
+                                                <div class="flex-grow-1 ms-3">
+                                                    <h6 class="mb-0">Equipamentos</h6>
+                                                    <p class="text-muted mb-0">Gerenciar dispositivos</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="stat-box">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0 bg-warning bg-opacity-10 p-3 rounded">
+                                                    <i class="fas fa-exclamation-triangle text-warning fa-lg"></i>
+                                                </div>
+                                                <div class="flex-grow-1 ms-3">
+                                                    <h6 class="mb-0">Alertas</h6>
+                                                    <p class="text-muted mb-0">Configurar notificações</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Aba de Configurações -->
+                            <div class="tab-pane fade" id="settings" role="tabpanel">
+                                <h5 class="mb-4">Informações Pessoais</h5>
+                                
+                                <form id="profile-form">
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="firstName" class="form-label">Nome</label>
+                                            <input type="text" class="form-control" id="firstName" name="firstName" value="Carlos">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="lastName" class="form-label">Sobrenome</label>
+                                            <input type="text" class="form-control" id="lastName" name="lastName" value="Silva">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">E-mail</label>
+                                        <input type="email" class="form-control" id="email" name="email" value="carlos.silva@quimicalab.com">
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="phone" class="form-label">Telefone</label>
+                                        <input type="tel" class="form-control" id="phone" name="phone" value="(11) 99999-9999">
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="department" class="form-label">Departamento</label>
+                                        <select class="form-select" id="department" name="department">
+                                            <option selected>Análise Química</option>
+                                            <option>Controle de Qualidade</option>
+                                            <option>Pesquisa e Desenvolvimento</option>
+                                            <option>Toxicologia</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="bio" class="form-label">Biografia</label>
+                                        <textarea class="form-control" id="bio" name="bio" rows="3">Especialista em análise química com mais de 8 anos de experiência em cromatografia e espectrometria.</textarea>
+                                    </div>
+                                    
+                                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                                </form>
+                                
+                                <hr class="my-4">
+                                
+                                <h5 class="mb-4">Preferências de Notificação</h5>
+                                
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="notifEmail" name="notifEmail" checked>
+                                    <label class="form-check-label" for="notifEmail">Notificações por E-mail</label>
+                                </div>
+                                
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="notifSMS" name="notifSMS">
+                                    <label class="form-check-label" for="notifSMS">Notificações por SMS</label>
+                                </div>
+                                
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="notifLowStock" name="notifLowStock" checked>
+                                    <label class="form-check-label" for="notifLowStock">Alertas de reagentes em falta</label>
+                                </div>
+                                
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="notifReports" name="notifReports" checked>
+                                    <label class="form-check-label" for="notifReports">Relatórios de calibração</label>
+                                </div>
+                            </div>
+                            
+                            <!-- Aba de Segurança -->
+                            <div class="tab-pane fade" id="security" role="tabpanel">
+                                <h5 class="mb-4">Alterar Senha</h5>
+                                
+                                <form id="password-form">
+                                    <div class="mb-3">
+                                        <label for="currentPassword" class="form-label">Senha Atual</label>
+                                        <input type="password" class="form-control" id="currentPassword" name="currentPassword">
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="newPassword" class="form-label">Nova Senha</label>
+                                        <input type="password" class="form-control" id="newPassword" name="newPassword">
+                                        <div class="form-text">A senha deve ter pelo menos 8 caracteres, incluindo números e letras.</div>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <label for="confirmPassword" class="form-label">Confirmar Nova Senha</label>
+                                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword">
+                                    </div>
+                                    
+                                    <button type="submit" class="btn btn-primary">Atualizar Senha</button>
+                                </form>
+                                
+                                <hr class="my-4">
+                                
+                                <h5 class="mb-4">Autenticação de Dois Fatores</h5>
+                                <p class="text-muted mb-4">Proteja sua conta com autenticação de dois fatores. Você será solicitado a inserir um código de segurança adicional ao fazer login.</p>
+                                
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="twoFactorAuth" name="twoFactorAuth">
+                                    <label class="form-check-label" for="twoFactorAuth">Ativar autenticação de dois fatores</label>
+                                </div>
+                                
+                                <button class="btn btn-outline-primary">Configurar autenticação</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Simulação de upload de foto
+        document.getElementById('upload-photo').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const formData = new FormData();
+                formData.append('profilePhoto', file);
+                
+                // Simulação de upload - em produção, isso enviaria para o servidor
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profile-picture').src = e.target.result;
+                    alert('Foto atualizada com sucesso!');
+                };
+                reader.readAsDataURL(file);
+                
+                // Em produção, descomente o código abaixo para enviar para o servidor
+                /*
+                fetch('/perfil/upload-foto', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            document.getElementById('profile-picture').src = e.target.result;
+                            alert(data.message);
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        alert('Erro ao atualizar a foto: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    alert('Erro ao comunicar com o servidor');
+                });
+                */
+            }
+        });
+
+        // Processar formulário de perfil
+        document.getElementById('profile-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Simulação de envio - em produção, isso enviaria para o servidor
+            console.log('Dados do perfil:', data);
+            alert('Perfil atualizado com sucesso!');
+            
+            // Em produção, descomente o código abaixo para enviar para o servidor
+            /*
+            fetch('/perfil/atualizar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                } else {
+                    alert('Erro ao atualizar perfil: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro ao comunicar com o servidor');
+            });
+            */
+        });
+
+        // Processar formulário de senha
+        document.getElementById('password-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+            
+            if (data.newPassword !== data.confirmPassword) {
+                alert('As senhas não coincidem!');
+                return;
+            }
+            
+            if (data.newPassword.length < 8) {
+                alert('A senha deve ter pelo menos 8 caracteres!');
+                return;
+            }
+            
+            // Simulação de envio - em produção, isso enviaria para o servidor
+            console.log('Alteração de senha:', data);
+            alert('Senha alterada com sucesso!');
+            this.reset();
+            
+            // Em produção, descomente o código abaixo para enviar para o servidor
+            /*
+            fetch('/perfil/alterar-senha', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    this.reset();
+                } else {
+                    alert('Erro ao alterar senha: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro ao comunicar com o servidor');
+            });
+            */
+        });
+    </script>
+</body>
+</html>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/perfil.js"></script>
+</body>
+</html>

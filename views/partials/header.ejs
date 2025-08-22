@@ -1,0 +1,309 @@
+<nav class="sidebar">
+    <!-- Logo -->
+    <div class="logo">
+        <i class="fas fa-flask"></i>
+        <span class="logo-text">EstoqueQ</span>
+    </div>
+
+    <!-- Menu de Navegação -->
+    <div class="menu">
+        <a href="/" class="menu-item active">
+            <i class="fas fa-home"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="/reagents" class="menu-item">
+            <i class="fas fa-vial"></i>
+            <span>Reagentes</span>
+        </a>
+        <a href="/entries" class="menu-item">
+            <i class="fas fa-sign-in-alt"></i>
+            <span>Entradas</span>
+        </a>
+        <a href="/exits" class="menu-item">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Saídas</span>
+        </a>
+        <a href="/reports" class="menu-item">
+            <i class="fas fa-chart-bar"></i>
+            <span>Relatórios</span>
+        </a>
+    </div>
+
+    <!-- Usuário -->
+    <div class="user-area">
+        <div class="user-info">
+            <i class="fas fa-user-circle"></i>
+            <div class="user-details">
+                <div class="user-name">João Carrion</div>
+                <div class="user-role">Admin</div>
+            </div>
+        </div>
+        <a href="/logout" class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i>
+        </a>
+    </div>
+</nav>
+
+<style>
+    /* Sidebar Navigation - TAMANHO AUMENTADO */
+    .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        width: 320px; /* Aumentado de 250px para 320px */
+        background: #2c3e50;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        padding: 25px 0; /* Aumentado o padding */
+        z-index: 1000;
+        transition: all 0.3s ease;
+        box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2); /* Sombra mais pronunciada */
+    }
+    
+    /* Logo - MAIOR */
+    .logo {
+        display: flex;
+        align-items: center;
+        padding: 0 30px 25px; /* Aumentado o padding */
+        border-bottom: 2px solid rgba(255, 255, 255, 0.15); /* Borda mais espessa */
+        margin-bottom: 25px; /* Mais espaçamento */
+    }
+    
+    .logo i {
+        font-size: 32px; /* Aumentado de 24px */
+        color: #3498db;
+        margin-right: 15px; /* Mais espaçamento */
+    }
+    
+    .logo-text {
+        font-weight: 800; /* Fonte mais negrito */
+        font-size: 24px; /* Aumentado de 18px */
+        letter-spacing: 0.5px; /* Pequeno espaçamento entre letras */
+    }
+    
+    /* Menu - ITENS MAIORES */
+    .menu {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 8px; /* Aumentado o espaçamento entre itens */
+        padding: 0 20px; /* Mais padding nas laterais */
+    }
+    
+    .menu-item {
+        display: flex;
+        align-items: center;
+        padding: 15px 20px; /* Aumentado o padding */
+        color: #ecf0f1;
+        text-decoration: none;
+        border-radius: 8px; /* Bordas mais arredondadas */
+        transition: all 0.2s ease;
+        font-size: 16px; /* Texto maior */
+    }
+    
+    .menu-item:hover {
+        background: rgba(52, 152, 219, 0.2); /* Efeito hover mais pronunciado */
+        color: #3498db;
+        transform: translateX(5px); /* Pequeno movimento no hover */
+    }
+    
+    .menu-item.active {
+        background: rgba(52, 152, 219, 0.25); /* Fundo mais destacado */
+        color: #3498db;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra no item ativo */
+    }
+    
+    .menu-item i {
+        width: 24px; /* Largura aumentada */
+        margin-right: 15px; /* Mais espaçamento */
+        text-align: center;
+        font-size: 18px; /* Ícones maiores */
+    }
+    
+    /* User Area - MAIOR */
+    .user-area {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 25px; /* Mais padding */
+        border-top: 2px solid rgba(255, 255, 255, 0.15); /* Borda mais espessa */
+        margin-top: auto;
+    }
+    
+    .user-info {
+        display: flex;
+        align-items: center;
+    }
+    
+    .user-info i {
+        font-size: 40px; /* Aumentado de 32px */
+        color: #3498db;
+        margin-right: 12px; /* Mais espaçamento */
+    }
+    
+    .user-details {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .user-name {
+        font-size: 16px; /* Texto maior */
+        font-weight: 600;
+    }
+    
+    .user-role {
+        font-size: 13px; /* Texto um pouco maior */
+        color: #95a5a6;
+    }
+    
+    .logout-btn {
+        color: #95a5a6;
+        padding: 10px; /* Botão maior */
+        border-radius: 50%;
+        transition: all 0.2s ease;
+        font-size: 18px; /* Ícone maior */
+    }
+    
+    .logout-btn:hover {
+        color: #e74c3c;
+        background: rgba(231, 76, 60, 0.15); /* Efeito hover mais pronunciado */
+        transform: scale(1.1); /* Pequeno aumento no hover */
+    }
+    
+    /* Responsividade - AJUSTADA PARA O NOVO TAMANHO */
+    @media (max-width: 1200px) {
+        .sidebar {
+            width: 280px; /* Ligeiramente menor em telas médias */
+        }
+    }
+    
+    @media (max-width: 992px) {
+        .sidebar {
+            width: 90px; /* Ajustado proporcionalmente */
+            align-items: center;
+            padding: 20px 0;
+        }
+        
+        .logo {
+            padding: 0 0 20px;
+            justify-content: center;
+            border-bottom: none;
+        }
+        
+        .logo i {
+            font-size: 28px; /* Ajustado proporcionalmente */
+            margin-right: 0;
+        }
+        
+        .logo-text {
+            display: none;
+        }
+        
+        .menu {
+            align-items: center;
+            padding: 0;
+            gap: 10px;
+        }
+        
+        .menu-item {
+            width: 50px; /* Aumentado proporcionalmente */
+            height: 50px;
+            padding: 0;
+            justify-content: center;
+            margin-bottom: 5px;
+        }
+        
+        .menu-item span {
+            display: none;
+        }
+        
+        .menu-item i {
+            margin-right: 0;
+            font-size: 20px; /* Ajustado proporcionalmente */
+            width: auto;
+        }
+        
+        .user-area {
+            flex-direction: column;
+            padding: 15px 10px;
+        }
+        
+        .user-info {
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .user-info i {
+            font-size: 32px; /* Ajustado proporcionalmente */
+            margin-right: 0;
+            margin-bottom: 5px;
+        }
+        
+        .user-details {
+            display: none;
+        }
+        
+        .logout-btn {
+            font-size: 16px; /* Ajustado proporcionalmente */
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .sidebar {
+            width: 100%;
+            height: 37px; /* Um pouco mais alto */
+            flex-direction: row;
+            bottom: 0;
+            top: auto;
+            
+        }
+        
+        .logo {
+            padding: 0;
+            margin-bottom: 0;
+            border-bottom: none;
+            display: none;
+        }
+        
+        .menu {
+            flex-direction: row;
+            flex: 1;
+            justify-content: space-around;
+            padding: 0;
+            gap: 0;
+        }
+        
+        .menu-item {
+            width: 55px; /* Aumentado proporcionalmente */
+            height: 55px;
+            margin-bottom: 0;
+        }
+        
+        .user-area {
+            display: none;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Adiciona interatividade ao menu
+        const menuItems = document.querySelectorAll('.menu-item');
+        
+        menuItems.forEach(item => {
+            item.addEventListener('click', function() {
+                menuItems.forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // Toggle do menu em dispositivos móveis
+        const sidebar = document.querySelector('.sidebar');
+        
+        // Opcional: Adicione um botão hamburger se necessário
+        // Este código pode ser expandido para adicionar toggle no menu
+    });
+</script>

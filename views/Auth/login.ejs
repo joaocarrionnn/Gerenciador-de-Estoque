@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0d6efd',
+                        secondary: '#6c757d',
+                        accent: '#198754',
+                        light: '#f8f9fa',
+                        dark: '#212529'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-gray-100 to-gray-200 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl overflow-hidden w-full max-w-md">
+        <!-- Cabeçalho -->
+        <div class="bg-primary text-white p-6 text-center">
+            <div class="flex justify-center mb-3">
+                <i class="fas fa-flask text-4xl"></i>
+            </div>
+            <h1 class="text-2xl font-bold">Sistema de Estoque</h1>
+            <p class="opacity-90 mt-1">Área restrita - Acesso autorizado</p>
+        </div>
+        
+        <!-- Mensagem de erro -->
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mx-6 mt-4" role="alert">
+                <p class="font-bold">Erro</p>
+                <p><%= error %></p>
+            </div>
+        <% } %>
+
+        <!-- Formulário de Login -->
+        <div class="p-6">
+            <form action="/login" method="POST">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-medium mb-2" for="username">
+                        Usuário
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-user text-gray-400"></i>
+                        </div>
+                        <input class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
+                               id="username" name="username" type="text" placeholder="Digite seu usuário" required>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-medium mb-2" for="password">
+                        Senha
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-lock text-gray-400"></i>
+                        </div>
+                        <input class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
+                               id="password" name="password" type="password" placeholder="Digite sua senha" required>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center">
+                        <input id="remember" name="remember" type="checkbox" class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                        <label for="remember" class="ml-2 block text-sm text-gray-700">
+                            Lembrar-me
+                        </label>
+                    </div>
+                    
+                    <a href="#" class="text-sm text-primary hover:underline">
+                        Esqueci minha senha
+                    </a>
+                </div>
+                
+                <button type="submit" class="w-full bg-primary hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition duration-300 transform hover:-translate-y-1">
+                    Entrar no Sistema
+                </button>
+            </form>
+            
+            <!-- Opção de troca de usuário para admin -->
+            <div class="admin-switch mt-6 pt-6 border-t border-gray-200">
+                <div class="flex items-center">
+                    <input id="admin-mode" type="checkbox" class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                    <label for="admin-mode" class="ml-2 block text-sm text-gray-700">
+                        Sou administrador e desejo trocar de usuário
+                    </label>
+                </div>
+                
+                <div id="admin-fields" class="hidden mt-4">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="admin-user">
+                            Usuário Administrador
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-user-shield text-gray-400"></i>
+                            </div>
+                            <input class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
+                                   id="admin-user" type="text" placeholder="Usuário admin">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="admin-password">
+                            Senha Administrador
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-key text-gray-400"></i>
+                            </div>
+                            <input class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
+                                   id="admin-password" type="password" placeholder="Senha admin">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Links adicionais -->
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-600">
+                    Não tem uma conta? 
+                    <a href="#" class="font-medium text-primary hover:underline">Solicitar acesso</a>
+                </p>
+            </div>
+        </div>
+        
+        <!-- Rodapé -->
+        <div class="bg-gray-100 p-4 text-center text-xs text-gray-600">
+            <p>&copy; 2023 Sistema de Estoque Químico. Todos os direitos reservados.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const adminSwitch = document.getElementById('admin-mode');
+            const adminFields = document.getElementById('admin-fields');
+            
+            adminSwitch.addEventListener('change', function() {
+                if (this.checked) {
+                    adminFields.classList.remove('hidden');
+                } else {
+                    adminFields.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
