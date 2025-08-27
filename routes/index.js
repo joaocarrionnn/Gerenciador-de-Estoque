@@ -22,4 +22,55 @@ router.get('/produtos', (req, res) => {
     });
 });
 
+// Rota para exibir o formulário de adição de produtos
+router.get('/produtos/adicionar', (req, res) => {
+    res.render('adicionar', { 
+        user: { 
+            name: 'João Carrion', 
+            email: 'joao.carrion@empresa.com',
+            role: 'Administrador' 
+        }
+    });
+});
+
+// Rota para processar o formulário de adição de produtos
+router.post('/produtos/adicionar', (req, res) => {
+    // Aqui você processaria os dados do formulário
+    const {
+        productName,
+        productType,
+        dangerLevel,
+        regulatoryOrg,
+        stockQuantity,
+        unit,
+        availability
+    } = req.body;
+    
+    // Simulação: salvar no banco de dados (em produção, conecte com seu banco)
+    console.log('Novo produto adicionado:', {
+        productName,
+        productType,
+        dangerLevel,
+        regulatoryOrg,
+        stockQuantity,
+        unit,
+        availability,
+        addedAt: new Date()
+    });
+    
+    // Redirecionar de volta para a página de produtos com mensagem de sucesso
+    res.redirect('/produtos?success=Produto adicionado com sucesso');
+});
+
+// NOVA ROTA PARA SAÍDA DE REAGENTES
+router.get('/saida-reagentes', (req, res) => {
+    res.render('saida-reagentes', { 
+        user: { 
+            name: 'João Carrion', 
+            email: 'joao@email.com', 
+            role: 'Administrador' 
+        }
+    });
+});
+
 module.exports = router;

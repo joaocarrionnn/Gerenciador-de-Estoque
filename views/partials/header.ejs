@@ -9,59 +9,43 @@
   <style>
     /* Estilos personalizados para o menu lateral baseado no EstoqueQ */
     .sidebar-custom {
-    background: #2c3e50;
-    transition: all 0.3s ease;
-    box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
-    /* Altere estas propriedades: */
-    position: fixed;
-    left: 0;
-    top: 0;
-    height: 100vh;
-    width: 320px;
-    overflow-y: auto; /* Permite scroll interno se necessário */
-  }
-
-  /* Adicione esta regra para o conteúdo principal */
-  main {
-    margin-left: 320px;
-    width: calc(100% - 320px);
-  }
-
-  /* Ajustes responsivos */
-  @media (max-width: 1200px) {
-    .sidebar-custom {
-      width: 280px;
+      background: #2c3e50;
+      transition: all 0.3s ease;
+      box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100vh;
+      width: 320px;
+      overflow-y: auto;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
+
+    /* Ajustes para o conteúdo principal */
     main {
-      margin-left: 280px;
-      width: calc(100% - 280px);
+      margin-left: 320px;
+      width: calc(100% - 320px);
+      transition: margin-left 0.3s ease, width 0.3s ease;
     }
-  }
 
-  @media (max-width: 992px) {
-    .sidebar-custom {
-      width: 90px;
+    .logo-custom {
+      display: flex;
+      align-items: center;
+      padding: 25px 30px;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+      margin-bottom: 25px;
     }
-    main {
-      margin-left: 90px;
-      width: calc(100% - 90px);
-    }
-  }
 
-  @media (max-width: 576px) {
-    .sidebar-custom {
-      width: 100%;
-      height: 70px;
-      bottom: 0;
-      top: auto;
+    .menu-custom {
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
-    main {
-      margin-left: 0;
-      width: 100%;
-      margin-bottom: 70px;
-    }
-  }
-    
+
     .menu-item-custom {
       display: flex;
       align-items: center;
@@ -90,10 +74,12 @@
       margin-right: 15px;
       text-align: center;
       font-size: 18px;
+      transition: margin-right 0.3s ease;
     }
     
     .user-area-custom {
       border-top: 2px solid rgba(255, 255, 255, 0.15);
+      padding: 20px 25px;
     }
     
     .logout-btn-custom {
@@ -110,12 +96,22 @@
       transform: scale(1.1);
     }
     
-    /* Ajustes para responsividade */
-    @media (max-width: 768px) {
+    /* Ajustes responsivos */
+    @media (max-width: 1200px) {
       .sidebar-custom {
-        width: 90px;
+        width: 280px;
+      }
+      main {
+        margin-left: 280px;
+        width: calc(100% - 280px);
+      }
+    }
+
+    /* Modo compacto (apenas ícones) */
+    @media (max-width: 992px) {
+      .sidebar-custom {
+        width: 80px;
         align-items: center;
-        padding: 20px 0;
       }
       
       .logo-text-custom {
@@ -127,7 +123,7 @@
         height: 50px;
         padding: 0;
         justify-content: center;
-        margin-bottom: 5px;
+        margin: 0 auto 8px;
       }
       
       .menu-item-custom span {
@@ -143,8 +139,14 @@
       .user-info-text {
         display: none;
       }
+      
+      main {
+        margin-left: 80px;
+        width: calc(100% - 80px);
+      }
     }
-    
+
+    /* Modo mobile (inferior da página) */
     @media (max-width: 576px) {
       .sidebar-custom {
         width: 100%;
@@ -153,6 +155,8 @@
         bottom: 0;
         top: auto;
         padding: 10px 0;
+        left: 0;
+        right: 0;
       }
       
       .logo-custom {
@@ -168,8 +172,8 @@
       }
       
       .menu-item-custom {
-        width: 60px;
-        height: 60px;
+        width: 50px;
+        height: 50px;
         margin-bottom: 0;
         flex-direction: column;
         padding: 8px 5px;
@@ -193,122 +197,131 @@
       .user-area-custom {
         display: none;
       }
-    }
-    @media (max-width: 1200px) {
-    .sidebar-custom {
-        width: 280px;
-    }
-}
-
-@media (max-width: 992px) {
-    .sidebar-custom {
-        width: 90px;
-    }
-}
-
-@media (max-width: 576px) {
-    .sidebar-custom {
-        width: 100%;
-        height: 70px;
-    }
-}
-
-/* Ajuste para o conteúdo principal */
-main {
-    margin-left: 320px;
-}
-
-@media (max-width: 1200px) {
-    main {
-        margin-left: 280px;
-    }
-}
-
-@media (max-width: 992px) {
-    main {
-        margin-left: 90px;
-    }
-}
-
-@media (max-width: 576px) {
-    main {
+      
+      main {
         margin-left: 0;
-        margin-bottom: 80px;
+        margin-bottom: 70px;
+        width: 100%;
+      }
     }
-}
+
+    /* Estilos para o menu mobile (bottom navbar) */
+    .mobile-nav {
+      display: none;
+    }
+
+    @media (max-width: 576px) {
+      .mobile-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: #2c3e50;
+        justify-content: space-around;
+        padding: 10px 0;
+        z-index: 1000;
+      }
+      
+      .mobile-nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: #ecf0f1;
+        text-decoration: none;
+        font-size: 11px;
+        padding: 5px;
+      }
+      
+      .mobile-nav-item i {
+        font-size: 18px;
+        margin-bottom: 4px;
+      }
+      
+      .mobile-nav-item.active {
+        color: #3498db;
+      }
+      
+      .desktop-sidebar {
+        display: none;
+      }
+      
+      main {
+        margin-bottom: 70px;
+      }
+    }
   </style>
 </head>
 <body class="flex h-screen bg-gray-100">
 
-  <!-- SIDEBAR DESKTOP - ESTILO ESTOQUEQ COM LARGURA AUMENTADA -->
-<aside class="hidden md:flex w-80 sidebar-custom flex-col justify-between" style="width: 320px;">
+  <!-- SIDEBAR DESKTOP - ESTILO ESTOQUEQ -->
+  <aside class="desktop-sidebar hidden md:flex sidebar-custom">
     <!-- Logo -->
     <div>
-        <div class="logo-custom flex items-center p-6 border-b border-gray-700" style="padding: 25px 30px; border-bottom: 2px solid rgba(255, 255, 255, 0.15); margin-bottom: 25px;">
-            <i class="fas fa-flask text-blue-400 text-2xl mr-3" style="font-size: 32px; margin-right: 15px;"></i>
-            <span class="logo-text-custom text-white font-bold text-xl" style="font-size: 24px; font-weight: 800; letter-spacing: 0.5px;">Sistema Lab+</span>
-        </div>
+      <div class="logo-custom">
+        <i class="fas fa-flask text-blue-400 text-2xl mr-3" style="font-size: 32px; margin-right: 15px;"></i>
+        <span class="logo-text-custom text-white font-bold text-xl" style="font-size: 24px; font-weight: 800; letter-spacing: 0.5px;">Sistema Lab+</span>
+      </div>
 
-        <!-- Menu -->
-        <nav class="mt-6 space-y-2 px-4 menu-custom" style="padding: 0 20px; display: flex; flex-direction: column; gap: 8px;">
-            <a href="#" class="menu-item-custom active" style="padding: 15px 20px; font-size: 16px; border-radius: 8px;">
-                <i class="fas fa-home" style="width: 24px; margin-right: 15px; font-size: 18px;"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="#" class="menu-item-custom" style="padding: 15px 20px; font-size: 16px; border-radius: 8px;">
-                <i class="fas fa-flask" style="width: 24px; margin-right: 15px; font-size: 18px;"></i>
-                <span>Reagentes</span>
-            </a>
-            <a href="#" class="menu-item-custom" style="padding: 15px 20px; font-size: 16px; border-radius: 8px;">
-                <i class="fas fa-sign-in-alt" style="width: 24px; margin-right: 15px; font-size: 18px;"></i>
-                <span>Entradas</span>
-            </a>
-            <a href="#" class="menu-item-custom" style="padding: 15px 20px; font-size: 16px; border-radius: 8px;">
-                <i class="fas fa-sign-out-alt" style="width: 24px; margin-right: 15px; font-size: 18px;"></i>
-                <span>Saídas</span>
-            </a>
-            <a href="#" class="menu-item-custom" style="padding: 15px 20px; font-size: 16px; border-radius: 8px;">
-                <i class="fas fa-chart-line" style="width: 24px; margin-right: 15px; font-size: 18px;"></i>
-                <span>Relatórios</span>
-            </a>
-        </nav>
+      <!-- Menu -->
+      <nav class="mt-6 menu-custom">
+        <a href="/" class="menu-item-custom" id="dashboard-menu">
+            <i class="fas fa-home"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="/produtos" class="menu-item-custom" id="produtos-menu">
+          <i class="fas fa-flask"></i>
+          <span>Reagentes</span>
+        </a>
+        <a href="/entradas" class="menu-item-custom" id="entradas-menu">
+          <i class="fas fa-sign-in-alt"></i>
+          <span>Entradas</span>
+        </a>
+        <a href="/saida-reagentes" class="menu-item-custom" id="saidas-menu">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Saídas</span>
+        </a>
+        <a href="/relatorios" class="menu-item-custom" id="relatorios-menu">
+          <i class="fas fa-chart-line"></i>
+          <span>Relatórios</span>
+        </a>
+      </nav>
     </div>
 
     <!-- Perfil Usuário -->
-    <div class="user-area-custom p-4 flex items-center justify-between" style="padding: 20px 25px; border-top: 2px solid rgba(255, 255, 255, 0.15);">
-        <div class="flex items-center space-x-3">
-            <i class="fas fa-user-circle text-blue-400 text-2xl" style="font-size: 40px; margin-right: 12px;"></i>
-            <div class="user-info-text">
-                <p class="text-sm font-medium text-white" style="font-size: 16px; font-weight: 600;">João Silva</p>
-                <p class="text-xs text-gray-400" style="font-size: 13px;">Administrador</p>
-            </div>
+    <div class="user-area-custom">
+        <div class="flex items-center">
+          <i class="fas fa-user-circle text-blue-400 text-2xl" style="font-size: 40px; margin-right: 12px;"></i>
+          <div class="user-info-text">
+            <p class="text-sm font-medium text-white" style="font-size: 16px; font-weight: 600;">João Silva</p>
+            <p class="text-xs text-gray-400" style="font-size: 13px;">Administrador</p>
+          </div>
         </div>
-        <a href="#" class="logout-btn-custom">
-            <i class="fas fa-sign-out-alt"></i>
+        <a href="/logout" class="logout-btn-custom">
+          <i class="fas fa-sign-out-alt"></i>
         </a>
-    </div>
-</aside>
+      </div>
+  </aside>
 
-
-  <!-- MENU MOBILE (BOTTOM NAVBAR) - ESTILO ESTOQUEQ -->
-  <nav class="fixed bottom-0 left-0 w-full bg-gray-800 shadow-inner flex justify-around items-center py-2 md:hidden">
-    <a href="#" class="menu-item-custom flex flex-col items-center">
+  <!-- MENU MOBILE (BOTTOM NAVBAR) -->
+  <nav class="mobile-nav">
+    <a href="/dashboard" class="mobile-nav-item" id="mobile-dashboard">
       <i class="fas fa-home"></i>
       <span>Home</span>
     </a>
-    <a href="#" class="menu-item-custom flex flex-col items-center">
+    <a href="/produtos" class="mobile-nav-item" id="mobile-produtos">
       <i class="fas fa-flask"></i>
       <span>Reag.</span>
     </a>
-    <a href="#" class="menu-item-custom flex flex-col items-center">
+    <a href="/entradas" class="mobile-nav-item" id="mobile-entradas">
       <i class="fas fa-sign-in-alt"></i>
       <span>Entr.</span>
     </a>
-    <a href="#" class="menu-item-custom flex flex-col items-center">
+    <a href="/saidas" class="mobile-nav-item" id="mobile-saidas">
       <i class="fas fa-sign-out-alt"></i>
       <span>Saíd.</span>
     </a>
-    <a href="#" class="menu-item-custom flex flex-col items-center">
+    <a href="/relatorios" class="mobile-nav-item" id="mobile-relatorios">
       <i class="fas fa-chart-line"></i>
       <span>Relat.</span>
     </a>
@@ -316,14 +329,68 @@ main {
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Adiciona interatividade ao menu
-      const menuItems = document.querySelectorAll('.menu-item-custom');
+      // Função para determinar a página atual e destacar o menu correspondente
+      function setActiveMenu() {
+        const path = window.location.pathname;
+        let activeMenuId = '';
+        
+        // Determinar qual menu deve estar ativo baseado na URL
+        if (path.includes('/produtos') || path === '/produtos') {
+          activeMenuId = 'produtos-menu';
+        } else if (path.includes('/entradas') || path === '/entradas') {
+          activeMenuId = 'entradas-menu';
+        } else if (path.includes('/saidas') || path === '/saidas') {
+          activeMenuId = 'saidas-menu';
+        } else if (path.includes('/relatorios') || path === '/relatorios') {
+          activeMenuId = 'relatorios-menu';
+        } else {
+          activeMenuId = 'dashboard-menu'; // Página inicial ou dashboard
+        }
+        
+        // Remover a classe 'active' de todos os menus
+        const allMenuItems = document.querySelectorAll('.menu-item-custom, .mobile-nav-item');
+        allMenuItems.forEach(item => {
+          item.classList.remove('active');
+        });
+        
+        // Adicionar a classe 'active' ao menu correspondente
+        const activeMenuItem = document.getElementById(activeMenuId);
+        if (activeMenuItem) {
+          activeMenuItem.classList.add('active');
+        }
+        
+        // Atualizar também o menu mobile
+        const mobileMenuId = 'mobile-' + activeMenuId.split('-')[0];
+        const activeMobileMenuItem = document.getElementById(mobileMenuId);
+        if (activeMobileMenuItem) {
+          activeMobileMenuItem.classList.add('active');
+        }
+      }
+      
+      // Chamar a função ao carregar a página
+      setActiveMenu();
+      
+      // Adiciona interatividade ao menu (opcional - para quando o usuário clicar)
+      const menuItems = document.querySelectorAll('.menu-item-custom, .mobile-nav-item');
       
       menuItems.forEach(item => {
-        item.addEventListener('click', function() {
+        item.addEventListener('click', function(e) {
+          // Se não for um link válido, prevenir o comportamento padrão
+          if (this.getAttribute('href') === '#') {
+            e.preventDefault();
+          }
+          
           menuItems.forEach(i => i.classList.remove('active'));
           this.classList.add('active');
         });
+      });
+      
+      // Ajusta o layout quando a janela é redimensionada
+      window.addEventListener('resize', function() {
+        // Força o redesenho dos elementos para evitar bugs visuais
+        document.body.classList.remove('resize-animation-stopper');
+        void document.body.offsetWidth;
+        document.body.classList.add('resize-animation-stopper');
       });
     });
   </script>

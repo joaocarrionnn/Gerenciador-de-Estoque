@@ -1,93 +1,529 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Produtos - Sistema de Estoque</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="/">
-                <i class="fas fa-flask"></i> QuímicaLab
-            </a>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="/products">Produtos</a>
-                <a class="nav-link" href="/logout">Sair</a>
-            </div>
-        </div>
-    </nav>
-
-    <div class="container mt-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>Gerenciamento de Produtos</h1>
-            <button class="btn btn-primary">
-                <i class="fas fa-plus"></i> Novo Produto
-            </button>
-        </div>
+    <%- include('./partials/head'); %>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --info: #7209b7;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+        }
         
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">Bem-vindo, <%= user.name %>!</h5>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fb;
+            color: #333;
+            min-height: 100vh;
+        }
+        
+        .flex {
+            display: flex;
+        }
+        
+        .flex-1 {
+            flex: 1;
+        }
+        
+        .overflow-auto {
+            overflow: auto;
+        }
+        
+        .min-h-screen {
+            min-height: 100vh;
+        }
+        
+        /* Layout principal */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+        
+        /* Header da seção */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+        
+        /* Tabela de produtos */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .table-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+        
+        .table-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .primary-btn {
+            background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.7rem 1.2rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(78, 84, 200, 0.2);
+            text-decoration: none;
+        }
+        
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(78, 84, 200, 0.3);
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+        }
+        
+        .reagent-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .reagent-table th {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            font-weight: 600;
+            color: #495057;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            text-align: left;
+        }
+        
+        .reagent-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f1f3f4;
+            transition: background-color 0.2s ease;
+        }
+        
+        .reagent-table tr:hover td {
+            background-color: #f8f9fa;
+        }
+        
+        .reagent-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .text-left { text-align: left; }
+        .text-center { text-align: center; }
+        
+        .reagent-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .reagent-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.2rem;
+        }
+        
+        .reagent-details {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+        
+        .quantity-display {
+            font-weight: 500;
+            color: #495057;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            background: #f8f9fa;
+            display: inline-block;
+        }
+        
+        .warning-quantity {
+            background: rgba(255, 193, 7, 0.15);
+            color: #fd7e14;
+            font-weight: 600;
+        }
+        
+        .status-badge {
+            padding: 0.5rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        
+        .status-normal {
+            background: rgba(40, 167, 69, 0.15);
+            color: #28a745;
+        }
+        
+        .status-warning {
+            background: rgba(255, 193, 7, 0.15);
+            color: #ffc107;
+        }
+        
+        .status-critical {
+            background: rgba(220, 53, 69, 0.15);
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-action {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-edit {
+            background: rgba(23, 162, 184, 0.1);
+            color: #17a2b8;
+        }
+        
+        .btn-edit:hover {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .btn-delete {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+        
+        .btn-delete:hover {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .table-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .summary-text {
+            font-size: 0.9rem;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        
+        .view-all-btn {
+            background: transparent;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+            color: #4e54c8;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+        
+        .view-all-btn:hover {
+            background: #4e54c8;
+            color: white;
+            border-color: #4e54c8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(78, 84, 200, 0.2);
+        }
+        
+        /* Informações do usuário */
+        .user-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .user-card-header {
+            padding: 1.2rem 1.5rem;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .user-card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .user-card-body {
+            padding: 1.5rem;
+        }
+        
+        .user-info-item {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .user-info-label {
+            font-weight: 600;
+            color: #495057;
+            min-width: 80px;
+            margin-right: 1rem;
+        }
+        
+        .user-info-value {
+            color: #6c757d;
+        }
+        
+        .user-role-badge {
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            background: rgba(67, 97, 238, 0.15);
+            color: var(--primary);
+        }
+        
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .table-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .table-footer {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .view-all-btn {
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+<body class="flex">
+    <%- include('./partials/header'); %>
+    
+    <!-- Conteúdo Principal -->
+    <main class="flex-1 overflow-auto bg-gray-50 min-h-screen">
+        <div class="main-container">
+            <!-- Header da Página -->
+            <div class="section-header">
+                <h1 class="section-title">Gerenciamento de Produtos</h1>
+                <a href="/produtos/adicionar" class="primary-btn">
+                    <i class="fas fa-plus-circle"></i> Adicionar Produto
+                </a>
             </div>
-            <div class="card-body">
-                <p class="card-text"><strong>Email:</strong> <%= user.email %></p>
-                <p class="card-text"><strong>Cargo:</strong> <%= user.role %></p>
-                <p class="card-text">Esta é a página de gerenciamento de produtos do sistema.</p>
+            
+            <!-- Informações do Usuário -->
+            <div class="user-card">
+                <div class="user-card-header">
+                    <h2 class="user-card-title">
+                        <i class="fas fa-user-circle"></i>
+                        Informações do Usuário
+                    </h2>
+                </div>
+                <div class="user-card-body">
+                    <div class="user-info-item">
+                        <span class="user-info-label">Nome:</span>
+                        <span class="user-info-value"><%= user.name %></span>
+                    </div>
+                    <div class="user-info-item">
+                        <span class="user-info-label">Email:</span>
+                        <span class="user-info-value"><%= user.email %></span>
+                    </div>
+                    <div class="user-info-item">
+                        <span class="user-info-label">Cargo:</span>
+                        <span class="user-role-badge"><%= user.role %></span>
+                    </div>
+                    <p class="mt-3 text-gray-600">Esta é a página de gerenciamento de produtos do sistema.</p>
+                </div>
+            </div>
+            
+            <!-- Tabela de Produtos -->
+            <div class="table-container">
+                <div class="table-header">
+                    <h2 class="table-title">
+                        <i class="fas fa-flask"></i>
+                        Produtos em Estoque
+                    </h2>
+                </div>
                 
-                <!-- Tabela de produtos (exemplo) -->
-                <div class="table-responsive mt-4">
-                    <table class="table table-striped">
+                <div class="table-responsive">
+                    <table class="reagent-table">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Nome</th>
-                                <th>Categoria</th>
-                                <th>Quantidade</th>
-                                <th>Status</th>
-                                <th>Ações</th>
+                                <th class="text-left">ID</th>
+                                <th class="text-left">Nome do Produto</th>
+                                <th class="text-left">Categoria</th>
+                                <th class="text-center">Quantidade</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Ações</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>1</td>
-                                <td>Ácido Clorídrico</td>
-                                <td>Reagentes</td>
-                                <td>25</td>
-                                <td><span class="badge bg-success">Disponível</span></td>
                                 <td>
-                                    <button class="btn btn-sm btn-warning me-1">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-danger">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                    <div class="reagent-info">
+                                        <div class="reagent-name">Ácido Clorídrico</div>
+                                        <div class="reagent-details">HCl - 500ml</div>
+                                    </div>
+                                </td>
+                                <td>Reagentes</td>
+                                <td class="text-center">
+                                    <div class="quantity-display">25 unidades</div>
+                                </td>
+                                <td class="text-center">
+                                    <span class="status-badge status-normal">
+                                        <i class="fas fa-check-circle"></i> Disponível
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="action-buttons">
+                                        <button class="btn-action btn-edit" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn-action btn-delete" title="Excluir">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
+                            
                             <tr>
                                 <td>2</td>
-                                <td>Hidróxido de Sódio</td>
-                                <td>Reagentes</td>
-                                <td>18</td>
-                                <td><span class="badge bg-warning">Baixo Estoque</span></td>
                                 <td>
-                                    <button class="btn btn-sm btn-warning me-1">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-danger">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                    <div class="reagent-info">
+                                        <div class="reagent-name">Hidróxido de Sódio</div>
+                                        <div class="reagent-details">NaOH - 1kg</div>
+                                    </div>
+                                </td>
+                                <td>Reagentes</td>
+                                <td class="text-center">
+                                    <div class="quantity-display warning-quantity">18 unidades</div>
+                                </td>
+                                <td class="text-center">
+                                    <span class="status-badge status-warning">
+                                        <i class="fas fa-exclamation-triangle"></i> Baixo Estoque
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="action-buttons">
+                                        <button class="btn-action btn-edit" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn-action btn-delete" title="Excluir">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
+                
+                <div class="table-footer">
+                    <span class="summary-text">
+                        <i class="fas fa-database"></i> Total de 2 produtos listados
+                    </span>
+                    <a href="/produtos" class="view-all-btn">
+                        <i class="fas fa-list"></i> Ver Todos os Produtos
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
+    </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Adicionar interatividade aos botões de ação
+            const actionButtons = document.querySelectorAll('.btn-action');
+            actionButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const action = this.classList.contains('btn-edit') ? 'editar' : 'excluir';
+                    const productName = this.closest('tr').querySelector('.reagent-name').textContent;
+                    console.log(`Ação: ${action} no produto: ${productName}`);
+                    // Aqui você pode adicionar a lógica real para editar/excluir
+                });
+            });
+        });
+    </script>
 </body>
 </html>

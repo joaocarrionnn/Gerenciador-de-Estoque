@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <%- include('./partials/head'); %>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --info: #7209b7;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fb;
+            color: #333;
+            min-height: 100vh;
+        }
+        
+        .flex {
+            display: flex;
+        }
+        
+        .flex-1 {
+            flex: 1;
+        }
+        
+        .overflow-auto {
+            overflow: auto;
+        }
+        
+        .min-h-screen {
+            min-height: 100vh;
+        }
+        
+        /* Layout principal */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+        
+        /* Header da seção */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+        
+        /* Card do formulário */
+        .form-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .form-card-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+        
+        .form-card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .form-card-body {
+            padding: 1.5rem;
+        }
+        
+        .form-section {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .form-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .section-heading {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #4361ee;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .required-label::after {
+            content: " *";
+            color: #e53e3e;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #4361ee;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: white;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        
+        .form-select:focus {
+            outline: none;
+            border-color: #4361ee;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+        }
+        
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-check {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .form-check-input {
+            width: 18px;
+            height: 18px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            appearance: none;
+            -webkit-appearance: none;
+            background-color: white;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .form-check-input:checked {
+            background-color: #4361ee;
+            border-color: #4361ee;
+        }
+        
+        .form-check-input:checked::before {
+            content: "✓";
+            position: absolute;
+            color: white;
+            font-size: 12px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .form-check-label {
+            font-weight: 400;
+            color: #4a5568;
+            cursor: pointer;
+        }
+        
+        .form-check-inline {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 1rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);
+            color: white;
+            box-shadow: 0 4px 6px rgba(78, 84, 200, 0.2);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(78, 84, 200, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+        
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+        
+        .danger-zone {
+            background: rgba(245, 101, 101, 0.1);
+            border-left: 4px solid #e53e3e;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .danger-zone h6 {
+            color: #e53e3e;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .danger-zone p {
+            color: #718096;
+            margin-bottom: 0;
+            font-size: 0.9rem;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .is-invalid {
+            border-color: #e53e3e;
+        }
+        
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Estilos para formulário responsivo */
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -0.75rem;
+}
+
+.form-group {
+    flex: 1 0 100%;
+    padding: 0 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.radio-group {
+    margin-top: 0.5rem;
+}
+
+.form-check {
+    margin-bottom: 0.5rem;
+}
+
+/* Para tablets */
+@media (min-width: 576px) {
+    .form-row .form-group {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+    
+    .form-row-3 .form-group {
+        flex: 0 0 33.333333%;
+        max-width: 33.333333%;
+    }
+}
+
+/* Para desktop */
+@media (min-width: 992px) {
+    .form-row .form-group {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+    
+    .form-row-3 .form-group {
+        flex: 0 0 33.333333%;
+        max-width: 33.333333%;
+    }
+}
+
+/* Ajustes para telas muito pequenas (menos de 400px) */
+@media (max-width: 400px) {
+    .form-group {
+        flex: 1 0 100%;
+        max-width: 100%;
+    }
+    
+    .radio-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+    </style>
+</head>
+<body class="flex">
+    <%- include('./partials/header'); %>
+    
+    <!-- Conteúdo Principal -->
+    <main class="flex-1 overflow-auto bg-gray-50 min-h-screen">
+        <div class="main-container">
+            <!-- Header da Página -->
+            <div class="section-header">
+                <h1 class="section-title">Adicionar Novo Produto</h1>
+                <a href="/produtos" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Voltar aos Produtos
+                </a>
+            </div>
+            
+            <!-- Formulário de Adição de Produto -->
+            <div class="form-card">
+                <div class="form-card-header">
+                    <h2 class="form-card-title">
+                        <i class="fas fa-plus-circle"></i>
+                        Formulário de Cadastro
+                    </h2>
+                </div>
+                <div class="form-card-body">
+                    <form id="productForm" action="/produtos/adicionar" method="POST">
+                        <!-- Informações Básicas -->
+                        <div class="form-section">
+                            <h5 class="section-heading">
+                                <i class="fas fa-info-circle"></i>
+                                Informações Básicas
+                            </h5>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="productName" class="form-label required-label">Nome do Produto</label>
+                                    <input type="text" class="form-control" id="productName" name="productName" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="productType" class="form-label required-label">Tipo do Produto</label>
+                                    <select class="form-select" id="productType" name="productType" required>
+                                        <option value="" selected disabled>Selecione o tipo...</option>
+                                        <option value="reagente">Reagente Químico</option>
+                                        <option value="solvente">Solvente</option>
+                                        <option value="acido">Ácido</option>
+                                        <option value="base">Base</option>
+                                        <option value="explosivo">Explosivo</option>
+                                        <option value="inflamavel">Inflamável</option>
+                                        <option value="toxico">Tóxico</option>
+                                        <option value="radioativo">Radioativo</option>
+                                        <option value="outro">Outro</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="productDescription" class="form-label">Descrição do Produto</label>
+                                <textarea class="form-control" id="productDescription" name="productDescription" rows="2"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Informações de Periculosidade -->
+                        <div class="form-section">
+                            <h5 class="section-heading">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Informações de Periculosidade
+                            </h5>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="dangerLevel" class="form-label required-label">Grau de Periculosidade</label>
+                                    <select class="form-select" id="dangerLevel" name="dangerLevel" required>
+                                        <option value="" selected disabled>Selecione o grau...</option>
+                                        <option value="baixo">Baixo</option>
+                                        <option value="moderado">Moderado</option>
+                                        <option value="alto">Alto</option>
+                                        <option value="extremo">Extremo</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="regulatoryOrg" class="form-label required-label">Órgão Regulador</label>
+                                    <select class="form-select" id="regulatoryOrg" name="regulatoryOrg" required>
+                                        <option value="" selected disabled>Selecione o órgão...</option>
+                                        <option value="policia-federal">Polícia Federal</option>
+                                        <option value="exercito">Exército</option>
+                                        <option value="anvisa">ANVISA</option>
+                                        <option value="ibama">IBAMA</option>
+                                        <option value="antt">ANTT</option>
+                                        <option value="nenhum">Nenhum</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="safetyInstructions" class="form-label">Instruções de Segurança</label>
+                                <textarea class="form-control" id="safetyInstructions" name="safetyInstructions" rows="2"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Informações de Estoque -->
+                        <div class="form-section">
+                            <h5 class="section-heading">
+                                <i class="fas fa-boxes"></i>
+                                Informações de Estoque
+                            </h5>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="stockQuantity" class="form-label required-label">Quantidade em Estoque</label>
+                                    <input type="number" class="form-control" id="stockQuantity" name="stockQuantity" min="0" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="minStock" class="form-label">Estoque Mínimo</label>
+                                    <input type="number" class="form-control" id="minStock" name="minStock" min="0">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="unit" class="form-label required-label">Unidade de Medida</label>
+                                    <select class="form-select" id="unit" name="unit" required>
+                                        <option value="" selected disabled>Selecione a unidade...</option>
+                                        <option value="unidade">Unidades</option>
+                                        <option value="litro">Litros</option>
+                                        <option value="ml">Mililitros</option>
+                                        <option value="grama">Gramas</option>
+                                        <option value="kg">Quilogramas</option>
+                                        <option value="caixa">Caixas</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="location" class="form-label">Localização no Armazém</label>
+                                    <input type="text" class="form-control" id="location" name="location">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label required-label">Disponibilidade</label>
+                                    <div class="radio-group">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="availability" id="available" value="available" required>
+                                            <label class="form-check-label" for="available">Disponível para uso</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="availability" id="unavailable" value="unavailable">
+                                            <label class="form-check-label" for="unavailable">Indisponível</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Informações Adicionais -->
+                        <div class="form-section">
+                            <h5 class="section-heading">
+                                <i class="fas fa-ellipsis-h"></i>
+                                Informações Adicionais
+                            </h5>
+                            
+                            <div class="row" style="display: flex; flex-wrap: wrap; margin: 0 -0.75rem;">
+                                <div class="col-md-6 mb-3" style="flex: 0 0 50%; max-width: 50%; padding: 0 0.75rem;">
+                                    <label for="supplier" class="form-label">Fornecedor</label>
+                                    <input type="text" class="form-control" id="supplier" name="supplier">
+                                </div>
+                                
+                                <div class="col-md-6 mb-3" style="flex: 0 0 50%; max-width: 50%; padding: 0 0.75rem;">
+                                    <label for="purchaseDate" class="form-label">Data de Aquisição</label>
+                                    <input type="date" class="form-control" id="purchaseDate" name="purchaseDate">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="notes" class="form-label">Observações Adicionais</label>
+                                <textarea class="form-control" id="notes" name="notes" rows="2"></textarea>
+                            </div>
+                        </div>
+                        
+                        <!-- Alertas de Perigo (baseado no grau de periculosidade) -->
+                        <div class="danger-zone" style="display: none;">
+                            <h6><i class="fas fa-exclamation-triangle"></i>Atenção: Produto Perigoso</h6>
+                            <p class="mb-0">Ao adicionar produtos com grau de periculosidade, certifique-se de que todas as normas de segurança estão sendo seguidas e que a documentação necessária está em ordem.</p>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="window.history.back()">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Adicionar Produto</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('productForm');
+            
+            // Validação do formulário
+            form.addEventListener('submit', function(event) {
+                let isValid = true;
+                
+                // Verificar campos obrigatórios
+                const requiredFields = form.querySelectorAll('[required]');
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        field.classList.add('is-invalid');
+                    } else {
+                        field.classList.remove('is-invalid');
+                    }
+                });
+                
+                // Verificar se uma opção de disponibilidade foi selecionada
+                const availabilitySelected = form.querySelector('input[name="availability"]:checked');
+                if (!availabilitySelected) {
+                    isValid = false;
+                    document.getElementById('available').classList.add('is-invalid');
+                } else {
+                    document.getElementById('available').classList.remove('is-invalid');
+                }
+                
+                if (!isValid) {
+                    event.preventDefault();
+                    alert('Por favor, preencha todos os campos obrigatórios.');
+                }
+            });
+            
+            // Mostrar/ocultar campos adicionais com base no tipo de produto
+            const productType = document.getElementById('productType');
+            const dangerZone = document.querySelector('.danger-zone');
+            
+            productType.addEventListener('change', function() {
+                const dangerousTypes = ['explosivo', 'inflamavel', 'toxico', 'radioativo', 'acido'];
+                
+                if (dangerousTypes.includes(this.value)) {
+                    dangerZone.style.display = 'block';
+                } else {
+                    dangerZone.style.display = 'none';
+                }
+            });
+            
+            // Inicialmente ocultar a zona de perigo
+            dangerZone.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
