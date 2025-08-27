@@ -1,309 +1,331 @@
-<nav class="sidebar">
-    <!-- Logo -->
-    <div class="logo">
-        <i class="fas fa-flask"></i>
-        <span class="logo-text">EstoqueQ</span>
-    </div>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema Lab+</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Estilos personalizados para o menu lateral baseado no EstoqueQ */
+    .sidebar-custom {
+    background: #2c3e50;
+    transition: all 0.3s ease;
+    box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
+    /* Altere estas propriedades: */
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 320px;
+    overflow-y: auto; /* Permite scroll interno se necessário */
+  }
 
-    <!-- Menu de Navegação -->
-    <div class="menu">
-        <a href="/" class="menu-item active">
-            <i class="fas fa-home"></i>
-            <span>Dashboard</span>
-        </a>
-        <a href="/reagents" class="menu-item">
-            <i class="fas fa-vial"></i>
-            <span>Reagentes</span>
-        </a>
-        <a href="/entries" class="menu-item">
-            <i class="fas fa-sign-in-alt"></i>
-            <span>Entradas</span>
-        </a>
-        <a href="/exits" class="menu-item">
-            <i class="fas fa-sign-out-alt"></i>
-            <span>Saídas</span>
-        </a>
-        <a href="/reports" class="menu-item">
-            <i class="fas fa-chart-bar"></i>
-            <span>Relatórios</span>
-        </a>
-    </div>
+  /* Adicione esta regra para o conteúdo principal */
+  main {
+    margin-left: 320px;
+    width: calc(100% - 320px);
+  }
 
-    <!-- Usuário -->
-    <div class="user-area">
-        <div class="user-info">
-            <i class="fas fa-user-circle"></i>
-            <div class="user-details">
-                <div class="user-name">João Carrion</div>
-                <div class="user-role">Admin</div>
-            </div>
-        </div>
-        <a href="/logout" class="logout-btn">
-            <i class="fas fa-sign-out-alt"></i>
-        </a>
-    </div>
-</nav>
+  /* Ajustes responsivos */
+  @media (max-width: 1200px) {
+    .sidebar-custom {
+      width: 280px;
+    }
+    main {
+      margin-left: 280px;
+      width: calc(100% - 280px);
+    }
+  }
 
-<style>
-    /* Sidebar Navigation - TAMANHO AUMENTADO */
-    .sidebar {
-        position: fixed;
-        left: 0;
-        top: 0;
-        height: 100vh;
-        width: 320px; /* Aumentado de 250px para 320px */
-        background: #2c3e50;
-        color: white;
-        display: flex;
-        flex-direction: column;
-        padding: 25px 0; /* Aumentado o padding */
-        z-index: 1000;
-        transition: all 0.3s ease;
-        box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2); /* Sombra mais pronunciada */
+  @media (max-width: 992px) {
+    .sidebar-custom {
+      width: 90px;
+    }
+    main {
+      margin-left: 90px;
+      width: calc(100% - 90px);
+    }
+  }
+
+  @media (max-width: 576px) {
+    .sidebar-custom {
+      width: 100%;
+      height: 70px;
+      bottom: 0;
+      top: auto;
+    }
+    main {
+      margin-left: 0;
+      width: 100%;
+      margin-bottom: 70px;
+    }
+  }
+    
+    .menu-item-custom {
+      display: flex;
+      align-items: center;
+      padding: 15px 20px;
+      color: #ecf0f1;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      font-size: 16px;
     }
     
-    /* Logo - MAIOR */
-    .logo {
-        display: flex;
+    .menu-item-custom:hover {
+      background: rgba(52, 152, 219, 0.2);
+      color: #3498db;
+      transform: translateX(5px);
+    }
+    
+    .menu-item-custom.active {
+      background: rgba(52, 152, 219, 0.25);
+      color: #3498db;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .menu-item-custom i {
+      width: 24px;
+      margin-right: 15px;
+      text-align: center;
+      font-size: 18px;
+    }
+    
+    .user-area-custom {
+      border-top: 2px solid rgba(255, 255, 255, 0.15);
+    }
+    
+    .logout-btn-custom {
+      color: #95a5a6;
+      padding: 10px;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+      font-size: 18px;
+    }
+    
+    .logout-btn-custom:hover {
+      color: #e74c3c;
+      background: rgba(231, 76, 60, 0.15);
+      transform: scale(1.1);
+    }
+    
+    /* Ajustes para responsividade */
+    @media (max-width: 768px) {
+      .sidebar-custom {
+        width: 90px;
         align-items: center;
-        padding: 0 30px 25px; /* Aumentado o padding */
-        border-bottom: 2px solid rgba(255, 255, 255, 0.15); /* Borda mais espessa */
-        margin-bottom: 25px; /* Mais espaçamento */
-    }
-    
-    .logo i {
-        font-size: 32px; /* Aumentado de 24px */
-        color: #3498db;
-        margin-right: 15px; /* Mais espaçamento */
-    }
-    
-    .logo-text {
-        font-weight: 800; /* Fonte mais negrito */
-        font-size: 24px; /* Aumentado de 18px */
-        letter-spacing: 0.5px; /* Pequeno espaçamento entre letras */
-    }
-    
-    /* Menu - ITENS MAIORES */
-    .menu {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 8px; /* Aumentado o espaçamento entre itens */
-        padding: 0 20px; /* Mais padding nas laterais */
-    }
-    
-    .menu-item {
-        display: flex;
-        align-items: center;
-        padding: 15px 20px; /* Aumentado o padding */
-        color: #ecf0f1;
-        text-decoration: none;
-        border-radius: 8px; /* Bordas mais arredondadas */
-        transition: all 0.2s ease;
-        font-size: 16px; /* Texto maior */
-    }
-    
-    .menu-item:hover {
-        background: rgba(52, 152, 219, 0.2); /* Efeito hover mais pronunciado */
-        color: #3498db;
-        transform: translateX(5px); /* Pequeno movimento no hover */
-    }
-    
-    .menu-item.active {
-        background: rgba(52, 152, 219, 0.25); /* Fundo mais destacado */
-        color: #3498db;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra no item ativo */
-    }
-    
-    .menu-item i {
-        width: 24px; /* Largura aumentada */
-        margin-right: 15px; /* Mais espaçamento */
-        text-align: center;
-        font-size: 18px; /* Ícones maiores */
-    }
-    
-    /* User Area - MAIOR */
-    .user-area {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 20px 25px; /* Mais padding */
-        border-top: 2px solid rgba(255, 255, 255, 0.15); /* Borda mais espessa */
-        margin-top: auto;
-    }
-    
-    .user-info {
-        display: flex;
-        align-items: center;
-    }
-    
-    .user-info i {
-        font-size: 40px; /* Aumentado de 32px */
-        color: #3498db;
-        margin-right: 12px; /* Mais espaçamento */
-    }
-    
-    .user-details {
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .user-name {
-        font-size: 16px; /* Texto maior */
-        font-weight: 600;
-    }
-    
-    .user-role {
-        font-size: 13px; /* Texto um pouco maior */
-        color: #95a5a6;
-    }
-    
-    .logout-btn {
-        color: #95a5a6;
-        padding: 10px; /* Botão maior */
-        border-radius: 50%;
-        transition: all 0.2s ease;
-        font-size: 18px; /* Ícone maior */
-    }
-    
-    .logout-btn:hover {
-        color: #e74c3c;
-        background: rgba(231, 76, 60, 0.15); /* Efeito hover mais pronunciado */
-        transform: scale(1.1); /* Pequeno aumento no hover */
-    }
-    
-    /* Responsividade - AJUSTADA PARA O NOVO TAMANHO */
-    @media (max-width: 1200px) {
-        .sidebar {
-            width: 280px; /* Ligeiramente menor em telas médias */
-        }
-    }
-    
-    @media (max-width: 992px) {
-        .sidebar {
-            width: 90px; /* Ajustado proporcionalmente */
-            align-items: center;
-            padding: 20px 0;
-        }
-        
-        .logo {
-            padding: 0 0 20px;
-            justify-content: center;
-            border-bottom: none;
-        }
-        
-        .logo i {
-            font-size: 28px; /* Ajustado proporcionalmente */
-            margin-right: 0;
-        }
-        
-        .logo-text {
-            display: none;
-        }
-        
-        .menu {
-            align-items: center;
-            padding: 0;
-            gap: 10px;
-        }
-        
-        .menu-item {
-            width: 50px; /* Aumentado proporcionalmente */
-            height: 50px;
-            padding: 0;
-            justify-content: center;
-            margin-bottom: 5px;
-        }
-        
-        .menu-item span {
-            display: none;
-        }
-        
-        .menu-item i {
-            margin-right: 0;
-            font-size: 20px; /* Ajustado proporcionalmente */
-            width: auto;
-        }
-        
-        .user-area {
-            flex-direction: column;
-            padding: 15px 10px;
-        }
-        
-        .user-info {
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        
-        .user-info i {
-            font-size: 32px; /* Ajustado proporcionalmente */
-            margin-right: 0;
-            margin-bottom: 5px;
-        }
-        
-        .user-details {
-            display: none;
-        }
-        
-        .logout-btn {
-            font-size: 16px; /* Ajustado proporcionalmente */
-        }
+        padding: 20px 0;
+      }
+      
+      .logo-text-custom {
+        display: none;
+      }
+      
+      .menu-item-custom {
+        width: 50px;
+        height: 50px;
+        padding: 0;
+        justify-content: center;
+        margin-bottom: 5px;
+      }
+      
+      .menu-item-custom span {
+        display: none;
+      }
+      
+      .menu-item-custom i {
+        margin-right: 0;
+        font-size: 20px;
+        width: auto;
+      }
+      
+      .user-info-text {
+        display: none;
+      }
     }
     
     @media (max-width: 576px) {
-        .sidebar {
-            width: 100%;
-            height: 37px; /* Um pouco mais alto */
-            flex-direction: row;
-            bottom: 0;
-            top: auto;
-            
-        }
-        
-        .logo {
-            padding: 0;
-            margin-bottom: 0;
-            border-bottom: none;
-            display: none;
-        }
-        
-        .menu {
-            flex-direction: row;
-            flex: 1;
-            justify-content: space-around;
-            padding: 0;
-            gap: 0;
-        }
-        
-        .menu-item {
-            width: 55px; /* Aumentado proporcionalmente */
-            height: 55px;
-            margin-bottom: 0;
-        }
-        
-        .user-area {
-            display: none;
-        }
+      .sidebar-custom {
+        width: 100%;
+        height: 70px;
+        flex-direction: row;
+        bottom: 0;
+        top: auto;
+        padding: 10px 0;
+      }
+      
+      .logo-custom {
+        display: none;
+      }
+      
+      .menu-custom {
+        flex-direction: row;
+        flex: 1;
+        justify-content: space-around;
+        padding: 0 10px;
+        gap: 0;
+      }
+      
+      .menu-item-custom {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 0;
+        flex-direction: column;
+        padding: 8px 5px;
+        font-size: 12px;
+        border-radius: 10px;
+      }
+      
+      .menu-item-custom i {
+        font-size: 20px;
+        margin-right: 0;
+        margin-bottom: 4px;
+      }
+      
+      .menu-item-custom span {
+        display: block !important;
+        font-size: 11px;
+        text-align: center;
+        line-height: 1.2;
+      }
+      
+      .user-area-custom {
+        display: none;
+      }
     }
-</style>
+    @media (max-width: 1200px) {
+    .sidebar-custom {
+        width: 280px;
+    }
+}
 
-<script>
+@media (max-width: 992px) {
+    .sidebar-custom {
+        width: 90px;
+    }
+}
+
+@media (max-width: 576px) {
+    .sidebar-custom {
+        width: 100%;
+        height: 70px;
+    }
+}
+
+/* Ajuste para o conteúdo principal */
+main {
+    margin-left: 320px;
+}
+
+@media (max-width: 1200px) {
+    main {
+        margin-left: 280px;
+    }
+}
+
+@media (max-width: 992px) {
+    main {
+        margin-left: 90px;
+    }
+}
+
+@media (max-width: 576px) {
+    main {
+        margin-left: 0;
+        margin-bottom: 80px;
+    }
+}
+  </style>
+</head>
+<body class="flex h-screen bg-gray-100">
+
+  <!-- SIDEBAR DESKTOP - ESTILO ESTOQUEQ COM LARGURA AUMENTADA -->
+<aside class="hidden md:flex w-80 sidebar-custom flex-col justify-between" style="width: 320px;">
+    <!-- Logo -->
+    <div>
+        <div class="logo-custom flex items-center p-6 border-b border-gray-700" style="padding: 25px 30px; border-bottom: 2px solid rgba(255, 255, 255, 0.15); margin-bottom: 25px;">
+            <i class="fas fa-flask text-blue-400 text-2xl mr-3" style="font-size: 32px; margin-right: 15px;"></i>
+            <span class="logo-text-custom text-white font-bold text-xl" style="font-size: 24px; font-weight: 800; letter-spacing: 0.5px;">Sistema Lab+</span>
+        </div>
+
+        <!-- Menu -->
+        <nav class="mt-6 space-y-2 px-4 menu-custom" style="padding: 0 20px; display: flex; flex-direction: column; gap: 8px;">
+            <a href="#" class="menu-item-custom active" style="padding: 15px 20px; font-size: 16px; border-radius: 8px;">
+                <i class="fas fa-home" style="width: 24px; margin-right: 15px; font-size: 18px;"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="menu-item-custom" style="padding: 15px 20px; font-size: 16px; border-radius: 8px;">
+                <i class="fas fa-flask" style="width: 24px; margin-right: 15px; font-size: 18px;"></i>
+                <span>Reagentes</span>
+            </a>
+            <a href="#" class="menu-item-custom" style="padding: 15px 20px; font-size: 16px; border-radius: 8px;">
+                <i class="fas fa-sign-in-alt" style="width: 24px; margin-right: 15px; font-size: 18px;"></i>
+                <span>Entradas</span>
+            </a>
+            <a href="#" class="menu-item-custom" style="padding: 15px 20px; font-size: 16px; border-radius: 8px;">
+                <i class="fas fa-sign-out-alt" style="width: 24px; margin-right: 15px; font-size: 18px;"></i>
+                <span>Saídas</span>
+            </a>
+            <a href="#" class="menu-item-custom" style="padding: 15px 20px; font-size: 16px; border-radius: 8px;">
+                <i class="fas fa-chart-line" style="width: 24px; margin-right: 15px; font-size: 18px;"></i>
+                <span>Relatórios</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Perfil Usuário -->
+    <div class="user-area-custom p-4 flex items-center justify-between" style="padding: 20px 25px; border-top: 2px solid rgba(255, 255, 255, 0.15);">
+        <div class="flex items-center space-x-3">
+            <i class="fas fa-user-circle text-blue-400 text-2xl" style="font-size: 40px; margin-right: 12px;"></i>
+            <div class="user-info-text">
+                <p class="text-sm font-medium text-white" style="font-size: 16px; font-weight: 600;">João Silva</p>
+                <p class="text-xs text-gray-400" style="font-size: 13px;">Administrador</p>
+            </div>
+        </div>
+        <a href="#" class="logout-btn-custom">
+            <i class="fas fa-sign-out-alt"></i>
+        </a>
+    </div>
+</aside>
+
+
+  <!-- MENU MOBILE (BOTTOM NAVBAR) - ESTILO ESTOQUEQ -->
+  <nav class="fixed bottom-0 left-0 w-full bg-gray-800 shadow-inner flex justify-around items-center py-2 md:hidden">
+    <a href="#" class="menu-item-custom flex flex-col items-center">
+      <i class="fas fa-home"></i>
+      <span>Home</span>
+    </a>
+    <a href="#" class="menu-item-custom flex flex-col items-center">
+      <i class="fas fa-flask"></i>
+      <span>Reag.</span>
+    </a>
+    <a href="#" class="menu-item-custom flex flex-col items-center">
+      <i class="fas fa-sign-in-alt"></i>
+      <span>Entr.</span>
+    </a>
+    <a href="#" class="menu-item-custom flex flex-col items-center">
+      <i class="fas fa-sign-out-alt"></i>
+      <span>Saíd.</span>
+    </a>
+    <a href="#" class="menu-item-custom flex flex-col items-center">
+      <i class="fas fa-chart-line"></i>
+      <span>Relat.</span>
+    </a>
+  </nav>
+
+  <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Adiciona interatividade ao menu
-        const menuItems = document.querySelectorAll('.menu-item');
-        
-        menuItems.forEach(item => {
-            item.addEventListener('click', function() {
-                menuItems.forEach(i => i.classList.remove('active'));
-                this.classList.add('active');
-            });
+      // Adiciona interatividade ao menu
+      const menuItems = document.querySelectorAll('.menu-item-custom');
+      
+      menuItems.forEach(item => {
+        item.addEventListener('click', function() {
+          menuItems.forEach(i => i.classList.remove('active'));
+          this.classList.add('active');
         });
-        
-        // Toggle do menu em dispositivos móveis
-        const sidebar = document.querySelector('.sidebar');
-        
-        // Opcional: Adicione um botão hamburger se necessário
-        // Este código pode ser expandido para adicionar toggle no menu
+      });
     });
-</script>
+  </script>
+</body>
+</html>

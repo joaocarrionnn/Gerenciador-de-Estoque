@@ -11,12 +11,12 @@ router.get('/login', (req, res) => {
     res.render('Auth/login');
 });
 
-// Nova rota para produtos
-router.get('/products', (req, res) => {
-    res.render('Produtos/produtos', {
+// Rota corrigida para produtos
+router.get('/produtos', (req, res) => {
+    res.render('produtos', { 
         user: { 
             name: 'João Carrion', 
-            email: 'joao.carrion@empresa.com',
+            email: 'joao@email.com', 
             role: 'Administrador' 
         }
     });
