@@ -1,7 +1,16 @@
-    const express = require('express');
-    const path = require('path');
-    const multer = require('multer');
-    const app = express();
+const express = require('express');
+const session = require("express-session"); // Certifique-se de instalar: npm install express-session
+const path = require('path');
+const multer = require('multer');
+const app = express();
+
+// Configuração de sessão (ADICIONE ISSO)
+app.use(session({
+    secret: 'tripleJ', // Altere para uma chave segura
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false } // Defina como true se estiver usando HTTPS
+}));
 
     // Configuração do Multer para upload de arquivos
     const storage = multer.diskStorage({

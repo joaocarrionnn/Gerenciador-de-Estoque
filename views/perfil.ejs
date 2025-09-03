@@ -1,590 +1,680 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil - Sistema de Componentes Químicos</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="perfil.css">
-    <!-- Tailwind CSS via CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <%- include('./partials/head'); %>
     <style>
         :root {
-            --primary-color: #2c6baf;
-            --secondary-color: #34a853;
-            --accent-color: #ff6b35;
-            --dark-color: #2c3e50;
-            --light-bg: #f8f9fc;
-            --chem-light: #e8f5e9;
-            --chem-dark: #1b5e20;
+            --primary: #2c3e50;
+            --secondary: #1a2530;
+            --accent: #34495e;
+            --light-bg: #F9FAFB;
+            --card-bg: #FFFFFF;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --border-color: #E5E7EB;
         }
         
         body {
             background-color: var(--light-bg);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #333;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
         }
         
-        .profile-card {
+        .main-content {
+            margin-left: 320px;
+            width: calc(100% - 320px);
+            transition: margin-left 0.3s ease, width 0.3s ease;
+            min-height: 100vh;
+            padding-bottom: 2rem;
+        }
+        
+        @media (max-width: 1200px) {
+            .main-content {
+                margin-left: 280px;
+                width: calc(100% - 280px);
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .main-content {
+                margin-left: 80px;
+                width: calc(100% - 80px);
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .main-content {
+                margin-left: 0;
+                margin-bottom: 70px;
+                width: 100%;
+                padding-bottom: 5rem;
+            }
+        }
+        
+        .card {
+            background-color: var(--card-bg);
             border-radius: 12px;
-            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             transition: all 0.3s ease;
-            overflow: hidden;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .card:hover {
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .chart-card {
             background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 0;
+            overflow: hidden;
+            margin-bottom: 24px;
+            border: 1px solid #e5e7eb;
         }
         
-        .profile-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.2);
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid #eaeaea;
         }
         
-        .profile-header {
-            background: linear-gradient(135deg, var(--primary-color), var(--chem-dark));
-            border-radius: 12px 12px 0 0;
-            padding: 2rem;
-            color: white;
-            text-align: center;
-            position: relative;
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #225c96;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
-        .profile-img-container {
-            position: relative;
-            display: inline-block;
-            margin-bottom: 1rem;
+        .view-all-btn {
+            background: none;
+            border: none;
+            color: #225c96;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: background-color 0.2s;
         }
         
-        .profile-img {
-            width: 150px;
-            height: 150px;
-            border: 5px solid rgba(255, 255, 255, 0.4);
-            object-fit: cover;
-            border-radius: 50%;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            background-color: #fff;
-            padding: 4px;
+        .view-all-btn:hover {
+            background-color: #f3f4f6;
         }
         
-        .file-upload {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background: var(--accent-color);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+        .movement-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .movement-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 24px;
+            border-bottom: 1px solid #f1f1f1;
+            transition: background-color 0.2s;
+        }
+        
+        .movement-item:hover {
+            background-color: #f9fafc;
+        }
+        
+        .movement-icon {
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            margin-right: 16px;
+            flex-shrink: 0;
         }
         
-        .file-upload:hover {
-            transform: scale(1.1);
-            background: #e85a20;
+        .movement-content {
+            flex-grow: 1;
         }
         
-        .file-upload i {
-            color: white;
-            font-size: 18px;
-        }
-        
-        .file-upload input[type="file"] {
-            position: absolute;
-            left: 0;
-            top: 0;
-            opacity: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-        }
-        
-        .nav-pills .nav-link {
-            color: var(--dark-color);
-            border-radius: 5px;
-            margin-right: 5px;
+        .movement-title {
+            font-size: 14px;
             font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 4px;
         }
         
-        .nav-pills .nav-link.active {
-            background: linear-gradient(135deg, var(--primary-color), var(--chem-dark));
-            color: white;
+        .movement-details {
+            display: flex;
+            gap: 12px;
+            font-size: 13px;
         }
         
-        .stat-box {
-            background-color: white;
-            border-radius: 10px;
-            padding: 1.5rem;
-            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
-            margin-bottom: 1.5rem;
-            transition: all 0.3s ease;
-            border-left: 4px solid var(--primary-color);
+        .movement-quantity {
+            color: #4a5568;
         }
         
-        .stat-box:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.15);
+        .movement-date {
+            color: #718096;
         }
         
-        .chem-badge {
-            background-color: var(--chem-light);
-            color: var(--chem-dark);
-            font-weight: 600;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.85rem;
+        .movement-actions {
+            color: #a0aec0;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: all 0.2s;
         }
         
-        .progress {
-            height: 12px;
-            border-radius: 10px;
-            background-color: #e9ecef;
+        .movement-actions:hover {
+            color: #225c96;
+            background-color: #edf2f7;
         }
         
-        .progress-bar {
-            background: linear-gradient(135deg, var(--primary-color), var(--chem-dark));
-            border-radius: 10px;
+        .chart-footer {
+            padding: 16px 24px;
+            background-color: #f8fafc;
+            border-top: 1px solid #eaeaea;
         }
         
-        .social-icon {
-            width: 40px;
-            height: 40px;
-            display: inline-flex;
+        .stats-info {
+            font-size: 13px;
+            color: #718096;
+            display: flex;
             align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background-color: var(--light-bg);
-            color: var(--primary-color);
-            transition: all 0.3s ease;
+            gap: 6px;
         }
         
-        .social-icon:hover {
-            background: linear-gradient(135deg, var(--primary-color), var(--chem-dark));
-            color: white;
-            transform: translateY(-3px);
+        .bg-blue-100 { background-color: #e8ebee; }
+        .text-blue-600 { color: #225c96; }
+        
+        .bg-green-100 { background-color: #e8f4ec; }
+        .text-green-600 { color: #225c96; }
+        
+        .bg-red-100 { background-color: #f9e8e8; }
+        .text-red-600 { color: #225c96; }
+        
+        .tab-active {
+            border-bottom: 2px solid var(--primary);
+            color: var(--primary);
         }
         
-        .activity-item {
-            border-left: 3px solid var(--primary-color);
-            padding-left: 25px;
-            position: relative;
-            padding-bottom: 25px;
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 20px 60px;
         }
         
-        .activity-item:before {
-            content: '';
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: var(--primary-color);
-            position: absolute;
-            left: -9px;
-            top: 0;
-            border: 3px solid white;
-            box-shadow: 0 0 0 2px var(--primary-color);
+        .footer-spacing {
+            height: 40px;
         }
         
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary-color), var(--chem-dark));
-            border: none;
-            border-radius: 8px;
-            padding: 10px 20px;
-            font-weight: 600;
-            transition: all 0.3s ease;
+        /* Gradiente para o cabeçalho do perfil */
+        .profile-header-gradient {
+            background: linear-gradient(120deg, #e8ebee, #d6dadd);
         }
         
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(44, 107, 175, 0.4);
-            background: linear-gradient(135deg, #255aa0, #164a16);
-        }
-        
-        .chem-bg {
-            background-color: var(--chem-light);
-            border-radius: 10px;
-            padding: 15px;
-        }
-        
-        .molecule-icon {
-            font-size: 1.5rem;
-            color: var(--chem-dark);
-            margin-right: 10px;
-        }
-        
-        h1, h2, h3, h4, h5, h6 {
-            color: var(--dark-color);
-        }
-        
-        .badge-chem {
-            background-color: var(--accent-color);
+        /* Botões com estilo #225c96 */
+        .btn-custom {
+            background-color: #225c96;
             color: white;
         }
         
-        /* Melhorias de margem */
-        .container {
-            padding-left: 1.5rem;
-            padding-right: 1.5rem;
+        .btn-custom:hover {
+            background-color: #1a2530;
         }
         
-        .card-body {
-            padding: 1.5rem;
+        /* Ícones com cor #225c96 */
+        .icon-custom {
+            color: #225c96;
         }
         
-        .mb-4 {
-            margin-bottom: 1.8rem !important;
+        /* Bordas e elementos de foco #225c96 */
+        .focus-custom:focus {
+            border-color: #225c96;
+            box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
         }
         
-        .mb-3 {
-            margin-bottom: 1.3rem !important;
+        /* Responsividade para telas menores */
+        @media (max-width: 768px) {
+            .chart-header {
+                padding: 16px 20px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .movement-item {
+                padding: 12px 16px;
+                flex-wrap: wrap;
+            }
+            
+            .movement-details {
+                flex-direction: column;
+                gap: 4px;
+            }
+            
+            .movement-actions {
+                margin-left: auto;
+            }
+            
+            .main-container {
+                padding: 16px 15px 80px;
+            }
+            
+            .chart-title {
+                font-size: 16px;
+            }
         }
         
-        .py-5 {
-            padding-top: 3.5rem !important;
-            padding-bottom: 3.5rem !important;
-        }
-        
-        .profile-header {
-            padding: 2.5rem 2rem;
-        }
-        
-        .form-control, .form-select {
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            margin-bottom: 1.2rem;
+        @media (max-width: 640px) {
+            .grid-cols-1 {
+                grid-template-columns: 1fr;
+            }
+            
+            .md\:grid-cols-2 {
+                grid-template-columns: 1fr;
+            }
+            
+            .lg\:grid-cols-3 {
+                grid-template-columns: 1fr;
+            }
+            
+            .gap-8 {
+                gap: 1.5rem;
+            }
+            
+            .p-8 {
+                padding: 1.5rem;
+            }
+            
+            .movement-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            
+            .movement-icon {
+                margin-right: 0;
+            }
+            
+            .movement-content {
+                width: 100%;
+            }
+            
+            .movement-actions {
+                align-self: flex-end;
+            }
         }
     </style>
 </head>
-<body class="bg-gray-50">
-    <div class="container py-5 mx-auto">
-        <div class="row">
-            <!-- Coluna lateral com informações do perfil -->
-            <div class="col-lg-4">
-                <div class="profile-card mb-4">
-                    <div class="profile-header">
-                        <div class="profile-img-container">
-                            <img src="https://ui-avatars.com/api/?name=Quimico+Analista&background=2c6baf&color=fff&size=150" 
-                                 class="profile-img" alt="Foto de Perfil" id="profile-picture">
-                            <div class="file-upload" title="Alterar foto">
-                                <i class="fas fa-camera"></i>
-                                <input type="file" id="upload-photo" accept="image/*">
+<body class="flex h-screen bg-gray-100">
+    <%- include('./partials/header'); %>
+    
+    <main class="main-content">
+        <div class="main-container">
+            <!-- Cabeçalho da página -->
+            <div class="mb-8">
+                <h1 class="text-2xl md:text-3xl font-bold text-[#2c3e50]">Perfil do Usuário</h1>
+                <p class="text-gray-600 mt-1">Gerencie suas informações pessoais e preferências</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Coluna lateral - Informações do usuário -->
+                <div class="lg:col-span-1 space-y-6">
+                    <div class="card p-0 overflow-hidden">
+                        <!-- Header com gradiente -->
+                        <div class="profile-header-gradient h-24 relative">
+                            <div class="absolute -bottom-12 left-1/2 transform -translate-x-1/2">
+                                <div class="relative">
+                                    <div class="w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-white bg-white shadow-lg">
+                                        <img src="https://ui-avatars.com/api/?name=João+Silva&background=2c3e50&color=fff&size=128" 
+                                            alt="Foto do perfil" 
+                                            class="w-full h-full rounded-full object-cover">
+                                    </div>
+                                    <button class="absolute bottom-0 right-0 bg-[#225c96] text-white p-1 md:p-2 rounded-full hover:bg-[#1a2530] transition-all shadow-md">
+                                        <i class="fas fa-camera text-xs md:text-sm"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                        <h4 class="mb-0">João Carrion!</h4>
-                        <p class="mb-0">Químico(a)</p>
-                        <p><i class="fas fa-map-marker-alt me-2"></i>Laboratório </p>
+                        
+                        <!-- Conteúdo do perfil -->
+                        <div class="pt-16 px-4 md:px-6 pb-6">
+                            <div class="text-center mb-2">
+                                <h2 class="text-lg md:text-xl font-bold text-[#225c96]">João Silva</h2>
+                                <div class="inline-flex items-center mt-1 px-3 py-1 bg-[#e8ebee] text-[#225c96] rounded-full text-xs font-medium">
+                                    <i class="fas fa-shield-alt mr-1"></i> Administrador
+                                </div>
+                            </div>
+                            
+                            <div class="flex flex-col items-center space-y-2 mt-4">
+                                <div class="flex items-center text-gray-600 text-sm">
+                                    <div class="w-8 h-8 rounded-full bg-[#e8ebee] flex items-center justify-center mr-2">
+                                        <i class="fas fa-envelope text-[#225c96]"></i>
+                                    </div>
+                                    <span class="truncate">joao.silva@labplus.com</span>
+                                </div>
+                                <div class="flex items-center text-gray-600 text-sm">
+                                    <div class="w-8 h-8 rounded-full bg-[#e8ebee] flex items-center justify-center mr-2">
+                                        <i class="fas fa-calendar-alt text-[#225c96]"></i>
+                                    </div>
+                                    <span>Membro desde: Jan 2023</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Estatísticas -->
+                            <div class="mt-6 pt-6 border-t border-gray-100">
+                                <h3 class="font-semibold text-[#225c96] mb-4 flex items-center">
+                                    <i class="fas fa-chart-line mr-2 icon-custom"></i> Estatísticas
+                                </h3>
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-[#e8ebee] flex items-center justify-center mr-3">
+                                                <i class="fas fa-flask text-[#225c96] text-sm md:text-base"></i>
+                                            </div>
+                                            <div>
+                                                <p class="text-sm font-medium text-gray-600">Reagentes</p>
+                                                <p class="text-xs text-gray-500">cadastrados</p>
+                                            </div>
+                                        </div>
+                                        <span class="text-lg font-bold text-[#2c3e50]">147</span>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-[#e8ebee] flex items-center justify-center mr-3">
+                                                <i class="fas fa-sign-in-alt text-[#225c96] text-sm md:text-base"></i>
+                                            </div>
+                                            <div>
+                                                <p class="text-sm font-medium text-gray-600">Entradas</p>
+                                                <p class="text-xs text-gray-500">registradas</p>
+                                            </div>
+                                        </div>
+                                        <span class="text-lg font-bold text-[#2c3e50]">89</span>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-[#e8ebee] flex items-center justify-center mr-3">
+                                                <i class="fas fa-sign-out-alt text-[#225c96] text-sm md:text-base"></i>
+                                            </div>
+                                            <div>
+                                                <p class="text-sm font-medium text-gray-600">Saídas</p>
+                                                <p class="text-xs text-gray-500">processadas</p>
+                                            </div>
+                                        </div>
+                                        <span class="text-lg font-bold text-[#2c3e50]">112</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Barra de progresso -->
+                            <div class="mt-6 pt-6 border-t border-gray-100">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm font-medium text-gray-700">Nível de atividade</span>
+                                    <span class="text-sm font-medium text-[#225c96]">78%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-[#225c96] h-2 rounded-full" style="width: 78%"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="mb-0">Complete seu perfil</h6>
-                            <span class="text-primary">75%</span>
+                    <!-- Card de ações rápidas -->
+                    <div class="card p-4 md:p-6">
+                        <h3 class="font-semibold text-[#225c96] mb-4 flex items-center">
+                            <i class="fas fa-bolt mr-2 text-yellow-500"></i> Ações Rápidas
+                        </h3>
+                        <div class="space-y-3">
+                            <a href="#" class="flex items-center p-3 rounded-lg hover:bg-[#e8ebee] transition-all duration-300 group">
+                                <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-[#e8ebee] flex items-center justify-center mr-3 group-hover:bg-[#d6dadd]">
+                                    <i class="fas fa-key text-[#225c96] text-sm md:text-base"></i>
+                                </div>
+                                <span class="text-[#2c3e50] group-hover:text-[#1a2530] text-sm md:text-base">Alterar Senha</span>
+                            </a>
+                            <a href="#" class="flex items-center p-3 rounded-lg hover:bg-[#e8ebee] transition-all duration-300 group">
+                                <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-[#e8ebee] flex items-center justify-center mr-3 group-hover:bg-[#d6dadd]">
+                                    <i class="fas fa-bell text-[#225c96] text-sm md:text-base"></i>
+                                </div>
+                                <span class="text-[#2c3e50] group-hover:text-[#1a2530] text-sm md:text-base">Configurar Notificações</span>
+                            </a>
+                            <a href="#" class="flex items-center p-3 rounded-lg hover:bg-[#e8ebee] transition-all duration-300 group">
+                                <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-[#e8ebee] flex items-center justify-center mr-3 group-hover:bg-[#d6dadd]">
+                                    <i class="fas fa-download text-[#225c96] text-sm md:text-base"></i>
+                                </div>
+                                <span class="text-[#2c3e50] group-hover:text-[#1a2530] text-sm md:text-base">Exportar Dados</span>
+                            </a>
                         </div>
-                        <div class="progress mb-4">
-                            <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        
-                        <div class="mb-4">
-                            <h6 class="mb-3">Detalhes de Contato</h6>
-                            <p class="mb-2"><i class="fas fa-envelope me-2 text-primary"></i>joao@email.com</p>
-                            <p class="mb-2"><i class="fas fa-phone me-2 text-primary"></i>(18) 99999-9999</p>
-                            <p class="mb-0"><i class="fas fa-clock me-2 text-primary"></i>Horário laboratorial: 8h-17:20h</p>
-                        </div>
-                        
-                        <div class="mb-4">
-                            <h6 class="mb-3">Especialidades</h6>
-                            <div class="d-flex flex-wrap gap-2">
-                                <span class="chem-badge">Cromatografia</span>
-                                <span class="chem-badge">Espectrometria</span>
-                                <span class="chem-badge">Titulação</span>
-                                <span class="chem-badge">Análise Química</span>
-                            </div>
-                        </div>
-                        
-                        <button class="btn btn-primary w-100"><i class="fas fa-download me-2"></i>Gerar Relatório</button>
                     </div>
                 </div>
                 
-                <div class="profile-card mb-4">
-                    <div class="card-body">
-                        <h6 class="mb-3">Estatísticas do Mês</h6>
-                        
-                        <div class="d-flex align-items-center justify-content-between mb-3">
-                            <div>
-                                <p class="mb-0"><i class="fas fa-flask molecule-icon"></i>Análises Realizadas</p>
-                            </div>
-                            <span class="badge bg-success">42</span>
+                <!-- Coluna principal - Formulário de edição -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="card p-0 overflow-hidden">
+                        <!-- Abas de navegação estilizadas -->
+                        <div class="border-b border-gray-200 bg-[#e8ebee]">
+                            <nav class="flex -mb-px overflow-x-auto">
+                                <button class="px-4 py-3 md:px-6 md:py-4 text-sm font-medium tab-active flex items-center whitespace-nowrap">
+                                    <i class="fas fa-user-circle mr-2 icon-custom"></i> Informações Pessoais
+                                </button>
+                            </nav>
                         </div>
                         
-                        <div class="d-flex align-items-center justify-content-between mb-3">
-                            <div>
-                                <p class="mb-0"><i class="fas fa-vial molecule-icon"></i>Testes de Qualidade</p>
+                        <!-- Conteúdo das abas -->
+                        <div class="p-4 md:p-6 lg:p-8">
+                            <div class="mb-6">
+                                <h2 class="text-xl md:text-2xl font-bold text-[#225c96] flex items-center">
+                                    <i class="fas fa-user-edit mr-3 icon-custom"></i> Editar Perfil
+                                </h2>
+                                <p class="text-gray-600 mt-2">Atualize suas informações pessoais abaixo</p>
                             </div>
-                            <span class="badge bg-primary">128</span>
-                        </div>
-                        
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div>
-                                <p class="mb-0"><i class="fas fa-exclamation-triangle molecule-icon"></i>Alertas de Segurança</p>
-                            </div>
-                            <span class="badge bg-danger">5</span>
+                            
+                            <form>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                                    <!-- Campo Nome -->
+                                    <div class="space-y-2">
+                                        <label class="block text-sm font-medium text-[#225c96] mb-1 flex items-center">
+                                            <i class="fas fa-signature mr-2 icon-custom"></i> Nome
+                                        </label>
+                                        <div class="relative">
+                                            <input type="text" value="João" 
+                                                   class="w-full pl-10 pr-4 py-2 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#225c96] focus:border-[#225c96] transition-all focus-custom">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-user text-gray-400"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Campo Sobrenome -->
+                                    <div class="space-y-2">
+                                        <label class="block text-sm font-medium text-[#225c96] mb-1 flex items-center">
+                                            <i class="fas fa-signature mr-2 icon-custom"></i> Sobrenome
+                                        </label>
+                                        <div class="relative">
+                                            <input type="text" value="Silva" 
+                                                   class="w-full pl-10 pr-4 py-2 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#225c96] focus:border-[#225c96] transition-all focus-custom">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-user text-gray-400"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Campo Email -->
+                                    <div class="space-y-2">
+                                        <label class="block text-sm font-medium text-[#225c96] mb-1 flex items-center">
+                                            <i class="fas fa-envelope mr-2 icon-custom"></i> Email
+                                        </label>
+                                        <div class="relative">
+                                            <input type="email" value="joao.silva@labplus.com" 
+                                                   class="w-full pl-10 pr-4 py-2 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#225c96] focus:border-[#225c96] transition-all focus-custom">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-at text-gray-400"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Campo Telefone -->
+                                    <div class="space-y-2">
+                                        <label class="block text-sm font-medium text-[#225c96] mb-1 flex items-center">
+                                            <i class="fas fa-phone mr-2 icon-custom"></i> Telefone
+                                        </label>
+                                        <div class="relative">
+                                            <input type="tel" value="(11) 99999-9999" 
+                                                   class="w-full pl-10 pr-4 py-2 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#225c96] focus:border-[#225c96] transition-all focus-custom">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-mobile-alt text-gray-400"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Campo Departamento -->
+                                    <div class="md:col-span-2 space-y-2">
+                                        <label class="block text-sm font-medium text-[#225c96] mb-1 flex items-center">
+                                            <i class="fas fa-building mr-2 icon-custom"></i> Departamento
+                                        </label>
+                                        <div class="relative">
+                                            <select class="w-full pl-10 pr-4 py-2 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#225c96] focus:border-[#225c96] appearance-none transition-all focus-custom">
+                                                <option selected>Química Orgânica</option>
+                                                <option>Química Inorgânica</option>
+                                                <option>Bioquímica</option>
+                                                <option>Pesquisa e Desenvolvimento</option>
+                                            </select>
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-briefcase text-gray-400"></i>
+                                            </div>
+                                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-chevron-down text-gray-400"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Campo Biografia -->
+                                    <div class="md:col-span-2 space-y-2">
+                                        <label class="block text-sm font-medium text-[#225c96] mb-1 flex items-center">
+                                            <i class="fas fa-pencil-alt mr-2 icon-custom"></i> Biografia
+                                        </label>
+                                        <div class="relative">
+                                            <textarea rows="3" class="w-full pl-10 pr-4 py-2 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#225c96] focus:border-[#225c96] transition-all focus-custom">Especialista em gestão de reagentes químicos com 5 anos de experiência no laboratório.</textarea>
+                                            <div class="absolute top-2 left-3 md:top-3">
+                                                <i class="fas fa-align-left text-gray-400"></i>
+                                            </div>
+                                        </div>
+                                        <p class="text-xs text-gray-500">Descreva brevemente sua experiência e especialidades</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Botões de ação -->
+                                <div class="mt-8 pt-6 border-t border-gray-200 flex flex-col sm:flex-row justify-end space-y-4 sm:space-y-0 sm:space-x-4">
+                                    <button type="button" class="px-4 py-2 md:px-6 md:py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-all flex items-center justify-center">
+                                        <i class="fas fa-times mr-2"></i> Cancelar
+                                    </button>
+                                    <button type="submit" class="px-4 py-2 md:px-6 md:py-3 bg-[#225c96] text-white rounded-lg hover:bg-[#1a2530] transition-all flex items-center justify-center">
+                                        <i class="fas fa-save mr-2"></i> Salvar Alterações
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                </div>
-            </div>
-            
-            <!-- Conteúdo principal do perfil -->
-            <div class="col-lg-8">
-                <div class="profile-card mb-4">
-                    <div class="card-body">
-                        <ul class="nav nav-pills mb-4" id="profileTabs" role="tablist">
-                          
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="settings-tab" data-bs-toggle="pill" data-bs-target="#settings" type="button" role="tab">Configurações</button>
+                    
+                    <!-- Card de atividades recentes -->
+                    <div class="chart-card enhanced-card">
+                        <div class="chart-header with-border-bottom">
+                            <h2 class="chart-title with-icon">
+                                <i class="fas fa-exchange-alt icon-custom"></i>
+                                Atividades Recentes
+                            </h2>
+                            <button class="view-all-btn">Ver todas</button>
+                        </div>
+                        
+                        <ul class="movement-list">
+                            <li class="movement-item">
+                                <div class="movement-icon bg-[#e8ebee]">
+                                    <i class="fas fa-plus text-[#225c96]"></i>
+                                </div>
+                                <div class="movement-content">
+                                    <p class="movement-title">Adicionou novo reagente</p>
+                                    <div class="movement-details">
+                                        <span class="movement-quantity">Ácido Sulfúrico</span>
+                                        <span class="movement-date">2 horas atrás</span>
+                                    </div>
+                                </div>
+                                <div class="movement-actions">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </div>
                             </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="security-tab" data-bs-toggle="pill" data-bs-target="#security" type="button" role="tab">Segurança</button>
+                            
+                            <li class="movement-item">
+                                <div class="movement-icon bg-[#e8ebee]">
+                                    <i class="fas fa-sign-in-alt text-[#225c96]"></i>
+                                </div>
+                                <div class="movement-content">
+                                    <p class="movement-title">Registrou entrada de estoque</p>
+                                    <div class="movement-details">
+                                        <span class="movement-quantity">Cloreto de Sódio</span>
+                                        <span class="movement-date">1 dia atrás</span>
+                                    </div>
+                                </div>
+                                <div class="movement-actions">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </div>
+                            </li>
+                            
+                            <li class="movement-item">
+                                <div class="movement-icon bg-[#e8ebee]">
+                                    <i class="fas fa-sign-out-alt text-[#225c96]"></i>
+                                </div>
+                                <div class="movement-content">
+                                    <p class="movement-title">Registrou saída de estoque</p>
+                                    <div class="movement-details">
+                                        <span class="movement-quantity">Hidróxido de Sódio</span>
+                                        <span class="movement-date">2 dias atrás</span>
+                                    </div>
+                                </div>
+                                <div class="movement-actions">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </div>
                             </li>
                         </ul>
                         
-                        <div class="tab-content" id="profileTabsContent">
-
-                                
-                                <h5 class="my-4">Configurações Rápidas</h5>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="stat-box">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-shrink-0 bg-info bg-opacity-10 p-3 rounded">
-                                                    <i class="fas fa-flask text-info fa-lg"></i>
-                                                </div>
-                                                <div class="flex-grow-1 ms-3">
-                                                    <h6 class="mb-0">Equipamentos</h6>
-                                                    <p class="text-muted mb-0">Gerenciar dispositivos</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="col-md-6">
-                                        <div class="stat-box">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-shrink-0 bg-warning bg-opacity-10 p-3 rounded">
-                                                    <i class="fas fa-exclamation-triangle text-warning fa-lg"></i>
-                                                </div>
-                                                <div class="flex-grow-1 ms-3">
-                                                    <h6 class="mb-0">Alertas</h6>
-                                                    <p class="text-muted mb-0">Configurar notificações</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Aba de Configurações -->
-                            <div class="tab-pane fade" id="settings" role="tabpanel">
-                                <h5 class="mb-4">Informações Pessoais</h5>
-                                
-                                <form id="profile-form">
-                                    <div class="row mb-3">
-                                        <div class="col-md-6">
-                                            <label for="firstName" class="form-label">Nome</label>
-                                            <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Digite seu nome">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="lastName" class="form-label">Sobrenome</label>
-                                            <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Digite seu sobrenome">
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label for="email" class="form-label">E-mail</label>
-                                        <input type="email" class="form-control" id="email" name="email" placeholder="seu.email@exemplo.com">
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label for="phone" class="form-label">Telefone</label>
-                                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="(00) 00000-0000">
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label for="department" class="form-label">Departamento</label>
-                                        <select class="form-select" id="department" name="department">
-                                            <option value="" selected disabled>Selecione um departamento</option>
-                                            <option>Análise Química</option>
-                                            <option>Controle de Qualidade</option>
-                                            <option>Pesquisa e Desenvolvimento</option>
-                                            <option>Toxicologia</option>
-                                        </select>
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label for="bio" class="form-label">Biografia</label>
-                                        <textarea class="form-control" id="bio" name="bio" rows="3" placeholder="Descreva sua experiência e especialidades"></textarea>
-                                    </div>
-                                    
-                                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
-                                </form>
-                                
-                                <hr class="my-4">
-                                
-                                <h5 class="mb-4">Preferências de Notificação</h5>
-                                
-                                <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox" id="notifEmail" name="notifEmail">
-                                    <label class="form-check-label" for="notifEmail">Notificações por E-mail</label>
-                                </div>
-                                
-                                <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox" id="notifSMS" name="notifSMS">
-                                    <label class="form-check-label" for="notifSMS">Notificações por SMS</label>
-                                </div>
-                                
-                                <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox" id="notifLowStock" name="notifLowStock">
-                                    <label class="form-check-label" for="notifLowStock">Alertas de reagentes em falta</label>
-                                </div>
-                                
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="notifReports" name="notifReports">
-                                    <label class="form-check-label" for="notifReports">Relatórios de calibração</label>
-                                </div>
-                            </div>
-                            
-                            <!-- Aba de Segurança -->
-                            <div class="tab-pane fade" id="security" role="tabpanel">
-                                <h5 class="mb-4">Alterar Senha</h5>
-                                
-                                <form id="password-form">
-                                    <div class="mb-3">
-                                        <label for="currentPassword" class="form-label">Senha Atual</label>
-                                        <input type="password" class="form-control" id="currentPassword" name="currentPassword" placeholder="Digite sua senha atual">
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label for="newPassword" class="form-label">Nova Senha</label>
-                                        <input type="password" class="form-control" id="newPassword" name="newPassword" placeholder="Digite a nova senha">
-                                        <div class="form-text">A senha deve ter pelo menos 8 caracteres, incluindo números e letras.</div>
-                                    </div>
-                                    
-                                    <div class="mb-4">
-                                        <label for="confirmPassword" class="form-label">Confirmar Nova Senha</label>
-                                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirme a nova senha">
-                                    </div>
-                                    
-                                    <button type="submit" class="btn btn-primary">Atualizar Senha</button>
-                                </form>
-                                
-                                <hr class="my-4">
-                                
-                                <h5 class="mb-4">Protocolos e Relatórios de Segurança</h5>
-                                
-                                <div class="row mb-4">
-                                    <div class="col-md-6">
-                                        <div class="stat-box">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-shrink-0 bg-primary bg-opacity-10 p-3 rounded">
-                                                    <i class="fas fa-vial text-primary fa-lg"></i>
-                                                </div>
-                                                <div class="flex-grow-1 ms-3">
-                                                    <h6 class="mb-0">Protocolos</h6>
-                                                    <p class="text-muted mb-0">Configurar métodos</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="col-md-6">
-                                        <div class="stat-box">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-shrink-0 bg-success bg-opacity-10 p-3 rounded">
-                                                    <i class="fas fa-chart-bar text-success fa-lg"></i>
-                                                </div>
-                                                <div class="flex-grow-1 ms-3">
-                                                    <h6 class="mb-0">Relatórios</h6>
-                                                    <p class="text-muted mb-0">Personalizar visualizações</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <h5 class="mb-4">Autenticação de Dois Fatores</h5>
-                                <p class="text-muted mb-4">Proteja sua conta com autenticação de dois fatores. Você será solicitado a inserir um código de segurança adicional ao fazer login.</p>
-                                
-                                <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox" id="twoFactorAuth" name="twoFactorAuth">
-                                    <label class="form-check-label" for="twoFactorAuth">Ativar autenticação de dois fatores</label>
-                                </div>
-                                
-                                <button class="btn btn-outline-primary">Configurar autenticação</button>
-                            </div>
+                        <div class="chart-footer">
+                            <span class="stats-info">
+                                <i class="fas fa-history"></i>
+                                Atualizado agora
+                            </span>
                         </div>
                     </div>
                 </div>
             </div>
+            
+            <!-- Espaço extra no final da página -->
+            <div class="footer-spacing"></div>
         </div>
-    </div>
+    </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Simulação de upload de foto
-        document.getElementById('upload-photo').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const formData = new FormData();
-                formData.append('profilePhoto', file);
-                
-                // Simulação de upload - em produção, isso enviaria para o servidor
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('profile-picture').src = e.target.result;
-                    alert('Foto atualizada com sucesso!');
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        // Processar formulário de perfil
-        document.getElementById('profile-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData.entries());
-            
-            // Simulação de envio - em produção, isso enviaria para o servidor
-            console.log('Dados do perfil:', data);
-            alert('Perfil atualizado com sucesso!');
-        });
-
-        // Processar formulário de senha
-        document.getElementById('password-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData.entries());
-            
-            if (data.newPassword !== data.confirmPassword) {
-                alert('As senhas não coincidem!');
-                return;
-            }
-            
-            if (data.newPassword.length < 8) {
-                alert('A senha deve ter pelo menos 8 caracteres!');
-                return;
-            }
-            
-            // Simulação de envio - em produção, isso enviaria para o servidor
-            console.log('Alteração de senha:', data);
-            alert('Senha alterada com sucesso!');
-            this.reset();
+        document.addEventListener('DOMContentLoaded', function() {
+            // Lógica para troca de abas
+            const tabButtons = document.querySelectorAll('nav button');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove a classe ativa de todos os botões
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('tab-active');
+                        btn.classList.add('text-gray-600');
+                    });
+                    
+                    // Adiciona a classe ativa ao botão clicado
+                    this.classList.add('tab-active');
+                    this.classList.remove('text-gray-600');
+                });
+            });
         });
     </script>
-</body>
-</html>
-   
-    <script src="/js/upload-photo.js"></script>
 </body>
 </html>

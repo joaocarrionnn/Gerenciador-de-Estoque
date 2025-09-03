@@ -11,6 +11,10 @@ router.get('/login', (req, res) => {
     res.render('Auth/login');
 });
 
+router.get('/criar_conta', (req, res) => {
+    res.render('Auth/criar_conta');
+});
+
 // Rota corrigida para produtos
 router.get('/produtos', (req, res) => {
     res.render('produtos', { 
@@ -65,6 +69,28 @@ router.post('/produtos/adicionar', (req, res) => {
 // NOVA ROTA PARA SAÍDA DE REAGENTES
 router.get('/saida-reagentes', (req, res) => {
     res.render('saida-reagentes', { 
+        user: { 
+            name: 'João Carrion', 
+            email: 'joao@email.com', 
+            role: 'Administrador' 
+        }
+    });
+});
+
+// NOVA ROTA PARA ENTRADA DE REAGENTES
+router.get('/entrada-reagentes', (req, res) => {
+    res.render('entrada-reagentes', { 
+        user: { 
+            name: 'João Carrion', 
+            email: 'joao@email.com', 
+            role: 'Administrador' 
+        }
+    });
+});
+
+// NOVA ROTA PARA LOGOUT
+router.get('/logout', (req, res) => {
+    res.render('logout', { 
         user: { 
             name: 'João Carrion', 
             email: 'joao@email.com', 

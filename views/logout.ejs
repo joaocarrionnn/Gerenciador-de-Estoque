@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saindo do Sistema - Lab+</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Estilos específicos para a tela de logout */
+    .logout-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+    
+    .logout-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      padding: 3rem;
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    .logout-icon {
+      font-size: 4rem;
+      color: #3498db;
+      margin-bottom: 1.5rem;
+    }
+    
+    .logout-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #2c3e50;
+      margin-bottom: 1rem;
+    }
+    
+    .logout-message {
+      color: #7f8c8d;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background-color: #ecf0f1;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 2rem 0;
+    }
+    
+    .progress {
+      height: 100%;
+      width: 0%;
+      background-color: #3498db;
+      border-radius: 4px;
+      transition: width 2s linear;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Responsividade para a tela de logout */
+    @media (max-width: 768px) {
+      .logout-card {
+        padding: 2rem;
+      }
+      
+      .logout-title {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-100">
+
+  <!-- CONTEÚDO PRINCIPAL - TELA DE LOGOUT AUTOMÁTICO -->
+  <div class="logout-container">
+    <div class="logout-card">
+      <div class="logout-icon">
+        <i class="fas fa-sign-out-alt"></i>
+      </div>
+      <h1 class="logout-title">Saindo do sistema...</h1>
+      <p class="logout-message">
+        Você está sendo desconectado do Sistema Lab+. Aguarde enquanto finalizamos sua sessão.
+      </p>
+      
+      <div class="progress-bar">
+        <div class="progress" id="progress-bar"></div>
+      </div>
+      
+      <p class="text-sm text-gray-500">
+        Você será redirecionado para a página de login em instantes.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Inicia a animação da barra de progresso
+      const progressBar = document.getElementById('progress-bar');
+      progressBar.style.width = '100%';
+      
+      // Redireciona para a página de login após 2 segundos
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 2000);
+    });
+  </script>
+</body>
+</html>
