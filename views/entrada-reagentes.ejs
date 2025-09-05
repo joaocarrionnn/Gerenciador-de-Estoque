@@ -72,46 +72,9 @@
             gap: 0.5rem;
         }
         
-        .primary-btn {
-            background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 0.7rem 1.2rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(78, 84, 200, 0.2);
-            text-decoration: none;
-        }
+    
         
-        .primary-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(78, 84, 200, 0.3);
-        }
-        
-        .success-btn {
-            background: linear-gradient(135deg, #3c6288 0%, #2063a7 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 0.7rem 1.2rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(76, 201, 240, 0.2);
-        }
-        
-        .success-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(76, 201, 240, 0.3);
-        }
+       
         
         .form-control, .form-select {
             padding: 0.75rem 1rem;
@@ -429,6 +392,71 @@
                 margin-bottom: 1rem;
             }
         }
+
+
+        .d-grid {
+    display: grid;
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.success-btn {
+    background-color: #27ae60; /* Verde moderno e profissional */
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 16px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    max-width: 280px;
+}
+
+.success-btn:hover {
+    background-color: #219653; /* Tom mais escuro no hover */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.success-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.success-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.7s ease;
+}
+
+.success-btn:hover::before {
+    left: 100%;
+}
+
+.success-btn i {
+    font-size: 18px;
+    transition: transform 0.3s ease;
+}
+
+.success-btn:hover i {
+    transform: scale(1.1);
+}
     </style>
 </head>
 <body class="flex">

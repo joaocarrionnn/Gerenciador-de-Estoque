@@ -5,11 +5,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #4361ee;
-            --secondary: #3a0ca3;
-            --success: #4cc9f0;
-            --warning: #f72585;
-            --info: #7209b7;
+            --primary: #2d3748;
+            --secondary: #2d3748;
+            --success: #2d3748;
+            --warning: #2d3748;
+            --info: #2d3748;
             --light: #f8f9fa;
             --dark: #212529;
             --gray: #6c757d;
@@ -517,20 +517,27 @@
 }
 
 .view-all-btn {
-    background: transparent;
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
-    padding: 0.4rem 0.8rem;
-    font-size: 0.8rem;
-    color: #6c757d;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.view-all-btn:hover {
-    background: #f8f9fa;
-    border-color: #c0c0c0;
-}
+            background: transparent;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+        
+        .view-all-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(67, 97, 238, 0.2);
+        }
 
 .progress-container {
     padding: 1.5rem;
@@ -957,26 +964,27 @@
 
 
 .view-all-btn {
-    background: transparent;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    padding: 0.6rem 1.2rem;
-    font-size: 0.9rem;
-    color: #4e54c8;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.view-all-btn:hover {
-    background: #4e54c8;
-    color: white;
-    border-color: #4e54c8;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(78, 84, 200, 0.2);
-}
+            background: transparent;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+        
+        .view-all-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(67, 97, 238, 0.2);
+        }
 
 .table-footer {
     display: flex;
@@ -997,6 +1005,38 @@
     .view-all-btn {
         align-self: flex-end;
     }
+}
+
+
+.btn-add {
+    background-color: #2c3e50; /* Azul-escuro neutro */
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-add:hover {
+    background-color: #34495e; /* Tom mais claro no hover */
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.btn-add:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-add i {
+    font-size: 16px;
 }
     </style>
 </head>
@@ -1172,7 +1212,7 @@
                         <i class="fas fa-flask"></i>
                         Reagentes em Estoque
                     </h2>
-                    <button class="btn-add primary-btn">
+                    <button class="btn-add ">
                         <i class="fas fa-plus-circle"></i> Novo Reagente
                     </button>
                 </div>

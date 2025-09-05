@@ -13,7 +13,7 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#2c3e50',
+                        primary: '#225c96',  // Alterado para #225c96
                         secondary: '#95a5a6',
                         accent: '#3498db',
                         light: '#ecf0f1',
@@ -77,12 +77,6 @@
                 </div>
                 
                 <div class="flex items-center justify-between mb-6">
-                    <div class="flex items-center">
-                        <input id="remember" name="remember" type="checkbox" class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
-                        <label for="remember" class="ml-2 block text-sm text-gray-700">
-                            Lembrar-me
-                        </label>
-                    </div>
                     
                     <a href="#" class="text-sm text-primary hover:underline">
                         Esqueci minha senha
@@ -94,43 +88,7 @@
                 </button>
             </form>
             
-            <!-- Opção de troca de usuário para admin -->
-            <div class="admin-switch mt-6 pt-6 border-t border-gray-200">
-                <div class="flex items-center">
-                    <input id="admin-mode" type="checkbox" class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
-                    <label for="admin-mode" class="ml-2 block text-sm text-gray-700">
-                        Sou administrador e desejo trocar de usuário
-                    </label>
-                </div>
-                
-                <div id="admin-fields" class="hidden mt-4">
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-medium mb-2" for="admin-user">
-                            Usuário Administrador
-                        </label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fas fa-user-shield text-gray-400"></i>
-                            </div>
-                            <input class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
-                                   id="admin-user" type="text" placeholder="Usuário admin">
-                        </div>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-medium mb-2" for="admin-password">
-                            Senha Administrador
-                        </label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fas fa-key text-gray-400"></i>
-                            </div>
-                            <input class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
-                                   id="admin-password" type="password" placeholder="Senha admin">
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
             
             <!-- Links adicionais -->
             <div class="mt-6 text-center">
