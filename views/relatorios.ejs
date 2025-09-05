@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <%- include('./partials/head'); %>
+    <style>
+        :root {
+            --primary: #2d3748;
+            --secondary: #2d3748;
+            --success: #2d3748;
+            --warning: #2d3748;
+            --info: #2d3748;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+        }
+        
+        body {
+            background-color: #f5f7fb;
+            color: #333;
+            min-height: 100vh;
+        }
+        
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        .card-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+        
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .card-footer {
+            padding: 1rem 1.5rem;
+            background-color: #f8f9fa;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .form-control, .form-select {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.2rem;
+            border: 1px solid #d1d3e2;
+            width: 100%;
+            font-size: 1rem;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .required-field::after {
+            content: " *";
+            color: #2b1a18;
+        }
+        
+        .input-group {
+            display: flex;
+        }
+        
+        .input-group .form-control {
+            margin-bottom: 0;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        
+        .input-group-text {
+            background-color: #f8f9fa;
+            border: 1px solid #d1d3e2;
+            border-left: none;
+            padding: 0.75rem 1rem;
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+            color: var(--gray);
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .alert-info {
+            background-color: rgba(114, 9, 183, 0.15);
+            border-left: 4px solid var(--info);
+            color: #2c5282;
+        }
+        
+        .alert-warning {
+            background-color: rgba(255, 193, 7, 0.15);
+            border-left: 4px solid #ffc107;
+            color: #856404;
+        }
+        
+        .stats-info {
+            font-size: 0.85rem;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .view-all-btn {
+            background: transparent;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+        
+        .view-all-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(67, 97, 238, 0.2);
+        }
+        
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+        
+        .text-success {
+            color: #28a745 !important;
+        }
+        
+        .text-primary {
+            color: #464343 !important;
+        }
+        
+        .text-danger {
+            color: #e74c3c !important;
+        }
+        
+        .text-info {
+            color: #ffa703 !important;
+        }
+        
+        .text-muted {
+            color: var(--gray) !important;
+        }
+        
+        .bg-success {
+            background-color: #28a745 !important;
+        }
+        
+        .bg-primary {
+            background-color: #3B82F6 !important;
+        }
+        
+        .bg-info {
+            background-color: #17a2b8 !important;
+        }
+        
+        .progress {
+            height: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .mb-4 {
+            margin-bottom: 1.5rem;
+        }
+        
+        .mt-4 {
+            margin-top: 1.5rem;
+        }
+        
+        .me-2 {
+            margin-right: 0.5rem;
+        }
+        
+        .ms-3 {
+            margin-left: 1rem;
+        }
+        
+        .p-6 {
+            padding: 1.5rem;
+        }
+        
+        .grid {
+            display: grid;
+        }
+        
+        .grid-cols-1 {
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+        }
+        
+        .grid-cols-2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        
+        .grid-cols-3 {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        
+        .grid-cols-4 {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+        
+        .gap-6 {
+            gap: 1.5rem;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .border-r {
+            border-right: 1px solid #e5e7eb;
+        }
+        
+        .border-t {
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .font-semibold {
+            font-weight: 600;
+        }
+        
+        .font-bold {
+            font-weight: 700;
+        }
+        
+        .text-2xl {
+            font-size: 1.5rem;
+        }
+        
+        .text-sm {
+            font-size: 0.875rem;
+        }
+        
+        .d-grid {
+            display: grid;
+        }
+        
+        .py-3 {
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+        }
+        
+        .small {
+            font-size: 0.875rem;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        
+        .export-btn {
+            background: transparent;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 0.75rem 1.2rem;
+            font-size: 0.9rem;
+            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+        
+        .export-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(67, 97, 238, 0.2);
+        }
+        
+        .stats-card {
+            text-align: center;
+            padding: 1.5rem;
+        }
+        
+        .stats-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stats-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        @media (min-width: 1024px) {
+            .lg\:grid-cols-2 {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            
+            .lg\:grid-cols-3 {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+            
+            .lg\:grid-cols-4 {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .grid-cols-2, .grid-cols-3, .grid-cols-4 {
+                grid-template-columns: repeat(1, minmax(0, 1fr));
+            }
+            
+            .border-r {
+                border-right: none;
+                border-bottom: 1px solid #e5e7eb;
+                padding-bottom: 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            .chart-container {
+                height: 250px;
+            }
+        }
+
+        .success-btn {
+            background-color: #27ae60;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 16px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            max-width: 280px;
+        }
+
+        .success-btn:hover {
+            background-color: #219653;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .success-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .success-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.7s ease;
+        }
+
+        .success-btn:hover::before {
+            left: 100%;
+        }
+
+        .success-btn i {
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        .success-btn:hover i {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="flex">
+    <%- include('./partials/header'); %>
+    
+    <!-- Conteúdo Principal -->
+    <main class="flex-1 overflow-auto bg-gray-50 min-h-screen">
+        <div class="main-container">
+            <!-- Header da Página -->
+            <div class="section-header">
+                <h1 class="section-title">
+                    <i class="fas fa-chart-line text-primary mr-2"></i>
+                    Relatórios e Estatísticas
+                </h1>
+            </div>
+            
+            <!-- Filtros -->
+            <div class="card mb-6">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-filter text-primary"></i>
+                        Filtrar Relatórios
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <form id="report-filter-form">
+                        <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+                            <div>
+                                <label for="start-date" class="form-label">Data Inicial</label>
+                                <input type="date" class="form-control" id="start-date" name="start-date">
+                            </div>
+                            <div>
+                                <label for="end-date" class="form-label">Data Final</label>
+                                <input type="date" class="form-control" id="end-date" name="end-date">
+                            </div>
+                            <div>
+                                <label for="category" class="form-label">Categoria</label>
+                                <select class="form-select" id="category" name="category">
+                                    <option value="" selected>Todas as categorias</option>
+                                    <option value="acidos">Ácidos</option>
+                                    <option value="bases">Bases</option>
+                                    <option value="solventes">Solventes</option>
+                                    <option value="indicadores">Indicadores</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="reagent" class="form-label">Reagente</label>
+                                <select class="form-select" id="reagent" name="reagent">
+                                    <option value="" selected>Todos os reagentes</option>
+                                    <option value="1">Ácido clorídrico (HCl)</option>
+                                    <option value="2">Hidróxido de sódio (NaOH)</option>
+                                    <option value="3">Sulfato de cobre (CuSO₄)</option>
+                                    <option value="4">Água destilada (H₂O)</option>
+                                    <option value="5">Cloreto de sódio (NaCl)</option>
+                                    <option value="6">Ácido sulfúrico (H₂SO₄)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="success-btn py-3">
+                                <i class="fas fa-check-circle me-2"></i>Aplicar Filtros
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Estatísticas Rápidas -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                <div class="card stats-card">
+                    <div class="text-primary stats-value" id="total-reagents">142</div>
+                    <div class="stats-label">Total de Reagentes</div>
+                </div>
+                <div class="card stats-card">
+                    <div class="text-success stats-value" id="month-inputs">28</div>
+                    <div class="stats-label">Entradas (Mês)</div>
+                </div>
+                <div class="card stats-card">
+                    <div class="text-danger stats-value" id="month-outputs">35</div>
+                    <div class="stats-label">Saídas (Mês)</div>
+                </div>
+                <div class="card stats-card">
+                    <div class="text-info stats-value" id="low-stock">7</div>
+                    <div class="stats-label">Baixo Estoque</div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Gráfico de Movimentação -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="fas fa-chart-bar text-primary"></i>
+                            Movimentação Mensal
+                        </h2>
+                        <button class="view-all-btn" id="view-movement-details">
+                            <i class="fas fa-expand"></i> Detalhes
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="movementChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gráfico de Categorias -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="fas fa-chart-pie text-primary"></i>
+                            Distribuição por Categoria
+                        </h2>
+                        <button class="view-all-btn" id="view-category-details">
+                            <i class="fas fa-expand"></i> Detalhes
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Relatórios para Exportação -->
+            <div class="card mt-6">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-file-export text-primary"></i>
+                        Exportar Relatórios
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <button class="export-btn" id="export-pdf">
+                            <i class="fas fa-file-pdf"></i> PDF
+                        </button>
+                        <button class="export-btn" id="export-excel">
+                            <i class="fas fa-file-excel"></i> Excel
+                        </button>
+                        <button class="export-btn" id="export-csv">
+                            <i class="fas fa-file-csv"></i> CSV
+                        </button>
+                        <button class="export-btn" id="export-print">
+                            <i class="fas fa-print"></i> Imprimir
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tabela de Itens com Baixo Estoque -->
+            <div class="card mt-6">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-exclamation-triangle text-danger"></i>
+                        Itens com Estoque Crítico
+                    </h2>
+                    <button class="view-all-btn" id="view-all-low-stock">
+                        <i class="fas fa-list"></i> Ver todos
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead>
+                                <tr class="border-b">
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reagente</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoria</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estoque Atual</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estoque Mínimo</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="low-stock-items">
+                                <!-- Itens com estoque crítico serão carregados via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <span class="stats-info">
+                        <i class="fas fa-history"></i>
+                        <span id="last-update">Atualizado agora</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Container para toasts (notificações) -->
+    <div class="toast-container"></div>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Dados de exemplo para demonstração
+        const sampleData = {
+            totalReagents: 142,
+            monthInputs: 28,
+            monthOutputs: 35,
+            lowStock: 7,
+            lowStockItems: [
+                { reagent: 'Ácido Sulfúrico', category: 'Ácidos', current: '120 mL', minimum: '200 mL', status: 'Crítico' },
+                { reagent: 'Hidróxido de Sódio', category: 'Bases', current: '150 g', minimum: '300 g', status: 'Atenção' },
+                { reagent: 'Fenolftaleína', category: 'Indicadores', current: '25 mL', minimum: '50 mL', status: 'Crítico' }
+            ],
+            movementData: {
+                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                inputs: [12, 19, 15, 17, 14, 18, 16, 21, 19, 23, 25, 28],
+                outputs: [8, 12, 10, 14, 16, 20, 18, 22, 25, 28, 30, 35]
+            },
+            categoryData: {
+                labels: ['Ácidos', 'Bases', 'Solventes', 'Indicadores', 'Outros'],
+                values: [30, 25, 20, 15, 10],
+                colors: ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#9CA3AF']
+            }
+        };
+
+        // Função para exibir notificações
+        function showToast(message, type = 'success') {
+            const toastContainer = document.querySelector('.toast-container');
+            const toastId = 'toast-' + Date.now();
+            
+            const toast = document.createElement('div');
+            toast.className = `toast align-items-center text-bg-${type} border-0`;
+            toast.id = toastId;
+            toast.setAttribute('role', 'alert');
+            toast.setAttribute('aria-live', 'assertive');
+            toast.setAttribute('aria-atomic', 'true');
+            
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            const bsToast = new bootstrap.Toast(toast, {
+                delay: 5000
+            });
+            bsToast.show();
+            
+            // Remover o toast do DOM após ser escondido
+            toast.addEventListener('hidden.bs.toast', () => {
+                toast.remove();
+            });
+        }
+
+        // Função para carregar estatísticas
+        function loadStatistics() {
+            try {
+                // Atualizar os contadores
+                document.getElementById('total-reagents').textContent = sampleData.totalReagents;
+                document.getElementById('month-inputs').textContent = sampleData.monthInputs;
+                document.getElementById('month-outputs').textContent = sampleData.monthOutputs;
+                document.getElementById('low-stock').textContent = sampleData.lowStock;
+                
+                // Atualizar a tabela de itens com estoque crítico
+                const lowStockItems = document.getElementById('low-stock-items');
+                lowStockItems.innerHTML = '';
+                
+                sampleData.lowStockItems.forEach(item => {
+                    const statusClass = item.status === 'Crítico' ? 'bg-danger' : 'bg-warning';
+                    const row = document.createElement('tr');
+                    row.className = 'border-b';
+                    
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap">${item.reagent}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">${item.category}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">${item.current}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">${item.minimum}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full ${statusClass} text-white">
+                                ${item.status}
+                            </span>
+                        </td>
+                    `;
+                    
+                    lowStockItems.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
+            }
+        }
+
+        // Função para inicializar os gráficos
+        function initCharts() {
+            // Gráfico de Movimentação
+            const movementCtx = document.getElementById('movementChart').getContext('2d');
+            const movementChart = new Chart(movementCtx, {
+                type: 'line',
+                data: {
+                    labels: sampleData.movementData.labels,
+                    datasets: [
+                        {
+                            label: 'Entradas',
+                            data: sampleData.movementData.inputs,
+                            borderColor: '#10B981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: 'Saídas',
+                            data: sampleData.movementData.outputs,
+                            borderColor: '#EF4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de Categorias
+            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+            const categoryChart = new Chart(categoryCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: sampleData.categoryData.labels,
+                    datasets: [{
+                        data: sampleData.categoryData.values,
+                        backgroundColor: sampleData.categoryData.colors,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        }
+                    }
+                }
+            });
+        }
+
+        // Envio do formulário de filtros
+        document.getElementById('report-filter-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+            
+            try {
+                // Simular uma requisição de filtro
+                showToast('Filtros aplicados com sucesso!');
+                
+                // Recarregar os dados com os filtros aplicados
+                loadStatistics();
+                initCharts();
+            } catch (error) {
+                console.error('Erro ao aplicar filtros:', error);
+                showToast('Erro ao aplicar filtros. Tente novamente.', 'danger');
+            }
+        });
+        
+        // Botões de exportação
+        document.getElementById('export-pdf').addEventListener('click', function() {
+            showToast('Relatório PDF gerado com sucesso!');
+        });
+        
+        document.getElementById('export-excel').addEventListener('click', function() {
+            showToast('Planilha Excel gerada com sucesso!');
+        });
+        
+        document.getElementById('export-csv').addEventListener('click', function() {
+            showToast('Arquivo CSV gerado com sucesso!');
+        });
+        
+        document.getElementById('export-print').addEventListener('click', function() {
+            window.print();
+        });
+        
+        // Botões de detalhes
+        document.getElementById('view-movement-details').addEventListener('click', function() {
+            window.location.href = '/relatorios/movimentacao';
+        });
+        
+        document.getElementById('view-category-details').addEventListener('click', function() {
+            window.location.href = '/relatorios/categorias';
+        });
+        
+        document.getElementById('view-all-low-stock').addEventListener('click', function() {
+            window.location.href = '/relatorios/estoque-baixo';
+        });
+
+        // Carregar dados iniciais
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStatistics();
+            initCharts();
+        });
+    </script>
+</body>
+</html>

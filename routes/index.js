@@ -88,6 +88,17 @@ router.get('/entrada-reagentes', (req, res) => {
     });
 });
 
+// NOVA ROTA PARA RELATÓRIOS
+router.get('/relatorios', (req, res) => {
+    res.render('relatorios', { 
+        user: { 
+            name: 'João Carrion', 
+            email: 'joao@email.com', 
+            role: 'Administrador' 
+        }
+    });
+});
+
 // NOVA ROTA PARA LOGOUT
 router.get('/logout', (req, res) => {
     res.render('logout', { 
