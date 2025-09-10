@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criar Conta - Sistema de Estoque</title>
+    <title>Solicitar Acesso - Sistema de Estoque</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="icon" href="/imgs/icon-quimica.jpg" type="image/jpeg">
@@ -36,8 +36,8 @@
             <div class="flex justify-center mb-3">
                 <i class="fas fa-user-plus text-4xl"></i>
             </div>
-            <h1 class="text-2xl font-bold">Criar Nova Conta</h1>
-            <p class="text-sm mt-1">Preencha os dados para solicitar acesso</p>
+            <h1 class="text-2xl font-bold">Solicitar Acesso</h1>
+            <p class="text-sm mt-1">Preencha os dados para solicitar acesso ao sistema</p>
         </div>
         
         <!-- Mensagens de status -->
@@ -55,64 +55,104 @@
             </div>
         <% } %>
 
-        <!-- Formulário de Criação de Conta -->
+        <!-- Formulário de Solicitação de Acesso -->
         <div class="p-6">
-            <form action="/solicitar-acesso" method="POST">
+            <form action="/auth/criar-conta" method="POST">  <!-- CORRIGIDO: action correto -->
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-medium mb-2" for="nome">
-                        Nome Completo
+                        Nome Completo *
                     </label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <i class="fas fa-user text-gray-400"></i>
                         </div>
                         <input class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
-                               id="nome" name="nome" type="text" placeholder="Digite seu nome completo" required>
+                               id="nome" name="nome" type="text" placeholder="Digite seu nome completo" required
+                               value="<% if (typeof nome !== 'undefined') { %><%= nome %><% } %>">
                     </div>
                 </div>
                 
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-medium mb-2" for="email">
-                        Usuário
+                        E-mail *
                     </label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <i class="fas fa-envelope text-gray-400"></i>
                         </div>
                         <input class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
-                               id="email" name="email" type="email" placeholder="Digite seu usuario" required>
+                               id="email" name="email" type="email" placeholder="Digite seu e-mail" required
+                               value="<% if (typeof email !== 'undefined') { %><%= email %><% } %>">
                     </div>
                 </div>
 
                 <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-medium mb-2" for="email">
-                        Senha
+                    <label class="block text-gray-700 text-sm font-medium mb-2" for="departamento">
+                        Departamento *
                     </label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i class="fas fa-envelope text-gray-400"></i>
+                            <i class="fas fa-building text-gray-400"></i>
                         </div>
-                        <input class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
-                               id="email" name="email" type="email" placeholder="Digite sua senha" required>
+                        <select class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
+                                id="departamento" name="departamento" required>
+                            <option value="">Selecione o departamento</option>
+                            <option value="laboratorio">Laboratório</option>
+                            <option value="pesquisa">Pesquisa</option>
+                            <option value="producao">Produção</option>
+                            <option value="qualidade">Controle de Qualidade</option>
+                            <option value="administrativo">Administrativo</option>
+                            <option value="outro">Outro</option>
+                        </select>
                     </div>
                 </div>
-                
+
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-medium mb-2" for="justificativa">
-                        Justificativa para Acesso
+                        Justificativa para Acesso *
                     </label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 pt-3 pointer-events-none">
                             <i class="fas fa-comment text-gray-400"></i>
                         </div>
                         <textarea class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
-                                  id="justificativa" name="justificativa" rows="3" placeholder="Explique por que você precisa de acesso ao sistema" required></textarea>
+                                  id="justificativa" name="justificativa" rows="3" 
+                                  placeholder="Explique por que você precisa de acesso ao sistema" required><% if (typeof justificativa !== 'undefined') { %><%= justificativa %><% } %></textarea>
                     </div>
                 </div>
                 
-                <button type="submit" class="w-full bg-primary hover:bg-blue-800 text-white font-medium py-3 px-4 rounded-lg transition duration-300 transform hover:-translate-y-1">
+                <!-- No formulário, adicione estes campos -->
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-medium mb-2" for="senha">
+                        Senha *
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-lock text-gray-400"></i>
+                        </div>
+                        <input class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
+                            id="senha" name="senha" type="password" placeholder="Digite sua senha" required
+                            minlength="6">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-medium mb-2" for="confirmar_senha">
+                        Confirmar Senha *
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-lock text-gray-400"></i>
+                        </div>
+                        <input class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
+                            id="confirmar_senha" name="confirmar_senha" type="password" placeholder="Confirme sua senha" required
+                            minlength="6">
+                    </div>
+                </div>
+                
+                <button type="submit" class="w-full bg-primary hover:bg-blue-800 text-white font-medium py-3 px-4 rounded-lg transition duration-300 transform hover:scale-105">
                     <i class="fas fa-paper-plane mr-2"></i>
-                    Criar Conta
+                    Enviar Solicitação
                 </button>
             </form>
             
@@ -120,7 +160,7 @@
             <div class="mt-6 text-center">
                 <p class="text-sm text-gray-600">
                     Já tem uma conta? 
-                    <a href="/login" class="font-medium text-primary hover:underline">Fazer login</a>
+                    <a href="/auth/login" class="font-medium text-primary hover:underline">Fazer login</a>
                 </p>
             </div>
         </div>
@@ -128,32 +168,55 @@
         <!-- Rodapé -->
         <div class="bg-gray-100 p-4 text-center text-xs text-gray-600">
             <p>&copy; 2025 Triple J. Todos os direitos reservados.</p>
+            <p class="mt-1">Sua solicitação será analisada pela administração</p>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Validação simples do formulário
+            // Preencher select se já tiver valor
+            <% if (typeof departamento !== 'undefined') { %>
+                document.getElementById('departamento').value = '<%= departamento %>';
+            <% } %>
+            
+            // Validação do formulário
             const form = document.querySelector('form');
+            const inputs = form.querySelectorAll('input[required], select[required], textarea[required]');
+            
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    if (!this.value.trim()) {
+                        this.classList.add('border-red-500');
+                    } else {
+                        this.classList.remove('border-red-500');
+                    }
+                });
+            });
             
             form.addEventListener('submit', function(event) {
                 let isValid = true;
-                const inputs = form.querySelectorAll('input, select, textarea');
                 
                 inputs.forEach(input => {
                     if (!input.value.trim()) {
                         isValid = false;
                         input.classList.add('border-red-500');
-                    } else {
-                        input.classList.remove('border-red-500');
+                        
+                        // Scroll para o primeiro erro
+                        if (isValid === false) {
+                            input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            input.focus();
+                        }
                     }
                 });
                 
                 if (!isValid) {
                     event.preventDefault();
-                    alert('Por favor, preencha todos os campos obrigatórios.');
+                    alert('Por favor, preencha todos os campos obrigatórios marcados com *.');
                 }
             });
+            
+            // Focar no primeiro campo
+            document.getElementById('nome').focus();
         });
     </script>
 </body>

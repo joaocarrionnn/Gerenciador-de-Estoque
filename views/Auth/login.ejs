@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Login - Sistema de Estoque</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="icon" href="/imgs/icon-quimica.jpg" type="image/jpeg">
@@ -13,7 +13,7 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#225c96',  // Alterado para #225c96
+                        primary: '#225c96',
                         secondary: '#95a5a6',
                         accent: '#3498db',
                         light: '#ecf0f1',
@@ -37,6 +37,7 @@
                 <i class="fas fa-flask text-4xl"></i>
             </div>
             <h1 class="text-2xl font-bold">Sistema de Estoque</h1>
+            <p class="text-sm mt-1">Controle de Reagentes e Produtos</p>
         </div>
         
         <!-- Mensagem de erro -->
@@ -49,7 +50,7 @@
 
         <!-- Formulário de Login -->
         <div class="p-6">
-            <form action="/login" method="POST">
+            <form action="/auth/login" method="POST">  <!-- CORRIGIDO: action para /auth/login -->
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-medium mb-2" for="username">
                         Usuário
@@ -59,7 +60,8 @@
                             <i class="fas fa-user text-gray-400"></i>
                         </div>
                         <input class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
-                               id="username" name="username" type="text" placeholder="Digite seu usuário" required>
+                               id="username" name="username" type="text" placeholder="Digite seu usuário" required
+                               value="<% if (typeof username !== 'undefined') { %><%= username %><% } %>">
                     </div>
                 </div>
                 
@@ -77,24 +79,28 @@
                 </div>
                 
                 <div class="flex items-center justify-between mb-6">
-                    
+                    <div class="flex items-center">
+                        <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                        <label for="remember-me" class="ml-2 block text-sm text-gray-700">
+                            Lembrar-me
+                        </label>
+                    </div>
                     <a href="#" class="text-sm text-primary hover:underline">
                         Esqueci minha senha
                     </a>
                 </div>
                 
-                <button type="submit" class="w-full bg-primary hover:bg-blue-800 text-white font-medium py-3 px-4 rounded-lg transition duration-300 transform hover:-translate-y-1">
+                <button type="submit" class="w-full bg-primary hover:bg-blue-800 text-white font-medium py-3 px-4 rounded-lg transition duration-300 transform hover:scale-105">
+                    <i class="fas fa-sign-in-alt mr-2"></i>
                     Entrar no Sistema
                 </button>
             </form>
-            
-            
             
             <!-- Links adicionais -->
             <div class="mt-6 text-center">
                 <p class="text-sm text-gray-600">
                     Não tem uma conta? 
-                    <a href="/criar_conta" class="font-medium text-primary hover:underline">Criar conta</a>
+                    <a href="/auth/criar-conta" class="font-medium text-primary hover:underline">Solicitar acesso</a>
                 </p>
             </div>
         </div>
@@ -102,21 +108,24 @@
         <!-- Rodapé -->
         <div class="bg-gray-100 p-4 text-center text-xs text-gray-600">
             <p>&copy; 2025 Triple J. Todos os direitos reservados.</p>
+            <p class="mt-1">Sistema de Gerenciamento de Estoque</p>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const adminSwitch = document.getElementById('admin-mode');
-            const adminFields = document.getElementById('admin-fields');
+            // Focar no campo de usuário ao carregar a página
+            document.getElementById('username').focus();
             
-            adminSwitch.addEventListener('change', function() {
-                if (this.checked) {
-                    adminFields.classList.remove('hidden');
-                } else {
-                    adminFields.classList.add('hidden');
-                }
-            });
+            // Mostrar mensagem de erro se existir
+            <% if (typeof error !== 'undefined' && error) { %>
+                setTimeout(() => {
+                    const errorDiv = document.querySelector('.bg-red-100');
+                    if (errorDiv) {
+                        errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }, 100);
+            <% } %>
         });
     </script>
 </body>
