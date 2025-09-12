@@ -109,5 +109,15 @@ router.get('/logout', (req, res) => {
         }
     });
 });
+// ROTA CORRIGIDA PARA VIDRAÇARIAS
+router.get('/vidracarias', (req, res) => {
+    res.render('vidracarias', { 
+        user: { 
+            name: 'João Carrion', 
+            email: 'joao@email.com', 
+            role: 'Administrador' 
+        }
+    });
+});
 
 module.exports = router;

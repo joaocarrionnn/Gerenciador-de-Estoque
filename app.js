@@ -107,7 +107,7 @@ app.use((err, req, res, next) => {
 
 // Rota para arquivos não encontrados (404)
 app.use((req, res) => {
-    res.status(404).render('error', { 
+    res.status(404).render('error', {  // ← AQUI ESTÁ O PROBLEMA
         message: 'Página não encontrada',
         user: req.session.user 
     });
