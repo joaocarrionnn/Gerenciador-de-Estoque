@@ -19,6 +19,32 @@
 CREATE DATABASE IF NOT EXISTS `sistema_estoque` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
 USE `sistema_estoque`;
 
+-- Copiando estrutura para tabela sistema_estoque.produtos
+CREATE TABLE IF NOT EXISTS `produtos` (
+  `id_produto` int(11) NOT NULL AUTO_INCREMENT,
+  `nome` varchar(100) NOT NULL,
+  `tipo` varchar(50) NOT NULL,
+  `descricao` text DEFAULT NULL,
+  `grau_periculosidade` varchar(20) DEFAULT NULL,
+  `orgao_regulador` varchar(50) DEFAULT NULL,
+  `instrucoes_seguranca` text DEFAULT NULL,
+  `quantidade` int(11) NOT NULL DEFAULT 0,
+  `estoque_minimo` int(11) DEFAULT 0,
+  `unidade_medida` varchar(20) NOT NULL,
+  `localizacao` varchar(100) DEFAULT NULL,
+  `disponivel` tinyint(1) DEFAULT 1,
+  `fornecedor` varchar(100) DEFAULT NULL,
+  `data_aquisicao` date DEFAULT NULL,
+  `observacoes` text DEFAULT NULL,
+  `data_criacao` timestamp NOT NULL DEFAULT current_timestamp(),
+  `data_atualizacao` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id_produto`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Copiando dados para a tabela sistema_estoque.produtos: ~1 rows (aproximadamente)
+INSERT INTO `produtos` (`id_produto`, `nome`, `tipo`, `descricao`, `grau_periculosidade`, `orgao_regulador`, `instrucoes_seguranca`, `quantidade`, `estoque_minimo`, `unidade_medida`, `localizacao`, `disponivel`, `fornecedor`, `data_aquisicao`, `observacoes`, `data_criacao`, `data_atualizacao`) VALUES
+	(5, 'aaa', 'solvente', 'aaa', 'moderado', 'policia-federal', 'aa', 234234, 224, 'unidade', '22', 1, '2424', '2025-09-16', '4224', '2025-09-17 12:13:56', '2025-09-17 12:13:56');
+
 -- Copiando estrutura para tabela sistema_estoque.usuarios
 CREATE TABLE IF NOT EXISTS `usuarios` (
   `id_usuario` int(11) NOT NULL AUTO_INCREMENT,

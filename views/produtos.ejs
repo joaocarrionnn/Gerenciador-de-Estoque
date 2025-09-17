@@ -444,6 +444,18 @@
                     </h2>
                 </div>
                 
+                <% if (success) { %>
+                    <div class="alert alert-success" style="margin: 15px; padding: 10px; background: #d4edda; color: #155724; border-radius: 5px;">
+                        <%= success %>
+                    </div>
+                <% } %>
+                
+                <% if (error) { %>
+                    <div class="alert alert-danger" style="margin: 15px; padding: 10px; background: #f8d7da; color: #721c24; border-radius: 5px;">
+                        <%= error %>
+                    </div>
+                <% } %>
+                
                 <div class="table-responsive">
                     <table class="reagent-table">
                         <thead>
@@ -457,80 +469,94 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>
-                                    <div class="reagent-info">
-                                        <div class="reagent-name">Ácido Clorídrico</div>
-                                        <div class="reagent-details">HCl - 500ml</div>
-                                    </div>
-                                </td>
-                                <td>Reagentes</td>
-                                <td class="text-center">
-                                    <div class="quantity-display">25 unidades</div>
-                                </td>
-                                <td class="text-center">
-                                    <span class="status-badge status-normal">
-                                        <i class="fas fa-check-circle"></i> Disponível
-                                    </span>
-                                </td>
-                                <td class="text-center">
-                                    <div class="action-buttons">
-                                        <button class="btn-action btn-edit" title="Editar">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn-action btn-delete" title="Excluir">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            
-                            <tr>
-                                <td>2</td>
-                                <td>
-                                    <div class="reagent-info">
-                                        <div class="reagent-name">Hidróxido de Sódio</div>
-                                        <div class="reagent-details">NaOH - 1kg</div>
-                                    </div>
-                                </td>
-                                <td>Reagentes</td>
-                                <td class="text-center">
-                                    <div class="quantity-display warning-quantity">18 unidades</div>
-                                </td>
-                                <td class="text-center">
-                                    <span class="status-badge status-warning">
-                                        <i class="fas fa-exclamation-triangle"></i> Baixo Estoque
-                                    </span>
-                                </td>
-                                <td class="text-center">
-                                    <div class="action-buttons">
-                                        <button class="btn-action btn-edit" title="Editar">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn-action btn-delete" title="Excluir">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
+                            <% if (produtos && produtos.length > 0) { %>
+                                <% produtos.forEach(produto => { %>
+                                    <tr>
+                                        <td><%= produto.id_produto %></td>
+                                        <td>
+                                            <div class="reagent-info">
+                                                <div class="reagent-name"><%= produto.nome %></div>
+                                                <% if (produto.descricao) { %>
+                                                    <div class="reagent-details"><%= produto.descricao %></div>
+                                                <% } %>
+                                            </div>
+                                        </td>
+                                        <td><%= produto.tipo %></td>
+                                        <td class="text-center">
+                                            <div class="quantity-display <%= produto.quantidade <= (produto.estoque_minimo || 10) ? 'warning-quantity' : '' %>">
+                                                <%= produto.quantidade %> <%= produto.unidade_medida %>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <% let statusClass = 'status-normal';
+                                            let statusText = 'Disponível';
+                                            let statusIcon = 'fa-check-circle';
+                                            
+                                            if (produto.quantidade <= (produto.estoque_minimo || 10)) {
+                                                statusClass = 'status-warning';
+                                                statusText = 'Baixo Estoque';
+                                                statusIcon = 'fa-exclamation-triangle';
+                                            }
+                                            
+                                            if (produto.quantidade === 0) {
+                                                statusClass = 'status-critical';
+                                                statusText = 'Esgotado';
+                                                statusIcon = 'fa-times-circle';
+                                            }
+                                            %>
+                                            <span class="status-badge <%= statusClass %>">
+                                                <i class="fas <%= statusIcon %>"></i> <%= statusText %>
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="action-buttons">
+                                                <button class="btn-action btn-edit" title="Editar" onclick="editarProduto(<%= produto.id_produto %>)">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <form action="/produtos/deletar/<%= produto.id_produto %>" method="POST" style="display: inline;">
+                                                    <button type="button" class="btn-action btn-delete" title="Excluir" onclick="confirmarExclusao(this)">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="6" class="text-center" style="padding: 2rem; color: #6c757d;">
+                                        <i class="fas fa-box-open" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                                        <p>Nenhum produto cadastrado. Adicione o primeiro produto!</p>
+                                    </td>
+                                </tr>
+                            <% } %>
                         </tbody>
                     </table>
                 </div>
                 
                 <div class="table-footer">
                     <span class="summary-text">
-                        <i class="fas fa-database"></i> Total de 2 produtos listados
+                        <i class="fas fa-database"></i> 
+                        Total de <%= produtos ? produtos.length : 0 %> produtos listados
                     </span>
-                    <a href="/produtos" class="view-all-btn">
-                        <i class="fas fa-list"></i> Ver Todos os Produtos
-                    </a>
                 </div>
             </div>
         </div>
     </main>
 
     <script>
+        function confirmarExclusao(button) {
+                if (confirm('Tem certeza que deseja excluir este produto?')) {
+                    button.closest('form').submit();
+                }
+            }
+
+            function editarProduto(id) {
+                alert('Funcionalidade de edição em desenvolvimento! Produto ID: ' + id);
+                // Em desenvolvimento: window.location.href = '/produtos/editar/' + id;
+            }
+
+
         document.addEventListener('DOMContentLoaded', function() {
             // Adicionar interatividade aos botões de ação
             const actionButtons = document.querySelectorAll('.btn-action');

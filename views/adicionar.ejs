@@ -230,15 +230,15 @@
         
         
         .danger-zone {
-            background: rgba(245, 101, 101, 0.1);
-            border-left: 4px solid #e53e3e;
+            background: rgba(255, 193, 7, 0.15);
+            border-left: 4px solid #ffc107;
             padding: 1rem 1.5rem;
             border-radius: 8px;
             margin: 1.5rem 0;
         }
         
         .danger-zone h6 {
-            color: #e53e3e;
+            color: #856404;
             font-weight: 600;
             display: flex;
             align-items: center;
@@ -247,7 +247,7 @@
         }
         
         .danger-zone p {
-            color: #718096;
+            color: #856404;
             margin-bottom: 0;
             font-size: 0.9rem;
         }
@@ -427,6 +427,8 @@
 <body class="flex">
     <%- include('./partials/header'); %>
     
+
+    
     <!-- Conteúdo Principal -->
     <main class="flex-1 overflow-auto bg-gray-50 min-h-screen">
         <div class="main-container">
@@ -448,6 +450,13 @@
                 </div>
                 <div class="form-card-body">
                     <form id="productForm" action="/produtos/adicionar" method="POST">
+                        <!-- Mensagens de erro -->
+                        <% if (typeof error !== 'undefined' && error) { %>
+                            <div class="alert alert-danger" style="margin: 15px; padding: 10px; background: #f8d7da; color: #721c24; border-radius: 5px;">
+                                <%= error %>
+                            </div>
+                        <% } %>
+                        
                         <!-- Informações Básicas -->
                         <div class="form-section">
                             <h5 class="section-heading">
@@ -458,32 +467,33 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="productName" class="form-label required-label">Nome do Produto</label>
-                                    <input type="text" class="form-control" id="productName" name="productName" required>
+                                    <input type="text" class="form-control" id="productName" name="productName" 
+                                           value="<%= formData ? formData.productName : '' %>" required>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label for="productType" class="form-label required-label">Tipo do Produto</label>
                                     <select class="form-select" id="productType" name="productType" required>
                                         <option value="" selected disabled>Selecione o tipo...</option>
-                                        <option value="reagente">Reagente Químico</option>
-                                        <option value="solvente">Solvente</option>
-                                        <option value="acido">Ácido</option>
-                                        <option value="base">Base</option>
-                                        <option value="explosivo">Explosivo</option>
-                                        <option value="inflamavel">Inflamável</option>
-                                        <option value="toxico">Tóxico</option>
-                                        <option value="radioativo">Radioativo</option>
-                                        <option value="outro">Outro</option>
+                                        <option value="reagente" <%= formData && formData.productType === 'reagente' ? 'selected' : '' %>>Reagente Químico</option>
+                                        <option value="solvente" <%= formData && formData.productType === 'solvente' ? 'selected' : '' %>>Solvente</option>
+                                        <option value="acido" <%= formData && formData.productType === 'acido' ? 'selected' : '' %>>Ácido</option>
+                                        <option value="base" <%= formData && formData.productType === 'base' ? 'selected' : '' %>>Base</option>
+                                        <option value="explosivo" <%= formData && formData.productType === 'explosivo' ? 'selected' : '' %>>Explosivo</option>
+                                        <option value="inflamavel" <%= formData && formData.productType === 'inflamavel' ? 'selected' : '' %>>Inflamável</option>
+                                        <option value="toxico" <%= formData && formData.productType === 'toxico' ? 'selected' : '' %>>Tóxico</option>
+                                        <option value="radioativo" <%= formData && formData.productType === 'radioativo' ? 'selected' : '' %>>Radioativo</option>
+                                        <option value="outro" <%= formData && formData.productType === 'outro' ? 'selected' : '' %>>Outro</option>
                                     </select>
                                 </div>
                             </div>
                             
                             <div class="form-group">
                                 <label for="productDescription" class="form-label">Descrição do Produto</label>
-                                <textarea class="form-control" id="productDescription" name="productDescription" rows="2"></textarea>
+                                <textarea class="form-control" id="productDescription" name="productDescription" rows="2"><%= formData ? formData.productDescription : '' %></textarea>
                             </div>
                         </div>
-
+                    
                         <!-- Informações de Periculosidade -->
                         <div class="form-section">
                             <h5 class="section-heading">
@@ -496,10 +506,10 @@
                                     <label for="dangerLevel" class="form-label required-label">Grau de Periculosidade</label>
                                     <select class="form-select" id="dangerLevel" name="dangerLevel" required>
                                         <option value="" selected disabled>Selecione o grau...</option>
-                                        <option value="baixo">Baixo</option>
-                                        <option value="moderado">Moderado</option>
-                                        <option value="alto">Alto</option>
-                                        <option value="extremo">Extremo</option>
+                                        <option value="baixo" <%= formData && formData.dangerLevel === 'baixo' ? 'selected' : '' %>>Baixo</option>
+                                        <option value="moderado" <%= formData && formData.dangerLevel === 'moderado' ? 'selected' : '' %>>Moderado</option>
+                                        <option value="alto" <%= formData && formData.dangerLevel === 'alto' ? 'selected' : '' %>>Alto</option>
+                                        <option value="extremo" <%= formData && formData.dangerLevel === 'extremo' ? 'selected' : '' %>>Extremo</option>
                                     </select>
                                 </div>
                                 
@@ -507,18 +517,18 @@
                                     <label for="regulatoryOrg" class="form-label required-label">Órgão Regulador</label>
                                     <select class="form-select" id="regulatoryOrg" name="regulatoryOrg" required>
                                         <option value="" selected disabled>Selecione o órgão...</option>
-                                        <option value="policia-federal">Polícia Federal</option>
-                                        <option value="exercito">Exército</option>
+                                        <option value="policia-federal" <%= formData && formData.regulatoryOrg === 'policia-federal' ? 'selected' : '' %>>Polícia Federal</option>
+                                        <option value="exercito" <%= formData && formData.regulatoryOrg === 'exercito' ? 'selected' : '' %>>Exército</option>
                                     </select>
                                 </div>
                             </div>
                             
                             <div class="form-group">
                                 <label for="safetyInstructions" class="form-label">Instruções de Segurança</label>
-                                <textarea class="form-control" id="safetyInstructions" name="safetyInstructions" rows="2"></textarea>
+                                <textarea class="form-control" id="safetyInstructions" name="safetyInstructions" rows="2"><%= formData ? formData.safetyInstructions : '' %></textarea>
                             </div>
                         </div>
-
+                    
                         <!-- Informações de Estoque -->
                         <div class="form-section">
                             <h5 class="section-heading">
@@ -529,24 +539,26 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="stockQuantity" class="form-label required-label">Quantidade em Estoque</label>
-                                    <input type="number" class="form-control" id="stockQuantity" name="stockQuantity" min="0" required>
+                                    <input type="number" class="form-control" id="stockQuantity" name="stockQuantity" 
+                                           value="<%= formData ? formData.stockQuantity : '' %>" min="0" required>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label for="minStock" class="form-label">Estoque Mínimo</label>
-                                    <input type="number" class="form-control" id="minStock" name="minStock" min="0">
+                                    <input type="number" class="form-control" id="minStock" name="minStock" 
+                                           value="<%= formData ? formData.minStock : '' %>" min="0">
                                 </div>
                                 
                                 <div class="form-group">
                                     <label for="unit" class="form-label required-label">Unidade de Medida</label>
                                     <select class="form-select" id="unit" name="unit" required>
                                         <option value="" selected disabled>Selecione a unidade...</option>
-                                        <option value="unidade">Unidades</option>
-                                        <option value="litro">Litros</option>
-                                        <option value="ml">Mililitros</option>
-                                        <option value="grama">Gramas</option>
-                                        <option value="kg">Quilogramas</option>
-                                        <option value="caixa">Caixas</option>
+                                        <option value="unidade" <%= formData && formData.unit === 'unidade' ? 'selected' : '' %>>Unidades</option>
+                                        <option value="litro" <%= formData && formData.unit === 'litro' ? 'selected' : '' %>>Litros</option>
+                                        <option value="ml" <%= formData && formData.unit === 'ml' ? 'selected' : '' %>>Mililitros</option>
+                                        <option value="grama" <%= formData && formData.unit === 'grama' ? 'selected' : '' %>>Gramas</option>
+                                        <option value="kg" <%= formData && formData.unit === 'kg' ? 'selected' : '' %>>Quilogramas</option>
+                                        <option value="caixa" <%= formData && formData.unit === 'caixa' ? 'selected' : '' %>>Caixas</option>
                                     </select>
                                 </div>
                             </div>
@@ -554,18 +566,21 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="location" class="form-label">Localização no Armazém</label>
-                                    <input type="text" class="form-control" id="location" name="location">
+                                    <input type="text" class="form-control" id="location" name="location" 
+                                           value="<%= formData ? formData.location : '' %>">
                                 </div>
                                 
                                 <div class="form-group">
                                     <label class="form-label required-label">Disponibilidade</label>
                                     <div class="radio-group">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="availability" id="available" value="available" required>
+                                            <input class="form-check-input" type="radio" name="availability" id="available" 
+                                                   value="available" <%= !formData || formData.availability === 'available' ? 'checked' : '' %> required>
                                             <label class="form-check-label" for="available">Disponível para uso</label>
                                         </div>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="availability" id="unavailable" value="unavailable">
+                                            <input class="form-check-input" type="radio" name="availability" id="unavailable" 
+                                                   value="unavailable" <%= formData && formData.availability === 'unavailable' ? 'checked' : '' %>>
                                             <label class="form-check-label" for="unavailable">Indisponível</label>
                                         </div>
                                     </div>
@@ -583,22 +598,24 @@
                             <div class="row" style="display: flex; flex-wrap: wrap; margin: 0 -0.75rem;">
                                 <div class="col-md-6 mb-3" style="flex: 0 0 50%; max-width: 50%; padding: 0 0.75rem;">
                                     <label for="supplier" class="form-label">Fornecedor</label>
-                                    <input type="text" class="form-control" id="supplier" name="supplier">
+                                    <input type="text" class="form-control" id="supplier" name="supplier" 
+                                           value="<%= formData ? formData.supplier : '' %>">
                                 </div>
                                 
                                 <div class="col-md-6 mb-3" style="flex: 0 0 50%; max-width: 50%; padding: 0 0.75rem;">
                                     <label for="purchaseDate" class="form-label">Data de Aquisição</label>
-                                    <input type="date" class="form-control" id="purchaseDate" name="purchaseDate">
+                                    <input type="date" class="form-control" id="purchaseDate" name="purchaseDate" 
+                                           value="<%= formData ? formData.purchaseDate : '' %>">
                                 </div>
                             </div>
                             
                             <div class="mb-3">
                                 <label for="notes" class="form-label">Observações Adicionais</label>
-                                <textarea class="form-control" id="notes" name="notes" rows="2"></textarea>
+                                <textarea class="form-control" id="notes" name="notes" rows="2"><%= formData ? formData.notes : '' %></textarea>
                             </div>
                         </div>
                         
-                        <!-- Alertas de Perigo (baseado no grau de periculosidade) -->
+                        <!-- Alertas de Perigo -->
                         <div class="danger-zone" style="display: none;">
                             <h6><i class="fas fa-exclamation-triangle"></i>Atenção: Produto Perigoso</h6>
                             <p class="mb-0">Ao adicionar produtos com grau de periculosidade, certifique-se de que todas as normas de segurança estão sendo seguidas e que a documentação necessária está em ordem.</p>
