@@ -444,11 +444,6 @@
                         Produtos em Estoque
                     </h2>
                 </div>
-                
-                
-                
-                
-                
                 <div class="table-responsive">
                     <table class="reagent-table">
                         <thead>
@@ -557,10 +552,18 @@
             }
         }
 
+       // Função para editar produto
         function editarProduto(id) {
-            alert('Funcionalidade de edição em desenvolvimento! Produto ID: ' + id);
-            // Em desenvolvimento: window.location.href = '/produtos/editar/' + id;
+            window.location.href = `/produtos/editar/${id}`;
         }
+
+        // Função para confirmar exclusão (já existe, mas vou deixar aqui para referência)
+        function confirmarExclusao(button) {
+            if (confirm('Tem certeza que deseja excluir este produto? Esta ação não pode ser desfeita.')) {
+                button.closest('form').submit();
+            }
+        }
+
     </script>
 </body>
 </html>

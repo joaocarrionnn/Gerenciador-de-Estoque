@@ -193,21 +193,35 @@
         }
         
         .btn-add {
-            background-color: var(--primary);
-            color: white;
+            background-color: #2c3e50;
+            color: #ffffff;
             border: none;
             border-radius: 8px;
-            padding: 0.625rem 1.25rem;
-            font-weight: 500;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.2s;
-            display: flex;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 8px;
+            text-decoration: none;
         }
         
         .btn-add:hover {
-            background-color: var(--secondary);
+            background-color: #34495e;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .btn-add:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .btn-add i {
+            font-size: 16px;
         }
         
         .reagent-table {
@@ -354,18 +368,6 @@
             border-radius: 4px;
         }
         
-        .progress-acid {
-            background-color: var(--primary);
-        }
-        
-        .progress-base {
-            background-color: #10b981;
-        }
-        
-        .progress-solvent {
-            background-color: #f59e0b;
-        }
-        
         /* Lista de movimentações */
         .movement-list {
             list-style: none;
@@ -484,39 +486,40 @@
                 margin-right: 0;
             }
         }
+        
         /* Estilos melhorados para os componentes */
-.enhanced-card {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+        .enhanced-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
 
-.enhanced-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-}
+        .enhanced-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
 
-.chart-header.with-border-bottom {
-    padding: 1.2rem 1.5rem;
-    border-bottom: 1px solid #f0f0f0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+        .chart-header.with-border-bottom {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-.chart-title.with-icon {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #2c3e50;
-    margin: 0;
-}
+        .chart-title.with-icon {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+        }
 
-.view-all-btn {
+        .view-all-btn {
             background: transparent;
             border: 1px solid #dee2e6;
             border-radius: 8px;
@@ -539,505 +542,404 @@
             box-shadow: 0 4px 8px rgba(67, 97, 238, 0.2);
         }
 
-.progress-container {
-    padding: 1.5rem;
-}
-
-.progress-item {
-    margin-bottom: 1.2rem;
-}
-
-.progress-item:last-child {
-    margin-bottom: 0;
-}
-
-.progress-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
-}
-
-.progress-label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-weight: 500;
-    color: #495057;
-}
-
-.category-icon {
-    font-size: 0.9rem;
-}
-
-.acid-icon { color: #e74c3c; }
-.base-icon { color: #3498db; }
-.solvent-icon { color: #2ecc71; }
-
-.progress-value {
-    font-weight: 600;
-    color: #2c3e50;
-}
-
-.progress-bar {
-    height: 10px;
-    background: #f0f0f0;
-    border-radius: 10px;
-    overflow: hidden;
-    position: relative;
-}
-
-.progress-fill {
-    height: 100%;
-    border-radius: 10px;
-    position: relative;
-    transition: width 0.8s ease;
-}
-
-.progress-acid { background: linear-gradient(90deg, #ff9a9e 0%, #e74c3c 100%); }
-.progress-base { background: linear-gradient(90deg, #a1c4fd 0%, #3498db 100%); }
-.progress-solvent { background: linear-gradient(90deg, #a8e063 0%, #2ecc71 100%); }
-
-.progress-tooltip {
-    position: absolute;
-    right: 0;
-    top: -25px;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 3px 8px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.progress-fill:hover .progress-tooltip {
-    opacity: 1;
-}
-
-.movement-list {
-    padding: 0;
-    margin: 0;
-    list-style: none;
-}
-
-.movement-item {
-    display: flex;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid #f8f9fa;
-    transition: background 0.2s ease;
-}
-
-.movement-item:hover {
-    background: #f8f9fa;
-}
-
-.movement-item:last-child {
-    border-bottom: none;
-}
-
-.movement-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 1rem;
-    flex-shrink: 0;
-}
-
-.movement-in {
-    background: rgba(46, 204, 113, 0.15);
-    color: #27ae60;
-}
-
-.movement-out {
-    background: rgba(231, 76, 60, 0.15);
-    color: #e74c3c;
-}
-
-.movement-content {
-    flex-grow: 1;
-}
-
-.movement-title {
-    font-weight: 500;
-    margin: 0 0 0.3rem 0;
-    color: #2c3e50;
-}
-
-.movement-details {
-    display: flex;
-    gap: 1rem;
-    font-size: 0.85rem;
-}
-
-.movement-quantity {
-    color: #6c757d;
-}
-
-.movement-date {
-    color: #95a5a6;
-}
-
-.movement-actions {
-    color: #bdc3c7;
-    cursor: pointer;
-    padding: 0.5rem;
-}
-
-.movement-actions:hover {
-    color: #7f8c8d;
-}
-
-.chart-footer {
-    padding: 0.8rem 1.5rem;
-    background: #f8f9fa;
-    border-top: 1px solid #f0f0f0;
-}
-
-.stats-info {
-    font-size: 0.85rem;
-    color: #6c757d;
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-}
-
-
-
-
-.enhanced-table {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
-    margin-bottom: 2rem;
-}
-
-.table-header.with-background {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    padding: 1.2rem 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #dee2e6;
-}
-
-.table-title.with-icon {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin: 0;
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: #2c3e50;
-}
-
-.primary-btn {
-    background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 0.7rem 1.2rem;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(78, 84, 200, 0.2);
-}
-
-.primary-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(78, 84, 200, 0.3);
-}
-
-.table-responsive {
-    overflow-x: auto;
-}
-
-.reagent-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.reagent-table th {
-    background-color: #f8f9fa;
-    padding: 1rem;
-    font-weight: 600;
-    color: #495057;
-    text-transform: uppercase;
-    font-size: 0.8rem;
-    letter-spacing: 0.5px;
-}
-
-.reagent-table td {
-    padding: 1rem;
-    border-bottom: 1px solid #f1f3f4;
-    transition: background-color 0.2s ease;
-}
-
-.reagent-table tr:hover td {
-    background-color: #f8f9fa;
-}
-
-.reagent-table tr:last-child td {
-    border-bottom: none;
-}
-
-.text-left { text-align: left; }
-.text-center { text-align: center; }
-
-.reagent-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.reagent-name {
-    font-weight: 600;
-    color: #2c3e50;
-    margin-bottom: 0.2rem;
-}
-
-.reagent-details {
-    font-size: 0.85rem;
-    color: #6c757d;
-}
-
-.quantity-display {
-    font-weight: 500;
-    color: #495057;
-    padding: 0.4rem 0.8rem;
-    border-radius: 20px;
-    background: #f8f9fa;
-    display: inline-block;
-}
-
-.warning-quantity {
-    background: rgba(255, 193, 7, 0.15);
-    color: #fd7e14;
-    font-weight: 600;
-}
-
-.status-badge {
-    padding: 0.5rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-}
-
-.status-normal {
-    background: rgba(40, 167, 69, 0.15);
-    color: #28a745;
-}
-
-.status-warning {
-    background: rgba(255, 193, 7, 0.15);
-    color: #ffc107;
-}
-
-.status-critical {
-    background: rgba(220, 53, 69, 0.15);
-    color: #dc3545;
-    font-weight: 600;
-}
-
-.action-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-}
-
-.btn-action {
-    width: 34px;
-    height: 34px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.btn-edit {
-    background: rgba(23, 162, 184, 0.1);
-    color: #17a2b8;
-}
-
-.btn-edit:hover {
-    background: #17a2b8;
-    color: white;
-}
-
-.btn-delete {
-    background: rgba(220, 53, 69, 0.1);
-    color: #dc3545;
-}
-
-.btn-delete:hover {
-    background: #dc3545;
-    color: white;
-}
-
-.table-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    background: #f8f9fa;
-    border-top: 1px solid #dee2e6;
-}
-
-.summary-text {
-    font-size: 0.9rem;
-    color: #6c757d;
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-}
-
-.table-pagination {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-}
-
-.pagination-btn {
-    width: 32px;
-    height: 32px;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #dee2e6;
-    background: white;
-    color: #6c757d;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.pagination-btn:not(:disabled):hover {
-    background: #e9ecef;
-    border-color: #adb5bd;
-}
-
-.pagination-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.pagination-info {
-    font-size: 0.85rem;
-    color: #6c757d;
-}
-
-@media (max-width: 768px) {
-    .table-header.with-background {
-        flex-direction: column;
-        gap: 1rem;
-        align-items: flex-start;
-    }
-    
-    .action-buttons {
-        flex-direction: column;
-    }
-    
-    .table-footer {
-        flex-direction: column;
-        gap: 1rem;
-        align-items: flex-start;
-    }
-    
-    .table-pagination {
-        width: 100%;
-        justify-content: center;
-    }
-}
-
-
-.view-all-btn {
-            background: transparent;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 0.6rem 1.2rem;
-            font-size: 0.9rem;
-            color: var(--primary);
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .progress-container {
+            padding: 1.5rem;
+        }
+
+        .progress-item {
+            margin-bottom: 1.2rem;
+        }
+
+        .progress-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-label {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            text-decoration: none;
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .category-icon {
+            font-size: 0.9rem;
+        }
+
+        .acid-icon { color: #e74c3c; }
+        .base-icon { color: #3498db; }
+        .solvent-icon { color: #2ecc71; }
+
+        .progress-value {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            position: relative;
+            transition: width 0.8s ease;
+        }
+
+        .progress-tooltip {
+            position: absolute;
+            right: 0;
+            top: -25px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .progress-fill:hover .progress-tooltip {
+            opacity: 1;
+        }
+
+        .movement-list {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        .movement-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #f8f9fa;
+            transition: background 0.2s ease;
+        }
+
+        .movement-item:hover {
+            background: #f8f9fa;
+        }
+
+        .movement-item:last-child {
+            border-bottom: none;
+        }
+
+        .movement-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        .movement-in {
+            background: rgba(46, 204, 113, 0.15);
+            color: #27ae60;
+        }
+
+        .movement-out {
+            background: rgba(231, 76, 60, 0.15);
+            color: #e74c3c;
+        }
+
+        .movement-content {
+            flex-grow: 1;
+        }
+
+        .movement-title {
+            font-weight: 500;
+            margin: 0 0 0.3rem 0;
+            color: #2c3e50;
+        }
+
+        .movement-details {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .movement-quantity {
+            color: #6c757d;
+        }
+
+        .movement-date {
+            color: #95a5a6;
+        }
+
+        .movement-actions {
+            color: #bdc3c7;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .movement-actions:hover {
+            color: #7f8c8d;
+        }
+
+        .chart-footer {
+            padding: 0.8rem 1.5rem;
+            background: #f8f9fa;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .stats-info {
+            font-size: 0.85rem;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .enhanced-table {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .table-header.with-background {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 1.2rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .table-title.with-icon {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .reagent-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .reagent-table th {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            font-weight: 600;
+            color: #495057;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+
+        .reagent-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f1f3f4;
+            transition: background-color 0.2s ease;
+        }
+
+        .reagent-table tr:hover td {
+            background-color: #f8f9fa;
+        }
+
+        .reagent-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .text-left { text-align: left; }
+        .text-center { text-align: center; }
+
+        .reagent-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .reagent-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.2rem;
+        }
+
+        .reagent-details {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        .quantity-display {
+            font-weight: 500;
+            color: #495057;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            background: #f8f9fa;
+            display: inline-block;
+        }
+
+        .warning-quantity {
+            background: rgba(255, 193, 7, 0.15);
+            color: #fd7e14;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            padding: 0.5rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .status-normal {
+            background: rgba(40, 167, 69, 0.15);
+            color: #28a745;
+        }
+
+        .status-warning {
+            background: rgba(255, 193, 7, 0.15);
+            color: #ffc107;
+        }
+
+        .status-critical {
+            background: rgba(220, 53, 69, 0.15);
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-action {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-edit {
+            background: rgba(23, 162, 184, 0.1);
+            color: #17a2b8;
+        }
+
+        .btn-edit:hover {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-delete {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+
+        .btn-delete:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+        .table-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .summary-text {
+            font-size: 0.9rem;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        @media (max-width: 768px) {
+            .table-header.with-background {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .table-footer {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .view-all-btn {
+                align-self: flex-end;
+            }
         }
         
-        .view-all-btn:hover {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(67, 97, 238, 0.2);
+        /* Cores para as categorias */
+        .progress-acido { background: linear-gradient(90deg, #ff9a9e 0%, #e74c3c 100%); }
+        .progress-base { background: linear-gradient(90deg, #a1c4fd 0%, #3498db 100%); }
+        .progress-solvente { background: linear-gradient(90deg, #a8e063 0%, #2ecc71 100%); }
+        .progress-reagente { background: linear-gradient(90deg, #fbc2eb 0%, #a6c1ee 100%); }
+        .progress-explosivo { background: linear-gradient(90deg, #ffecd2 0%, #fcb69f 100%); }
+        .progress-inflamavel { background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%); }
+        .progress-toxico { background: linear-gradient(90deg, #a1c4fd 0%, #c2e9fb 100%); }
+        .progress-radioativo { background: linear-gradient(90deg, #84fab0 0%, #8fd3f4 100%); }
+        .progress-outro { background: linear-gradient(90deg, #d4fc79 0%, #96e6a1 100%); }
+        
+        /* Alertas */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-weight: 500;
         }
-
-.table-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    background: #f8f9fa;
-    border-top: 1px solid #dee2e6;
-}
-
-@media (max-width: 768px) {
-    .table-footer {
-        flex-direction: column;
-        gap: 1rem;
-        align-items: flex-start;
-    }
-    
-    .view-all-btn {
-        align-self: flex-end;
-    }
-}
-
-
-.btn-add {
-    background-color: #2c3e50; /* Azul-escuro neutro */
-    color: #ffffff;
-    border: none;
-    border-radius: 8px;
-    padding: 12px 24px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.btn-add:hover {
-    background-color: #34495e; /* Tom mais claro no hover */
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-}
-
-.btn-add:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.btn-add i {
-    font-size: 16px;
-}
+        
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .badge {
+            background: #f0f0f0;
+            padding: 0.3rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: #495057;
+        }
     </style>
 </head>
 <body class="flex">
@@ -1051,10 +953,23 @@
                 <h1 class="section-title">Dashboard de Reagentes</h1>
             </div>
             
+            <!-- Alertas de sucesso/erro -->
+            <% if (typeof success !== 'undefined' && success) { %>
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i> <%= success %>
+                </div>
+            <% } %>
             
-
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i> <%= error %>
+                </div>
+            <% } %>
             
-            <!-- Gráficos e Informações - Versão Aprimorada -->
+            
+            
+            
+            <!-- Gráficos e Informações -->
             <div class="charts-grid">
                 <!-- Reagentes por Categoria -->
                 <div class="chart-card enhanced-card">
@@ -1066,56 +981,35 @@
                     </div>
                     
                     <div class="progress-container">
-                        <div class="progress-item">
-                            <div class="progress-info">
-                                <span class="progress-label">
-                                    <i class="fas fa-vial category-icon acid-icon"></i>
-                                    Ácidos
-                                </span>
-                                <span class="progress-value">40%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill progress-acid" style="width: 40%">
-                                    <span class="progress-tooltip">40%</span>
+                        <% if (typeof categorias !== 'undefined' && categorias.length > 0) { %>
+                            <% categorias.forEach(categoria => { %>
+                                <div class="progress-item">
+                                    <div class="progress-info">
+                                        <span class="progress-label">
+                                            <i class="fas fa-vial category-icon"></i>
+                                            <%= categoria.tipo %>
+                                        </span>
+                                        <span class="progress-value"><%= categoria.porcentagem %>%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill progress-<%= categoria.tipo.toLowerCase() %>" style="width: <%= categoria.porcentagem %>%">
+                                            <span class="progress-tooltip"><%= categoria.porcentagem %>%</span>
+                                        </div>
+                                    </div>
                                 </div>
+                            <% }) %>
+                        <% } else { %>
+                            <div style="padding: 2rem; text-align: center; color: #6c757d;">
+                                <i class="fas fa-chart-pie" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                                <p>Nenhuma categoria cadastrada</p>
                             </div>
-                        </div>
-                        
-                        <div class="progress-item">
-                            <div class="progress-info">
-                                <span class="progress-label">
-                                    <i class="fas fa-vial category-icon base-icon"></i>
-                                    Bases
-                                </span>
-                                <span class="progress-value">35%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill progress-base" style="width: 35%">
-                                    <span class="progress-tooltip">35%</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="progress-item">
-                            <div class="progress-info">
-                                <span class="progress-label">
-                                    <i class="fas fa-vial category-icon solvent-icon"></i>
-                                    Solventes
-                                </span>
-                                <span class="progress-value">25%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill progress-solvent" style="width: 25%">
-                                    <span class="progress-tooltip">25%</span>
-                                </div>
-                            </div>
-                        </div>
+                        <% } %>
                     </div>
                     
                     <div class="chart-footer">
                         <span class="stats-info">
                             <i class="fas fa-info-circle"></i>
-                            Total: 3 categorias monitoradas
+                            Total: <%= typeof categorias !== 'undefined' ? categorias.length : 0 %> categorias
                         </span>
                     </div>
                 </div>
@@ -1127,7 +1021,7 @@
                             <i class="fas fa-exchange-alt"></i>
                             Últimas Movimentações
                         </h2>
-                        <button class="view-all-btn">Ver todas</button>
+                        <a href="/movimentacoes" class="view-all-btn">Ver todas</a>
                     </div>
                     
                     <ul class="movement-list">
@@ -1210,11 +1104,11 @@
                 <div class="table-header with-background">
                     <h2 class="table-title with-icon">
                         <i class="fas fa-flask"></i>
-                        Reagentes em Estoque
+                        Últimos Reagentes Adicionados
                     </h2>
-                    <button class="btn-add ">
+                    <a href="/produtos/adicionar" class="btn-add">
                         <i class="fas fa-plus-circle"></i> Novo Reagente
-                    </button>
+                    </a>
                 </div>
                 
                 <div class="table-responsive">
@@ -1222,119 +1116,75 @@
                         <thead>
                             <tr>
                                 <th class="text-left">Nome do Reagente</th>
+                                <th class="text-left">Tipo</th>
                                 <th class="text-center">Quantidade</th>
                                 <th class="text-center">Status</th>
                                 <th class="text-center">Ações</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    <div class="reagent-info">
-                                        <div class="reagent-name">Ácido clorídrico</div>
-                                        <div class="reagent-details">HCl - 500ml</div>
-                                    </div>
-                                </td>
-                                <td class="text-center">
-                                    <div class="quantity-display">20 unidades</div>
-                                </td>
-                                <td class="text-center">
-                                    <span class="status-badge status-normal">
-                                        <i class="fas fa-check-circle"></i> Normal
-                                    </span>
-                                </td>
-                                <td class="text-center">
-                                    <div class="action-buttons">
-                                        <button class="btn-action btn-edit" title="Editar">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn-action btn-delete" title="Excluir">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            
-                            <tr>
-                                <td>
-                                    <div class="reagent-info">
-                                        <div class="reagent-name">Hidróxido de sódio</div>
-                                        <div class="reagent-details">NaOH - 1kg</div>
-                                    </div>
-                                </td>
-                                <td class="text-center">
-                                    <div class="quantity-display">35 unidades</div>
-                                </td>
-                                <td class="text-center">
-                                    <span class="status-badge status-warning">
-                                        <i class="fas fa-exclamation-triangle"></i> Atenção
-                                    </span>
-                                </td>
-                                <td class="text-center">
-                                    <div class="action-buttons">
-                                        <button class="btn-action btn-edit" title="Editar">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn-action btn-delete" title="Excluir">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            
-                            <tr>
-                                <td>
-                                    <div class="reagent-info">
-                                        <div class="reagent-name">Água destilada</div>
-                                        <div class="reagent-details">H₂O - 5L</div>
-                                    </div>
-                                </td>
-                                <td class="text-center">
-                                    <div class="quantity-display">55 unidades</div>
-                                </td>
-                                <td class="text-center">
-                                    <span class="status-badge status-normal">
-                                        <i class="fas fa-check-circle"></i> Normal
-                                    </span>
-                                </td>
-                                <td class="text-center">
-                                    <div class="action-buttons">
-                                        <button class="btn-action btn-edit" title="Editar">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn-action btn-delete" title="Excluir">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            
-                            <tr>
-                                <td>
-                                    <div class="reagent-info">
-                                        <div class="reagent-name">Sulfato de cobre</div>
-                                        <div class="reagent-details">CuSO₄ - 250g</div>
-                                    </div>
-                                </td>
-                                <td class="text-center">
-                                    <div class="quantity-display warning-quantity">5 unidades</div>
-                                </td>
-                                <td class="text-center">
-                                    <span class="status-badge status-critical">
-                                        <i class="fas fa-exclamation-circle"></i> Crítico
-                                    </span>
-                                </td>
-                                <td class="text-center">
-                                    <div class="action-buttons">
-                                        <button class="btn-action btn-edit" title="Editar">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn-action btn-delete" title="Excluir">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
+                            <% if (typeof produtos !== 'undefined' && produtos.length > 0) { %>
+                                <% produtos.forEach(produto => { %>
+                                    <tr>
+                                        <td>
+                                            <div class="reagent-info">
+                                                <div class="reagent-name"><%= produto.nome %></div>
+                                                <% if (produto.descricao) { %>
+                                                    <div class="reagent-details"><%= produto.descricao %></div>
+                                                <% } %>
+                                            </div>
+                                        </td>
+                                        <td class="text-left">
+                                            <span class="badge"><%= produto.tipo %></span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="quantity-display <%= produto.quantidade <= (produto.estoque_minimo || 10) ? 'warning-quantity' : '' %>">
+                                                <%= produto.quantidade %> <%= produto.unidade_medida %>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <% 
+                                            let statusClass, statusText, statusIcon;
+                                            if (produto.quantidade === 0) {
+                                                statusClass = 'status-critical';
+                                                statusText = 'Esgotado';
+                                                statusIcon = 'fa-times-circle';
+                                            } else if (produto.quantidade <= (produto.estoque_minimo || 10)) {
+                                                statusClass = 'status-warning';
+                                                statusText = 'Atenção';
+                                                statusIcon = 'fa-exclamation-triangle';
+                                            } else {
+                                                statusClass = 'status-normal';
+                                                statusText = 'Normal';
+                                                statusIcon = 'fa-check-circle';
+                                            }
+                                            %>
+                                            <span class="status-badge <%= statusClass %>">
+                                                <i class="fas <%= statusIcon %>"></i> <%= statusText %>
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="action-buttons">
+                                                <button class="btn-action btn-edit" title="Editar" onclick="editarProduto(<%= produto.id_produto %>)">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <form action="/produtos/deletar/<%= produto.id_produto %>" method="POST" style="display: inline;">
+                                                    <button type="button" class="btn-action btn-delete" title="Excluir" onclick="confirmarExclusao(this)">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="5" class="text-center" style="padding: 2rem; color: #6c757d;">
+                                        <i class="fas fa-box-open" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                                        <p>Nenhum produto cadastrado. Adicione o primeiro produto!</p>
+                                    </td>
+                                </tr>
+                            <% } %>
                         </tbody>
                     </table>
                 </div>
@@ -1342,12 +1192,13 @@
                 <div class="table-footer">
                     <div class="table-summary">
                         <span class="summary-text">
-                            <i class="fas fa-database"></i> Total de 4 reagentes listados
+                            <i class="fas fa-database"></i> 
+                            Total de <%= typeof produtos !== 'undefined' ? produtos.length : 0 %> reagentes listados
                         </span>
                     </div>
-                    <button class="view-all-btn">
-                        <i class="fas fa-list"></i> Ver Tudo
-                    </button>
+                    <a href="/produtos" class="view-all-btn">
+                        <i class="fas fa-list"></i> Ver Todos
+                    </a>
                 </div>
             </div>
         </div>
@@ -1366,23 +1217,34 @@
                 });
             });
             
+            // Funções para a tabela
+            function confirmarExclusao(button) {
+                if (confirm('Tem certeza que deseja excluir este produto?')) {
+                    button.closest('form').submit();
+                }
+            }
+
+            function editarProduto(id) {
+                alert('Funcionalidade de edição em desenvolvimento! Produto ID: ' + id);
+                // Em desenvolvimento: window.location.href = '/produtos/editar/' + id;
+            }
+            
             // Adicionar interatividade aos botões de ação
             const actionButtons = document.querySelectorAll('.btn-action');
             actionButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const action = this.classList.contains('btn-edit') ? 'editar' : 'excluir';
-                    const reagentName = this.closest('tr').querySelector('.text-gray-900').textContent;
+                    const reagentName = this.closest('tr').querySelector('.reagent-name').textContent;
                     console.log(`Ação: ${action} no reagente: ${reagentName}`);
-                    // Aqui você pode adicionar a lógica real para editar/excluir
                 });
             });
             
             // Botão de adicionar novo reagente
             const addButton = document.querySelector('.btn-add');
             if (addButton) {
-                addButton.addEventListener('click', function() {
-                    console.log('Abrir modal/formulário para novo reagente');
-                    // Aqui você pode adicionar a lógica para abrir um modal ou formulário
+                addButton.addEventListener('click', function(e) {
+                    if (this.tagName === 'A') return; // Se for link, deixar o comportamento padrão
+                    window.location.href = '/produtos/adicionar';
                 });
             }
         });

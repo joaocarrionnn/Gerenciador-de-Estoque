@@ -238,6 +238,106 @@
             box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
         }
         
+        /* Estilos para o upload de foto */
+        .photo-upload-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .photo-upload-modal {
+            background-color: white;
+            border-radius: 12px;
+            padding: 24px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .photo-preview {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            overflow: hidden;
+            border: 4px solid #e8ebee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .photo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .upload-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #225c96;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            margin-top: 15px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .upload-btn:hover {
+            background-color: #1a2530;
+        }
+        
+        .cancel-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #e8ebee;
+            color: #2c3e50;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            margin-top: 10px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .cancel-btn:hover {
+            background-color: #d6dadd;
+        }
+        
+        .file-input-label {
+            display: block;
+            padding: 12px 20px;
+            background-color: #e8ebee;
+            color: #2c3e50;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 15px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .file-input-label:hover {
+            background-color: #d6dadd;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
         /* Responsividade para telas menores */
         @media (max-width: 768px) {
             .chart-header {
@@ -267,6 +367,16 @@
             
             .chart-title {
                 font-size: 16px;
+            }
+            
+            .photo-upload-modal {
+                width: 95%;
+                padding: 16px;
+            }
+            
+            .photo-preview {
+                width: 150px;
+                height: 150px;
             }
         }
         
@@ -330,12 +440,13 @@
                         <div class="profile-header-gradient h-24 relative">
                             <div class="absolute -bottom-12 left-1/2 transform -translate-x-1/2">
                                 <div class="relative">
-                                    <div class="w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-white bg-white shadow-lg">
+                                    <div class="w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-white bg-white shadow-lg" id="profileImageContainer">
                                         <img src="https://ui-avatars.com/api/?name=João+Silva&background=2c3e50&color=fff&size=128" 
                                             alt="Foto do perfil" 
-                                            class="w-full h-full rounded-full object-cover">
+                                            class="w-full h-full rounded-full object-cover"
+                                            id="profileImage">
                                     </div>
-                                    <button class="absolute bottom-0 right-0 bg-[#225c96] text-white p-1 md:p-2 rounded-full hover:bg-[#1a2530] transition-all shadow-md">
+                                    <button class="absolute bottom-0 right-0 bg-[#225c96] text-white p-1 md:p-2 rounded-full hover:bg-[#1a2530] transition-all shadow-md" id="changePhotoBtn">
                                         <i class="fas fa-camera text-xs md:text-sm"></i>
                                     </button>
                                 </div>
@@ -657,8 +768,88 @@
         </div>
     </main>
 
+    <!-- Modal de upload de foto -->
+    <div class="photo-upload-container" id="photoUploadContainer">
+        <div class="photo-upload-modal">
+            <h3 style="text-align: center; margin-bottom: 20px; color: #2c3e50;">Alterar Foto de Perfil</h3>
+            
+            <div class="photo-preview">
+                <img src="" alt="Preview" id="photoPreview">
+            </div>
+            
+            <label for="photoFile" class="file-input-label">
+                <i class="fas fa-upload"></i> Selecionar Imagem
+            </label>
+            <input type="file" id="photoFile" class="file-input" accept="image/*">
+            
+            <button class="upload-btn" id="uploadPhotoBtn">
+                <i class="fas fa-check"></i> Salvar Foto
+            </button>
+            
+            <button class="cancel-btn" id="cancelUploadBtn">
+                <i class="fas fa-times"></i> Cancelar
+            </button>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Elementos do DOM
+            const changePhotoBtn = document.getElementById('changePhotoBtn');
+            const photoUploadContainer = document.getElementById('photoUploadContainer');
+            const photoFile = document.getElementById('photoFile');
+            const photoPreview = document.getElementById('photoPreview');
+            const uploadPhotoBtn = document.getElementById('uploadPhotoBtn');
+            const cancelUploadBtn = document.getElementById('cancelUploadBtn');
+            const profileImage = document.getElementById('profileImage');
+            
+            // Abrir modal de upload
+            changePhotoBtn.addEventListener('click', function() {
+                photoUploadContainer.style.display = 'flex';
+            });
+            
+            // Fechar modal
+            cancelUploadBtn.addEventListener('click', function() {
+                photoUploadContainer.style.display = 'none';
+            });
+            
+            // Fechar modal clicando fora
+            photoUploadContainer.addEventListener('click', function(e) {
+                if (e.target === photoUploadContainer) {
+                    photoUploadContainer.style.display = 'none';
+                }
+            });
+            
+            // Preview da imagem selecionada
+            photoFile.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        photoPreview.src = e.target.result;
+                    }
+                    
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Upload da foto (simulação)
+            uploadPhotoBtn.addEventListener('click', function() {
+                if (photoFile.files.length > 0) {
+                    // Simulando o upload bem-sucedido
+                    profileImage.src = photoPreview.src;
+                    
+                    // Fechar o modal
+                    photoUploadContainer.style.display = 'none';
+                    
+                    // Mensagem de sucesso
+                    alert('Foto de perfil atualizada com sucesso!');
+                } else {
+                    alert('Por favor, selecione uma imagem primeiro.');
+                }
+            });
+            
             // Lógica para troca de abas
             const tabButtons = document.querySelectorAll('nav button');
             tabButtons.forEach(button => {

@@ -12,6 +12,11 @@ class AuthController {
         res.render("auth/criar_conta", { error: null, success: null });
     }
 
+    // Página de recuperação de senha
+    static recuperarSenha(req, res) {
+        res.render("auth/recuperar_senha", { error: null, success: null })
+    }
+
     // Processar criação de conta
     static async processarCriarConta(req, res) {
         try {
