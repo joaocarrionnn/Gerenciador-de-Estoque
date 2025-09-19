@@ -1,80 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../config/database'); // Importar conexão com banco
+const db = require('../config/database');
 
-// Rota para a dashboard principal
-router.get('/', requireAuth, (req, res) => {
-    // Buscar estatísticas totais
-    const statsQuery = `
-        SELECT 
-            COUNT(*) as total_produtos,
-            SUM(quantidade) as total_estoque,
-            SUM(CASE WHEN quantidade <= estoque_minimo THEN 1 ELSE 0 END) as produtos_baixo_estoque,
-            SUM(CASE WHEN quantidade = 0 THEN 1 ELSE 0 END) as produtos_esgotados
-        FROM produtos
-    `;
-
-    // Buscar últimos produtos
-    const productsQuery = 'SELECT * FROM produtos ORDER BY data_criacao DESC LIMIT 5';
-
-    // Buscar estatísticas por categoria
-    const categoriesQuery = `
-        SELECT 
-            tipo,
-            COUNT(*) as quantidade,
-            ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM produtos), 1) as porcentagem
-        FROM produtos 
-        GROUP BY tipo 
-        ORDER BY quantidade DESC
-    `;
-
-    // Executar todas as queries
-    db.query(statsQuery, (err, statsResults) => {
-        if (err) {
-            console.error('Erro ao buscar estatísticas:', err);
-            return res.render('Home/index', {
-                user: req.session.user,
-                stats: null,
-                produtos: [],
-                categorias: [],
-                error: 'Erro ao carregar dashboard'
-            });
-        }
-
-        db.query(productsQuery, (err, productsResults) => {
-            if (err) {
-                console.error('Erro ao buscar produtos:', err);
-                return res.render('Home/index', {
-                    user: req.session.user,
-                    stats: statsResults[0],
-                    produtos: [],
-                    categorias: [],
-                    error: 'Erro ao carregar produtos'
-                });
-            }
-
-            db.query(categoriesQuery, (err, categoriesResults) => {
-                if (err) {
-                    console.error('Erro ao buscar categorias:', err);
-                    return res.render('Home/index', {
-                        user: req.session.user,
-                        stats: statsResults[0],
-                        produtos: productsResults,
-                        categorias: [],
-                        error: 'Erro ao carregar categorias'
-                    });
-                }
-
-                res.render('Home/index', {
-                    user: req.session.user,
-                    stats: statsResults[0],
-                    produtos: productsResults,
-                    categorias: categoriesResults,
-                    success: req.query.success,
-                    error: req.query.error
-                });
-            });
-        });
+router.get('/', (req, res) => {
+    res.render('Home/index', { 
+        user: { name: 'João Carrion', role: 'Administrador' } 
     });
 });
 
@@ -86,40 +16,36 @@ router.get('/criar_conta', (req, res) => {
     res.render('Auth/criar_conta');
 });
 
-
 // Rota para exibir produtos
 router.get('/produtos', (req, res) => {
     const query = 'SELECT * FROM produtos ORDER BY nome';
     
     db.query(query, (err, results) => {
-        // Sempre passar todas as variáveis, mesmo que sejam null
-        const renderData = {
-            user: req.session.user,
-            produtos: [],
-            success: null,
-            error: null
-        };
-        
         if (err) {
             console.error('Erro ao buscar produtos:', err);
-            renderData.error = 'Erro ao carregar produtos';
-        } else {
-            renderData.produtos = results;
-            renderData.success = req.query.success || null;
-            renderData.error = req.query.error || null;
+            return res.render('produtos', {
+                user: req.session.user,
+                produtos: [],
+                error: 'Erro ao carregar produtos',
+                success: null
+            });
         }
         
-        res.render('produtos', renderData);
+        res.render('produtos', {
+            user: req.session.user,
+            produtos: results || [],
+            success: req.query.success || null,
+            error: req.query.error || null
+        });
     });
 });
 
-// Rota para exibir o formulário de adição de produtos
+// Rota para exibir formulário de adição
 router.get('/produtos/adicionar', (req, res) => {
-    res.render('adicionar', { 
+    res.render('adicionar', {
         user: req.session.user,
-        error: null,        // Adicionar estas linhas
-        formData: null,     // para garantir que as variáveis existam
-        success: null       // mesmo quando não há erro
+        formData: null, 
+        error: null 
     });
 });
 
@@ -173,13 +99,13 @@ router.post('/produtos/adicionar', (req, res) => {
                 user: req.session.user,
                 error: 'Erro ao adicionar produto',
                 formData: req.body,
-                success: null
+                success: null  // Adicionar
             });
         }
 
         res.redirect('/produtos?success=Produto adicionado com sucesso');
     });
-}); 
+});
 
 // Rota para deletar produto
 router.post('/produtos/deletar/:id', (req, res) => {
@@ -196,7 +122,6 @@ router.post('/produtos/deletar/:id', (req, res) => {
     });
 });
 
-module.exports = router;
 
 // NOVA ROTA PARA SAÍDA DE REAGENTES
 router.get('/saida-reagentes', (req, res) => {
