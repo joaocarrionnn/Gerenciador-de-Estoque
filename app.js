@@ -107,23 +107,10 @@ app.use((err, req, res, next) => {
 
 // Rota para arquivos não encontrados (404)
 app.use((req, res) => {
-    res.status(404).send(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Página não encontrada</title>
-            <style>
-                body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
-                h1 { color: #d32f2f; }
-            </style>
-        </head>
-        <body>
-            <h1>404 - Página não encontrada</h1>
-            <p>A página que você está procurando não existe.</p>
-            <a href="/">Voltar para a página inicial</a>
-        </body>
-        </html>
-    `);
+    res.status(404).render('error', {  // ← AQUI ESTÁ O PROBLEMA
+        message: 'Página não encontrada',
+        user: req.session.user 
+    });
 });
 
 // Iniciar servidor
