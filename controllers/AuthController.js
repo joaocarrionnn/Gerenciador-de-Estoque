@@ -72,11 +72,9 @@ class AuthController {
             const dadosUsuario = {
                 nome_completo: nome,
                 usuario: usuario,
-                email: email,
                 senha: senhaHash,
-                departamento: departamento,
+                turma: turma,
                 justificativa: justificativa,
-                status: 'pendente',
                 tipo: 'usuario'
             };
 

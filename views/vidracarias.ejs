@@ -1,10 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Vidrarias de Química</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <%- include('./partials/head'); %>
     <style>
         :root {
             --primary: #2c3e50;
@@ -490,7 +487,6 @@
             display: flex;
             align-items: center;
             padding: 1.2rem;
-            background-color: #f8f9fa;
             border-radius: 10px;
             margin-top: 1.5rem;
         }
@@ -643,6 +639,8 @@
     </style>
 </head>
 <body>
+    <%- include('./partials/header'); %>
+    
     <!-- Conteúdo Principal -->
     <main class="flex-1 overflow-auto bg-gray-50 min-h-screen">
         <div class="main-container">
