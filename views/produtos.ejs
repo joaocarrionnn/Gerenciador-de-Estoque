@@ -435,6 +435,7 @@
             
             
             
+
             <!-- Tabela de Produtos -->
             <div class="table-container">
                 <div class="table-header">
@@ -444,17 +445,9 @@
                     </h2>
                 </div>
                 
-                <% if (success) { %>
-                    <div class="alert alert-success" style="margin: 15px; padding: 10px; background: #d4edda; color: #155724; border-radius: 5px;">
-                        <%= success %>
-                    </div>
-                <% } %>
                 
-                <% if (error) { %>
-                    <div class="alert alert-danger" style="margin: 15px; padding: 10px; background: #f8d7da; color: #721c24; border-radius: 5px;">
-                        <%= error %>
-                    </div>
-                <% } %>
+                
+                
                 
                 <div class="table-responsive">
                     <table class="reagent-table">
@@ -545,18 +538,6 @@
     </main>
 
     <script>
-        function confirmarExclusao(button) {
-                if (confirm('Tem certeza que deseja excluir este produto?')) {
-                    button.closest('form').submit();
-                }
-            }
-
-            function editarProduto(id) {
-                alert('Funcionalidade de edição em desenvolvimento! Produto ID: ' + id);
-                // Em desenvolvimento: window.location.href = '/produtos/editar/' + id;
-            }
-
-
         document.addEventListener('DOMContentLoaded', function() {
             // Adicionar interatividade aos botões de ação
             const actionButtons = document.querySelectorAll('.btn-action');
@@ -569,6 +550,17 @@
                 });
             });
         });
+
+        function confirmarExclusao(button) {
+            if (confirm('Tem certeza que deseja excluir este produto?')) {
+                button.closest('form').submit();
+            }
+        }
+
+        function editarProduto(id) {
+            alert('Funcionalidade de edição em desenvolvimento! Produto ID: ' + id);
+            // Em desenvolvimento: window.location.href = '/produtos/editar/' + id;
+        }
     </script>
 </body>
 </html>
