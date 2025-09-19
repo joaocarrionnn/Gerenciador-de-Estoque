@@ -8,8 +8,4 @@ router.post("/criar-conta", AuthController.processarCriarConta); // Alterado par
 router.post("/login", AuthController.processarLogin);
 router.get("/logout", AuthController.logout);
 
-// Novas rotas para recuperação de senha
-router.get("/recuperar-senha", AuthController.recuperarSenha);
-router.post("/recuperar-senha", AuthController.processarRecuperarSenha);
-
 module.exports = router;
