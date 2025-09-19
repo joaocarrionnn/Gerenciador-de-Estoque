@@ -39,11 +39,12 @@ CREATE TABLE IF NOT EXISTS `produtos` (
   `data_criacao` timestamp NOT NULL DEFAULT current_timestamp(),
   `data_atualizacao` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id_produto`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Copiando dados para a tabela sistema_estoque.produtos: ~1 rows (aproximadamente)
+-- Copiando dados para a tabela sistema_estoque.produtos: ~2 rows (aproximadamente)
 INSERT INTO `produtos` (`id_produto`, `nome`, `tipo`, `descricao`, `grau_periculosidade`, `orgao_regulador`, `instrucoes_seguranca`, `quantidade`, `estoque_minimo`, `unidade_medida`, `localizacao`, `disponivel`, `fornecedor`, `data_aquisicao`, `observacoes`, `data_criacao`, `data_atualizacao`) VALUES
-	(5, 'aaa', 'solvente', 'aaa', 'moderado', 'policia-federal', 'aa', 234234, 224, 'unidade', '22', 1, '2424', '2025-09-16', '4224', '2025-09-17 12:13:56', '2025-09-17 12:13:56');
+	(2, 'Hidróxido de Sódio', 'base', 'NaOH - 1kg', 'moderado', 'policia-federal', NULL, 18, 0, 'unidade', 'Prateleira B2', 1, NULL, NULL, NULL, '2025-09-19 13:47:38', '2025-09-19 13:47:38'),
+	(3, 'aaa', 'reagente', 'aaa', 'baixo', 'policia-federal', 'aaa', 7, 11, 'kg', '\\x\\\\', 1, '\\x\\x\\x', '2025-09-10', '\\x\\x\\x', '2025-09-19 13:59:46', '2025-09-19 13:59:46');
 
 -- Copiando estrutura para tabela sistema_estoque.usuarios
 CREATE TABLE IF NOT EXISTS `usuarios` (
