@@ -230,15 +230,15 @@
         
         
         .danger-zone {
-            background: rgba(255, 193, 7, 0.15);
-            border-left: 4px solid #ffc107;
+            background: rgba(245, 101, 101, 0.1);
+            border-left: 4px solid #e53e3e;
             padding: 1rem 1.5rem;
             border-radius: 8px;
             margin: 1.5rem 0;
         }
         
         .danger-zone h6 {
-            color: #856404;
+            color: #e53e3e;
             font-weight: 600;
             display: flex;
             align-items: center;
@@ -247,7 +247,7 @@
         }
         
         .danger-zone p {
-            color: #856404;
+            color: #718096;
             margin-bottom: 0;
             font-size: 0.9rem;
         }
@@ -427,8 +427,6 @@
 <body class="flex">
     <%- include('./partials/header'); %>
     
-
-    
     <!-- Conteúdo Principal -->
     <main class="flex-1 overflow-auto bg-gray-50 min-h-screen">
         <div class="main-container">
@@ -451,7 +449,7 @@
                 <div class="form-card-body">
                     <form id="productForm" action="/produtos/adicionar" method="POST">
                         <!-- Mensagens de erro -->
-                        <% if (typeof error !== 'undefined' && error) { %>
+                        <% if (error) { %>
                             <div class="alert alert-danger" style="margin: 15px; padding: 10px; background: #f8d7da; color: #721c24; border-radius: 5px;">
                                 <%= error %>
                             </div>
