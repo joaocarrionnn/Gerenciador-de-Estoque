@@ -62,18 +62,29 @@ router.get('/criar_conta', (req, res) => {
     res.render('Auth/criar_conta');
 });
 
-// Rota para exibir produtos
+// Rota para exibir produtos (com suporte a pesquisa)
 router.get('/produtos', (req, res) => {
-    const query = 'SELECT * FROM produtos ORDER BY nome';
+    const searchTerm = req.query.search;
+    let query = 'SELECT * FROM produtos';
+    let queryParams = [];
+
+    if (searchTerm) {
+        query += ' WHERE id_produto LIKE ? OR nome LIKE ? OR tipo LIKE ? OR descricao LIKE ?';
+        const searchPattern = `%${searchTerm}%`;
+        queryParams = [searchPattern, searchPattern, searchPattern, searchPattern];
+    }
+
+    query += ' ORDER BY nome';
     
-    db.query(query, (err, results) => {
+    db.query(query, queryParams, (err, results) => {
         if (err) {
             console.error('Erro ao buscar produtos:', err);
             return res.render('produtos', {
                 user: req.session.user,
                 produtos: [],
                 error: 'Erro ao carregar produtos',
-                success: null
+                success: null,
+                searchTerm: searchTerm || ''
             });
         }
         
@@ -81,7 +92,8 @@ router.get('/produtos', (req, res) => {
             user: req.session.user,
             produtos: results || [],
             success: req.query.success || null,
-            error: req.query.error || null
+            error: req.query.error || null,
+            searchTerm: searchTerm || ''
         });
     });
 });
