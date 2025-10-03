@@ -187,67 +187,39 @@ class AuthController {
     // Processar criação de conta (POST /criar-conta)
   static async processarCriarConta(req, res) {
     try {
-      console.log('📨 Body recebido:', req.body);
-      const { nome_completo, usuario, senha, cpf, palavra_chave, email, turma } = req.body;
-
-      // Checagens básicas
-      if (!nome_completo || !usuario || !senha || !email) {
-        return res.render("auth/criar_conta", {
-          error: "Por favor, preencha os campos obrigatórios.",
-          success: null,
-          nome_completo, usuario, cpf, email, turma
+        const { nome, usuario, senha, turma, cpf, palavraChave, email } = req.body;
+    
+        const senhaHash = await bcrypt.hash(senha, 10);
+    
+        const dados = {
+          nome_completo: nome,
+          usuario,
+          senha: senhaHash,
+          turma,
+          cpf,
+          palavra_chave: palavraChave,
+          email,
+          tipo: 'usuario',
+          status: 'pendente'
+        };
+    
+        const resultado = await AuthModel.criarUsuario(dados);
+    
+        console.log("✅ Usuário criado ID:", resultado.insertId);
+    
+        res.render("auth/criar_conta", {
+          success: "Conta criada com sucesso! Agora faça login para acessar o sistema.",
+          error: null
+        });
+    
+      } catch (err) {
+        console.error("❌ Erro ao criar conta:", err);
+        res.render("auth/criar_conta", {
+          error: "Erro ao criar conta. Tente novamente.",
+          success: null
         });
       }
-
-      // Verificar usuário/email existente
-      const existente = await AuthModel.verificarUsuarioExistente(usuario) || await AuthModel.verificarUsuarioExistente(email);
-      if (existente) {
-        return res.render("auth/criar_conta", {
-          error: "Já existe um usuário com este usuário ou e-mail.",
-          success: null,
-          nome_completo, usuario: '', cpf, email: '', turma
-        });
-      }
-
-      // Hash da senha
-      const saltRounds = 10;
-      const senhaHash = await bcrypt.hash(senha, saltRounds);
-
-      // Monta objeto para salvar (mapeando names do form para colunas do BD)
-      const dados = {
-        nome_completo: nome,
-        usuario: usuario,
-        senha: senhaHash,
-        turma: turma,
-        cpf: cpf,
-        palavra_chave: palavraChave,
-        email: email,
-        tipo: 'usuario',
-        status: 'pendente'
-      };
-
-      const resultado = await AuthModel.criarUsuario(dados);
-      console.log('✅ Usuário criado com ID:', resultado.insertId);
-
-      return res.render("auth/criar_conta", {
-        success: "Solicitação enviada com sucesso! Aguarde a aprovação do administrador.",
-        error: null,
-        nome: '', usuario: '', cpf: '', email: '', turma: ''
-      });
-
-    } catch (err) {
-      console.error('Erro ao criar conta:', err);
-      return res.render("auth/criar_conta", {
-        error: "Erro ao processar solicitação. Tente novamente.",
-        success: null,
-        nome: req.body.nome || '',
-        usuario: req.body.usuario || '',
-        cpf: req.body.cpf || '',
-        email: req.body.email || '',
-        turma: req.body.turma || ''
-      });
     }
-  }
 }
 
 module.exports = AuthController;

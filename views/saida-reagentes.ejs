@@ -581,64 +581,6 @@
         }
     });
 
-    // Função para carregar as movimentações
-    async function loadMovements() {
-        try {
-            const response = await fetch('/api/movements');
-            const movements = await response.json();
-            
-            const movementsList = document.getElementById('movements-list');
-            movementsList.innerHTML = '';
-            
-            if (movements.length === 0) {
-                movementsList.innerHTML = `
-                    <li class="movement-item text-center text-muted py-4">
-                        <i class="fas fa-inbox fa-2x mb-2"></i>
-                        <p>Nenhuma movimentação registrada</p>
-                    </li>
-                `;
-                return;
-            }
-            
-            movements.forEach(movement => {
-                const movementItem = document.createElement('li');
-                movementItem.className = 'movement-item';
-                
-                const date = new Date(movement.date);
-                const formattedDate = date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
-                
-                movementItem.innerHTML = `
-                    <div class="movement-icon ${movement.type === 'entrada' ? 'movement-in' : 'movement-out'}">
-                        <i class="fas fa-arrow-${movement.type === 'entrada' ? 'down' : 'up'}"></i>
-                    </div>
-                    <div class="movement-content">
-                        <p class="movement-title">${movement.type === 'entrada' ? 'Entrada' : 'Saída'} - ${movement.reagent}</p>
-                        <div class="movement-details">
-                            <span class="movement-quantity"><strong>${movement.quantity} ${movement.unit}</strong></span>
-                            <span class="movement-date">${formattedDate}</span>
-                            <span class="movement-responsible">por ${movement.responsible}</span>
-                        </div>
-                        ${movement.project ? `<small class="text-muted">Projeto: ${movement.project}</small>` : ''}
-                    </div>
-                `;
-                
-                movementsList.appendChild(movementItem);
-            });
-            
-            // Atualizar o timestamp da última atualização
-            document.getElementById('last-update').textContent = `Atualizado às ${new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}`;
-        } catch (error) {
-            console.error('Erro ao carregar movimentações:', error);
-            const movementsList = document.getElementById('movements-list');
-            movementsList.innerHTML = `
-                <li class="movement-item text-center text-danger py-4">
-                    <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
-                    <p>Erro ao carregar movimentações</p>
-                </li>
-            `;
-        }
-    }
-
     // Função para carregar estatísticas
     async function loadStatistics() {
         try {
@@ -703,6 +645,72 @@
         const reagentSelect = document.getElementById('reagent');
         console.log(`Número de produtos carregados: ${reagentSelect.options.length - 1}`);
     });
+
+    // Função para carregar as movimentações de SAÍDA
+// Função para carregar as movimentações de SAÍDA (4 últimas)
+async function loadMovements() {
+    try {
+        console.log('🔄 Carregando últimas 4 saídas...');
+        
+        const response = await fetch('/api/output-movements');
+        const movements = await response.json();
+        
+        const movementsList = document.getElementById('movements-list');
+        movementsList.innerHTML = '';
+        
+        console.log('Últimas saídas recebidas:', movements);
+        
+        if (!movements || movements.length === 0) {
+            movementsList.innerHTML = `
+                <li class="movement-item text-center text-muted py-4">
+                    <i class="fas fa-inbox fa-2x mb-2"></i>
+                    <p>Nenhuma saída registrada</p>
+                    <small class="text-muted">As saídas aparecerão aqui quando forem registradas</small>
+                </li>
+            `;
+            return;
+        }
+        
+        movements.forEach(movement => {
+            const movementItem = document.createElement('li');
+            movementItem.className = 'movement-item';
+            
+            const date = new Date(movement.date);
+            const formattedDate = date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+            
+            movementItem.innerHTML = `
+                <div class="movement-icon movement-out">
+                    <i class="fas fa-arrow-up"></i>
+                </div>
+                <div class="movement-content">
+                    <p class="movement-title">Saída - ${movement.reagent}</p>
+                    <div class="movement-details">
+                        <span class="movement-quantity"><strong>${movement.quantity} ${movement.unit}</strong></span>
+                        <span class="movement-date">${formattedDate}</span>
+                        <span class="movement-responsible">por ${movement.responsible}</span>
+                    </div>
+                    ${movement.project ? `<small class="text-muted">Projeto: ${movement.project}</small>` : ''}
+                </div>
+            `;
+            
+            movementsList.appendChild(movementItem);
+        });
+        
+        // Atualizar o timestamp da última atualização
+        document.getElementById('last-update').textContent = `Atualizado às ${new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}`;
+        
+    } catch (error) {
+        console.error('Erro ao carregar saídas:', error);
+        const movementsList = document.getElementById('movements-list');
+        movementsList.innerHTML = `
+            <li class="movement-item text-center text-danger py-4">
+                <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                <p>Erro ao carregar saídas</p>
+                <small class="text-muted">${error.message}</small>
+            </li>
+        `;
+    }
+}
 </script>
 </body>
 </html>

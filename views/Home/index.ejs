@@ -169,13 +169,133 @@
             color: #2d3748;
         }
         
+        /* Grid de gráficos e informações - Layout fixo */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        /* Card que ocupa a largura total (equivalente aos dois cards superiores) */
+        .full-width-card {
+            grid-column: 1 / -1; /* Ocupa todas as colunas */
+            grid-row: 2; /* Posiciona na segunda linha */
+        }
+        
+        .chart-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+        }
+        
+        .chart-header {
+            margin-bottom: 1.25rem;
+        }
+        
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        /* Barra de progresso para categorias */
+        .progress-item {
+            margin-bottom: 1.25rem;
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #4a5568;
+        }
+        
+        .progress-value {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+        
+        /* Lista de movimentações */
+        .movement-list {
+            list-style: none;
+        }
+        
+        .movement-item {
+            display: flex;
+            align-items: center;
+            padding: 0.875rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .movement-item:last-child {
+            border-bottom: none;
+        }
+        
+        .movement-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .movement-in {
+            background-color: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+        }
+        
+        .movement-out {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+        
+        .movement-content {
+            flex-grow: 1;
+        }
+        
+        .movement-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #2d3748;
+            margin-bottom: 0.25rem;
+        }
+        
+        .movement-date {
+            font-size: 0.75rem;
+            color: #718096;
+        }
+        
         /* Tabela de reagentes */
         .table-container {
             background: white;
             border-radius: 12px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
             overflow: hidden;
-            margin-bottom: 2rem;
+            margin-bottom: 0; /* Removido pois agora está dentro do grid */
         }
         
         .table-header {
@@ -306,185 +426,6 @@
         .btn-delete:hover {
             background-color: #ef4444;
             color: white;
-        }
-        
-        /* Grid de gráficos e informações */
-        .charts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .chart-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
-        }
-        
-        .chart-header {
-            margin-bottom: 1.25rem;
-        }
-        
-        .chart-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #2d3748;
-        }
-        
-        /* Barra de progresso para categorias */
-        .progress-item {
-            margin-bottom: 1.25rem;
-        }
-        
-        .progress-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.5rem;
-        }
-        
-        .progress-label {
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #4a5568;
-        }
-        
-        .progress-value {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: #2d3748;
-        }
-        
-        .progress-bar {
-            height: 8px;
-            background-color: #e2e8f0;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            border-radius: 4px;
-        }
-        
-        /* Lista de movimentações */
-        .movement-list {
-            list-style: none;
-        }
-        
-        .movement-item {
-            display: flex;
-            align-items: center;
-            padding: 0.875rem 0;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        
-        .movement-item:last-child {
-            border-bottom: none;
-        }
-        
-        .movement-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 1rem;
-            flex-shrink: 0;
-        }
-        
-        .movement-in {
-            background-color: rgba(67, 97, 238, 0.1);
-            color: var(--primary);
-        }
-        
-        .movement-out {
-            background-color: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
-        }
-        
-        .movement-content {
-            flex-grow: 1;
-        }
-        
-        .movement-title {
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #2d3748;
-            margin-bottom: 0.25rem;
-        }
-        
-        .movement-date {
-            font-size: 0.75rem;
-            color: #718096;
-        }
-        
-        /* Responsividade */
-        @media (max-width: 1024px) {
-            .charts-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .main-container {
-                padding: 1rem;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .section-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-            
-            .table-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-            
-            .btn-add {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .reagent-table {
-                display: block;
-                overflow-x: auto;
-            }
-            
-            .action-buttons {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .stats-card {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .icon-container {
-                margin-right: 0;
-                margin-bottom: 1rem;
-            }
-            
-            .movement-item {
-                flex-direction: column;
-                text-align: center;
-                gap: 0.75rem;
-            }
-            
-            .movement-icon {
-                margin-right: 0;
-            }
         }
         
         /* Estilos melhorados para os componentes */
@@ -710,7 +651,7 @@
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             overflow: hidden;
-            margin-bottom: 2rem;
+            margin-bottom: 0; /* Removido pois agora está dentro do grid */
         }
 
         .table-header.with-background {
@@ -880,28 +821,6 @@
             gap: 0.4rem;
         }
 
-        @media (max-width: 768px) {
-            .table-header.with-background {
-                flex-direction: column;
-                gap: 1rem;
-                align-items: flex-start;
-            }
-            
-            .action-buttons {
-                flex-direction: column;
-            }
-            
-            .table-footer {
-                flex-direction: column;
-                gap: 1rem;
-                align-items: flex-start;
-            }
-            
-            .view-all-btn {
-                align-self: flex-end;
-            }
-        }
-        
         /* Cores para as categorias */
         .progress-acido { background: linear-gradient(90deg, #ff9a9e 0%, #e74c3c 100%); }
         .progress-base { background: linear-gradient(90deg, #a1c4fd 0%, #3498db 100%); }
@@ -940,6 +859,125 @@
             font-size: 0.8rem;
             color: #495057;
         }
+
+        /* Estilos adicionais para a tabela de produtos */
+.reagent-info .reagent-details {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-top: 0.2rem;
+}
+
+.quantity-display .min-stock {
+    font-size: 0.7rem;
+    color: #6c757d;
+    margin-top: 0.1rem;
+}
+
+.table-header.with-background > div {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Ajuste para responsividade */
+@media (max-width: 1024px) {
+    .charts-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+    }
+    
+    .full-width-card {
+        grid-column: 1;
+        grid-row: 3;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-container {
+        padding: 1rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .table-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .table-header.with-background {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+    
+    .btn-add {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .reagent-table {
+        display: block;
+        overflow-x: auto;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .table-header.with-background > div {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .table-header.with-background .btn-add,
+    .table-header.with-background .view-all-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .table-footer {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+    
+    .view-all-btn {
+        align-self: flex-end;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .icon-container {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+    
+    .movement-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.75rem;
+    }
+    
+    .movement-icon {
+        margin-right: 0;
+    }
+}
     </style>
 </head>
 <body class="flex">
@@ -965,9 +1003,6 @@
                     <i class="fas fa-exclamation-circle"></i> <%= error %>
                 </div>
             <% } %>
-            
-            
-            
             
             <!-- Gráficos e Informações -->
             <div class="charts-grid">
@@ -1024,181 +1059,144 @@
                         <a href="/movimentacoes" class="view-all-btn">Ver todas</a>
                     </div>
                     
-                    <ul class="movement-list">
-                        <li class="movement-item">
-                            <div class="movement-icon movement-in">
-                                <i class="fas fa-arrow-down"></i>
-                            </div>
-                            <div class="movement-content">
-                                <p class="movement-title">Entrada - Ácido clorídrico</p>
-                                <div class="movement-details">
-                                    <span class="movement-quantity">10 unidades</span>
-                                    <span class="movement-date">12/05/2023 14:30</span>
-                                </div>
-                            </div>
-                            <div class="movement-actions">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </div>
-                        </li>
-                        
-                        <li class="movement-item">
-                            <div class="movement-icon movement-out">
-                                <i class="fas fa-arrow-up"></i>
-                            </div>
-                            <div class="movement-content">
-                                <p class="movement-title">Saída - Hidróxido de sódio</p>
-                                <div class="movement-details">
-                                    <span class="movement-quantity">5 unidades</span>
-                                    <span class="movement-date">11/05/2023 09:15</span>
-                                </div>
-                            </div>
-                            <div class="movement-actions">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </div>
-                        </li>
-                        
-                        <li class="movement-item">
-                            <div class="movement-icon movement-in">
-                                <i class="fas fa-arrow-down"></i>
-                            </div>
-                            <div class="movement-content">
-                                <p class="movement-title">Entrada - Água destilada</p>
-                                <div class="movement-details">
-                                    <span class="movement-quantity">20 unidades</span>
-                                    <span class="movement-date">10/05/2023 16:45</span>
-                                </div>
-                            </div>
-                            <div class="movement-actions">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </div>
-                        </li>
-                        
-                        <li class="movement-item">
-                            <div class="movement-icon movement-out">
-                                <i class="fas fa-arrow-up"></i>
-                            </div>
-                            <div class="movement-content">
-                                <p class="movement-title">Saída - Sulfato de cobre</p>
-                                <div class="movement-details">
-                                    <span class="movement-quantity">3 unidades</span>
-                                    <span class="movement-date">09/05/2023 11:20</span>
-                                </div>
-                            </div>
-                            <div class="movement-actions">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </div>
-                        </li>
+                    <ul class="movement-list" id="movementsList">
+                        <!-- As movimentações serão carregadas via JavaScript -->
+                        <div style="padding: 2rem; text-align: center; color: #6c757d;">
+                            <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 1rem;"></i>
+                            <p>Carregando movimentações...</p>
+                        </div>
                     </ul>
                     
                     <div class="chart-footer">
                         <span class="stats-info">
                             <i class="fas fa-history"></i>
-                            Atualizado há 5 minutos
+                            <span id="lastUpdate">Carregando...</span>
                         </span>
                     </div>
                 </div>
-            </div>
-
-            <!-- Tabela de Reagentes -->
-            <div class="table-container enhanced-table">
-                <div class="table-header with-background">
-                    <h2 class="table-title with-icon">
-                        <i class="fas fa-flask"></i>
-                        Últimos Reagentes Adicionados
-                    </h2>
-                    <a href="/produtos/adicionar" class="btn-add">
-                        <i class="fas fa-plus-circle"></i> Novo Reagente
-                    </a>
-                </div>
                 
-                <div class="table-responsive">
-                    <table class="reagent-table">
-                        <thead>
-                            <tr>
-                                <th class="text-left">Nome do Reagente</th>
-                                <th class="text-left">Tipo</th>
-                                <th class="text-center">Quantidade</th>
-                                <th class="text-center">Status</th>
-                                <th class="text-center">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% if (typeof produtos !== 'undefined' && produtos.length > 0) { %>
-                                <% produtos.forEach(produto => { %>
-                                    <tr>
-                                        <td>
-                                            <div class="reagent-info">
-                                                <div class="reagent-name"><%= produto.nome %></div>
-                                                <% if (produto.descricao) { %>
-                                                    <div class="reagent-details"><%= produto.descricao %></div>
+                <!-- Tabela de Reagentes (card inferior que ocupa largura total) -->
+                <div class="table-container enhanced-table full-width-card">
+                    <div class="table-header with-background">
+                        <h2 class="table-title with-icon">
+                            <i class="fas fa-flask"></i>
+                            Últimos Reagentes Adicionados
+                        </h2>
+                        <div>
+                            <a href="/produtos/adicionar" class="btn-add">
+                                <i class="fas fa-plus-circle"></i> Novo Reagente
+                            </a>
+                            <a href="/produtos" class="view-all-btn" style="margin-left: 10px;">
+                                <i class="fas fa-list"></i> Ver Todos
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="reagent-table">
+                            <thead>
+                                <tr>
+                                    <th class="text-left">Nome do Reagente</th>
+                                    <th class="text-left">Categoria</th>
+                                    <th class="text-center">Quantidade</th>
+                                    <th class="text-center">Localização</th>
+                                    <th class="text-center">Status</th>
+                                    <th class="text-center">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (typeof produtos !== 'undefined' && produtos.length > 0) { %>
+                                    <% produtos.forEach(produto => { %>
+                                        <tr>
+                                            <td>
+                                                <div class="reagent-info">
+                                                    <div class="reagent-name"><%= produto.nome %></div>
+                                                    <div class="reagent-details">
+                                                        ID: #<%= produto.id_produto %>
+                                                        <% if (produto.descricao) { %>
+                                                            • <%= produto.descricao.length > 50 ? produto.descricao.substring(0, 50) + '...' : produto.descricao %>
+                                                        <% } %>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="text-left">
+                                                <span class="badge"><%= produto.tipo %></span>
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="quantity-display <%= produto.quantidade <= (produto.estoque_minimo || 10) ? 'warning-quantity' : '' %>">
+                                                    <%= produto.quantidade %> <%= produto.unidade_medida %>
+                                                </div>
+                                                <% if (produto.estoque_minimo && produto.estoque_minimo > 0) { %>
+                                                    <div style="font-size: 0.75rem; color: #6c757d; margin-top: 0.2rem;">
+                                                        Mín: <%= produto.estoque_minimo %>
+                                                    </div>
                                                 <% } %>
-                                            </div>
-                                        </td>
-                                        <td class="text-left">
-                                            <span class="badge"><%= produto.tipo %></span>
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="quantity-display <%= produto.quantidade <= (produto.estoque_minimo || 10) ? 'warning-quantity' : '' %>">
-                                                <%= produto.quantidade %> <%= produto.unidade_medida %>
-                                            </div>
-                                        </td>
-                                        <td class="text-center">
-                                            <% 
-                                            let statusClass, statusText, statusIcon;
-                                            if (produto.quantidade === 0) {
-                                                statusClass = 'status-critical';
-                                                statusText = 'Esgotado';
-                                                statusIcon = 'fa-times-circle';
-                                            } else if (produto.quantidade <= (produto.estoque_minimo || 10)) {
-                                                statusClass = 'status-warning';
-                                                statusText = 'Atenção';
-                                                statusIcon = 'fa-exclamation-triangle';
-                                            } else {
-                                                statusClass = 'status-normal';
-                                                statusText = 'Normal';
-                                                statusIcon = 'fa-check-circle';
-                                            }
-                                            %>
-                                            <span class="status-badge <%= statusClass %>">
-                                                <i class="fas <%= statusIcon %>"></i> <%= statusText %>
-                                            </span>
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="action-buttons">
-                                                <button class="btn-action btn-edit" title="Editar" onclick="editarProduto(<%= produto.id_produto %>)">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                <form action="/produtos/deletar/<%= produto.id_produto %>" method="POST" style="display: inline;">
-                                                    <button type="button" class="btn-action btn-delete" title="Excluir" onclick="confirmarExclusao(this)">
+                                            </td>
+                                            <td class="text-center">
+                                                <span style="font-size: 0.85rem; color: #495057;">
+                                                    <%= produto.localizacao || 'Não informada' %>
+                                                </span>
+                                            </td>
+                                            <td class="text-center">
+                                                <% 
+                                                let statusClass, statusText, statusIcon;
+                                                if (produto.quantidade === 0) {
+                                                    statusClass = 'status-critical';
+                                                    statusText = 'Esgotado';
+                                                    statusIcon = 'fa-times-circle';
+                                                } else if (produto.quantidade <= (produto.estoque_minimo || 10)) {
+                                                    statusClass = 'status-warning';
+                                                    statusText = 'Baixo Estoque';
+                                                    statusIcon = 'fa-exclamation-triangle';
+                                                } else {
+                                                    statusClass = 'status-normal';
+                                                    statusText = 'Disponível';
+                                                    statusIcon = 'fa-check-circle';
+                                                }
+                                                %>
+                                                <span class="status-badge <%= statusClass %>">
+                                                    <i class="fas <%= statusIcon %>"></i> <%= statusText %>
+                                                </span>
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="action-buttons">
+                                                    <button class="btn-action btn-edit" title="Editar" onclick="editarProduto(<%= produto.id_produto %>)">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button type="button" class="btn-action btn-delete" title="Excluir" onclick="confirmarExclusao(<%= produto.id_produto %>, '<%= produto.nome.replace(/'/g, "\\'") %>')">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </button>
-                                                </form>
-                                            </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="6" class="text-center" style="padding: 2rem; color: #6c757d;">
+                                            <i class="fas fa-box-open" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                                            <p>Nenhum produto cadastrado</p>
+                                            <a href="/produtos/adicionar" class="primary-btn" style="margin-top: 1rem;">
+                                                <i class="fas fa-plus-circle"></i> Adicionar Primeiro Produto
+                                            </a>
                                         </td>
                                     </tr>
-                                <% }) %>
-                            <% } else { %>
-                                <tr>
-                                    <td colspan="5" class="text-center" style="padding: 2rem; color: #6c757d;">
-                                        <i class="fas fa-box-open" style="font-size: 2rem; margin-bottom: 1rem;"></i>
-                                        <p>Nenhum produto cadastrado. Adicione o primeiro produto!</p>
-                                    </td>
-                                </tr>
-                            <% } %>
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div class="table-footer">
-                    <div class="table-summary">
-                        <span class="summary-text">
-                            <i class="fas fa-database"></i> 
-                            Total de <%= typeof produtos !== 'undefined' ? produtos.length : 0 %> reagentes listados
-                        </span>
+                                <% } %>
+                            </tbody>
+                        </table>
                     </div>
-                    <a href="/produtos" class="view-all-btn">
-                        <i class="fas fa-list"></i> Ver Todos
-                    </a>
+                    
+                    <div class="table-footer">
+                        <div class="table-summary">
+                            <span class="summary-text">
+                                <i class="fas fa-database"></i> 
+                                Mostrando <%= typeof produtos !== 'undefined' ? produtos.length : 0 %> de 
+                                <%= typeof stats !== 'undefined' ? stats.total_produtos : 0 %> produtos no total
+                            </span>
+                        </div>
+                        <a href="/produtos" class="view-all-btn">
+                            <i class="fas fa-list"></i> Ver Todos os Produtos
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1248,6 +1246,165 @@
                 });
             }
         });
+
+        // Função para carregar as últimas 4 movimentações
+async function carregarUltimasMovimentacoes() {
+    try {
+        const response = await fetch('/api/movements');
+        const movimentacoes = await response.json();
+        
+        const movementsList = document.getElementById('movementsList');
+        const lastUpdate = document.getElementById('lastUpdate');
+        
+        if (!movimentacoes || movimentacoes.length === 0) {
+            movementsList.innerHTML = `
+                <div style="padding: 2rem; text-align: center; color: #6c757d;">
+                    <i class="fas fa-exchange-alt" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                    <p>Nenhuma movimentação registrada</p>
+                    <small>As movimentações aparecerão aqui quando você fizer saídas ou entradas de reagentes.</small>
+                </div>
+            `;
+            lastUpdate.textContent = 'Nenhuma movimentação';
+            return;
+        }
+        
+        // Formatar a lista de movimentações (máximo 4)
+        movementsList.innerHTML = movimentacoes.map(mov => {
+            const isEntrada = mov.type === 'entrada';
+            const tipoTexto = isEntrada ? 'Entrada' : 'Saída';
+            const iconClass = isEntrada ? 'movement-in' : 'movement-out';
+            const icon = isEntrada ? 'fa-arrow-down' : 'fa-arrow-up';
+            
+            // Formatar data
+            const dataMov = new Date(mov.date);
+            const dataFormatada = dataMov.toLocaleDateString('pt-BR');
+            const horaFormatada = dataMov.toLocaleTimeString('pt-BR', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            
+            // Extrair informações do projeto/fornecedor
+            let detalhesAdicionais = '';
+            if (mov.project) {
+                if (mov.project.includes('Fornecedor:')) {
+                    detalhesAdicionais = mov.project.replace('Fornecedor:', 'Fornecedor:');
+                } else {
+                    detalhesAdicionais = mov.project;
+                }
+            }
+            
+            return `
+                <li class="movement-item">
+                    <div class="movement-icon ${iconClass}">
+                        <i class="fas ${icon}"></i>
+                    </div>
+                    <div class="movement-content">
+                        <p class="movement-title">
+                            <strong>${tipoTexto}</strong> - ${mov.reagent}
+                        </p>
+                        <div class="movement-details">
+                            <span class="movement-quantity">
+                                ${mov.quantity} ${mov.unit}
+                            </span>
+                            ${detalhesAdicionais ? `<span class="movement-project">${detalhesAdicionais}</span>` : ''}
+                            <span class="movement-date">${dataFormatada} ${horaFormatada}</span>
+                        </div>
+                        <div class="movement-responsible">
+                            <small>Responsável: ${mov.responsible}</small>
+                        </div>
+                    </div>
+                </li>
+            `;
+        }).join('');
+        
+        // Atualizar timestamp
+        lastUpdate.textContent = `Atualizado ${new Date().toLocaleTimeString('pt-BR', { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        })}`;
+        
+    } catch (error) {
+        console.error('Erro ao carregar movimentações:', error);
+        const movementsList = document.getElementById('movementsList');
+        movementsList.innerHTML = `
+            <div style="padding: 2rem; text-align: center; color: #dc3545;">
+                <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                <p>Erro ao carregar movimentações</p>
+                <small>Tente recarregar a página</small>
+            </div>
+        `;
+    }
+}
+
+// Carregar movimentações quando a página carregar
+document.addEventListener('DOMContentLoaded', function() {
+    carregarUltimasMovimentacoes();
+    
+    // Atualizar a cada 30 segundos
+    setInterval(carregarUltimasMovimentacoes, 30000);
+});
+
+
+
+
+// Funções para a tabela de produtos
+function editarProduto(id) {
+    window.location.href = `/produtos/editar/${id}`;
+}
+
+function confirmarExclusao(id, nome) {
+    if (confirm(`Tem certeza que deseja excluir o produto "${nome}"?\n\nEsta ação não pode ser desfeita.`)) {
+        // Criar um formulário dinâmico para enviar a requisição DELETE
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/produtos/deletar/${id}`;
+        
+        // Adicionar token CSRF se necessário
+        const csrfToken = document.querySelector('meta[name="csrf-token"]');
+        if (csrfToken) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = '_csrf';
+            input.value = csrfToken.getAttribute('content');
+            form.appendChild(input);
+        }
+        
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+// Adicionar interatividade aos botões de ação
+document.addEventListener('DOMContentLoaded', function() {
+    const actionButtons = document.querySelectorAll('.btn-action');
+    actionButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const action = this.classList.contains('btn-edit') ? 'editar' : 'excluir';
+            const reagentName = this.closest('tr').querySelector('.reagent-name').textContent;
+            console.log(`Ação: ${action} no reagente: ${reagentName}`);
+        });
+    });
+    
+    // Adicionar efeitos de hover nos cards
+    const cards = document.querySelectorAll('.stats-card');
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            card.style.boxShadow = '0 10px 20px rgba(0, 0, 0, 0.1)';
+        });
+        card.addEventListener('mouseleave', () => {
+            card.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.04)';
+        });
+    });
+    
+    // Botão de adicionar novo reagente
+    const addButton = document.querySelector('.btn-add');
+    if (addButton) {
+        addButton.addEventListener('click', function(e) {
+            if (this.tagName === 'A') return;
+            window.location.href = '/produtos/adicionar';
+        });
+    }
+});
     </script>
 </body>
 </html>
