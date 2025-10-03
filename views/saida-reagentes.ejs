@@ -302,62 +302,75 @@
             </div>
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- Formulário de Saída -->
-                <div>
-                    <div class="card">
-                        <div class="card-header">
-                            <h2 class="card-title">
-                                <i class="fas fa-sign-out-alt text-danger"></i>
-                                Registrar Saída de Reagente
-                            </h2>
-                        </div>
-                        <div class="p-6">
-                            <form id="output-form">
-                                <div class="mb-4">
-                                    <label for="reagent" class="form-label required-field">Reagente</label>
-                                    <select class="form-select" id="reagent" name="reagent" required>
-                                        <option value="" selected disabled>Selecione um reagente</option>
-                                        <option value="1">Ácido clorídrico (HCl)</option>
-                                        <option value="2">Hidróxido de sódio (NaOH)</option>
-                                        <option value="3">Sulfato de cobre (CuSO₄)</option>
-                                        <option value="4">Água destilada (H₂O)</option>
-                                        <option value="5">Cloreto de sódio (NaCl)</option>
-                                        <option value="6">Ácido sulfúrico (H₂SO₄)</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="mb-4">
-                                    <label for="quantity" class="form-label required-field">Quantidade</label>
-                                    <div class="input-group">
-                                        <input type="number" class="form-control" id="quantity" name="quantity" min="0.1" step="0.1" required>
-                                        <span class="input-group-text" id="unit-measure">unidades</span>
-                                    </div>
-                                </div>
-                                
-                                <div class="mb-4">
-                                    <label for="responsible" class="form-label required-field">Responsável</label>
-                                    <input type="text" class="form-control" id="responsible" name="responsible" required>
-                                </div>
-                                
-                                <div class="mb-4">
-                                    <label for="project" class="form-label">Projeto/Experimento</label>
-                                    <input type="text" class="form-control" id="project" name="project">
-                                </div>
-                                
-                                <div class="mb-4">
-                                    <label for="notes" class="form-label">Observações</label>
-                                    <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
-                                </div>
-                                
-                                <div class="d-grid">
-                                    <button type="submit" class="danger-btn py-3">
-                                        <i class="fas fa-check-circle me-2"></i>Registrar Saída
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+               <!-- Formulário de Saída -->
+<div>
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">
+                <i class="fas fa-sign-out-alt text-danger"></i>
+                Registrar Saída de Reagente
+            </h2>
+        </div>
+        <div class="p-6">
+            <form id="output-form">
+                <div class="mb-4">
+                    <label for="reagent" class="form-label required-field">Reagente</label>
+                    <select class="form-select" id="reagent" name="reagent" required>
+                        <option value="" selected disabled>Selecione um reagente</option>
+                        <% produtos.forEach(produto => { %>
+                            <option value="<%= produto.id_produto %>" 
+                                    data-unit="<%= produto.unidade_medida %>"
+                                    data-stock="<%= produto.quantidade %>">
+                                <%= produto.nome %> - Estoque: <%= produto.quantidade %> <%= produto.unidade_medida %>
+                                <% if (produto.quantidade <= 5) { %>
+                                    <span class="text-danger"> (Baixo Estoque)</span>
+                                <% } %>
+                            </option>
+                        <% }); %>
+                    </select>
+                    <small class="form-text text-muted" id="stock-info">
+                        Selecione um reagente para ver informações detalhadas
+                    </small>
                 </div>
+                
+                <div class="mb-4">
+                    <label for="quantity" class="form-label required-field">Quantidade</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="quantity" name="quantity" min="0.1" step="0.1" required placeholder="Ex: 2.5">
+                        <span class="input-group-text" id="unit-measure">unidade</span>
+                    </div>
+                    <small class="form-text text-muted" id="quantity-help">
+                        Digite a quantidade a ser retirada
+                    </small>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="responsible" class="form-label required-field">Responsável</label>
+                    <input type="text" class="form-control" id="responsible" name="responsible" required 
+                           placeholder="Digite o nome do responsável">
+                </div>
+                
+                <div class="mb-4">
+                    <label for="project" class="form-label">Projeto/Experimento</label>
+                    <input type="text" class="form-control" id="project" name="project" 
+                           placeholder="Digite o projeto ou experimento">
+                </div>
+                
+                <div class="mb-4">
+                    <label for="notes" class="form-label">Observações</label>
+                    <textarea class="form-control" id="notes" name="notes" rows="3" 
+                              placeholder="Observações adicionais..."></textarea>
+                </div>
+                
+                <div class="d-grid">
+                    <button type="submit" class="danger-btn py-3">
+                        <i class="fas fa-check-circle me-2"></i>Registrar Saída
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
                 
                 <!-- Últimas Movimentações e Estatísticas -->
                 <div>
@@ -453,177 +466,243 @@
     <div class="toast-container"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Função para exibir notificações
-        function showToast(message, type = 'success') {
-            const toastContainer = document.querySelector('.toast-container');
-            const toastId = 'toast-' + Date.now();
-            
-            const toast = document.createElement('div');
-            toast.className = `toast align-items-center text-bg-${type} border-0`;
-            toast.id = toastId;
-            toast.setAttribute('role', 'alert');
-            toast.setAttribute('aria-live', 'assertive');
-            toast.setAttribute('aria-atomic', 'true');
-            
-            toast.innerHTML = `
-                <div class="d-flex">
-                    <div class="toast-body">
-                        ${message}
-                    </div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-            `;
-            
-            toastContainer.appendChild(toast);
-            
-            const bsToast = new bootstrap.Toast(toast, {
-                delay: 5000
-            });
-            bsToast.show();
-            
-            // Remover o toast do DOM após ser escondido
-            toast.addEventListener('hidden.bs.toast', () => {
-                toast.remove();
-            });
-        }
-
-        // Função para carregar as movimentações
-        async function loadMovements() {
-            try {
-                const response = await fetch('/api/movements');
-                const movements = await response.json();
-                
-                const movementsList = document.getElementById('movements-list');
-                movementsList.innerHTML = '';
-                
-                movements.forEach(movement => {
-                    const movementItem = document.createElement('li');
-                    movementItem.className = 'movement-item';
-                    
-                    movementItem.innerHTML = `
-                        <div class="movement-icon ${movement.type === 'in' ? 'movement-in' : 'movement-out'}">
-                            <i class="fas fa-arrow-${movement.type === 'in' ? 'down' : 'up'}"></i>
-                        </div>
-                        <div class="movement-content">
-                            <p class="movement-title">${movement.type === 'in' ? 'Entrada' : 'Saída'} - ${movement.reagent}</p>
-                            <div class="movement-details">
-                                <span class="movement-quantity">${movement.quantity} ${movement.unit}</span>
-                                <span class="movement-date">${new Date(movement.date).toLocaleString('pt-BR')}</span>
-                            </div>
-                        </div>
-                    `;
-                    
-                    movementsList.appendChild(movementItem);
-                });
-                
-                // Atualizar o timestamp da última atualização
-                document.getElementById('last-update').textContent = `Atualizado agora`;
-            } catch (error) {
-                console.error('Erro ao carregar movimentações:', error);
-            }
-        }
-
-        // Função para carregar estatísticas
-        async function loadStatistics() {
-            try {
-                const response = await fetch('/api/statistics');
-                const stats = await response.json();
-                
-                // Atualizar os contadores
-                document.getElementById('today-outputs').textContent = stats.todayOutputs;
-                document.getElementById('week-outputs').textContent = stats.weekOutputs;
-                document.getElementById('month-outputs').textContent = stats.monthOutputs;
-                document.getElementById('total-items').textContent = `${stats.totalItems} itens em inventário`;
-                
-                // Atualizar as estatísticas de reagentes
-                const reagentsStats = document.getElementById('reagents-stats');
-                reagentsStats.innerHTML = '';
-                
-                stats.mostUsedReagents.forEach((reagent, index) => {
-                    const colors = ['bg-danger', 'bg-warning', 'bg-info'];
-                    const progressBar = document.createElement('div');
-                    progressBar.className = 'd-flex align-items-center mt-3';
-                    
-                    progressBar.innerHTML = `
-                        <div class="flex-grow-1 me-3">
-                            <div class="small text-muted">${reagent.name}</div>
-                            <div class="progress mt-1" style="height: 8px;">
-                                <div class="progress-bar ${colors[index]}" role="progressbar" style="width: ${reagent.percentage}%" 
-                                    aria-valuenow="${reagent.percentage}" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <span class="text-dark fw-bold">${reagent.percentage}%</span>
-                        </div>
-                    `;
-                    
-                    reagentsStats.appendChild(progressBar);
-                });
-            } catch (error) {
-                console.error('Erro ao carregar estatísticas:', error);
-            }
-        }
-
-        // Envio do formulário de saída
-        document.getElementById('output-form').addEventListener('submit', async function(event) {
-            event.preventDefault();
-            
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData.entries());
-            
-            try {
-                const response = await fetch('/api/output', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    showToast('Saída de reagente registrada com sucesso!');
-                    this.reset();
-                    
-                    // Recarregar as movimentações e estatísticas
-                    await loadMovements();
-                    await loadStatistics();
-                } else {
-                    showToast(result.message, 'danger');
-                }
-            } catch (error) {
-                console.error('Erro ao registrar saída:', error);
-                showToast('Erro ao registrar saída. Tente novamente.', 'danger');
-            }
-        });
+   <script>
+    // Função para exibir notificações
+    function showToast(message, type = 'success') {
+        const toastContainer = document.querySelector('.toast-container');
+        const toastId = 'toast-' + Date.now();
         
-        // Atualizar unidade de medida baseada no reagente selecionado
-        document.getElementById('reagent').addEventListener('change', function() {
-            const unitMeasure = document.getElementById('unit-measure');
-            const reagentId = this.value;
+        const toast = document.createElement('div');
+        toast.className = `toast align-items-center text-bg-${type} border-0`;
+        toast.id = toastId;
+        toast.setAttribute('role', 'alert');
+        toast.setAttribute('aria-live', 'assertive');
+        toast.setAttribute('aria-atomic', 'true');
+        
+        toast.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'} me-2"></i>
+                    ${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        `;
+        
+        toastContainer.appendChild(toast);
+        
+        const bsToast = new bootstrap.Toast(toast, {
+            delay: 5000
+        });
+        bsToast.show();
+        
+        // Remover o toast do DOM após ser escondido
+        toast.addEventListener('hidden.bs.toast', () => {
+            toast.remove();
+        });
+    }
+
+    // Atualizar unidade de medida e informações do estoque
+    document.getElementById('reagent').addEventListener('change', function() {
+        const unitMeasure = document.getElementById('unit-measure');
+        const stockInfo = document.getElementById('stock-info');
+        const quantityInput = document.getElementById('quantity');
+        const selectedOption = this.options[this.selectedIndex];
+        
+        if (selectedOption.value) {
+            const unit = selectedOption.dataset.unit;
+            const stock = parseFloat(selectedOption.dataset.stock);
             
-            // Lógica para determinar a unidade de medida baseada no reagente
-            if (reagentId === "4") { // Água destilada
-                unitMeasure.textContent = "litros";
-            } else if (reagentId === "6") { // Ácido sulfúrico
-                unitMeasure.textContent = "mL";
+            unitMeasure.textContent = unit;
+            stockInfo.textContent = `Estoque disponível: ${stock} ${unit}`;
+            stockInfo.className = 'form-text ' + (stock <= 5 ? 'text-danger fw-bold' : 'text-muted');
+            
+            // Atualizar o placeholder do input de quantidade
+            quantityInput.placeholder = `Ex: 1.0 (máx: ${stock})`;
+            quantityInput.max = stock;
+        } else {
+            unitMeasure.textContent = 'unidade';
+            stockInfo.textContent = 'Selecione um reagente para ver informações detalhadas';
+            stockInfo.className = 'form-text text-muted';
+        }
+    });
+
+    // Envio do formulário de saída
+    document.getElementById('output-form').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        
+        // Mostrar loading
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Registrando...';
+        submitBtn.disabled = true;
+        
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData.entries());
+        
+        console.log('Enviando dados:', data);
+        
+        try {
+            const response = await fetch('/api/output', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            
+            const result = await response.json();
+            console.log('Resposta do servidor:', result);
+            
+            if (result.success) {
+                showToast(result.message, 'success');
+                this.reset();
+                
+                // Recarregar as movimentações e estatísticas
+                await loadMovements();
+                await loadStatistics();
+                
+                // Recarregar a página para atualizar a lista de produtos
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+                
             } else {
-                unitMeasure.textContent = "unidades";
+                showToast(result.message, 'danger');
             }
-        });
+        } catch (error) {
+            console.error('Erro ao registrar saída:', error);
+            showToast('Erro de conexão. Tente novamente.', 'danger');
+        } finally {
+            // Restaurar botão
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    });
 
-        // Botão para ver todas as movimentações
-        document.getElementById('view-all-movements').addEventListener('click', function() {
-            window.location.href = '/movimentos';
-        });
+    // Função para carregar as movimentações
+    async function loadMovements() {
+        try {
+            const response = await fetch('/api/movements');
+            const movements = await response.json();
+            
+            const movementsList = document.getElementById('movements-list');
+            movementsList.innerHTML = '';
+            
+            if (movements.length === 0) {
+                movementsList.innerHTML = `
+                    <li class="movement-item text-center text-muted py-4">
+                        <i class="fas fa-inbox fa-2x mb-2"></i>
+                        <p>Nenhuma movimentação registrada</p>
+                    </li>
+                `;
+                return;
+            }
+            
+            movements.forEach(movement => {
+                const movementItem = document.createElement('li');
+                movementItem.className = 'movement-item';
+                
+                const date = new Date(movement.date);
+                const formattedDate = date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+                
+                movementItem.innerHTML = `
+                    <div class="movement-icon ${movement.type === 'entrada' ? 'movement-in' : 'movement-out'}">
+                        <i class="fas fa-arrow-${movement.type === 'entrada' ? 'down' : 'up'}"></i>
+                    </div>
+                    <div class="movement-content">
+                        <p class="movement-title">${movement.type === 'entrada' ? 'Entrada' : 'Saída'} - ${movement.reagent}</p>
+                        <div class="movement-details">
+                            <span class="movement-quantity"><strong>${movement.quantity} ${movement.unit}</strong></span>
+                            <span class="movement-date">${formattedDate}</span>
+                            <span class="movement-responsible">por ${movement.responsible}</span>
+                        </div>
+                        ${movement.project ? `<small class="text-muted">Projeto: ${movement.project}</small>` : ''}
+                    </div>
+                `;
+                
+                movementsList.appendChild(movementItem);
+            });
+            
+            // Atualizar o timestamp da última atualização
+            document.getElementById('last-update').textContent = `Atualizado às ${new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}`;
+        } catch (error) {
+            console.error('Erro ao carregar movimentações:', error);
+            const movementsList = document.getElementById('movements-list');
+            movementsList.innerHTML = `
+                <li class="movement-item text-center text-danger py-4">
+                    <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                    <p>Erro ao carregar movimentações</p>
+                </li>
+            `;
+        }
+    }
 
-        // Carregar dados iniciais
-        document.addEventListener('DOMContentLoaded', function() {
-            loadMovements();
-            loadStatistics();
-        });
-    </script>
+    // Função para carregar estatísticas
+    async function loadStatistics() {
+        try {
+            const response = await fetch('/api/statistics');
+            const stats = await response.json();
+            
+            console.log('Estatísticas carregadas:', stats);
+            
+            // Atualizar os contadores
+            document.getElementById('today-outputs').textContent = stats.todayOutputs;
+            document.getElementById('week-outputs').textContent = stats.weekOutputs;
+            document.getElementById('month-outputs').textContent = stats.monthOutputs;
+            document.getElementById('total-items').textContent = `${stats.totalItems} itens em inventário`;
+            
+            // Atualizar as estatísticas de reagentes
+            const reagentsStats = document.getElementById('reagents-stats');
+            reagentsStats.innerHTML = '';
+            
+            if (stats.mostUsedReagents.length === 0) {
+                reagentsStats.innerHTML = '<p class="text-muted text-center">Nenhum dado disponível</p>';
+                return;
+            }
+            
+            const colors = ['bg-danger', 'bg-warning', 'bg-info'];
+            stats.mostUsedReagents.forEach((reagent, index) => {
+                const progressBar = document.createElement('div');
+                progressBar.className = 'd-flex align-items-center mt-3';
+                
+                progressBar.innerHTML = `
+                    <div class="flex-grow-1 me-3">
+                        <div class="small text-muted">${reagent.name}</div>
+                        <div class="progress mt-1" style="height: 8px;">
+                            <div class="progress-bar ${colors[index] || 'bg-primary'}" role="progressbar" 
+                                style="width: ${reagent.percentage}%" 
+                                aria-valuenow="${reagent.percentage}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <span class="text-dark fw-bold">${reagent.percentage}%</span>
+                    </div>
+                `;
+                
+                reagentsStats.appendChild(progressBar);
+            });
+        } catch (error) {
+            console.error('Erro ao carregar estatísticas:', error);
+        }
+    }
+
+    // Botão para ver todas as movimentações
+    document.getElementById('view-all-movements').addEventListener('click', function() {
+        showToast('Funcionalidade em desenvolvimento', 'info');
+    });
+
+    // Carregar dados iniciais
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Página carregada, buscando dados...');
+        loadMovements();
+        loadStatistics();
+        
+        // Mostrar quantos produtos foram carregados
+        const reagentSelect = document.getElementById('reagent');
+        console.log(`Número de produtos carregados: ${reagentSelect.options.length - 1}`);
+    });
+</script>
 </body>
 </html>

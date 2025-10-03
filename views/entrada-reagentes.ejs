@@ -4,135 +4,227 @@
     <%- include('./partials/head'); %>
     <style>
         :root {
-            --primary: #2d3748;
-            --secondary: #2d3748;
-            --success: #2d3748;
-            --warning: #2d3748;
-            --info: #2d3748;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --gray: #6c757d;
-            --light-gray: #e9ecef;
+            --primary: #2563eb;
+            --secondary: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --light: #f8fafc;
+            --dark: #1e293b;
         }
         
         body {
-            background-color: #f5f7fb;
-            color: #333;
+            background: linear-gradient(135deg, #f5f7fb 0%, #e3e8f0 100%);
             min-height: 100vh;
+            font-family: 'Inter', sans-serif;
         }
         
         .main-container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 1.5rem;
+            padding: 2rem;
         }
         
         .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border-left: 6px solid var(--success);
         }
         
         .section-title {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: #2d3748;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .section-title i {
+            background: linear-gradient(135deg, var(--success), #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.5rem;
         }
         
         .card {
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            border: none;
             overflow: hidden;
             margin-bottom: 2rem;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, var(--success), #059669);
         }
         
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
         }
         
         .card-header {
-            padding: 1.25rem 1.5rem;
+            padding: 1.5rem 2rem;
             border-bottom: 1px solid #e2e8f0;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
         }
         
         .card-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #2d3748;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--dark);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.75rem;
         }
         
-    
+        .card-title i {
+            color: var(--success);
+            font-size: 1.6rem;
+        }
         
-       
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #059669);
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+            background: linear-gradient(135deg, #059669, #047857);
+        }
         
         .form-control, .form-select {
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            margin-bottom: 1.2rem;
-            border: 1px solid #d1d3e2;
-            width: 100%;
+            padding: 1rem 1.25rem;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
             font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--success);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+            background: white;
         }
         
         .form-label {
             font-weight: 600;
             color: var(--dark);
-            margin-bottom: 0.5rem;
-            display: block;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
         }
         
         .required-field::after {
             content: " *";
-            color: #2b1a18;
+            color: var(--danger);
         }
         
         .input-group {
             display: flex;
+            border-radius: 12px;
+            overflow: hidden;
         }
         
         .input-group .form-control {
             margin-bottom: 0;
             border-top-right-radius: 0;
             border-bottom-right-radius: 0;
+            border-right: none;
         }
         
         .input-group-text {
-            background-color: #f8f9fa;
-            border: 1px solid #d1d3e2;
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            border: 2px solid #e2e8f0;
             border-left: none;
-            padding: 0.75rem 1rem;
-            border-top-right-radius: 8px;
-            border-bottom-right-radius: 8px;
-            color: var(--gray);
+            padding: 1rem 1.25rem;
+            color: var(--dark);
+            font-weight: 600;
+            min-width: 100px;
         }
         
-        .alert {
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
         }
         
-        .alert-info {
-            background-color: rgba(114, 9, 183, 0.15);
-            border-left: 4px solid var(--info);
-            color: #2c5282;
+        .stat-card {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
         }
         
-        .alert-warning {
-            background-color: rgba(255, 193, 7, 0.15);
-            border-left: 4px solid #ffc107;
-            color: #856404;
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .stat-today .stat-icon { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+        .stat-week .stat-icon { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; }
+        .stat-month .stat-icon { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-today .stat-value { color: #10b981; }
+        .stat-week .stat-value { color: #3b82f6; }
+        .stat-month .stat-value { color: #8b5cf6; }
+        
+        .stat-label {
+            color: var(--secondary);
+            font-weight: 600;
+            font-size: 0.9rem;
         }
         
         .movement-list {
@@ -144,34 +236,32 @@
         .movement-item {
             display: flex;
             align-items: center;
-            padding: 1rem;
-            border-bottom: 1px solid #e3e6f0;
-            transition: background-color 0.3s;
+            padding: 1.25rem;
+            border-bottom: 1px solid #f1f5f9;
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
         }
         
         .movement-item:hover {
-            background-color: #f8f9fc;
+            background: #f8fafc;
+            transform: translateX(4px);
         }
         
         .movement-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-right: 1rem;
-            flex-shrink: 0;
+            font-size: 1.25rem;
         }
         
         .movement-in {
-            background-color: rgba(52, 168, 83, 0.2);
-            color: #28a745;
-        }
-        
-        .movement-out {
-            background-color: rgba(231, 74, 59, 0.2);
-            color: #e74c3c;
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            color: #10b981;
         }
         
         .movement-content {
@@ -180,49 +270,90 @@
         
         .movement-title {
             font-weight: 600;
-            margin: 0 0 0.25rem 0;
+            margin: 0 0 0.5rem 0;
             color: var(--dark);
+            font-size: 1.1rem;
         }
         
         .movement-details {
             display: flex;
-            gap: 15px;
+            gap: 1rem;
+            flex-wrap: wrap;
         }
         
-        .movement-quantity, .movement-date {
-            font-size: 0.85rem;
-            color: #6e707e;
-        }
-        
-        .stats-info {
-            font-size: 0.85rem;
-            color: var(--gray);
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .view-all-btn {
-            background: transparent;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 0.6rem 1.2rem;
-            font-size: 0.9rem;
-            color: var(--primary);
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .movement-detail {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            text-decoration: none;
+            color: var(--secondary);
+            font-size: 0.9rem;
         }
         
-        .view-all-btn:hover {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(67, 97, 238, 0.2);
+        .movement-detail i {
+            color: var(--success);
+        }
+        
+        .supplier-stat {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+            transition: all 0.3s ease;
+        }
+        
+        .supplier-stat:hover {
+            background: #f1f5f9;
+            transform: translateX(4px);
+        }
+        
+        .supplier-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+        
+        .supplier-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .supplier-name {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .supplier-count {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--success);
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        .info-card {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid #bae6fd;
+        }
+        
+        .info-card.warning {
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            border: 1px solid #fcd34d;
+        }
+        
+        .info-card.danger {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            border: 1px solid #fca5a5;
         }
         
         .toast-container {
@@ -232,393 +363,260 @@
             z-index: 9999;
         }
         
-        .text-success {
-            color: var(--success) !important;
-        }
-        
-        .text-primary {
-            color: var(--primary) !important;
-        }
-        
-        .text-danger {
-            color: var(--warning) !important;
-        }
-        
-        .text-info {
-            color: var(--info) !important;
-        }
-        
-        .text-muted {
-            color: var(--gray) !important;
-        }
-        
-        .bg-success {
-            background-color: var(--success) !important;
-        }
-        
-        .bg-primary {
-            background-color: var(--primary) !important;
-        }
-        
-        .bg-info {
-            background-color: var(--info) !important;
-        }
-        
-        .progress {
-            height: 8px;
-            background-color: #e9ecef;
-            border-radius: 4px;
-        }
-        
-        .progress-bar {
-            height: 100%;
-            border-radius: 4px;
-            transition: width 0.3s ease;
-        }
-        
-        .mb-4 {
-            margin-bottom: 1.5rem;
-        }
-        
-        .mt-4 {
-            margin-top: 1.5rem;
-        }
-        
-        .me-2 {
-            margin-right: 0.5rem;
-        }
-        
-        .ms-3 {
-            margin-left: 1rem;
-        }
-        
-        .p-6 {
-            padding: 1.5rem;
-        }
-        
-        .grid {
-            display: grid;
-        }
-        
-        .grid-cols-1 {
-            grid-template-columns: repeat(1, minmax(0, 1fr));
-        }
-        
-        .grid-cols-3 {
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-        }
-        
-        .gap-6 {
-            gap: 1.5rem;
-        }
-        
-        .text-center {
-            text-align: center;
-        }
-        
-        .border-r {
-            border-right: 1px solid #e5e7eb;
-        }
-        
-        .border-t {
-            border-top: 1px solid #e5e7eb;
-        }
-        
-        .font-semibold {
-            font-weight: 600;
-        }
-        
-        .font-bold {
-            font-weight: 700;
-        }
-        
-        .text-2xl {
-            font-size: 1.5rem;
-        }
-        
-        .text-sm {
-            font-size: 0.875rem;
-        }
-        
-        .d-grid {
-            display: grid;
-        }
-        
-        .py-3 {
-            padding-top: 0.75rem;
-            padding-bottom: 0.75rem;
-        }
-        
-        .small {
-            font-size: 0.875rem;
-        }
-        
-        @media (min-width: 1024px) {
-            .lg\:grid-cols-2 {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
         
-        @media (max-width: 768px) {
-            .main-container {
-                padding: 1rem;
+        .card {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .stat-card {
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        @media (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
             }
             
-            .section-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-            
-            .card-header {
-                flex-direction: column;
-                gap: 1rem;
-                align-items: flex-start;
-            }
-            
-            .movement-details {
-                flex-direction: column;
-                gap: 5px;
-            }
-            
-            .grid-cols-3 {
-                grid-template-columns: repeat(1, minmax(0, 1fr));
-            }
-            
-            .border-r {
-                border-right: none;
-                border-bottom: 1px solid #e5e7eb;
-                padding-bottom: 1rem;
-                margin-bottom: 1rem;
+            .info-grid {
+                grid-template-columns: 1fr;
             }
         }
-
-
-        .d-grid {
-    display: grid;
-    padding: 20px;
-    justify-content: center;
-    align-items: center;
-}
-
-.success-btn {
-    background-color: #27ae60; /* Verde moderno e profissional */
-    color: #ffffff;
-    border: none;
-    border-radius: 8px;
-    padding: 16px 32px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    text-decoration: none;
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    max-width: 280px;
-}
-
-.success-btn:hover {
-    background-color: #219653; /* Tom mais escuro no hover */
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
-.success-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.success-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.7s ease;
-}
-
-.success-btn:hover::before {
-    left: 100%;
-}
-
-.success-btn i {
-    font-size: 18px;
-    transition: transform 0.3s ease;
-}
-
-.success-btn:hover i {
-    transform: scale(1.1);
-}
     </style>
 </head>
 <body class="flex">
     <%- include('./partials/header'); %>
     
     <!-- Conteúdo Principal -->
-    <main class="flex-1 overflow-auto bg-gray-50 min-h-screen">
+    <main class="flex-1 overflow-auto min-h-screen">
         <div class="main-container">
             <!-- Header da Página -->
             <div class="section-header">
                 <h1 class="section-title">
-                    <i class="fas fa-sign-in-alt text-success mr-2"></i>
+                    <i class="fas fa-sign-in-alt"></i>
                     Entrada de Reagentes
                 </h1>
+                <div class="text-sm text-gray-600">
+                    <i class="fas fa-user mr-2"></i>
+                    Logado como: <strong><%= user.name %></strong>
+                </div>
             </div>
             
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
                 <!-- Formulário de Entrada -->
-                <div>
+                <div class="space-y-6">
                     <div class="card">
                         <div class="card-header">
                             <h2 class="card-title">
-                                <i class="fas fa-sign-in-alt text-success"></i>
-                                Registrar Entrada de Reagente
+                                <i class="fas fa-file-import"></i>
+                                Registrar Entrada
                             </h2>
                         </div>
                         <div class="p-6">
                             <form id="input-form">
-                                <div class="mb-4">
-                                    <label for="reagent" class="form-label required-field">Reagente</label>
+                                <div class="mb-5">
+                                    <label for="reagent" class="form-label required-field">
+                                        <i class="fas fa-flask mr-2"></i>Reagente
+                                    </label>
                                     <select class="form-select" id="reagent" name="reagent" required>
-                                        <option value="" selected disabled>Selecione um reagente</option>
-                                        <option value="1">Ácido clorídrico (HCl)</option>
-                                        <option value="2">Hidróxido de sódio (NaOH)</option>
-                                        <option value="3">Sulfato de cobre (CuSO₄)</option>
-                                        <option value="4">Água destilada (H₂O)</option>
-                                        <option value="5">Cloreto de sódio (NaCl)</option>
-                                        <option value="6">Ácido sulfúrico (H₂SO₄)</option>
+                                        <option value="" selected disabled>Selecione um reagente...</option>
+                                        <% produtos.forEach(produto => { %>
+                                            <option value="<%= produto.id_produto %>" 
+                                                    data-unit="<%= produto.unidade_medida %>"
+                                                    data-stock="<%= produto.quantidade %>"
+                                                    data-location="<%= produto.localizacao %>">
+                                                <%= produto.nome %> - Estoque: <%= produto.quantidade %> <%= produto.unidade_medida %>
+                                                <% if (produto.quantidade <= 5) { %>
+                                                    <span class="text-danger"> ⚠️ Baixo Estoque</span>
+                                                <% } %>
+                                            </option>
+                                        <% }); %>
                                     </select>
-                                </div>
-                                
-                                <div class="mb-4">
-                                    <label for="quantity" class="form-label required-field">Quantidade</label>
-                                    <div class="input-group">
-                                        <input type="number" class="form-control" id="quantity" name="quantity" min="0.1" step="0.1" required>
-                                        <span class="input-group-text" id="unit-measure">unidades</span>
+                                    <div class="mt-2 text-sm text-gray-600" id="reagent-info">
+                                        Selecione um reagente para ver informações detalhadas
                                     </div>
                                 </div>
                                 
-                                <div class="mb-4">
-                                    <label for="supplier" class="form-label required-field">Fornecedor</label>
-                                    <input type="text" class="form-control" id="supplier" name="supplier" required>
+                                <div class="mb-5">
+                                    <label for="quantity" class="form-label required-field">
+                                        <i class="fas fa-balance-scale mr-2"></i>Quantidade de Entrada
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="quantity" name="quantity" 
+                                               min="0.1" step="0.1" required placeholder="Ex: 5.0">
+                                        <span class="input-group-text" id="unit-measure">unidade</span>
+                                    </div>
+                                    <div class="mt-2 text-sm text-gray-600" id="quantity-info">
+                                        Digite a quantidade que está entrando no estoque
+                                    </div>
                                 </div>
                                 
-                                <div class="mb-4">
-                                    <label for="purchase-order" class="form-label">Ordem de Compra</label>
-                                    <input type="text" class="form-control" id="purchase-order" name="purchase-order">
+                                <div class="mb-5">
+                                    <label for="responsible" class="form-label required-field">
+                                        <i class="fas fa-user-check mr-2"></i>Responsável
+                                    </label>
+                                    <input type="text" class="form-control" id="responsible" name="responsible" 
+                                           required placeholder="Digite seu nome completo">
                                 </div>
                                 
-                                <div class="mb-4">
-                                    <label for="expiration-date" class="form-label">Data de Validade</label>
-                                    <input type="date" class="form-control" id="expiration-date" name="expiration-date">
+                                <div class="mb-5">
+                                    <label for="supplier" class="form-label">
+                                        <i class="fas fa-truck mr-2"></i>Fornecedor
+                                    </label>
+                                    <input type="text" class="form-control" id="supplier" name="supplier" 
+                                           placeholder="Digite o nome do fornecedor">
                                 </div>
                                 
-                                <div class="mb-4">
-                                    <label for="notes" class="form-label">Observações</label>
-                                    <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                                <div class="mb-5">
+                                    <label for="purchaseDate" class="form-label">
+                                        <i class="fas fa-calendar-alt mr-2"></i>Data da Compra
+                                    </label>
+                                    <input type="date" class="form-control" id="purchaseDate" name="purchaseDate">
                                 </div>
                                 
-                                <div class="d-grid">
-                                    <button type="submit" class="success-btn py-3">
-                                        <i class="fas fa-check-circle me-2"></i>Registrar Entrada
-                                    </button>
+                                <div class="mb-5">
+                                    <label for="notes" class="form-label">
+                                        <i class="fas fa-sticky-note mr-2"></i>Observações
+                                    </label>
+                                    <textarea class="form-control" id="notes" name="notes" rows="3" 
+                                              placeholder="Observações adicionais sobre a entrada..."></textarea>
                                 </div>
+                                
+                                <button type="submit" class="btn-success">
+                                    <i class="fas fa-paper-plane mr-2"></i>
+                                    Registrar Entrada
+                                </button>
                             </form>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Últimas Movimentações e Estatísticas -->
-                <div>
+                <!-- Painel Direito -->
+                <div class="space-y-6">
+                    <!-- Estatísticas -->
                     <div class="card">
                         <div class="card-header">
                             <h2 class="card-title">
-                                <i class="fas fa-exchange-alt"></i>
-                                Últimas Movimentações
-                            </h2>
-                            <button class="view-all-btn" id="view-all-movements">
-                                <i class="fas fa-list"></i> Ver todas
-                            </button>
-                        </div>
-                        
-                        <ul class="movement-list">
-                            <!-- As movimentações serão carregadas via JavaScript -->
-                        </ul>
-                        
-                        <div class="card-footer p-4 bg-gray-50 border-t">
-                            <span class="stats-info">
-                                <i class="fas fa-history"></i>
-                                <span id="last-update">Atualizado há 5 minutos</span>
-                            </span>
-                        </div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <h2 class="card-title">
-                                <i class="fas fa-chart-bar text-primary"></i>
+                                <i class="fas fa-chart-bar"></i>
                                 Estatísticas de Entrada
                             </h2>
                         </div>
                         <div class="p-6">
-                            <div class="grid grid-cols-3 text-center mb-4">
-                                <div class="border-r">
-                                    <h4 class="text-success text-2xl font-bold" id="today-inputs">15</h4>
-                                    <p class="text-muted mb-0 text-sm">Entradas hoje</p>
+                            <div class="stats-grid">
+                                <div class="stat-card stat-today">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-calendar-day"></i>
+                                    </div>
+                                    <div class="stat-value" id="today-inputs">0</div>
+                                    <div class="stat-label">Entradas Hoje</div>
                                 </div>
-                                <div class="border-r">
-                                    <h4 class="text-primary text-2xl font-bold" id="week-inputs">78</h4>
-                                    <p class="text-muted mb-0 text-sm">Entradas semana</p>
+                                
+                                <div class="stat-card stat-week">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-calendar-week"></i>
+                                    </div>
+                                    <div class="stat-value" id="week-inputs">0</div>
+                                    <div class="stat-label">Esta Semana</div>
                                 </div>
-                                <div>
-                                    <h4 class="text-info text-2xl font-bold" id="month-inputs">320</h4>
-                                    <p class="text-muted mb-0 text-sm">Entradas mês</p>
+                                
+                                <div class="stat-card stat-month">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                    <div class="stat-value" id="month-inputs">0</div>
+                                    <div class="stat-label">Este Mês</div>
                                 </div>
                             </div>
                             
-                            <div class="mt-4">
-                                <h6 class="font-semibold mb-3">Reagentes mais recebidos</h6>
-                                <div >
-                                    <!-- As estatísticas serão carregadas via JavaScript -->
-                                </div>
+                            <h6 class="font-semibold text-gray-700 mb-4 flex items-center">
+                                <i class="fas fa-truck mr-2 text-purple-500"></i>
+                                Fornecedores Frequentes
+                            </h6>
+                            <div id="suppliers-stats">
+                                <!-- Carregado via JavaScript -->
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Informações Importantes -->
+                    <!-- Movimentações Recentes -->
                     <div class="card">
                         <div class="card-header">
                             <h2 class="card-title">
-                                <i class="fas fa-info-circle text-primary"></i>
-                                Informações Importantes
+                                <i class="fas fa-history"></i>
+                                Entradas Recentes
+                            </h2>
+                            <button class="btn btn-outline-success btn-sm" id="refresh-inputs">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <ul class="movement-list" id="input-movements-list">
+                                <!-- Carregado via JavaScript -->
+                            </ul>
+                            <div class="text-center p-4 text-gray-500" id="loading-inputs">
+                                <i class="fas fa-spinner fa-spin fa-2x mb-2"></i>
+                                <p>Carregando entradas...</p>
+                            </div>
+                        </div>
+                        <div class="card-footer p-4 bg-gray-50 border-t">
+                            <div class="flex justify-between items-center text-sm text-gray-600">
+                                <span>
+                                    <i class="fas fa-clock mr-1"></i>
+                                    <span id="last-update">Atualizando...</span>
+                                </span>
+                                <span id="total-inputs">0 registros</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Informações do Estoque -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-info-circle"></i>
+                                Status do Estoque
                             </h2>
                         </div>
                         <div class="p-6">
-                            <div class="alert alert-warning">
-                                <h6 class="font-semibold"><i class="fas fa-exclamation-triangle me-2"></i>Antes de registrar a entrada:</h6>
-                                <ul class="mb-0 mt-2 ps-4">
-                                    <li>Verifique a qualidade do reagente</li>
-                                    <li>Confirme a data de validade</li>
-                                    <li>Registre qualquer observação relevante</li>
-                                    <li>Armazene no local adequado</li>
-                                </ul>
+                            <div class="info-grid">
+                                <div class="info-card warning">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-exclamation-triangle text-yellow-500 text-xl mr-3"></i>
+                                        <div>
+                                            <h6 class="font-semibold text-yellow-700">Estoque Baixo</h6>
+                                            <p class="text-2xl font-bold text-yellow-600 mb-0" id="low-stock-items">0</p>
+                                            <small class="text-yellow-500">produtos precisam de reposição</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="info-card danger">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-times-circle text-red-500 text-xl mr-3"></i>
+                                        <div>
+                                            <h6 class="font-semibold text-red-700">Estoque Esgotado</h6>
+                                            <p class="text-2xl font-bold text-red-600 mb-0" id="out-of-stock-items">0</p>
+                                            <small class="text-red-500">produtos sem estoque</small>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             
-                            <div class="flex items-center mt-4">
-                                <div class="flex-shrink-0  bg-opacity-10 p-3 rounded">
-                                    <i class="fas fa-database text-primary fa-lg"></i>
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h6 class="font-semibold mb-0">Estoque Total</h6>
-                                    <p class="text-muted mb-0" id="total-items">184 itens em inventário</p>
+                            <div class="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                                <div class="flex items-center">
+                                    <i class="fas fa-lightbulb text-blue-500 mr-2"></i>
+                                    <span class="text-sm text-blue-700 font-medium">
+                                        Dica: Mantenha o controle das entradas para garantir o abastecimento contínuo
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -627,32 +625,12 @@
             </div>
         </div>
     </main>
-    <!-- Container para toasts (notificações) -->
+
+    <!-- Container para Notificações -->
     <div class="toast-container"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Dados de exemplo para demonstração
-        const sampleMovements = [
-            { id: 1, type: 'in', reagent: 'Ácido clorídrico (HCl)', quantity: 5, unit: 'unidades', date: '2025-06-15T10:30:00' },
-            { id: 2, type: 'in', reagent: 'Hidróxido de sódio (NaOH)', quantity: 3, unit: 'unidades', date: '2025-06-15T09:15:00' },
-            { id: 3, type: 'in', reagent: 'Água destilada (H₂O)', quantity: 10, unit: 'litros', date: '2025-06-14T16:45:00' },
-            { id: 4, type: 'out', reagent: 'Sulfato de cobre (CuSO₄)', quantity: 2, unit: 'unidades', date: '2025-06-14T14:20:00' },
-            { id: 5, type: 'in', reagent: 'Cloreto de sódio (NaCl)', quantity: 8, unit: 'unidades', date: '2025-06-14T11:10:00' }
-        ];
-
-        const sampleStats = {
-            todayInputs: 15,
-            weekInputs: 78,
-            monthInputs: 320,
-            totalItems: 184,
-            mostReceivedReagents: [
-                { name: 'Água destilada (H₂O)', percentage: 35 },
-                { name: 'Cloreto de sódio (NaCl)', percentage: 25 },
-                { name: 'Ácido clorídrico (HCl)', percentage: 20 }
-            ]
-        };
-
         // Função para exibir notificações
         function showToast(message, type = 'success') {
             const toastContainer = document.querySelector('.toast-container');
@@ -668,6 +646,7 @@
             toast.innerHTML = `
                 <div class="d-flex">
                     <div class="toast-body">
+                        <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'} me-2"></i>
                         ${message}
                     </div>
                     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -681,31 +660,138 @@
             });
             bsToast.show();
             
-            // Remover o toast do DOM após ser escondido
             toast.addEventListener('hidden.bs.toast', () => {
                 toast.remove();
             });
         }
 
-        // Função para carregar as movimentações
-        function loadMovements() {
-            try {
-                const movementsList = document.getElementById('movements-list');
-                movementsList.innerHTML = '';
+        // Atualizar informações do reagente selecionado
+        document.getElementById('reagent').addEventListener('change', function() {
+            const unitMeasure = document.getElementById('unit-measure');
+            const reagentInfo = document.getElementById('reagent-info');
+            const selectedOption = this.options[this.selectedOption];
+            
+            if (selectedOption && selectedOption.value) {
+                const unit = selectedOption.dataset.unit;
+                const stock = parseFloat(selectedOption.dataset.stock);
+                const location = selectedOption.dataset.location;
                 
-                sampleMovements.forEach(movement => {
+                unitMeasure.textContent = unit;
+                reagentInfo.innerHTML = `
+                    <strong>Estoque atual:</strong> ${stock} ${unit} | 
+                    <strong>Localização:</strong> ${location}
+                    ${stock <= 5 ? '<span class="text-danger font-bold"> ⚠️ BAIXO ESTOQUE - REPOSIÇÃO NECESSÁRIA</span>' : ''}
+                `;
+            } else {
+                unitMeasure.textContent = 'unidade';
+                reagentInfo.textContent = 'Selecione um reagente para ver informações detalhadas';
+            }
+        });
+
+        // Envio do formulário de entrada
+        document.getElementById('input-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            // Mostrar loading
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Registrando...';
+            submitBtn.disabled = true;
+            
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+            
+            try {
+                const response = await fetch('/api/input', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showToast(result.message, 'success');
+                    this.reset();
+                    
+                    // Recarregar dados
+                    await loadInputMovements();
+                    await loadInputStatistics();
+                    
+                    // Recarregar a página após 2 segundos para atualizar a lista de produtos
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                    
+                } else {
+                    showToast(result.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Erro ao registrar entrada:', error);
+                showToast('Erro de conexão. Tente novamente.', 'danger');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Função para carregar movimentações de entrada
+        async function loadInputMovements() {
+            try {
+                const response = await fetch('/api/input-movements');
+                const movements = await response.json();
+                
+                const movementsList = document.getElementById('input-movements-list');
+                const loadingElement = document.getElementById('loading-inputs');
+                
+                movementsList.innerHTML = '';
+                if (loadingElement) loadingElement.style.display = 'none';
+                
+                if (movements.length === 0) {
+                    movementsList.innerHTML = `
+                        <li class="movement-item text-center text-muted py-4">
+                            <i class="fas fa-inbox fa-2x mb-2"></i>
+                            <p>Nenhuma entrada registrada</p>
+                        </li>
+                    `;
+                    return;
+                }
+                
+                movements.forEach(movement => {
                     const movementItem = document.createElement('li');
                     movementItem.className = 'movement-item';
                     
+                    const date = new Date(movement.date);
+                    const formattedDate = date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+                    
                     movementItem.innerHTML = `
-                        <div class="movement-icon ${movement.type === 'in' ? 'movement-in' : 'movement-out'}">
-                            <i class="fas fa-arrow-${movement.type === 'in' ? 'down' : 'up'}"></i>
+                        <div class="movement-icon movement-in">
+                            <i class="fas fa-arrow-down"></i>
                         </div>
                         <div class="movement-content">
-                            <p class="movement-title">${movement.type === 'in' ? 'Entrada' : 'Saída'} - ${movement.reagent}</p>
+                            <p class="movement-title">${movement.reagent}</p>
                             <div class="movement-details">
-                                <span class="movement-quantity">${movement.quantity} ${movement.unit}</span>
-                                <span class="movement-date">${new Date(movement.date).toLocaleString('pt-BR')}</span>
+                                <span class="movement-detail">
+                                    <i class="fas fa-balance-scale"></i>
+                                    ${movement.quantity} ${movement.unit}
+                                </span>
+                                <span class="movement-detail">
+                                    <i class="fas fa-user"></i>
+                                    ${movement.responsible}
+                                </span>
+                                <span class="movement-detail">
+                                    <i class="fas fa-clock"></i>
+                                    ${formattedDate}
+                                </span>
+                                ${movement.project ? `
+                                <span class="movement-detail">
+                                    <i class="fas fa-truck"></i>
+                                    ${movement.project}
+                                </span>
+                                ` : ''}
                             </div>
                         </div>
                     `;
@@ -713,96 +799,111 @@
                     movementsList.appendChild(movementItem);
                 });
                 
-                // Atualizar o timestamp da última atualização
-                document.getElementById('last-update').textContent = `Atualizado agora`;
+                document.getElementById('last-update').textContent = `Atualizado às ${new Date().toLocaleTimeString('pt-BR')}`;
+                document.getElementById('total-inputs').textContent = `${movements.length} registros`;
+                
             } catch (error) {
-                console.error('Erro ao carregar movimentações:', error);
+                console.error('Erro ao carregar entradas:', error);
+                const movementsList = document.getElementById('input-movements-list');
+                movementsList.innerHTML = `
+                    <li class="movement-item text-center text-danger py-4">
+                        <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                        <p>Erro ao carregar entradas</p>
+                    </li>
+                `;
             }
         }
 
-        // Função para carregar estatísticas
-        function loadStatistics() {
+        // Função para carregar estatísticas de entrada
+        async function loadInputStatistics() {
             try {
-                // Atualizar os contadores
-                document.getElementById('today-inputs').textContent = sampleStats.todayInputs;
-                document.getElementById('week-inputs').textContent = sampleStats.weekInputs;
-                document.getElementById('month-inputs').textContent = sampleStats.monthInputs;
-                document.getElementById('total-items').textContent = `${sampleStats.totalItems} itens em inventário`;
+                const response = await fetch('/api/input-statistics');
+                const stats = await response.json();
                 
-                // Atualizar as estatísticas de reagentes
-                const reagentsStats = document.getElementById('reagents-stats');
-                reagentsStats.innerHTML = '';
+                // Atualizar contadores com animação
+                animateCounter('today-inputs', stats.todayInputs);
+                animateCounter('week-inputs', stats.weekInputs);
+                animateCounter('month-inputs', stats.monthInputs);
                 
-                sampleStats.mostReceivedReagents.forEach((reagent, index) => {
-                    const colors = ['bg-success', 'bg-primary', 'bg-info'];
-                    const progressBar = document.createElement('div');
-                    progressBar.className = 'd-flex align-items-center mt-3';
-                    
-                    progressBar.innerHTML = `
-                        <div class="flex-grow-1 me-3">
-                            <div class="small text-muted">${reagent.name}</div>
-                            <div class="progress mt-1" style="height: 8px;">
-                                <div class="progress-bar ${colors[index]}" role="progressbar" style="width: ${reagent.percentage}%" 
-                                    aria-valuenow="${reagent.percentage}" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
+                // Atualizar status do estoque
+                document.getElementById('low-stock-items').textContent = stats.lowStockItems;
+                document.getElementById('out-of-stock-items').textContent = stats.outOfStockItems;
+                
+                // Atualizar estatísticas de fornecedores
+                const suppliersStats = document.getElementById('suppliers-stats');
+                suppliersStats.innerHTML = '';
+                
+                if (stats.recentSuppliers.length === 0) {
+                    suppliersStats.innerHTML = `
+                        <div class="text-center py-4 text-gray-500">
+                            <i class="fas fa-inbox fa-2x mb-2"></i>
+                            <p>Nenhum fornecedor registrado</p>
                         </div>
-                        <div class="flex-shrink-0">
-                            <span class="text-dark fw-bold">${reagent.percentage}%</span>
+                    `;
+                    return;
+                }
+                
+                const colors = ['#10b981', '#3b82f6', '#8b5cf6'];
+                
+                stats.recentSuppliers.forEach((supplier, index) => {
+                    const supplierStat = document.createElement('div');
+                    supplierStat.className = 'supplier-stat';
+                    
+                    supplierStat.innerHTML = `
+                        <div class="supplier-info">
+                            <div class="supplier-color" style="background-color: ${colors[index]}"></div>
+                            <div class="supplier-name">${supplier.supplier || supplier.name}</div>
+                        </div>
+                        <div class="supplier-count">
+                            ${supplier.count} entradas
                         </div>
                     `;
                     
-                    reagentsStats.appendChild(progressBar);
+                    suppliersStats.appendChild(supplierStat);
                 });
+                
             } catch (error) {
-                console.error('Erro ao carregar estatísticas:', error);
+                console.error('Erro ao carregar estatísticas de entrada:', error);
             }
         }
 
-        // Envio do formulário de entrada
-        document.getElementById('input-form').addEventListener('submit', async function(event) {
-            event.preventDefault();
-            
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData.entries());
-            
-            try {
-                // Simular uma requisição bem-sucedida
-                showToast('Entrada de reagente registrada com sucesso!');
-                this.reset();
-                
-                // Recarregar as movimentações e estatísticas
-                loadMovements();
-                loadStatistics();
-            } catch (error) {
-                console.error('Erro ao registrar entrada:', error);
-                showToast('Erro ao registrar entrada. Tente novamente.', 'danger');
-            }
-        });
-        
-        // Atualizar unidade de medida baseada no reagente selecionado
-        document.getElementById('reagent').addEventListener('change', function() {
-            const unitMeasure = document.getElementById('unit-measure');
-            const reagentId = this.value;
-            
-            // Lógica para determinar a unidade de medida baseada no reagente
-            if (reagentId === "4") { // Água destilada
-                unitMeasure.textContent = "litros";
-            } else if (reagentId === "6") { // Ácido sulfúrico
-                unitMeasure.textContent = "mL";
-            } else {
-                unitMeasure.textContent = "unidades";
-            }
-        });
+        // Função para animar contadores
+        function animateCounter(elementId, targetValue) {
+            const element = document.getElementById(elementId);
+            const currentValue = parseInt(element.textContent) || 0;
+            const duration = 1000;
+            const steps = 60;
+            const stepValue = (targetValue - currentValue) / steps;
+            let currentStep = 0;
 
-        // Botão para ver todas as movimentações
-        document.getElementById('view-all-movements').addEventListener('click', function() {
-            window.location.href = '/movimentos';
+            const timer = setInterval(() => {
+                currentStep++;
+                const value = Math.floor(currentValue + (stepValue * currentStep));
+                element.textContent = value;
+
+                if (currentStep >= steps) {
+                    element.textContent = targetValue;
+                    clearInterval(timer);
+                }
+            }, duration / steps);
+        }
+
+        // Botão de atualizar entradas
+        document.getElementById('refresh-inputs').addEventListener('click', function() {
+            loadInputMovements();
+            showToast('Entradas atualizadas!', 'info');
         });
 
         // Carregar dados iniciais
         document.addEventListener('DOMContentLoaded', function() {
-            loadMovements();
-            loadStatistics();
+            loadInputMovements();
+            loadInputStatistics();
+            
+            // Atualizar a cada 30 segundos
+            setInterval(() => {
+                loadInputMovements();
+                loadInputStatistics();
+            }, 30000);
         });
     </script>
 </body>

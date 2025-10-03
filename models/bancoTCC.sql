@@ -17,7 +17,7 @@
 
 -- Copiando estrutura do banco de dados para sistema_estoque
 CREATE DATABASE IF NOT EXISTS `sistema_estoque` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
-USE `sistema_estoque`;
+USE `sistema_estoque`; 
 
 -- Copiando estrutura para tabela sistema_estoque.produtos
 CREATE TABLE IF NOT EXISTS `produtos` (

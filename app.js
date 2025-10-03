@@ -4,6 +4,7 @@ const path = require('path');
 const multer = require('multer');
 
 const app = express();
+app.use(express.urlencoded({ extended: true })); // Para pegar dados do form
 
 // Configuração de sessão
 app.use(session({

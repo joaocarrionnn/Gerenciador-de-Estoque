@@ -8,6 +8,16 @@ const dbConfig = {
     database: "sistema_estoque"
 };
 
+const pool = mysql.createPool({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'sistema_estoque',
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+  });
+
 // Criar conexão
 const connection = mysql.createConnection(dbConfig);
 
@@ -37,3 +47,4 @@ connection.on('error', (err) => {
 });
 
 module.exports = connection;
+module.exports = pool;

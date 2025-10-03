@@ -3,153 +3,22 @@
 <head>
     <%- include('./partials/head'); %>
     <style>
-        /* Mantenha todos os estilos existentes e adicione estes: */
-        
-        .search-container {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            padding: 1.25rem 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .search-form {
-            display: flex;
-            gap: 1rem;
-            align-items: flex-end;
-        }
-        
-        .search-group {
-            flex: 1;
-        }
-        
-        .search-label {
-            font-weight: 500;
-            color: #4a5568;
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-        
-        .search-input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.2s ease;
-        }
-        
-        .search-input:focus {
-            outline: none;
-            border-color: #4361ee;
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
-        }
-        
-        .search-btn {
-            background-color: #2c3e50;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 0.75rem 1.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .search-btn:hover {
-            background-color: rgb(62, 75, 87);
-            transform: translateY(-2px);
-        }
-        
-        .table-scroll-container {
-            max-height: 600px;
-            overflow-y: auto;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-        }
-        
-        .reagent-table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 1200px; /* Largura mínima para garantir que todas as colunas caibam */
-        }
-        
-        .reagent-table th {
-            background-color: #f8f9fa;
-            padding: 1rem;
-            font-weight: 600;
-            color: #495057;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 0.5px;
-            text-align: left;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-        
-        .reagent-table td {
-            padding: 1rem;
-            border-bottom: 1px solid #f1f3f4;
-            transition: background-color 0.2s ease;
-        }
-        
-        .reagent-table tr:hover td {
-            background-color: #f8f9fa;
-        }
-        
-        /* Estilos para informações adicionais */
-        .reagent-details-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-        
-        .detail-item {
-            font-size: 0.8rem;
-            color: #6c757d;
-        }
-        
-        .detail-label {
-            font-weight: 600;
-            color: #495057;
-        }
-        
-        .danger-level {
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-        
-        .danger-baixo { background: rgba(40, 167, 69, 0.15); color: #28a745; }
-        .danger-moderado { background: rgba(255, 193, 7, 0.15); color: #ffc107; }
-        .danger-alto { background: rgba(253, 126, 20, 0.15); color: #fd7e14; }
-        .danger-extremo { background: rgba(220, 53, 69, 0.15); color: #dc3545; }
-        
-        .no-results {
-            text-align: center;
-            padding: 3rem;
-            color: #6c757d;
-        }
-        
-        .no-results i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
-        }
-        
-        /* Mantenha todos os outros estilos existentes */
+        /* Reset e Variáveis */
         :root {
-            --primary: #2d3748;
-            --secondary: #2d3748;
-            --success: #2d3748;
-            --warning: #2d3748;
-            --info: #2d3748;
+            --primary: #2c3e50;
+            --primary-hover: rgb(62, 75, 87);
+            --secondary: #6c757d;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --info: #17a2b8;
             --light: #f8f9fa;
-            --dark: #212529;
+            --dark: #343a40;
             --gray: #6c757d;
             --light-gray: #e9ecef;
+            --border: #e2e8f0;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --radius: 12px;
         }
         
         * {
@@ -163,23 +32,14 @@
             background-color: #f5f7fb;
             color: #333;
             min-height: 100vh;
+            line-height: 1.6;
         }
         
-        .flex {
-            display: flex;
-        }
-        
-        .flex-1 {
-            flex: 1;
-        }
-        
-        .overflow-auto {
-            overflow: auto;
-        }
-        
-        .min-h-screen {
-            min-height: 100vh;
-        }
+        /* Layout Principal */
+        .flex { display: flex; }
+        .flex-1 { flex: 1; }
+        .overflow-auto { overflow: auto; }
+        .min-h-screen { min-height: 100vh; }
         
         .main-container {
             max-width: 1400px;
@@ -187,65 +47,337 @@
             padding: 1.5rem;
         }
         
+        /* Header da Página */
         .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
         
         .section-title {
             font-size: 1.75rem;
             font-weight: 700;
-            color: #2d3748;
+            color: var(--dark);
         }
         
-        .table-container {
+        .button-container {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .primary-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+        
+        .primary-btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Barra de Pesquisa */
+        .search-container {
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
             margin-bottom: 2rem;
         }
         
-        .table-header {
-            padding: 1.25rem 1.5rem;
-            border-bottom: 1px solid #e2e8f0;
+        .search-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        /* Filtros Básicos - Linha */
+        .search-filters-row {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 180px;
+            flex: 1;
+        }
+        
+        .filter-label {
+            font-weight: 500;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .filter-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background: white;
+            transition: all 0.2s ease;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
+        }
+        
+        /* Linha Principal de Busca */
+        .search-main-row {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+        
+        .search-input-group {
+            flex: 2;
+            min-width: 300px;
+        }
+        
+        .search-label {
+            font-weight: 500;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
+        }
+        
+        .search-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-end;
+        }
+        
+        .search-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        
+        .search-btn.primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .search-btn.primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+        
+        .search-btn.secondary {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        .search-btn.secondary:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+        }
+        
+        .search-btn.info {
+            background-color: var(--info);
+            color: white;
+        }
+        
+        .search-btn.info:hover {
+            background-color: #138496;
+            transform: translateY(-2px);
+        }
+        
+        /* Filtros Avançados */
+        .advanced-filters {
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+        
+        .advanced-filters-row {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+        
+        /* Container de Produtos */
+        .products-container {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        
+        .products-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
         }
         
-        .table-title {
+        .products-title {
             font-size: 1.25rem;
             font-weight: 600;
-            color: #2d3748;
+            color: var(--dark);
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
         
-        .text-left { text-align: left; }
-        .text-center { text-align: center; }
+        .summary-text {
+            font-size: 0.9rem;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
         
-        .reagent-info {
+        /* Grid de Produtos */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            padding: 1.5rem;
+        }
+        
+        /* Cards de Produto */
+        .product-card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        .product-header {
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .product-info {
+            flex: 1;
+        }
+        
+        .product-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.25rem;
+        }
+        
+        .product-id {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+        
+        .product-category {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            background: rgba(40, 167, 69, 0.15);
+            color: var(--success);
+            white-space: nowrap;
+        }
+        
+        .product-body {
+            padding: 1.25rem;
+        }
+        
+        .product-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+        
+        .detail-item {
             display: flex;
             flex-direction: column;
         }
         
-        .reagent-name {
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 0.2rem;
+        .detail-label {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-bottom: 0.25rem;
         }
+        
+        .detail-value {
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        /* Indicadores Visuais */
+        .danger-level {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+        
+        .danger-baixo { background: rgba(40, 167, 69, 0.15); color: var(--success); }
+        .danger-moderado { background: rgba(255, 193, 7, 0.15); color: var(--warning); }
+        .danger-alto { background: rgba(253, 126, 20, 0.15); color: #fd7e14; }
+        .danger-extremo { background: rgba(220, 53, 69, 0.15); color: var(--danger); }
         
         .quantity-display {
             font-weight: 500;
             color: #495057;
             padding: 0.4rem 0.8rem;
             border-radius: 20px;
-            background: #f8f9fa;
+            background: var(--light);
             display: inline-block;
         }
         
@@ -265,25 +397,20 @@
             gap: 0.4rem;
         }
         
-        .status-normal {
-            background: rgba(40, 167, 69, 0.15);
-            color: #28a745;
-        }
+        .status-normal { background: rgba(40, 167, 69, 0.15); color: var(--success); }
+        .status-warning { background: rgba(255, 193, 7, 0.15); color: var(--warning); }
+        .status-critical { background: rgba(220, 53, 69, 0.15); color: var(--danger); font-weight: 600; }
         
-        .status-warning {
-            background: rgba(255, 193, 7, 0.15);
-            color: #ffc107;
-        }
-        
-        .status-critical {
-            background: rgba(220, 53, 69, 0.15);
-            color: #dc3545;
-            font-weight: 600;
+        /* Ações do Produto */
+        .product-footer {
+            padding: 1rem 1.25rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
         }
         
         .action-buttons {
             display: flex;
-            justify-content: center;
             gap: 0.5rem;
         }
         
@@ -299,46 +426,28 @@
             transition: all 0.2s ease;
         }
         
-        .btn-edit {
-            background: rgba(23, 162, 184, 0.1);
-            color: #17a2b8;
-        }
+        .btn-details { background: rgba(108, 117, 125, 0.1); color: var(--gray); }
+        .btn-details:hover { background: var(--gray); color: white; }
         
-        .btn-edit:hover {
-            background: #17a2b8;
-            color: white;
-        }
+        .btn-edit { background: rgba(23, 162, 184, 0.1); color: var(--info); }
+        .btn-edit:hover { background: var(--info); color: white; }
         
-        .btn-delete {
-            background: rgba(220, 53, 69, 0.1);
-            color: #dc3545;
-        }
+        .btn-delete { background: rgba(220, 53, 69, 0.1); color: var(--danger); }
+        .btn-delete:hover { background: var(--danger); color: white; }
         
-        .btn-delete:hover {
-            background: #dc3545;
-            color: white;
-        }
-        
-        .table-footer {
+        /* Footer dos Produtos */
+        .products-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 1rem 1.5rem;
-            background: #f8f9fa;
-            border-top: 1px solid #dee2e6;
-        }
-        
-        .summary-text {
-            font-size: 0.9rem;
-            color: #6c757d;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
+            background: var(--light);
+            border-top: 1px solid var(--border);
         }
         
         .view-all-btn {
             background: transparent;
-            border: 1px solid #dee2e6;
+            border: 1px solid var(--border);
             border-radius: 8px;
             padding: 0.6rem 1.2rem;
             font-size: 0.9rem;
@@ -356,39 +465,156 @@
             color: white;
             border-color: var(--primary);
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(67, 97, 238, 0.2);
         }
         
-        .primary-btn {
-            background-color: #2c3e50;
-            color: #ffffff;
+        /* Estado Vazio */
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: var(--gray);
+            grid-column: 1 / -1;
+        }
+        
+        .no-results i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: var(--radius);
+            width: 100%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: modalFadeIn 0.3s ease;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+            transition: color 0.2s ease;
+        }
+        
+        .close-btn:hover {
+            color: var(--danger);
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .detail-section {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .detail-section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .detail-group {
+            margin-bottom: 1rem;
+        }
+        
+        .modal-detail-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.25rem;
+            display: block;
+            font-size: 0.9rem;
+        }
+        
+        .modal-detail-value {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+        
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: white;
             border: none;
             border-radius: 8px;
-            padding: 14px 26px;
-            font-size: 15px;
-            font-weight: 600;
+            padding: 0.75rem 1.5rem;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            position: relative;
-            overflow: hidden;
         }
         
-        .primary-btn:hover {
-            background-color: rgb(62, 75, 87);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        .btn-secondary:hover {
+            background-color: #5a6268;
         }
         
-        .button-container {
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        /* Responsividade */
+        @media (max-width: 1200px) {
+            .search-filters-row,
+            .search-main-row,
+            .advanced-filters-row {
+                gap: 0.75rem;
+            }
+            
+            .filter-group {
+                min-width: 160px;
+            }
         }
         
         @media (max-width: 768px) {
@@ -402,29 +628,96 @@
                 gap: 1rem;
             }
             
-            .search-form {
+            .button-container {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .search-filters-row,
+            .search-main-row,
+            .advanced-filters-row {
                 flex-direction: column;
                 align-items: stretch;
             }
             
-            .table-header {
+            .filter-group,
+            .search-input-group {
+                min-width: auto;
+            }
+            
+            .search-actions {
+                justify-content: stretch;
+            }
+            
+            .search-btn {
+                flex: 1;
+                justify-content: center;
+            }
+            
+            .products-header {
                 flex-direction: column;
                 gap: 1rem;
                 align-items: flex-start;
             }
             
-            .action-buttons {
-                flex-direction: column;
+            .products-grid {
+                grid-template-columns: 1fr;
+                padding: 1rem;
             }
             
-            .table-footer {
+            .product-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .products-footer {
                 flex-direction: column;
                 gap: 1rem;
-                align-items: flex-start;
+                align-items: stretch;
             }
             
             .view-all-btn {
-                align-self: flex-end;
+                align-self: center;
+            }
+            
+            .modal-content {
+                width: 95%;
+            }
+            
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .search-container {
+                padding: 1rem;
+            }
+            
+            .search-filters-row,
+            .search-main-row,
+            .advanced-filters-row {
+                gap: 0.5rem;
+            }
+            
+            .filter-select,
+            .search-input {
+                padding: 0.6rem 0.8rem;
+            }
+            
+            .search-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .product-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .action-buttons {
+                width: 100%;
+                justify-content: center;
             }
         }
     </style>
@@ -445,89 +738,179 @@
                 </div>
             </div>
             
-            <!-- Barra de Pesquisa -->
+            <!-- Barra de Pesquisa Melhorada -->
             <div class="search-container">
                 <form id="searchForm" class="search-form" method="GET" action="/produtos">
-                    <div class="search-group">
-                        <label class="search-label" for="searchTerm">Pesquisar Produto</label>
-                        <input type="text" class="search-input" id="searchTerm" name="search" 
-                               placeholder="Digite ID, nome ou categoria..." 
-                               value="<%= searchTerm || '' %>">
+                    <!-- Filtros Básicos em Linha -->
+                    <div class="search-filters-row">
+                        <!-- Filtro por Tipo de Busca -->
+                        <div class="filter-group">
+                            <label class="filter-label" for="searchType">Tipo de Busca</label>
+                            <select class="filter-select" id="searchType" name="searchType">
+                                <option value="all" <%= searchType === 'all' ? 'selected' : '' %>>Todos os campos</option>
+                                <option value="name" <%= searchType === 'name' ? 'selected' : '' %>>Nome</option>
+                                <option value="id" <%= searchType === 'id' ? 'selected' : '' %>>ID</option>
+                                <option value="category" <%= searchType === 'category' ? 'selected' : '' %>>Categoria</option>
+                                <option value="supplier" <%= searchType === 'supplier' ? 'selected' : '' %>>Fornecedor</option>
+                            </select>
+                        </div>
+
+                        <!-- Filtro por Categoria -->
+                        <div class="filter-group">
+                            <label class="filter-label" for="category">Categoria</label>
+                            <select class="filter-select" id="category" name="category">
+                                <option value="">Todas as categorias</option>
+                                <% const categoriasUnicas = [...new Set((produtos || []).map(p => p.tipo).filter(Boolean))]; %>
+                                <% categoriasUnicas.forEach(categoria => { %>
+                                    <option value="<%= categoria %>" <%= selectedCategory === categoria ? 'selected' : '' %>>
+                                        <%= categoria %>
+                                    </option>
+                                <% }); %>
+                            </select>
+                        </div>
+
+                        <!-- Filtro por Status -->
+                        <div class="filter-group">
+                            <label class="filter-label" for="status">Status</label>
+                            <select class="filter-select" id="status" name="status">
+                                <option value="">Todos os status</option>
+                                <option value="available" <%= status === 'available' ? 'selected' : '' %>>Disponível</option>
+                                <option value="low_stock" <%= status === 'low_stock' ? 'selected' : '' %>>Baixo Estoque</option>
+                                <option value="out_of_stock" <%= status === 'out_of_stock' ? 'selected' : '' %>>Esgotado</option>
+                            </select>
+                        </div>
+
+                        <!-- Filtro por Data -->
+                        <div class="filter-group">
+                            <label class="filter-label" for="dateFilter">Data</label>
+                            <select class="filter-select" id="dateFilter" name="dateFilter">
+                                <option value="">Todas as datas</option>
+                                <option value="today" <%= dateFilter === 'today' ? 'selected' : '' %>>Hoje</option>
+                                <option value="week" <%= dateFilter === 'week' ? 'selected' : '' %>>Esta semana</option>
+                                <option value="month" <%= dateFilter === 'month' ? 'selected' : '' %>>Este mês</option>
+                                <option value="year" <%= dateFilter === 'year' ? 'selected' : '' %>>Este ano</option>
+                            </select>
+                        </div>
                     </div>
-                    <button type="submit" class="search-btn">
-                        <i class="fas fa-search"></i> Pesquisar
-                    </button>
-                    <% if (searchTerm) { %>
-                        <a href="/produtos" class="search-btn" style="background-color: #6c757d;">
-                            <i class="fas fa-times"></i> Limpar
-                        </a>
-                    <% } %>
+
+                    <!-- Linha Principal - Campo de Busca e Ações -->
+                    <div class="search-main-row">
+                        <div class="search-input-group">
+                            <label class="search-label" for="searchTerm">Pesquisar</label>
+                            <input type="text" class="search-input" id="searchTerm" name="search" 
+                                   placeholder="Digite para pesquisar..." 
+                                   value="<%= searchTerm || '' %>">
+                        </div>
+                        
+                        <div class="search-actions">
+                            <button type="submit" class="search-btn primary">
+                                <i class="fas fa-search"></i> Pesquisar
+                            </button>
+                            
+                            <% if (searchTerm || selectedCategory || status || dateFilter || searchType !== 'all') { %>
+                                <a href="/produtos" class="search-btn secondary">
+                                    <i class="fas fa-times"></i> Limpar
+                                </a>
+                            <% } %>
+                            
+                            <button type="button" class="search-btn info" id="advancedSearchBtn">
+                                <i class="fas fa-sliders-h"></i> Avançado
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filtros Avançados em Linha -->
+                    <div class="advanced-filters" id="advancedFilters" style="display: none;">
+                        <div class="advanced-filters-row">
+                            <!-- Filtro por Periculosidade -->
+                            <div class="filter-group">
+                                <label class="filter-label" for="dangerLevel">Periculosidade</label>
+                                <select class="filter-select" id="dangerLevel" name="dangerLevel">
+                                    <option value="">Todos os níveis</option>
+                                    <option value="baixo" <%= dangerLevel === 'baixo' ? 'selected' : '' %>>Baixo</option>
+                                    <option value="moderado" <%= dangerLevel === 'moderado' ? 'selected' : '' %>>Moderado</option>
+                                    <option value="alto" <%= dangerLevel === 'alto' ? 'selected' : '' %>>Alto</option>
+                                    <option value="extremo" <%= dangerLevel === 'extremo' ? 'selected' : '' %>>Extremo</option>
+                                </select>
+                            </div>
+
+                            <!-- Filtro por Quantidade -->
+                            <div class="filter-group">
+                                <label class="filter-label" for="quantityFilter">Quantidade</label>
+                                <select class="filter-select" id="quantityFilter" name="quantityFilter">
+                                    <option value="">Qualquer quantidade</option>
+                                    <option value="zero" <%= quantityFilter === 'zero' ? 'selected' : '' %>>Esgotado (0)</option>
+                                    <option value="low" <%= quantityFilter === 'low' ? 'selected' : '' %>>Baixo Estoque</option>
+                                    <option value="normal" <%= quantityFilter === 'normal' ? 'selected' : '' %>>Estoque Normal</option>
+                                </select>
+                            </div>
+
+                            <!-- Filtro por Fornecedor -->
+                            <div class="filter-group">
+                                <label class="filter-label" for="supplier">Fornecedor</label>
+                                <select class="filter-select" id="supplier" name="supplier">
+                                    <option value="">Todos os fornecedores</option>
+                                    <% const fornecedoresUnicos = [...new Set((produtos || []).map(p => p.fornecedor).filter(Boolean))]; %>
+                                    <% fornecedoresUnicos.forEach(fornecedor => { %>
+                                        <option value="<%= fornecedor %>" <%= supplier === fornecedor ? 'selected' : '' %>>
+                                            <%= fornecedor %>
+                                        </option>
+                                    <% }); %>
+                                </select>
+                            </div>
+
+                            <!-- Filtro por Órgão Regulador -->
+                            <div class="filter-group">
+                                <label class="filter-label" for="regulatoryOrg">Órgão Regulador</label>
+                                <select class="filter-select" id="regulatoryOrg" name="regulatoryOrg">
+                                    <option value="">Todos os órgãos</option>
+                                    <% const orgaosUnicos = [...new Set((produtos || []).map(p => p.orgao_regulador).filter(Boolean))]; %>
+                                    <% orgaosUnicos.forEach(orgao => { %>
+                                        <option value="<%= orgao %>" <%= regulatoryOrg === orgao ? 'selected' : '' %>>
+                                            <%= orgao %>
+                                        </option>
+                                    <% }); %>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </div>
 
-            <!-- Tabela de Produtos -->
-            <div class="table-container">
-                <div class="table-header">
-                    <h2 class="table-title">
+            <!-- Container de Produtos -->
+            <div class="products-container">
+                <div class="products-header">
+                    <h2 class="products-title">
                         <i class="fas fa-flask"></i>
                         Produtos em Estoque
                     </h2>
                     <span class="summary-text">
                         <i class="fas fa-filter"></i>
-                        <% if (searchTerm) { %>
-                            Filtrado por: "<%= searchTerm %>"
+                        <% if (searchTerm || selectedCategory || status || dateFilter) { %>
+                            Filtros aplicados
                         <% } else { %>
                             Todos os produtos
                         <% } %>
+                        • <%= produtos ? produtos.length : 0 %> itens
                     </span>
                 </div>
                 
-                <div class="table-scroll-container">
-                    <table class="reagent-table">
-                        <thead>
-                            <tr>
-                                <th class="text-left">ID</th>
-                                <th class="text-left">Nome do Produto</th>
-                                <th class="text-left">Categoria</th>
-                                <th class="text-left">Grau de Periculosidade</th>
-                                <th class="text-left">Órgão Regulador</th>
-                                <th class="text-center">Quantidade</th>
-                                <th class="text-center">Estoque Mínimo</th>
-                                <th class="text-left">Localização</th>
-                                <th class="text-center">Status</th>
-                                <th class="text-center">Disponível</th>
-                                <th class="text-center">Fornecedor</th>
-                                <th class="text-center">Data Aquisição</th>
-                                <th class="text-center">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% if (produtos && produtos.length > 0) { %>
-                                <% produtos.forEach(produto => { %>
-                                    <tr>
-                                        <td><strong>#<%= produto.id_produto %></strong></td>
-                                        <td>
-                                            <div class="reagent-info">
-                                                <div class="reagent-name"><%= produto.nome %></div>
-                                                <% if (produto.descricao) { %>
-                                                    <div class="reagent-details"><%= produto.descricao %></div>
-                                                <% } %>
-                                                <% if (produto.instrucoes_seguranca) { %>
-                                                    <div class="reagent-details-grid">
-                                                        <div class="detail-item">
-                                                            <span class="detail-label">Segurança:</span> 
-                                                            <%= produto.instrucoes_seguranca %>
-                                                        </div>
-                                                    </div>
-                                                <% } %>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <span class="status-badge status-normal">
-                                                <%= produto.tipo %>
-                                            </span>
-                                        </td>
-                                        <td>
+                <div class="products-grid">
+                    <% if (produtos && produtos.length > 0) { %>
+                        <% produtos.forEach(produto => { %>
+                            <div class="product-card">
+                                <div class="product-header">
+                                    <div class="product-info">
+                                        <div class="product-name"><%= produto.nome %></div>
+                                        <div class="product-id">ID: #<%= produto.id_produto %></div>
+                                    </div>
+                                    <span class="product-category"><%= produto.tipo %></span>
+                                </div>
+                                
+                                <div class="product-body">
+                                    <div class="product-details">
+                                        <div class="detail-item">
+                                            <span class="detail-label">Grau de Periculosidade</span>
                                             <% if (produto.grau_periculosidade) { 
                                                 let dangerClass = 'danger-baixo';
                                                 if (produto.grau_periculosidade === 'moderado') dangerClass = 'danger-moderado';
@@ -538,30 +921,24 @@
                                                     <%= produto.grau_periculosidade %>
                                                 </span>
                                             <% } else { %>
-                                                <span class="detail-item">Não informado</span>
+                                                <span class="detail-value">Não informado</span>
                                             <% } %>
-                                        </td>
-                                        <td>
-                                            <span class="detail-item">
-                                                <%= produto.orgao_regulador || 'Não informado' %>
-                                            </span>
-                                        </td>
-                                        <td class="text-center">
+                                        </div>
+                                        
+                                        <div class="detail-item">
+                                            <span class="detail-label">Quantidade</span>
                                             <div class="quantity-display <%= produto.quantidade <= (produto.estoque_minimo || 10) ? 'warning-quantity' : '' %>">
                                                 <%= produto.quantidade %> <%= produto.unidade_medida %>
                                             </div>
-                                        </td>
-                                        <td class="text-center">
-                                            <span class="detail-item">
-                                                <%= produto.estoque_minimo || 0 %> <%= produto.unidade_medida %>
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span class="detail-item">
-                                                <%= produto.localizacao || 'Não informada' %>
-                                            </span>
-                                        </td>
-                                        <td class="text-center">
+                                        </div>
+                                        
+                                        <div class="detail-item">
+                                            <span class="detail-label">Localização</span>
+                                            <span class="detail-value"><%= produto.localizacao || 'Não informada' %></span>
+                                        </div>
+                                        
+                                        <div class="detail-item">
+                                            <span class="detail-label">Status</span>
                                             <% let statusClass = 'status-normal';
                                             let statusText = 'Disponível';
                                             let statusIcon = 'fa-check-circle';
@@ -581,66 +958,49 @@
                                             <span class="status-badge <%= statusClass %>">
                                                 <i class="fas <%= statusIcon %>"></i> <%= statusText %>
                                             </span>
-                                        </td>
-                                        <td class="text-center">
-                                            <span class="status-badge <%= produto.disponivel ? 'status-normal' : 'status-critical' %>">
-                                                <i class="fas <%= produto.disponivel ? 'fa-check' : 'fa-times' %>"></i>
-                                                <%= produto.disponivel ? 'Sim' : 'Não' %>
-                                            </span>
-                                        </td>
-                                        <td class="text-center">
-                                            <span class="detail-item">
-                                                <%= produto.fornecedor || 'Não informado' %>
-                                            </span>
-                                        </td>
-                                        <td class="text-center">
-                                            <span class="detail-item">
-                                                <% if (produto.data_aquisicao) { %>
-                                                    <%= new Date(produto.data_aquisicao).toLocaleDateString('pt-BR') %>
-                                                <% } else { %>
-                                                    Não informada
-                                                <% } %>
-                                            </span>
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="action-buttons">
-                                                <button class="btn-action btn-edit" title="Editar" onclick="editarProduto(<%= produto.id_produto %>)">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                <form action="/produtos/deletar/<%= produto.id_produto %>" method="POST" style="display: inline;">
-                                                    <button type="button" class="btn-action btn-delete" title="Excluir" onclick="confirmarExclusao(this)">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <% }) %>
-                            <% } else { %>
-                                <tr>
-                                    <td colspan="13" class="no-results">
-                                        <i class="fas fa-search"></i>
-                                        <h3>Nenhum produto encontrado</h3>
-                                        <p><%= searchTerm ? 'Tente ajustar os termos da pesquisa.' : 'Adicione o primeiro produto!' %></p>
-                                        <% if (searchTerm) { %>
-                                            <a href="/produtos" class="primary-btn" style="margin-top: 1rem;">
-                                                <i class="fas fa-list"></i> Ver todos os produtos
-                                            </a>
-                                        <% } %>
-                                    </td>
-                                </tr>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="product-footer">
+                                    <div class="action-buttons">
+                                        <button class="btn-action btn-details" title="Ver Detalhes" 
+                                                onclick="abrirModal(<%= produto.id_produto %>, '<%= produto.nome.replace(/'/g, "\\'") %>', '<%= produto.tipo.replace(/'/g, "\\'") %>', '<%= produto.grau_periculosidade || '' %>', <%= produto.quantidade %>, '<%= produto.unidade_medida %>', '<%= produto.localizacao || '' %>', <%= produto.estoque_minimo || 0 %>, '<%= produto.fornecedor || '' %>', '<%= produto.orgao_regulador || '' %>', '<%= produto.data_aquisicao || '' %>', <%= produto.disponivel %>, '<%= produto.descricao || '' %>', '<%= produto.instrucoes_seguranca || '' %>')">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                        <button class="btn-action btn-edit" title="Editar" onclick="editarProduto(<%= produto.id_produto %>)">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <form action="/produtos/deletar/<%= produto.id_produto %>" method="POST" style="display: inline;">
+                                            <button type="button" class="btn-action btn-delete" title="Excluir" onclick="confirmarExclusao(this)">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }) %>
+                    <% } else { %>
+                        <div class="no-results">
+                            <i class="fas fa-search"></i>
+                            <h3>Nenhum produto encontrado</h3>
+                            <p><%= searchTerm ? 'Tente ajustar os termos da pesquisa.' : 'Adicione o primeiro produto!' %></p>
+                            <% if (searchTerm || selectedCategory || status || dateFilter) { %>
+                                <a href="/produtos" class="primary-btn" style="margin-top: 1rem;">
+                                    <i class="fas fa-list"></i> Ver todos os produtos
+                                </a>
                             <% } %>
-                        </tbody>
-                    </table>
+                        </div>
+                    <% } %>
                 </div>
                 
-                <div class="table-footer">
+                <div class="products-footer">
                     <span class="summary-text">
                         <i class="fas fa-database"></i> 
                         Total de <%= produtos ? produtos.length : 0 %> produtos 
-                        <% if (searchTerm) { %>encontrados<% } else { %>listados<% } %>
+                        <% if (searchTerm || selectedCategory || status || dateFilter) { %>encontrados<% } else { %>listados<% } %>
                     </span>
-                    <% if (!searchTerm && produtos && produtos.length > 5) { %>
+                    <% if (!searchTerm && !selectedCategory && !status && !dateFilter && produtos && produtos.length > 5) { %>
                         <a href="#top" class="view-all-btn">
                             <i class="fas fa-arrow-up"></i> Voltar ao Topo
                         </a>
@@ -650,27 +1010,179 @@
         </div>
     </main>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Adicionar interatividade aos botões de ação
-            const actionButtons = document.querySelectorAll('.btn-action');
-            actionButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const action = this.classList.contains('btn-edit') ? 'editar' : 'excluir';
-                    const productName = this.closest('tr').querySelector('.reagent-name').textContent;
-                    console.log(`Ação: ${action} no produto: ${productName}`);
-                });
-            });
+    <!-- Modal de Detalhes -->
+    <div id="detailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Detalhes do Produto</h2>
+                <button class="close-btn" onclick="fecharModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Conteúdo será preenchido dinamicamente via JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="fecharModal()">Fechar</button>
+            </div>
+        </div>
+    </div>
 
-            // Foco no campo de pesquisa
-            const searchInput = document.getElementById('searchTerm');
-            if (searchInput && !searchInput.value) {
-                searchInput.focus();
+    <script>
+        // Função para abrir o modal com os detalhes do produto
+        function abrirModal(id, nome, tipo, grauPericulosidade, quantidade, unidadeMedida, localizacao, estoqueMinimo, fornecedor, orgaoRegulador, dataAquisicao, disponivel, descricao, instrucoesSeguranca) {
+            const modal = document.getElementById('detailsModal');
+            const modalBody = document.getElementById('modalBody');
+            
+            // Formatar dados do produto para exibição
+            const formatarData = (data) => {
+                if (!data) return 'Não informada';
+                try {
+                    return new Date(data).toLocaleDateString('pt-BR');
+                } catch (e) {
+                    return data;
+                }
+            };
+            
+            const formatarPericulosidade = (grau) => {
+                if (!grau) return 'Não informado';
+                const classes = {
+                    'baixo': 'danger-baixo',
+                    'moderado': 'danger-moderado',
+                    'alto': 'danger-alto',
+                    'extremo': 'danger-extremo'
+                };
+                return `<span class="danger-level ${classes[grau] || ''}">${grau}</span>`;
+            };
+            
+            const formatarStatus = (quantidade, estoqueMinimo) => {
+                if (quantidade === 0) return 'Esgotado';
+                if (quantidade <= estoqueMinimo) return 'Baixo Estoque';
+                return 'Disponível';
+            };
+            
+            // Construir o conteúdo do modal
+            modalBody.innerHTML = `
+                <div class="detail-section">
+                    <h3 class="detail-section-title">
+                        <i class="fas fa-info-circle"></i> Informações Básicas
+                    </h3>
+                    <div class="details-grid">
+                        <div class="detail-group">
+                            <span class="modal-detail-label">ID do Produto</span>
+                            <div class="modal-detail-value">#${id}</div>
+                        </div>
+                        <div class="detail-group">
+                            <span class="modal-detail-label">Nome</span>
+                            <div class="modal-detail-value">${nome}</div>
+                        </div>
+                        <div class="detail-group">
+                            <span class="modal-detail-label">Categoria</span>
+                            <div class="modal-detail-value">${tipo}</div>
+                        </div>
+                        <div class="detail-group">
+                            <span class="modal-detail-label">Grau de Periculosidade</span>
+                            <div class="modal-detail-value">${formatarPericulosidade(grauPericulosidade)}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h3 class="detail-section-title">
+                        <i class="fas fa-boxes"></i> Estoque e Localização
+                    </h3>
+                    <div class="details-grid">
+                        <div class="detail-group">
+                            <span class="modal-detail-label">Quantidade</span>
+                            <div class="modal-detail-value">${quantidade} ${unidadeMedida}</div>
+                        </div>
+                        <div class="detail-group">
+                            <span class="modal-detail-label">Estoque Mínimo</span>
+                            <div class="modal-detail-value">${estoqueMinimo} ${unidadeMedida}</div>
+                        </div>
+                        <div class="detail-group">
+                            <span class="modal-detail-label">Localização</span>
+                            <div class="modal-detail-value">${localizacao || 'Não informada'}</div>
+                        </div>
+                        <div class="detail-group">
+                            <span class="modal-detail-label">Status</span>
+                            <div class="modal-detail-value">${formatarStatus(quantidade, estoqueMinimo)}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h3 class="detail-section-title">
+                        <i class="fas fa-industry"></i> Fornecedor e Regulamentação
+                    </h3>
+                    <div class="details-grid">
+                        <div class="detail-group">
+                            <span class="modal-detail-label">Fornecedor</span>
+                            <div class="modal-detail-value">${fornecedor || 'Não informado'}</div>
+                        </div>
+                        <div class="detail-group">
+                            <span class="modal-detail-label">Órgão Regulador</span>
+                            <div class="modal-detail-value">${orgaoRegulador || 'Não informado'}</div>
+                        </div>
+                        <div class="detail-group">
+                            <span class="modal-detail-label">Data de Aquisição</span>
+                            <div class="modal-detail-value">${formatarData(dataAquisicao)}</div>
+                        </div>
+                        <div class="detail-group">
+                            <span class="modal-detail-label">Disponível</span>
+                            <div class="modal-detail-value">${disponivel ? 'Sim' : 'Não'}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                ${descricao || instrucoesSeguranca ? `
+                <div class="detail-section">
+                    <h3 class="detail-section-title">
+                        <i class="fas fa-file-alt"></i> Informações Adicionais
+                    </h3>
+                    <div class="details-grid">
+                        ${descricao ? `
+                        <div class="detail-group">
+                            <span class="modal-detail-label">Descrição</span>
+                            <div class="modal-detail-value">${descricao}</div>
+                        </div>
+                        ` : ''}
+                        ${instrucoesSeguranca ? `
+                        <div class="detail-group">
+                            <span class="modal-detail-label">Instruções de Segurança</span>
+                            <div class="modal-detail-value">${instrucoesSeguranca}</div>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+                ` : ''}
+            `;
+            
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function fecharModal() {
+            const modal = document.getElementById('detailsModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Fechar modal ao clicar fora dele
+        window.onclick = function(event) {
+            const modal = document.getElementById('detailsModal');
+            if (event.target === modal) {
+                fecharModal();
+            }
+        }
+
+        // Fechar modal com a tecla ESC
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                fecharModal();
             }
         });
 
         function confirmarExclusao(button) {
-            const productName = button.closest('tr').querySelector('.reagent-name').textContent;
+            const productName = button.closest('.product-card').querySelector('.product-name').textContent;
             if (confirm(`Tem certeza que deseja excluir o produto "${productName}"? Esta ação não pode ser desfeita.`)) {
                 button.closest('form').submit();
             }
@@ -680,25 +1192,48 @@
             window.location.href = `/produtos/editar/${id}`;
         }
 
-        // Função para busca em tempo real (opcional)
-        function setupRealTimeSearch() {
+        // Configuração da barra de pesquisa
+        document.addEventListener('DOMContentLoaded', function() {
+            const advancedSearchBtn = document.getElementById('advancedSearchBtn');
+            const advancedFilters = document.getElementById('advancedFilters');
+            
+            // Toggle dos filtros avançados
+            if (advancedSearchBtn && advancedFilters) {
+                advancedSearchBtn.addEventListener('click', function() {
+                    const isVisible = advancedFilters.style.display === 'block';
+                    advancedFilters.style.display = isVisible ? 'none' : 'block';
+                    this.innerHTML = isVisible ? 
+                        '<i class="fas fa-sliders-h"></i> Avançado' : 
+                        '<i class="fas fa-times"></i> Fechar';
+                });
+            }
+            
+            // Auto-submit quando mudar alguns filtros
+            const autoSubmitFilters = ['category', 'status', 'dateFilter', 'dangerLevel', 'quantityFilter', 'supplier', 'regulatoryOrg'];
+            autoSubmitFilters.forEach(filterId => {
+                const element = document.getElementById(filterId);
+                if (element) {
+                    element.addEventListener('change', function() {
+                        document.getElementById('searchForm').submit();
+                    });
+                }
+            });
+            
+            // Busca em tempo real para o campo principal
             const searchInput = document.getElementById('searchTerm');
+            let searchTimeout;
+            
             if (searchInput) {
-                let searchTimeout;
-                
                 searchInput.addEventListener('input', function() {
                     clearTimeout(searchTimeout);
                     searchTimeout = setTimeout(() => {
-                        if (this.value.length >= 3 || this.value.length === 0) {
+                        if (this.value.length >= 2 || this.value.length === 0) {
                             document.getElementById('searchForm').submit();
                         }
-                    }, 500);
+                    }, 800);
                 });
             }
-        }
-
-        // Descomente a linha abaixo se quiser busca em tempo real
-        // setupRealTimeSearch();
+        });
     </script>
 </body>
-</html>
+</html> 
