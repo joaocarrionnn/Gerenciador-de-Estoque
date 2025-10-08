@@ -2,291 +2,130 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/database');
 const { requireAuth } = require('../middlewares/authMiddleware');
-const bcrypt = require('bcrypt');
 
-// =============================================
-// ROTAS DE AUTENTICAÇÃO
-// =============================================
 
-// Rota para página de login
-router.get('/login', (req, res) => {
-    if (req.session.user) {
-        return res.redirect('/');
-    }
-    res.render('Auth/login', { 
-        error: null,
-        success: null
-    });
-});
-
-// Rota para processar login
-router.post('/login', async (req, res) => {
-    const { email, senha } = req.body;
-
-    try {
-        // Buscar usuário no banco
-        const query = 'SELECT * FROM usuarios WHERE email = ?';
-        db.query(query, [email], async (err, results) => {
-            if (err) {
-                console.error('Erro ao buscar usuário:', err);
-                return res.render('Auth/login', {
-                    error: 'Erro interno do servidor',
-                    success: null
-                });
-            }
-
-            if (results.length === 0) {
-                return res.render('Auth/login', {
-                    error: 'Email ou senha incorretos',
-                    success: null
-                });
-            }
-
-            const user = results[0];
-
-            // Verificar senha
-            const senhaValida = await bcrypt.compare(senha, user.senha);
-            if (!senhaValida) {
-                return res.render('Auth/login', {
-                    error: 'Email ou senha incorretos',
-                    success: null
-                });
-            }
-
-            // Criar sessão
-            req.session.user = {
-                id: user.id,
-                nome: user.nome,
-                email: user.email,
-                tipo: user.tipo
-            };
-
-            res.redirect('/');
-        });
-    } catch (error) {
-        console.error('Erro no login:', error);
-        res.render('Auth/login', {
-            error: 'Erro interno do servidor',
-            success: null
-        });
-    }
-});
-
-// Rota para página de criar conta
-router.get('/criar_conta', (req, res) => {
-    if (req.session.user) {
-        return res.redirect('/');
-    }
-    res.render('Auth/criar_conta', {
-        error: null,
-        success: null
-    });
-});
-
-// Rota para processar criação de conta
-router.post('/criar_conta', async (req, res) => {
-    const { nome, email, senha, confirmar_senha } = req.body;
-
-    try {
-        // Validações
-        if (!nome || !email || !senha) {
-            return res.render('Auth/criar_conta', {
-                error: 'Todos os campos são obrigatórios',
-                success: null
-            });
-        }
-
-        if (senha !== confirmar_senha) {
-            return res.render('Auth/criar_conta', {
-                error: 'As senhas não coincidem',
-                success: null
-            });
-        }
-
-        if (senha.length < 6) {
-            return res.render('Auth/criar_conta', {
-                error: 'A senha deve ter pelo menos 6 caracteres',
-                success: null
-            });
-        }
-
-        // Verificar se email já existe
-        const checkEmailQuery = 'SELECT id FROM usuarios WHERE email = ?';
-        db.query(checkEmailQuery, [email], async (err, results) => {
-            if (err) {
-                console.error('Erro ao verificar email:', err);
-                return res.render('Auth/criar_conta', {
-                    error: 'Erro interno do servidor',
-                    success: null
-                });
-            }
-
-            if (results.length > 0) {
-                return res.render('Auth/criar_conta', {
-                    error: 'Este email já está em uso',
-                    success: null
-                });
-            }
-
-            // Hash da senha
-            const saltRounds = 10;
-            const senhaHash = await bcrypt.hash(senha, saltRounds);
-
-            // Inserir usuário
-            const insertQuery = 'INSERT INTO usuarios (nome, email, senha, tipo) VALUES (?, ?, ?, ?)';
-            db.query(insertQuery, [nome, email, senhaHash, 'usuario'], (err, result) => {
-                if (err) {
-                    console.error('Erro ao criar usuário:', err);
-                    return res.render('Auth/criar_conta', {
-                        error: 'Erro ao criar conta',
-                        success: null
-                    });
-                }
-
-                res.render('Auth/login', {
-                    error: null,
-                    success: 'Conta criada com sucesso! Faça login para continuar.'
-                });
-            });
-        });
-    } catch (error) {
-        console.error('Erro no registro:', error);
-        res.render('Auth/criar_conta', {
-            error: 'Erro interno do servidor',
-            success: null
-        });
-    }
-});
-
-// =============================================
-// ROTA PRINCIPAL - DASHBOARD
-// =============================================
-
+// Rota para a dashboard principal (VERSÃO ATUALIZADA - 4 MAIS USADOS)
 router.get('/', requireAuth, (req, res) => {
-    // Buscar estatísticas de produtos
-    const statsQuery = `
-        SELECT 
-            COUNT(*) as total_produtos,
-            SUM(quantidade) as total_estoque,
-            SUM(CASE WHEN quantidade <= estoque_minimo AND quantidade > 0 THEN 1 ELSE 0 END) as produtos_baixo_estoque,
-            SUM(CASE WHEN quantidade = 0 THEN 1 ELSE 0 END) as produtos_esgotados
-        FROM produtos
-    `;
-
-    // Buscar estatísticas de vidrarias
-    const vidracariasStatsQuery = `
-        SELECT 
-            COUNT(*) as total_vidracarias,
-            SUM(quantidade) as total_estoque_vidracarias,
-            SUM(CASE WHEN quantidade <= estoque_minimo AND quantidade > 0 THEN 1 ELSE 0 END) as vidracarias_baixo_estoque,
-            SUM(CASE WHEN quantidade = 0 THEN 1 ELSE 0 END) as vidracarias_esgotadas
-        FROM vidracarias
-    `;
-
-    // Buscar últimos 4 produtos
-    const productsQuery = 'SELECT * FROM produtos ORDER BY data_criacao DESC LIMIT 4';
+    // Buscar últimos produtos
+    const productsQuery = 'SELECT * FROM produtos ORDER BY data_criacao DESC LIMIT 5';
     
-    // Buscar últimas 4 vidrarias
-    const vidracariasQuery = 'SELECT * FROM vidracarias ORDER BY data_criacao DESC LIMIT 4';
-
-    db.query(statsQuery, (err, statsResults) => {
+    db.query(productsQuery, (err, productsResults) => {
         if (err) {
-            console.error('Erro ao buscar estatísticas:', err);
+            console.error('Erro ao buscar produtos:', err);
             return res.render('Home/index', {
                 user: req.session.user,
-                stats: {
-                    total_produtos: 0,
-                    total_estoque: 0,
-                    produtos_baixo_estoque: 0,
-                    produtos_esgotados: 0,
-                    total_vidracarias: 0,
-                    total_estoque_vidracarias: 0,
-                    vidracarias_baixo_estoque: 0,
-                    vidracarias_esgotadas: 0
-                },
+                stats: {},
                 produtos: [],
-                vidracarias: [],
                 categorias: [],
-                error: 'Erro ao carregar dashboard'
+                error: 'Erro ao carregar produtos'
             });
         }
 
-        const stats = statsResults[0] || {
-            total_produtos: 0,
-            total_estoque: 0,
-            produtos_baixo_estoque: 0,
-            produtos_esgotados: 0
-        };
+        // Buscar os 4 tipos de reagentes mais usados (com base na quantidade total)
+        const categoriesQuery = `
+            SELECT 
+                tipo,
+                COUNT(*) as quantidade,
+                SUM(quantidade) as total_quantidade,
+                ROUND((SUM(quantidade) * 100.0 / (SELECT SUM(quantidade) FROM produtos)), 1) as porcentagem
+            FROM produtos 
+            WHERE quantidade > 0
+            GROUP BY tipo 
+            ORDER BY total_quantidade DESC, quantidade DESC
+            LIMIT 4
+        `;
 
-        // Buscar estatísticas de vidrarias
-        db.query(vidracariasStatsQuery, (err, vidracariasStatsResults) => {
-            const vidracariasStats = vidracariasStatsResults[0] || {
-                total_vidracarias: 0,
-                total_estoque_vidracarias: 0,
-                vidracarias_baixo_estoque: 0,
-                vidracarias_esgotadas: 0
-            };
+        db.query(categoriesQuery, (err, categoriesResults) => {
+            if (err) {
+                console.error('Erro ao buscar categorias:', err);
+                // Buscar categorias alternativas (apenas contagem)
+                const fallbackQuery = `
+                    SELECT 
+                        tipo,
+                        COUNT(*) as quantidade,
+                        ROUND((COUNT(*) * 100.0 / (SELECT COUNT(*) FROM produtos)), 1) as porcentagem
+                    FROM produtos 
+                    GROUP BY tipo 
+                    ORDER BY quantidade DESC
+                    LIMIT 4
+                `;
 
-            // Combinar estatísticas
-            const combinedStats = {
-                ...stats,
-                ...vidracariasStats
-            };
-
-            // Buscar produtos
-            db.query(productsQuery, (err, productsResults) => {
-                if (err) {
-                    console.error('Erro ao buscar produtos:', err);
-                    productsResults = [];
-                }
-
-                // Buscar vidrarias
-                db.query(vidracariasQuery, (err, vidracariasResults) => {
+                db.query(fallbackQuery, (err, fallbackResults) => {
                     if (err) {
-                        console.error('Erro ao buscar vidrarias:', err);
-                        vidracariasResults = [];
-                    }
+                        console.error('Erro ao buscar categorias alternativas:', err);
+                        const defaultCategories = [
+                            { tipo: 'Ácidos', quantidade: 0, porcentagem: 0 },
+                            { tipo: 'Bases', quantidade: 0, porcentagem: 0 },
+                            { tipo: 'Solventes', quantidade: 0, porcentagem: 0 },
+                            { tipo: 'Sais', quantidade: 0, porcentagem: 0 }
+                        ];
+                        
+                        const stats = {
+                            total_produtos: productsResults.length,
+                            total_estoque: productsResults.reduce((sum, product) => sum + (product.quantidade || 0), 0),
+                            produtos_baixo_estoque: productsResults.filter(product => product.quantidade <= (product.estoque_minimo || 10)).length,
+                            produtos_esgotados: productsResults.filter(product => product.quantidade === 0).length
+                        };
 
-                    // Buscar categorias de produtos
-                    const categoriesQuery = `
-                        SELECT 
-                            tipo,
-                            COUNT(*) as quantidade,
-                            ROUND((COUNT(*) * 100.0 / (SELECT COUNT(*) FROM produtos)), 1) as porcentagem
-                        FROM produtos 
-                        GROUP BY tipo 
-                        ORDER BY quantidade DESC
-                        LIMIT 5
-                    `;
-
-                    db.query(categoriesQuery, (err, categoriesResults) => {
-                        if (err) {
-                            console.error('Erro ao buscar categorias:', err);
-                            categoriesResults = [];
-                        }
-
-                        res.render('Home/index', {
+                        return res.render('Home/index', {
                             user: req.session.user,
-                            stats: combinedStats,
+                            stats: stats,
                             produtos: productsResults,
-                            vidracarias: vidracariasResults,
-                            categorias: categoriesResults,
+                            categorias: defaultCategories,
                             success: req.query.success,
                             error: req.query.error
                         });
+                    }
+
+                    const stats = {
+                        total_produtos: productsResults.length,
+                        total_estoque: productsResults.reduce((sum, product) => sum + (product.quantidade || 0), 0),
+                        produtos_baixo_estoque: productsResults.filter(product => product.quantidade <= (product.estoque_minimo || 10)).length,
+                        produtos_esgotados: productsResults.filter(product => product.quantidade === 0).length
+                    };
+
+                    res.render('Home/index', {
+                        user: req.session.user,
+                        stats: stats,
+                        produtos: productsResults,
+                        categorias: fallbackResults,
+                        success: req.query.success,
+                        error: req.query.error
                     });
                 });
+                return;
+            }
+
+            // Calcular estatísticas básicas
+            const stats = {
+                total_produtos: productsResults.length,
+                total_estoque: productsResults.reduce((sum, product) => sum + (product.quantidade || 0), 0),
+                produtos_baixo_estoque: productsResults.filter(product => product.quantidade <= (product.estoque_minimo || 10)).length,
+                produtos_esgotados: productsResults.filter(product => product.quantidade === 0).length
+            };
+
+            res.render('Home/index', {
+                user: req.session.user,
+                stats: stats,
+                produtos: productsResults,
+                categorias: categoriesResults,
+                success: req.query.success,
+                error: req.query.error
             });
         });
     });
 });
 
-// =============================================
-// ROTAS PARA PRODUTOS/REAGENTES
-// =============================================
+router.get('/login', (req, res) => {
+    res.render('Auth/login');
+});
+
+router.get('/criar_conta', (req, res) => {
+    res.render('Auth/criar_conta');
+});
 
 // Rota para exibir produtos (com suporte a pesquisa avançada)
-router.get('/produtos', requireAuth, (req, res) => {
+router.get('/produtos', (req, res) => {
     const {
         search,
         searchType = 'all',
@@ -452,8 +291,8 @@ router.get('/produtos', requireAuth, (req, res) => {
     });
 });
 
-// Rota para exibir formulário de adição de produto
-router.get('/produtos/adicionar', requireAuth, (req, res) => {
+// Rota para exibir formulário de adição
+router.get('/produtos/adicionar', (req, res) => {
     res.render('adicionar', {
         user: req.session.user,
         formData: null, 
@@ -462,7 +301,7 @@ router.get('/produtos/adicionar', requireAuth, (req, res) => {
 });
 
 // Rota para processar adição de produto
-router.post('/produtos/adicionar', requireAuth, (req, res) => {
+router.post('/produtos/adicionar', (req, res) => {
     const {
         productName,
         productType,
@@ -494,8 +333,8 @@ router.post('/produtos/adicionar', requireAuth, (req, res) => {
         dangerLevel,
         regulatoryOrg,
         safetyInstructions,
-        parseFloat(stockQuantity) || 0,
-        parseFloat(minStock) || 0,
+        parseInt(stockQuantity),
+        minStock ? parseInt(minStock) : 0,
         unit,
         location,
         availability === 'available' ? 1 : 0,
@@ -509,7 +348,7 @@ router.post('/produtos/adicionar', requireAuth, (req, res) => {
             console.error('Erro ao adicionar produto:', err);
             return res.render('adicionar', {
                 user: req.session.user,
-                error: 'Erro ao adicionar produto: ' + err.message,
+                error: 'Erro ao adicionar produto',
                 formData: req.body,
                 success: null
             });
@@ -520,7 +359,7 @@ router.post('/produtos/adicionar', requireAuth, (req, res) => {
 });
 
 // Rota para deletar produto
-router.post('/produtos/deletar/:id', requireAuth, (req, res) => {
+router.post('/produtos/deletar/:id', (req, res) => {
     const productId = req.params.id;
     const query = 'DELETE FROM produtos WHERE id_produto = ?';
     
@@ -534,8 +373,8 @@ router.post('/produtos/deletar/:id', requireAuth, (req, res) => {
     });
 });
 
-// Rota para exibir formulário de edição de produto
-router.get('/produtos/editar/:id', requireAuth, (req, res) => {
+// Rota para exibir formulário de edição
+router.get('/produtos/editar/:id', (req, res) => {
     const productId = req.params.id;
     const query = 'SELECT * FROM produtos WHERE id_produto = ?';
     
@@ -558,7 +397,7 @@ router.get('/produtos/editar/:id', requireAuth, (req, res) => {
 });
 
 // Rota para processar edição de produto
-router.post('/produtos/editar/:id', requireAuth, (req, res) => {
+router.post('/produtos/editar/:id', (req, res) => {
     const productId = req.params.id;
     const {
         productName,
@@ -592,8 +431,8 @@ router.post('/produtos/editar/:id', requireAuth, (req, res) => {
         dangerLevel,
         regulatoryOrg,
         safetyInstructions,
-        parseFloat(stockQuantity) || 0,
-        parseFloat(minStock) || 0,
+        parseInt(stockQuantity),
+        minStock ? parseInt(minStock) : 0,
         unit,
         location,
         availability === 'available' ? 1 : 0,
@@ -613,10 +452,7 @@ router.post('/produtos/editar/:id', requireAuth, (req, res) => {
     });
 });
 
-// =============================================
-// ROTAS PARA MOVIMENTAÇÕES - SAÍDA DE REAGENTES
-// =============================================
-
+// ROTA PARA SAÍDA DE REAGENTES
 router.get('/saida-reagentes', requireAuth, (req, res) => {
     // Buscar produtos disponíveis do banco
     const produtosQuery = `
@@ -630,7 +466,7 @@ router.get('/saida-reagentes', requireAuth, (req, res) => {
             grau_periculosidade,
             localizacao
         FROM produtos 
-        WHERE disponivel = 1 AND quantidade > 0
+        WHERE disponivel = 1 
         ORDER BY nome
     `;
     
@@ -653,7 +489,7 @@ router.get('/saida-reagentes', requireAuth, (req, res) => {
     });
 });
 
-// API PARA REGISTRAR SAÍDA DE REAGENTE
+// API PARA REGISTRAR SAÍDA DE REAGENTE (VERSÃO COM PROMISES)
 router.post('/api/output', requireAuth, (req, res) => {
     const { reagent, quantity, responsible, project, notes } = req.body;
     
@@ -722,7 +558,7 @@ router.post('/api/output', requireAuth, (req, res) => {
 
             console.log('✅ Estoque atualizado com sucesso');
 
-            // 3. Registrar movimentação
+            // 3. Tentar registrar movimentação
             try {
                 await query(
                     `INSERT INTO movimentacoes 
@@ -767,10 +603,241 @@ router.post('/api/output', requireAuth, (req, res) => {
     })();
 });
 
-// =============================================
-// ROTAS PARA MOVIMENTAÇÕES - ENTRADA DE REAGENTES
-// =============================================
 
+// API PARA MOVIMENTAÇÕES
+router.get('/api/movements', requireAuth, (req, res) => {
+    // Verificar se a tabela existe
+    const checkTableQuery = `
+        SELECT COUNT(*) as table_exists 
+        FROM information_schema.tables 
+        WHERE table_schema = 'sistema_estoque' 
+        AND table_name = 'movimentacoes'
+    `;
+
+    db.query(checkTableQuery, (err, result) => {
+        if (err || result[0].table_exists === 0) {
+            return res.json(mockData);
+        }
+
+        // Buscar dados reais
+        const query = `
+            SELECT 
+                m.id_movimentacao as id,
+                p.nome as reagent,
+                m.tipo as type,
+                m.quantidade as quantity,
+                m.unidade_medida as unit,
+                m.responsavel as responsible,
+                m.projeto_experimento as project,
+                m.data_movimentacao as date
+            FROM movimentacoes m
+            JOIN produtos p ON m.id_produto = p.id_produto
+            WHERE m.tipo = 'saida'
+            ORDER BY m.data_movimentacao DESC
+            LIMIT 10
+        `;
+
+        db.query(query, (err, results) => {
+            if (err) {
+                console.error('Erro ao buscar movimentações:', err);
+                return res.json([]);
+            }
+            res.json(results);
+        });
+    });
+});
+
+
+// API PARA MOVIMENTAÇÕES DE SAÍDA (ESPECÍFICA)
+router.get('/api/output-movements', requireAuth, (req, res) => {
+    // Verificar se a tabela existe
+    const checkTableQuery = `
+        SELECT COUNT(*) as table_exists 
+        FROM information_schema.tables 
+        WHERE table_schema = 'sistema_estoque' 
+        AND table_name = 'movimentacoes'
+    `;
+
+    db.query(checkTableQuery, (err, result) => {
+        if (err || result[0].table_exists === 0) {
+            return res.json(mockData);
+        }
+
+        // Buscar dados reais - APENAS SAÍDAS e limitado a 4
+        const query = `
+            SELECT 
+                m.id_movimentacao as id,
+                p.nome as reagent,
+                m.tipo as type,
+                m.quantidade as quantity,
+                m.unidade_medida as unit,
+                m.responsavel as responsible,
+                m.projeto_experimento as project,
+                m.data_movimentacao as date
+            FROM movimentacoes m
+            JOIN produtos p ON m.id_produto = p.id_produto
+            WHERE m.tipo = 'saida'
+            ORDER BY m.data_movimentacao DESC
+            LIMIT 4
+        `;
+
+        db.query(query, (err, results) => {
+            if (err) {
+                console.error('Erro ao buscar movimentações de saída:', err);
+                return res.json([]);
+            }
+            res.json(results);
+        });
+    });
+});
+
+// API PARA MOVIMENTAÇÕES DE ENTRADA
+router.get('/api/input-movements', requireAuth, (req, res) => {
+    const query = `
+        SELECT 
+            m.id_movimentacao as id,
+            p.nome as reagent,
+            m.tipo as type,
+            m.quantidade as quantity,
+            m.unidade_medida as unit,
+            m.responsavel as responsible,
+            m.projeto_experimento as project,
+            m.data_movimentacao as date
+        FROM movimentacoes m
+        JOIN produtos p ON m.id_produto = p.id_produto
+        WHERE m.tipo = 'entrada'
+        ORDER BY m.data_movimentacao DESC
+        LIMIT 4
+    `;
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar movimentações de entrada:', err);
+            return res.status(500).json({ error: 'Erro no servidor' });
+        }
+        res.json(results);
+    });
+});
+
+// API PARA ESTATÍSTICAS
+router.get('/api/statistics', requireAuth, (req, res) => {
+    const today = new Date().toISOString().split('T')[0];
+    
+    // Verificar tabela movimentacoes
+    const checkTableQuery = `
+        SELECT COUNT(*) as table_exists 
+        FROM information_schema.tables 
+        WHERE table_schema = 'sistema_estoque' 
+        AND table_name = 'movimentacoes'
+    `;
+
+    db.query(checkTableQuery, (err, result) => {
+        const tableExists = !err && result[0].table_exists > 0;
+
+        // Buscar total de produtos
+        const totalQuery = 'SELECT COUNT(*) as count FROM produtos WHERE disponivel = 1';
+        
+        db.query(totalQuery, (err, totalResults) => {
+            const totalItems = totalResults[0]?.count || 0;
+
+            if (!tableExists) {
+                // Estatísticas mockadas
+                return res.json({
+                    todayOutputs: 8,
+                    weekOutputs: 42,
+                    monthOutputs: 156,
+                    totalItems: totalItems,
+                    mostUsedReagents: [
+                        { name: 'Ácido Clorídrico P.A.', percentage: 32 },
+                        { name: 'Hidróxido de Sódio P.A.', percentage: 27 },
+                        { name: 'Sulfato de Cobre II', percentage: 18 }
+                    ]
+                });
+            }
+
+            // Buscar estatísticas 
+            const todayQuery = `
+                SELECT COUNT(*) as count 
+                FROM movimentacoes 
+                WHERE tipo = 'saida' AND DATE(data_movimentacao) = ?
+            `;
+
+            const weekQuery = `
+                SELECT COUNT(*) as count 
+                FROM movimentacoes 
+                WHERE tipo = 'saida' 
+                AND YEARWEEK(data_movimentacao, 1) = YEARWEEK(CURDATE(), 1)
+            `;
+
+            const monthQuery = `
+                SELECT COUNT(*) as count 
+                FROM movimentacoes 
+                WHERE tipo = 'saida' 
+                AND YEAR(data_movimentacao) = YEAR(CURDATE()) 
+                AND MONTH(data_movimentacao) = MONTH(CURDATE())
+            `;
+
+            const reagentsQuery = `
+                SELECT 
+                    p.nome as name,
+                    ROUND((COUNT(m.id_movimentacao) / (SELECT COUNT(*) FROM movimentacoes WHERE tipo = 'saida') * 100), 1) as percentage
+                FROM movimentacoes m
+                JOIN produtos p ON m.id_produto = p.id_produto
+                WHERE m.tipo = 'saida'
+                GROUP BY p.id_produto, p.nome
+                ORDER BY percentage DESC
+                LIMIT 3
+            `;
+
+            // Executar queries
+            Promise.all([
+                new Promise(resolve => 
+                    db.query(todayQuery, [today], (err, res) => 
+                        resolve(err ? 0 : res[0].count)
+                    )
+                ),
+                new Promise(resolve => 
+                    db.query(weekQuery, (err, res) => 
+                        resolve(err ? 0 : res[0].count)
+                    )
+                ),
+                new Promise(resolve => 
+                    db.query(monthQuery, (err, res) => 
+                        resolve(err ? 0 : res[0].count)
+                    )
+                ),
+                new Promise(resolve => 
+                    db.query(reagentsQuery, (err, res) => 
+                        resolve(err ? [] : res)
+                    )
+                )
+            ]).then(([todayOutputs, weekOutputs, monthOutputs, mostUsedReagents]) => {
+                res.json({
+                    todayOutputs,
+                    weekOutputs,
+                    monthOutputs,
+                    totalItems,
+                    mostUsedReagents: mostUsedReagents.length > 0 ? mostUsedReagents : [
+                        { name: 'Ácido Clorídrico P.A.', percentage: 32 },
+                        { name: 'Hidróxido de Sódio P.A.', percentage: 27 },
+                        { name: 'Sulfato de Cobre II', percentage: 18 }
+                    ]
+                });
+            }).catch(error => {
+                console.error('Erro nas estatísticas:', error);
+                res.json({
+                    todayOutputs: 0,
+                    weekOutputs: 0,
+                    monthOutputs: 0,
+                    totalItems: totalItems,
+                    mostUsedReagents: []
+                });
+            });
+        });
+    });
+});
+
+// ROTA PARA ENTRADA DE REAGENTES
 router.get('/entrada-reagentes', requireAuth, (req, res) => {
     // Buscar todos os produtos para o dropdown
     const produtosQuery = `
@@ -864,7 +931,7 @@ router.post('/api/input', requireAuth, (req, res) => {
 
             console.log('✅ Estoque atualizado com sucesso');
 
-            // 3. Registrar movimentação de entrada
+            // 3. Tentar registrar movimentação de entrada
             try {
                 await query(
                     `INSERT INTO movimentacoes 
@@ -910,180 +977,22 @@ router.post('/api/input', requireAuth, (req, res) => {
     })();
 });
 
-
-+
-
-// =============================================
-// APIs PARA DADOS E ESTATÍSTICAS
-// =============================================
-
-// API PARA ESTATÍSTICAS GERAIS
-router.get('/api/statistics', requireAuth, (req, res) => {
-    const today = new Date().toISOString().split('T')[0];
-    
-    // Verificar tabela movimentacoes
-    const checkTableQuery = `
-        SELECT COUNT(*) as table_exists 
-        FROM information_schema.tables 
-        WHERE table_schema = DATABASE()
-        AND table_name = 'movimentacoes'
-    `;
-
-    db.query(checkTableQuery, (err, result) => {
-        const tableExists = !err && result && result[0] && result[0].table_exists > 0;
-
-        // Buscar total de produtos
-        const totalQuery = 'SELECT COUNT(*) as count FROM produtos WHERE disponivel = 1';
-        
-        db.query(totalQuery, (err, totalResults) => {
-            const totalItems = totalResults && totalResults[0] ? totalResults[0].count : 0;
-
-            if (!tableExists) {
-                // Estatísticas mockadas
-                return res.json({
-                    todayOutputs: 8,
-                    weekOutputs: 42,
-                    monthOutputs: 156,
-                    totalItems: totalItems,
-                    mostUsedReagents: [
-                        { name: 'Ácido Clorídrico P.A.', percentage: 32 },
-                        { name: 'Hidróxido de Sódio P.A.', percentage: 27 },
-                        { name: 'Sulfato de Cobre II', percentage: 18 }
-                    ]
-                });
-            }
-
-            // Buscar estatísticas reais
-            const todayQuery = `
-                SELECT COUNT(*) as count 
-                FROM movimentacoes 
-                WHERE tipo = 'saida' AND DATE(data_movimentacao) = ?
-            `;
-
-            const weekQuery = `
-                SELECT COUNT(*) as count 
-                FROM movimentacoes 
-                WHERE tipo = 'saida' 
-                AND YEARWEEK(data_movimentacao, 1) = YEARWEEK(CURDATE(), 1)
-            `;
-
-            const monthQuery = `
-                SELECT COUNT(*) as count 
-                FROM movimentacoes 
-                WHERE tipo = 'saida' 
-                AND YEAR(data_movimentacao) = YEAR(CURDATE()) 
-                AND MONTH(data_movimentacao) = MONTH(CURDATE())
-            `;
-
-            const reagentsQuery = `
-                SELECT 
-                    p.nome as name,
-                    ROUND((COUNT(m.id_movimentacao) / (SELECT COUNT(*) FROM movimentacoes WHERE tipo = 'saida') * 100), 1) as percentage
-                FROM movimentacoes m
-                JOIN produtos p ON m.id_produto = p.id_produto
-                WHERE m.tipo = 'saida'
-                GROUP BY p.id_produto, p.nome
-                ORDER BY percentage DESC
-                LIMIT 3
-            `;
-
-            // Executar queries
-            Promise.all([
-                new Promise(resolve => 
-                    db.query(todayQuery, [today], (err, res) => 
-                        resolve(err ? 0 : (res && res[0] ? res[0].count : 0))
-                    )
-                ),
-                new Promise(resolve => 
-                    db.query(weekQuery, (err, res) => 
-                        resolve(err ? 0 : (res && res[0] ? res[0].count : 0))
-                    )
-                ),
-                new Promise(resolve => 
-                    db.query(monthQuery, (err, res) => 
-                        resolve(err ? 0 : (res && res[0] ? res[0].count : 0))
-                    )
-                ),
-                new Promise(resolve => 
-                    db.query(reagentsQuery, (err, res) => 
-                        resolve(err ? [] : (res || []))
-                    )
-                )
-            ]).then(([todayOutputs, weekOutputs, monthOutputs, mostUsedReagents]) => {
-                res.json({
-                    todayOutputs,
-                    weekOutputs,
-                    monthOutputs,
-                    totalItems,
-                    mostUsedReagents: mostUsedReagents.length > 0 ? mostUsedReagents : [
-                        { name: 'Ácido Clorídrico P.A.', percentage: 32 },
-                        { name: 'Hidróxido de Sódio P.A.', percentage: 27 },
-                        { name: 'Sulfato de Cobre II', percentage: 18 }
-                    ]
-                });
-            }).catch(error => {
-                console.error('Erro nas estatísticas:', error);
-                res.json({
-                    todayOutputs: 0,
-                    weekOutputs: 0,
-                    monthOutputs: 0,
-                    totalItems: totalItems,
-                    mostUsedReagents: []
-                });
-            });
-        });
-    });
-});
-
 // API PARA MOVIMENTAÇÕES DE ENTRADA
 router.get('/api/input-movements', requireAuth, (req, res) => {
     // Verificar se a tabela existe
     const checkTableQuery = `
         SELECT COUNT(*) as table_exists 
         FROM information_schema.tables 
-        WHERE table_schema = DATABASE()
+        WHERE table_schema = 'sistema_estoque' 
         AND table_name = 'movimentacoes'
     `;
 
     db.query(checkTableQuery, (err, result) => {
-        if (err || !result || !result[0] || result[0].table_exists === 0) {
-            // Dados de exemplo se a tabela não existir
-            const mockData = [
-                {
-                    id: 1,
-                    reagent: "Ácido Clorídrico P.A.",
-                    type: "entrada",
-                    quantity: 5.0,
-                    unit: "L",
-                    responsible: "João Silva",
-                    supplier: "Sigma-Aldrich",
-                    date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000)
-                },
-                {
-                    id: 2,
-                    reagent: "Hidróxido de Sódio P.A.", 
-                    type: "entrada",
-                    quantity: 2.0,
-                    unit: "kg",
-                    responsible: "Maria Santos",
-                    supplier: "Merck",
-                    date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
-                },
-                {
-                    id: 3,
-                    reagent: "Sulfato de Cobre II",
-                    type: "entrada", 
-                    quantity: 1.5,
-                    unit: "kg",
-                    responsible: "Carlos Oliveira",
-                    supplier: "Vetec",
-                    date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)
-                }
-            ];
+        if (err || result[0].table_exists === 0) {
             return res.json(mockData);
         }
 
-        // Buscar dados reais de entrada - QUERY CORRIGIDA
+        // Buscar dados reais de entrada
         const query = `
             SELECT 
                 m.id_movimentacao as id,
@@ -1093,12 +1002,7 @@ router.get('/api/input-movements', requireAuth, (req, res) => {
                 m.unidade_medida as unit,
                 m.responsavel as responsible,
                 m.projeto_experimento as project,
-                m.data_movimentacao as date,
-                CASE 
-                    WHEN m.projeto_experimento LIKE 'Fornecedor: %' 
-                    THEN REPLACE(SUBSTRING_INDEX(m.projeto_experimento, 'Fornecedor: ', -1), '.', '')
-                    ELSE NULL
-                END as supplier
+                m.data_movimentacao as date
             FROM movimentacoes m
             JOIN produtos p ON m.id_produto = p.id_produto
             WHERE m.tipo = 'entrada'
@@ -1109,33 +1013,9 @@ router.get('/api/input-movements', requireAuth, (req, res) => {
         db.query(query, (err, results) => {
             if (err) {
                 console.error('Erro ao buscar movimentações de entrada:', err);
-                // Retornar dados mockados em caso de erro
-                const mockData = [
-                    {
-                        id: 1,
-                        reagent: "Ácido Clorídrico P.A.",
-                        quantity: 5.0,
-                        unit: "L", 
-                        responsible: "João Silva",
-                        supplier: "Sigma-Aldrich",
-                        date: new Date()
-                    }
-                ];
-                return res.json(mockData);
+                return res.json([]);
             }
-            
-            // Processar os resultados para garantir formato correto
-            const processedResults = (results || []).map(item => ({
-                id: item.id,
-                reagent: item.reagent,
-                quantity: parseFloat(item.quantity) || 0,
-                unit: item.unit,
-                responsible: item.responsible,
-                supplier: item.supplier || 'Não informado',
-                date: item.date ? new Date(item.date) : new Date()
-            }));
-            
-            res.json(processedResults);
+            res.json(results);
         });
     });
 });
@@ -1143,372 +1023,115 @@ router.get('/api/input-movements', requireAuth, (req, res) => {
 // API PARA ESTATÍSTICAS DE ENTRADA
 router.get('/api/input-statistics', requireAuth, (req, res) => {
     const today = new Date().toISOString().split('T')[0];
+
+    // Buscar produtos com estoque baixo
+    const lowStockQuery = 'SELECT COUNT(*) as count FROM produtos WHERE quantidade <= estoque_minimo AND quantidade > 0';
+    const outOfStockQuery = 'SELECT COUNT(*) as count FROM produtos WHERE quantidade = 0';
     
-    // Verificar tabela movimentacoes
-    const checkTableQuery = `
-        SELECT COUNT(*) as table_exists 
-        FROM information_schema.tables 
-        WHERE table_schema = DATABASE()
-        AND table_name = 'movimentacoes'
+    // Buscar estatísticas de entrada
+    const todayQuery = `
+        SELECT COUNT(*) as count 
+        FROM movimentacoes 
+        WHERE tipo = 'entrada' AND DATE(data_movimentacao) = ?
     `;
 
-    db.query(checkTableQuery, (err, result) => {
-        const tableExists = !err && result && result[0] && result[0].table_exists > 0;
+    const weekQuery = `
+        SELECT COUNT(*) as count 
+        FROM movimentacoes 
+        WHERE tipo = 'entrada' 
+        AND YEARWEEK(data_movimentacao, 1) = YEARWEEK(CURDATE(), 1)
+    `;
 
-        // Buscar produtos com estoque baixo
-        const lowStockQuery = 'SELECT COUNT(*) as count FROM produtos WHERE quantidade <= estoque_minimo AND quantidade > 0';
-        const outOfStockQuery = 'SELECT COUNT(*) as count FROM produtos WHERE quantidade = 0';
-        
-        db.query(lowStockQuery, (err, lowStockResults) => {
-            const lowStockItems = lowStockResults && lowStockResults[0] ? lowStockResults[0].count : 0;
-            
-            db.query(outOfStockQuery, (err, outOfStockResults) => {
-                const outOfStockItems = outOfStockResults && outOfStockResults[0] ? outOfStockResults[0].count : 0;
+    const monthQuery = `
+        SELECT COUNT(*) as count 
+        FROM movimentacoes 
+        WHERE tipo = 'entrada' 
+        AND YEAR(data_movimentacao) = YEAR(CURDATE()) 
+        AND MONTH(data_movimentacao) = MONTH(CURDATE())
+    `;
 
-                if (!tableExists) {
-                    // Estatísticas mockadas
-                    return res.json({
-                        todayInputs: 3,
-                        weekInputs: 15,
-                        monthInputs: 45,
-                        lowStockItems: lowStockItems,
-                        outOfStockItems: outOfStockItems,
-                        recentSuppliers: [
-                            { name: 'Sigma-Aldrich', count: 12 },
-                            { name: 'Merck', count: 8 },
-                            { name: 'Vetec', count: 5 }
-                        ]
-                    });
-                }
-
-                // Buscar estatísticas reais de entrada
-                const todayQuery = `
-                    SELECT COUNT(*) as count 
-                    FROM movimentacoes 
-                    WHERE tipo = 'entrada' AND DATE(data_movimentacao) = ?
-                `;
-
-                const weekQuery = `
-                    SELECT COUNT(*) as count 
-                    FROM movimentacoes 
-                    WHERE tipo = 'entrada' 
-                    AND YEARWEEK(data_movimentacao, 1) = YEARWEEK(CURDATE(), 1)
-                `;
-
-                const monthQuery = `
-                    SELECT COUNT(*) as count 
-                    FROM movimentacoes 
-                    WHERE tipo = 'entrada' 
-                    AND YEAR(data_movimentacao) = YEAR(CURDATE()) 
-                    AND MONTH(data_movimentacao) = MONTH(CURDATE())
-                `;
-
-                const suppliersQuery = `
-                    SELECT 
-                        SUBSTRING_INDEX(SUBSTRING_INDEX(projeto_experimento, 'Fornecedor: ', -1), ' ', 1) as supplier,
-                        COUNT(*) as count
-                    FROM movimentacoes 
-                    WHERE tipo = 'entrada' AND projeto_experimento LIKE 'Fornecedor: %'
-                    GROUP BY supplier
-                    ORDER BY count DESC
-                    LIMIT 3
-                `;
-
-                // Executar queries
-                Promise.all([
-                    new Promise(resolve => 
-                        db.query(todayQuery, [today], (err, res) => 
-                            resolve(err ? 0 : (res && res[0] ? res[0].count : 0))
-                        )
-                    ),
-                    new Promise(resolve => 
-                        db.query(weekQuery, (err, res) => 
-                            resolve(err ? 0 : (res && res[0] ? res[0].count : 0))
-                        )
-                    ),
-                    new Promise(resolve => 
-                        db.query(monthQuery, (err, res) => 
-                            resolve(err ? 0 : (res && res[0] ? res[0].count : 0))
-                        )
-                    ),
-                    new Promise(resolve => 
-                        db.query(suppliersQuery, (err, res) => 
-                            resolve(err ? [] : (res || []))
-                        )
-                    )
-                ]).then(([todayInputs, weekInputs, monthInputs, recentSuppliers]) => {
-                    res.json({
-                        todayInputs,
-                        weekInputs,
-                        monthInputs,
-                        lowStockItems,
-                        outOfStockItems,
-                        recentSuppliers: recentSuppliers.length > 0 ? recentSuppliers : [
-                            { supplier: 'Sigma-Aldrich', count: 12 },
-                            { supplier: 'Merck', count: 8 },
-                            { supplier: 'Vetec', count: 5 }
-                        ]
-                    });
-                }).catch(error => {
-                    console.error('Erro nas estatísticas de entrada:', error);
-                    res.json({
-                        todayInputs: 0,
-                        weekInputs: 0,
-                        monthInputs: 0,
-                        lowStockItems: lowStockItems,
-                        outOfStockItems: outOfStockItems,
-                        recentSuppliers: []
-                    });
-                });
-            });
-        });
-    });
-});
-
-// API PARA DADOS DAS VIDRARIAS (AJAX)
-router.get('/api/vidracarias', requireAuth, (req, res) => {
-    const query = 'SELECT * FROM vidracarias ORDER BY nome';
-    
-    db.query(query, (err, results) => {
-        if (err) {
-            console.error('Erro ao buscar vidrarias:', err);
-            return res.json([]);
-        }
-        
-        res.json(results || []);
-    });
-});
-
-// API PARA ESTATÍSTICAS DAS VIDRARIAS
-router.get('/api/vidracarias/statistics', requireAuth, (req, res) => {
-    const statsQuery = `
+    const suppliersQuery = `
         SELECT 
-            COUNT(*) as total,
-            SUM(quantidade) as total_estoque,
-            SUM(CASE WHEN quantidade <= estoque_minimo AND quantidade > 0 THEN 1 ELSE 0 END) as baixo_estoque,
-            SUM(CASE WHEN quantidade = 0 THEN 1 ELSE 0 END) as esgotadas,
-            categoria,
-            COUNT(*) as por_categoria
-        FROM vidracarias 
-        GROUP BY categoria
+            SUBSTRING_INDEX(SUBSTRING_INDEX(projeto_experimento, 'Fornecedor: ', -1), ' ', 1) as supplier,
+            COUNT(*) as count
+        FROM movimentacoes 
+        WHERE tipo = 'entrada' AND projeto_experimento LIKE 'Fornecedor: %'
+        GROUP BY supplier
+        ORDER BY count DESC
+        LIMIT 3
     `;
 
-    db.query(statsQuery, (err, results) => {
+    // Executar todas as queries
+    db.query(lowStockQuery, (err, lowStockResults) => {
         if (err) {
-            console.error('Erro ao buscar estatísticas:', err);
-            return res.json({
-                total: 0,
-                total_estoque: 0,
-                baixo_estoque: 0,
-                esgotadas: 0,
-                categorias: []
-            });
+            console.error('Erro ao buscar estoque baixo:', err);
+            return res.status(500).json({ error: 'Erro no servidor' });
         }
 
-        // Processar resultados
-        const stats = {
-            total: 0,
-            total_estoque: 0,
-            baixo_estoque: 0,
-            esgotadas: 0,
-            categorias: []
-        };
+        db.query(outOfStockQuery, (err, outOfStockResults) => {
+            if (err) {
+                console.error('Erro ao buscar estoque esgotado:', err);
+                return res.status(500).json({ error: 'Erro no servidor' });
+            }
 
-        (results || []).forEach(row => {
-            if (row.categoria) {
-                stats.categorias.push({
-                    nome: row.categoria,
-                    quantidade: row.por_categoria
+            // Executar queries de estatísticas
+            db.query(todayQuery, [today], (err, todayResults) => {
+                if (err) {
+                    console.error('Erro ao buscar entradas de hoje:', err);
+                    return res.status(500).json({ error: 'Erro no servidor' });
+                }
+
+                db.query(weekQuery, (err, weekResults) => {
+                    if (err) {
+                        console.error('Erro ao buscar entradas da semana:', err);
+                        return res.status(500).json({ error: 'Erro no servidor' });
+                    }
+
+                    db.query(monthQuery, (err, monthResults) => {
+                        if (err) {
+                            console.error('Erro ao buscar entradas do mês:', err);
+                            return res.status(500).json({ error: 'Erro no servidor' });
+                        }
+
+                        db.query(suppliersQuery, (err, suppliersResults) => {
+                            if (err) {
+                                console.error('Erro ao buscar fornecedores:', err);
+                                // Continua mesmo com erro nos fornecedores
+                            }
+
+                            res.json({
+                                todayInputs: todayResults[0]?.count || 0,
+                                weekInputs: weekResults[0]?.count || 0,
+                                monthInputs: monthResults[0]?.count || 0,
+                                lowStockItems: lowStockResults[0]?.count || 0,
+                                outOfStockItems: outOfStockResults[0]?.count || 0,
+                                recentSuppliers: suppliersResults || []
+                            });
+                        });
+                    });
                 });
-            }
-            
-            // Somar totais (usando o primeiro registro para totais gerais)
-            if (stats.total === 0) {
-                stats.total = row.total;
-                stats.total_estoque = row.total_estoque;
-                stats.baixo_estoque = row.baixo_estoque;
-                stats.esgotadas = row.esgotadas;
-            }
+            });
         });
-
-        res.json(stats);
     });
 });
 
-// API PARA MOVIMENTAÇÕES DE VIDRARIAS
-router.get('/api/vidracarias/movements', requireAuth, (req, res) => {
-    // Verificar se a tabela existe
-    const checkTableQuery = `
-        SELECT COUNT(*) as table_exists 
-        FROM information_schema.tables 
-        WHERE table_schema = DATABASE() 
-        AND table_name = 'movimentacoes_vidracarias'
+
+// API PARA TODAS AS MOVIMENTAÇÕES DE ENTRADA (COM PAGINAÇÃO)
+router.get('/api/all-input-movements', requireAuth, (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = (page - 1) * limit;
+
+    // Query para contar o total
+    const countQuery = `
+        SELECT COUNT(*) as total 
+        FROM movimentacoes m
+        JOIN produtos p ON m.id_produto = p.id_produto
+        WHERE m.tipo = 'entrada'
     `;
 
-    db.query(checkTableQuery, (err, result) => {
-        if (err || !result || !result[0] || result[0].table_exists === 0) {
-            // Dados de exemplo se a tabela não existir
-            const mockData = [
-                {
-                    id: 1,
-                    tipo: "saida",
-                    vidracaria: "Béquer 500mL",
-                    quantidade: 5,
-                    responsavel: "Dr. Silva",
-                    data: new Date(Date.now() - 2 * 60 * 60 * 1000)
-                },
-                {
-                    id: 2,
-                    tipo: "entrada", 
-                    vidracaria: "Pipeta Graduada 10mL",
-                    quantidade: 10,
-                    responsavel: "Lab. Central",
-                    data: new Date(Date.now() - 5 * 60 * 60 * 1000)
-                }
-            ];
-            return res.json(mockData);
-        }
-
-        // Buscar dados reais
-        const query = `
-            SELECT 
-                id,
-                tipo,
-                vidracaria_nome as vidracaria,
-                quantidade,
-                responsavel,
-                data_movimentacao as data
-            FROM movimentacoes_vidracarias
-            ORDER BY data_movimentacao DESC
-            LIMIT 10
-        `;
-
-        db.query(query, (err, results) => {
-            if (err) {
-                console.error('Erro ao buscar movimentações:', err);
-                return res.json([]);
-            }
-            
-            // Converter datas para objetos Date
-            const movimentacoes = (results || []).map(mov => ({
-                ...mov,
-                data: new Date(mov.data)
-            }));
-            
-            res.json(movimentacoes);
-        });
-    });
-});
-
-// ROTA PARA SAÍDA DE VIDRARIAS
-router.post('/api/vidracarias/saida', requireAuth, (req, res) => {
-    const { vidracaria_id, quantidade, responsavel, projeto, observacoes } = req.body;
-
-    if (!vidracaria_id || !quantidade || !responsavel) {
-        return res.json({
-            success: false,
-            message: 'Vidraria, quantidade e responsável são obrigatórios'
-        });
-    }
-
-    const qtdSaida = parseInt(quantidade);
-    if (isNaN(qtdSaida) || qtdSaida <= 0) {
-        return res.json({
-            success: false,
-            message: 'Quantidade deve ser um número positivo'
-        });
-    }
-
-    // Função para executar queries com Promise
-    const query = (sql, params = []) => {
-        return new Promise((resolve, reject) => {
-            db.query(sql, params, (err, results) => {
-                if (err) reject(err);
-                else resolve(results);
-            });
-        });
-    };
-
-    (async () => {
-        try {
-            // 1. Buscar vidraria
-            const vidracariaResults = await query(
-                'SELECT id, nome, quantidade FROM vidracarias WHERE id = ?',
-                [vidracaria_id]
-            );
-
-            if (vidracariaResults.length === 0) {
-                return res.json({
-                    success: false,
-                    message: 'Vidraria não encontrada'
-                });
-            }
-
-            const vidracaria = vidracariaResults[0];
-            const quantidadeAtual = parseInt(vidracaria.quantidade);
-
-            // Verificar estoque
-            if (quantidadeAtual < qtdSaida) {
-                return res.json({
-                    success: false,
-                    message: `Estoque insuficiente! Disponível: ${quantidadeAtual} unidades`
-                });
-            }
-
-            const novaQuantidade = quantidadeAtual - qtdSaida;
-
-            // 2. Atualizar estoque
-            await query(
-                'UPDATE vidracarias SET quantidade = ? WHERE id = ?',
-                [novaQuantidade, vidracaria_id]
-            );
-
-            // 3. Registrar movimentação
-            try {
-                await query(
-                    `INSERT INTO movimentacoes_vidracarias 
-                    (vidracaria_id, vidracaria_nome, tipo, quantidade, responsavel, projeto, observacoes)
-                    VALUES (?, ?, 'saida', ?, ?, ?, ?)`,
-                    [
-                        vidracaria_id,
-                        vidracaria.nome,
-                        qtdSaida,
-                        responsavel,
-                        projeto,
-                        observacoes || `Saída registrada por ${responsavel}`
-                    ]
-                );
-            } catch (movimentacaoError) {
-                console.log('Tabela movimentacoes_vidracarias não existe:', movimentacaoError.message);
-            }
-
-            res.json({
-                success: true,
-                message: `Saída de ${qtdSaida} unidades de ${vidracaria.nome} registrada com sucesso!`,
-                data: {
-                    vidracaria: vidracaria.nome,
-                    quantidade: qtdSaida,
-                    estoque_atual: novaQuantidade,
-                    responsavel: responsavel
-                }
-            });
-
-        } catch (error) {
-            console.error('Erro no processo de saída:', error);
-            res.json({
-                success: false,
-                message: 'Erro interno do servidor: ' + error.message
-            });
-        }
-    })();
-});
-
-
-
-// API PARA MOVIMENTAÇÕES DE SAÍDA (APENAS SAÍDAS - 4 ÚLTIMAS)
-router.get('/api/output-movements', requireAuth, (req, res) => {
-    // Buscar apenas movimentações de saída
-    const query = `
+    // Query para buscar os dados
+    const dataQuery = `
         SELECT 
             m.id_movimentacao as id,
             p.nome as reagent,
@@ -1520,51 +1143,244 @@ router.get('/api/output-movements', requireAuth, (req, res) => {
             m.data_movimentacao as date
         FROM movimentacoes m
         JOIN produtos p ON m.id_produto = p.id_produto
-        WHERE m.tipo = 'saida'
+        WHERE m.tipo = 'entrada'
         ORDER BY m.data_movimentacao DESC
-        LIMIT 4
+        LIMIT ? OFFSET ?
     `;
 
-    db.query(query, (err, results) => {
+    db.query(countQuery, (err, countResults) => {
         if (err) {
-            console.error('Erro ao buscar movimentações de saída:', err);
-            return res.json([]);
+            console.error('Erro ao contar movimentações:', err);
+            return res.status(500).json({ error: 'Erro no servidor' });
         }
-        
-        // Processar os resultados
-        const processedResults = (results || []).map(item => ({
-            id: item.id,
-            reagent: item.reagent,
-            type: item.type,
-            quantity: parseFloat(item.quantity) || 0,
-            unit: item.unit,
-            responsible: item.responsible,
-            project: item.project,
-            date: item.date ? new Date(item.date) : new Date()
-        }));
-        
-        console.log(`📤 Movimentações de saída carregadas: ${processedResults.length} registros`);
-        res.json(processedResults);
+
+        const total = countResults[0].total;
+        const totalPages = Math.ceil(total / limit);
+
+        db.query(dataQuery, [limit, offset], (err, dataResults) => {
+            if (err) {
+                console.error('Erro ao buscar movimentações:', err);
+                return res.status(500).json({ error: 'Erro no servidor' });
+            }
+
+            res.json({
+                data: dataResults,
+                total: total,
+                totalPages: totalPages,
+                currentPage: page
+            });
+        });
     });
 });
 
-// API PARA MOVIMENTAÇÕES DE ENTRADA (APENAS ENTRADAS - 4 ÚLTIMAS)
-router.get('/api/input-movements', requireAuth, (req, res) => {
+// API PARA TODAS AS MOVIMENTAÇÕES (ENTRADAS E SAÍDAS)
+router.get('/api/all-movements', requireAuth, (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 15;
+    const offset = (page - 1) * limit;
+    const typeFilter = req.query.type || 'all';
+    const searchTerm = req.query.search || '';
+
+    let whereClause = 'WHERE 1=1';
+    let queryParams = [];
+
+    // Filtro por tipo
+    if (typeFilter !== 'all') {
+        whereClause += ' AND m.tipo = ?';
+        queryParams.push(typeFilter);
+    }
+
+    // Filtro por busca
+    if (searchTerm) {
+        whereClause += ' AND (p.nome LIKE ? OR m.responsavel LIKE ? OR m.projeto_experimento LIKE ?)';
+        const searchPattern = `%${searchTerm}%`;
+        queryParams.push(searchPattern, searchPattern, searchPattern);
+    }
+
+    // Query para contar o total
+    const countQuery = `
+        SELECT COUNT(*) as total 
+        FROM movimentacoes m
+        JOIN produtos p ON m.id_produto = p.id_produto
+        ${whereClause}
+    `;
+
+    // Query para buscar os dados
+    const dataQuery = `
+        SELECT 
+            m.id_movimentacao as id,
+            p.nome as reagent,
+            m.tipo as type,
+            m.quantidade as quantity,
+            m.unidade_medida as unit,
+            m.responsavel as responsible,
+            m.projeto_experimento as project,
+            m.data_movimentacao as date
+        FROM movimentacoes m
+        JOIN produtos p ON m.id_produto = p.id_produto
+        ${whereClause}
+        ORDER BY m.data_movimentacao DESC
+        LIMIT ? OFFSET ?
+    `;
+
+    db.query(countQuery, queryParams, (err, countResults) => {
+        if (err) {
+            console.error('Erro ao contar movimentações:', err);
+            return res.status(500).json({ error: 'Erro no servidor' });
+        }
+
+        const total = countResults[0].total;
+        const totalPages = Math.ceil(total / limit);
+
+        // Adicionar limit e offset aos parâmetros
+        const dataParams = [...queryParams, limit, offset];
+
+        db.query(dataQuery, dataParams, (err, dataResults) => {
+            if (err) {
+                console.error('Erro ao buscar movimentações:', err);
+                return res.status(500).json({ error: 'Erro no servidor' });
+            }
+
+            res.json({
+                data: dataResults,
+                total: total,
+                totalPages: totalPages,
+                currentPage: page
+            });
+        });
+    });
+});
+
+// API PARA ESTATÍSTICAS DAS MOVIMENTAÇÕES
+router.get('/api/movements-statistics', requireAuth, (req, res) => {
+    // Contar totais por tipo
+    const totalsQuery = `
+        SELECT 
+            tipo,
+            COUNT(*) as count
+        FROM movimentacoes 
+        GROUP BY tipo
+    `;
+
+    // Contar reagentes únicos
+    const uniqueReagentsQuery = `
+        SELECT COUNT(DISTINCT id_produto) as count
+        FROM movimentacoes
+    `;
+
+    // Buscar movimentações do mês atual
+    const monthQuery = `
+        SELECT 
+            tipo,
+            COUNT(*) as count
+        FROM movimentacoes 
+        WHERE YEAR(data_movimentacao) = YEAR(CURDATE()) 
+        AND MONTH(data_movimentacao) = MONTH(CURDATE())
+        GROUP BY tipo
+    `;
+
+    Promise.all([
+        new Promise(resolve => 
+            db.query(totalsQuery, (err, res) => resolve(err ? [] : res))
+        ),
+        new Promise(resolve => 
+            db.query(uniqueReagentsQuery, (err, res) => resolve(err ? 0 : res[0].count))
+        ),
+        new Promise(resolve => 
+            db.query(monthQuery, (err, res) => resolve(err ? [] : res))
+        )
+    ]).then(([totals, uniqueReagents, monthStats]) => {
+        const totalEntradas = totals.find(t => t.tipo === 'entrada')?.count || 0;
+        const totalSaidas = totals.find(t => t.tipo === 'saida')?.count || 0;
+        const entradasMes = monthStats.find(t => t.tipo === 'entrada')?.count || 0;
+        const saidasMes = monthStats.find(t => t.tipo === 'saida')?.count || 0;
+
+        res.json({
+            totalEntradas,
+            totalSaidas,
+            totalMovimentacoes: totalEntradas + totalSaidas,
+            reagentesUnicos: uniqueReagents,
+            entradasMes,
+            saidasMes
+        });
+    }).catch(error => {
+        console.error('Erro nas estatísticas:', error);
+        res.json({
+            totalEntradas: 0,
+            totalSaidas: 0,
+            totalMovimentacoes: 0,
+            reagentesUnicos: 0,
+            entradasMes: 0,
+            saidasMes: 0
+        });
+    });
+});
+
+// ROTA PARA PÁGINA DE MOVIMENTAÇÕES
+router.get('/movimentacoes', requireAuth, (req, res) => {
+    res.render('movimentacoes', { 
+        user: req.session.user
+    });
+});
+
+// API PARA ÚLTIMAS MOVIMENTAÇÕES (TODOS OS TIPOS)
+router.get('/api/recent-movements', requireAuth, (req, res) => {
     // Verificar se a tabela existe
     const checkTableQuery = `
         SELECT COUNT(*) as table_exists 
         FROM information_schema.tables 
-        WHERE table_schema = DATABASE()
+        WHERE table_schema = 'sistema_estoque' 
         AND table_name = 'movimentacoes'
     `;
 
     db.query(checkTableQuery, (err, result) => {
-        if (err || !result || !result[0] || result[0].table_exists === 0) {
-            console.log('Tabela movimentacoes não existe');
-            return res.json([]);
+        if (err || result[0].table_exists === 0) {
+            // Dados mockados se a tabela não existir
+            return res.json([
+                {
+                    id: 1,
+                    reagent: 'Ácido Clorídrico P.A.',
+                    type: 'saida',
+                    quantity: 2.5,
+                    unit: 'L',
+                    responsible: 'João Silva',
+                    project: 'Projeto A',
+                    date: new Date().toISOString()
+                },
+                {
+                    id: 2,
+                    reagent: 'Hidróxido de Sódio',
+                    type: 'entrada',
+                    quantity: 5.0,
+                    unit: 'kg',
+                    responsible: 'Maria Santos',
+                    project: 'Fornecedor: Química Ltda',
+                    date: new Date(Date.now() - 86400000).toISOString()
+                },
+                {
+                    id: 3,
+                    reagent: 'Sulfato de Cobre II',
+                    type: 'saida',
+                    quantity: 1.0,
+                    unit: 'kg',
+                    responsible: 'Pedro Oliveira',
+                    project: 'Projeto B',
+                    date: new Date(Date.now() - 172800000).toISOString()
+                },
+                {
+                    id: 4,
+                    reagent: 'Ácido Sulfúrico',
+                    type: 'entrada',
+                    quantity: 3.0,
+                    unit: 'L',
+                    responsible: 'Ana Costa',
+                    project: 'Fornecedor: LabSupply',
+                    date: new Date(Date.now() - 259200000).toISOString()
+                }
+            ]);
         }
 
-        // Buscar apenas movimentações de entrada
+        // Buscar dados reais - últimas 4 movimentações de qualquer tipo
         const query = `
             SELECT 
                 m.id_movimentacao as id,
@@ -1574,86 +1390,22 @@ router.get('/api/input-movements', requireAuth, (req, res) => {
                 m.unidade_medida as unit,
                 m.responsavel as responsible,
                 m.projeto_experimento as project,
-                m.data_movimentacao as date,
-                CASE 
-                    WHEN m.projeto_experimento LIKE 'Fornecedor: %' 
-                    THEN REPLACE(SUBSTRING_INDEX(m.projeto_experimento, 'Fornecedor: ', -1), '.', '')
-                    ELSE NULL
-                END as supplier
+                m.data_movimentacao as date
             FROM movimentacoes m
             JOIN produtos p ON m.id_produto = p.id_produto
-            WHERE m.tipo = 'entrada'
             ORDER BY m.data_movimentacao DESC
             LIMIT 4
         `;
 
         db.query(query, (err, results) => {
             if (err) {
-                console.error('Erro ao buscar movimentações de entrada:', err);
+                console.error('Erro ao buscar movimentações recentes:', err);
                 return res.json([]);
             }
-            
-            // Processar os resultados
-            const processedResults = (results || []).map(item => ({
-                id: item.id,
-                reagent: item.reagent,
-                type: item.type,
-                quantity: parseFloat(item.quantity) || 0,
-                unit: item.unit,
-                responsible: item.responsible,
-                project: item.project,
-                supplier: item.supplier || 'Não informado',
-                date: item.date ? new Date(item.date) : new Date()
-            }));
-            
-            console.log(`📥 Movimentações de entrada carregadas: ${processedResults.length} registros`);
-            res.json(processedResults);
+            res.json(results);
         });
     });
 });
-
-// API PARA MOVIMENTAÇÕES GERAIS (AMBOS - 4 ÚLTIMAS - DASHBOARD)
-router.get('/api/movements', requireAuth, (req, res) => {
-    // Buscar todas as movimentações (entradas e saídas)
-    const query = `
-        SELECT 
-            m.id_movimentacao as id,
-            p.nome as reagent,
-            m.tipo as type,
-            m.quantidade as quantity,
-            m.unidade_medida as unit,
-            m.responsavel as responsible,
-            m.projeto_experimento as project,
-            m.data_movimentacao as date
-        FROM movimentacoes m
-        JOIN produtos p ON m.id_produto = p.id_produto
-        ORDER BY m.data_movimentacao DESC
-        LIMIT 4
-    `;
-
-    db.query(query, (err, results) => {
-        if (err) {
-            console.error('Erro ao buscar movimentações:', err);
-            return res.json([]);
-        }
-        
-        // Processar os resultados
-        const processedResults = (results || []).map(item => ({
-            id: item.id,
-            reagent: item.reagent,
-            type: item.type,
-            quantity: parseFloat(item.quantity) || 0,
-            unit: item.unit,
-            responsible: item.responsible,
-            project: item.project,
-            date: item.date ? new Date(item.date) : new Date()
-        }));
-        
-        console.log(`📊 Movimentações do dashboard carregadas: ${processedResults.length} registros`);
-        res.json(processedResults);
-    });
-});
-
 
 // ROTA PARA RELATÓRIOS
 router.get('/relatorios', requireAuth, (req, res) => {
@@ -1669,6 +1421,100 @@ router.get('/logout', requireAuth, (req, res) => {
             console.error('Erro ao fazer logout:', err);
         }
         res.redirect('/login');
+    });
+});
+
+// ROTA PARA VIDRAÇARIAS
+router.get('/vidracarias', requireAuth, (req, res) => {
+    const {
+        search,
+        category,
+        status
+    } = req.query;
+
+    let query = 'SELECT * FROM vidracarias WHERE 1=1';
+    let queryParams = [];
+
+    // Filtro por pesquisa
+    if (search) {
+        query += ' AND (nome LIKE ? OR descricao LIKE ? OR material LIKE ?)';
+        const searchPattern = `%${search}%`;
+        queryParams.push(searchPattern, searchPattern, searchPattern);
+    }
+
+    // Filtro por categoria
+    if (category) {
+        query += ' AND categoria = ?';
+        queryParams.push(category);
+    }
+
+    // Filtro por status
+    if (status) {
+        switch (status) {
+            case 'available':
+                query += ' AND quantidade > 0';
+                break;
+            case 'low_stock':
+                query += ' AND quantidade > 0 AND quantidade <= estoque_minimo';
+                break;
+            case 'out_of_stock':
+                query += ' AND quantidade = 0';
+                break;
+        }
+    }
+
+    query += ' ORDER BY nome';
+
+    // Primeiro, buscar as categorias disponíveis
+    const categoriesQuery = 'SELECT DISTINCT categoria FROM vidracarias ORDER BY categoria';
+    
+    db.query(categoriesQuery, (err, categoriesResults) => {
+        if (err) {
+            console.error('Erro ao buscar categorias:', err);
+            categoriesResults = [];
+        }
+
+        // Agora buscar as vidrarias
+        db.query(query, queryParams, (err, vidracariasResults) => {
+            if (err) {
+                console.error('Erro ao buscar vidrarias:', err);
+                return res.render('vidracarias', {
+                    user: req.session.user,
+                    vidracarias: [],
+                    categories: categoriesResults || [],
+                    stats: {
+                        total_vidracarias: 0,
+                        total_estoque: 0,
+                        baixo_estoque: 0,
+                        esgotadas: 0
+                    },
+                    searchTerm: search || '',
+                    selectedCategory: category || '',
+                    status: status || '',
+                    error: 'Erro ao carregar vidrarias'
+                });
+            }
+
+            // Calcular estatísticas
+            const stats = {
+                total_vidracarias: vidracariasResults.length,
+                total_estoque: vidracariasResults.filter(v => v.quantidade > 0).length,
+                baixo_estoque: vidracariasResults.filter(v => v.quantidade > 0 && v.quantidade <= v.estoque_minimo).length,
+                esgotadas: vidracariasResults.filter(v => v.quantidade === 0).length
+            };
+
+            res.render('vidracarias', {
+                user: req.session.user,
+                vidracarias: vidracariasResults || [],
+                categories: categoriesResults || [],
+                stats: stats,
+                searchTerm: search || '',
+                selectedCategory: category || '',
+                status: status || '',
+                success: req.query.success,
+                error: req.query.error
+            });
+        });
     });
 });
 

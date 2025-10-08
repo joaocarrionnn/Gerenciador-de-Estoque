@@ -21,30 +21,20 @@ class AuthController {
     static async processarCriarConta(req, res) {
         try {
             console.log('📨 Body recebido:', req.body);
-            const { nome, email, departamento, justificativa, senha, confirmar_senha } = req.body;
+            const { nome, email, turma, senha, confirmar_senha } = req.body;
             
             console.log('📨 Dados recebidos do formulário:', {
-                nome, email, departamento, 
-                senha: senha ? '***' : 'vazia', 
-                confirmar_senha: confirmar_senha ? '***' : 'vazia'
+                nome, email, turma, 
+                senha: senha ? '***' : 'vazia'
             });
 
             // Validações
-            if (senha !== confirmar_senha) {
-                console.log('❌ Senhas não coincidem');
-                return res.render("auth/criar_conta", { 
-                    error: "As senhas não coincidem!",
-                    success: null,
-                    nome, email, departamento, justificativa
-                });
-            }
-
             if (senha.length < 6) {
                 console.log('❌ Senha muito curta');
                 return res.render("auth/criar_conta", { 
                     error: "A senha deve ter pelo menos 6 caracteres!",
                     success: null,
-                    nome, email, departamento, justificativa
+                    nome, email, turma, 
                 });
             }
 
@@ -56,7 +46,7 @@ class AuthController {
                 return res.render("auth/criar_conta", { 
                     error: "Já existe um usuário com este e-mail!",
                     success: null,
-                    nome, email: '', departamento, justificativa
+                    nome, email: '', turma 
                 });
             }
 
@@ -74,7 +64,6 @@ class AuthController {
                 usuario: usuario,
                 senha: senhaHash,
                 turma: turma,
-                justificativa: justificativa,
                 tipo: 'usuario'
             };
 
@@ -89,7 +78,7 @@ class AuthController {
             res.render("auth/criar_conta", { 
                 error: null, 
                 success: "Solicitação enviada com sucesso! Aguarde a aprovação do administrador.",
-                nome: '', email: '', departamento: '', justificativa: ''
+                nome: '', email: '', turma: ''
             });
 
         } catch (error) {
@@ -99,8 +88,7 @@ class AuthController {
                 success: null,
                 nome: req.body.nome, 
                 email: req.body.email, 
-                departamento: req.body.departamento, 
-                justificativa: req.body.justificativa
+                turma: req.body.turma
             });
         }
     }
@@ -117,15 +105,6 @@ class AuthController {
                     console.log('Usuário não encontrado');
                     return res.render("auth/login", { 
                         error: "Usuário não encontrado!",
-                        username: username
-                    });
-                }
-
-                // Verificar se está aprovado
-                if (user.status !== 'aprovado') {
-                    console.log('Usuário não aprovado:', user.status);
-                    return res.render("auth/login", { 
-                        error: "Sua conta ainda não foi aprovada. Aguarde a liberação do administrador.",
                         username: username
                     });
                 }
@@ -151,7 +130,7 @@ class AuthController {
                             nome: user.nome_completo,
                             email: user.email,
                             tipo: user.tipo,
-                            departamento: user.departamento
+                            turma: user.turma
                         };
 
                         res.redirect("/");
@@ -199,8 +178,7 @@ class AuthController {
           cpf,
           palavra_chave: palavraChave,
           email,
-          tipo: 'usuario',
-          status: 'pendente'
+          tipo: 'usuario'
         };
     
         const resultado = await AuthModel.criarUsuario(dados);

@@ -449,6 +449,33 @@
                 gap: 0.75rem;
             }
         }
+
+        /* Estilos para o modal de entradas */
+.modal-xl {
+    max-width: 1200px;
+}
+
+.smaller {
+    font-size: 0.75rem;
+}
+
+.table-responsive {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.page-item.active .page-link {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.page-link {
+    color: #28a745;
+}
+
+.page-link:hover {
+    color: #218838;
+}
     </style>
 </head>
 <body class="flex">
@@ -553,10 +580,10 @@
                         <div class="card-header">
                             <h2 class="card-title">
                                 <i class="fas fa-exchange-alt"></i>
-                                Últimas Entradas
+                                Últimas Movimentações
                             </h2>
-                            <button class="view-all-btn" id="refresh-inputs">
-                                <i class="fas fa-sync-alt"></i> Atualizar
+                            <button class="view-all-btn" id="view-all-inputs">
+                                <i class="fas fa-list"></i> Ver todas
                             </button>
                         </div>
                         
@@ -565,13 +592,10 @@
                         </ul>
                         
                         <div class="card-footer p-4 bg-gray-50 border-t">
-                            <div class="flex justify-between items-center text-sm text-gray-600">
-                                <span class="stats-info">
-                                    <i class="fas fa-clock mr-1"></i>
-                                    <span id="last-update">Atualizando...</span>
-                                </span>
-                                <span id="total-inputs">0 registros</span>
-                            </div>
+                            <span class="stats-info">
+                                <i class="fas fa-history"></i>
+                                <span id="last-update">Atualizado há 5 minutos</span>
+                            </span>
                         </div>
                     </div>
                     
@@ -583,37 +607,23 @@
                             </h2>
                         </div>
                         <div class="p-6">
-                            <div class="stats-grid">
-                                <div class="stat-card stat-today">
-                                    <div class="stat-icon">
-                                        <i class="fas fa-calendar-day"></i>
-                                    </div>
-                                    <div class="stat-value" id="today-inputs">0</div>
-                                    <div class="stat-label">Entradas Hoje</div>
+                            <div class="grid grid-cols-3 text-center mb-4">
+                                <div class="border-r">
+                                    <h4 class="text-success text-2xl font-bold" id="today-inputs">0</h4>
+                                    <p class="text-muted mb-0 text-sm">Entradas hoje</p>
                                 </div>
-                                
-                                <div class="stat-card stat-week">
-                                    <div class="stat-icon">
-                                        <i class="fas fa-calendar-week"></i>
-                                    </div>
-                                    <div class="stat-value" id="week-inputs">0</div>
-                                    <div class="stat-label">Esta Semana</div>
+                                <div class="border-r">
+                                    <h4 class="text-success text-2xl font-bold" id="week-inputs">0</h4>
+                                    <p class="text-muted mb-0 text-sm">Entradas semana</p>
                                 </div>
-                                
-                                <div class="stat-card stat-month">
-                                    <div class="stat-icon">
-                                        <i class="fas fa-calendar-alt"></i>
-                                    </div>
-                                    <div class="stat-value" id="month-inputs">0</div>
-                                    <div class="stat-label">Este Mês</div>
+                                <div>
+                                    <h4 class="text-success text-2xl font-bold" id="month-inputs">0</h4>
+                                    <p class="text-muted mb-0 text-sm">Entradas mês</p>
                                 </div>
                             </div>
                             
                             <div class="mt-4">
-                                <h6 class="font-semibold mb-3 flex items-center">
-                                    <i class="fas fa-truck mr-2 text-purple-500"></i>
-                                    Fornecedores Frequentes
-                                </h6>
+                                <h6 class="font-semibold mb-3"></h6>
                                 <div id="suppliers-stats">
                                     <!-- As estatísticas serão carregadas via JavaScript -->
                                 </div>
@@ -621,45 +631,34 @@
                         </div>
                     </div>
                     
-                    <!-- Informações do Estoque -->
+                    <!-- Informações Importantes -->
                     <div class="card">
                         <div class="card-header">
                             <h2 class="card-title">
                                 <i class="fas fa-info-circle"></i>
-                                Status do Estoque
+                                Informações Importantes
                             </h2>
                         </div>
                         <div class="p-6">
-                            <div class="info-grid">
-                                <div class="info-card warning">
-                                    <div class="flex items-center">
-                                        <i class="fas fa-exclamation-triangle text-yellow-500 text-xl mr-3"></i>
-                                        <div>
-                                            <h6 class="font-semibold text-yellow-700">Estoque Baixo</h6>
-                                            <p class="text-2xl font-bold text-yellow-600 mb-0" id="low-stock-items">0</p>
-                                            <small class="text-yellow-500">produtos precisam de reposição</small>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="info-card danger">
-                                    <div class="flex items-center">
-                                        <i class="fas fa-times-circle text-red-500 text-xl mr-3"></i>
-                                        <div>
-                                            <h6 class="font-semibold text-red-700">Estoque Esgotado</h6>
-                                            <p class="text-2xl font-bold text-red-600 mb-0" id="out-of-stock-items">0</p>
-                                            <small class="text-red-500">produtos sem estoque</small>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="alert alert-warning">
+                                <h6 class="font-semibold"><i class="fas fa-exclamation-triangle me-2"></i>Antes de registrar a entrada:</h6>
+                                <ul class="mb-0 mt-2 ps-4">
+                                    <li>Verifique a qualidade do reagente recebido</li>
+                                    <li>Confirme a identificação do produto</li>
+                                    <li>Registre o fornecedor e data de compra</li>
+                                </ul>
                             </div>
                             
-                            <div class="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                                <div class="flex items-center">
-                                    <i class="fas fa-lightbulb text-blue-500 mr-2"></i>
-                                    <span class="text-sm text-blue-700 font-medium">
-                                        Dica: Mantenha o controle das entradas para garantir o abastecimento contínuo
-                                    </span>
+                            <div class="flex items-center mt-4">
+                                <div class="flex-shrink-0 bg-success bg-opacity-10 p-3 rounded">
+                                    <i class="fas fa-database fa-lg text-success"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="font-semibold mb-0">Status do Estoque</h6>
+                                    <p class="text-muted mb-0">
+                                        <span id="low-stock-items">0</span> produtos com estoque baixo | 
+                                        <span id="out-of-stock-items">0</span> produtos esgotados
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -669,140 +668,130 @@
         </div>
     </main>
 
+
     <!-- Container para Notificações -->
     <div class="toast-container"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Função para exibir notificações
-        function showToast(message, type = 'success') {
-            const toastContainer = document.querySelector('.toast-container');
-            const toastId = 'toast-' + Date.now();
+// Função para exibir notificações
+function showToast(message, type = 'success') {
+    const toastContainer = document.querySelector('.toast-container');
+    const toastId = 'toast-' + Date.now();
+    
+    const toast = document.createElement('div');
+    toast.className = `toast align-items-center text-bg-${type} border-0`;
+    toast.id = toastId;
+    toast.setAttribute('role', 'alert');
+    toast.setAttribute('aria-live', 'assertive');
+    toast.setAttribute('aria-atomic', 'true');
+    
+    toast.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'} me-2"></i>
+                ${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    const bsToast = new bootstrap.Toast(toast, {
+        delay: 5000
+    });
+    bsToast.show();
+    
+    toast.addEventListener('hidden.bs.toast', () => {
+        toast.remove();
+    });
+}
+
+// Atualizar informações do reagente selecionado
+document.getElementById('reagent').addEventListener('change', function() {
+    const unitMeasure = document.getElementById('unit-measure');
+    const reagentInfo = document.getElementById('reagent-info');
+    const selectedOption = this.options[this.selectedIndex];
+    
+    if (selectedOption && selectedOption.value) {
+        const unit = selectedOption.dataset.unit;
+        const stock = parseFloat(selectedOption.dataset.stock);
+        const location = selectedOption.dataset.location;
+        
+        unitMeasure.textContent = unit;
+        reagentInfo.innerHTML = `
+            <strong>Estoque atual:</strong> ${stock} ${unit} | 
+            <strong>Localização:</strong> ${location}
+            ${stock <= 5 ? '<span class="text-danger font-bold"> ⚠️ BAIXO ESTOQUE - REPOSIÇÃO NECESSÁRIA</span>' : ''}
+        `;
+    } else {
+        unitMeasure.textContent = 'unidade';
+        reagentInfo.textContent = 'Selecione um reagente para ver informações detalhadas';
+    }
+});
+
+// Envio do formulário de entrada
+document.getElementById('input-form').addEventListener('submit', async function(event) {
+    event.preventDefault();
+    
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    
+    // Mostrar loading
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Registrando...';
+    submitBtn.disabled = true;
+    
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData.entries());
+    
+    try {
+        const response = await fetch('/api/input', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showToast(result.message, 'success');
+            this.reset();
             
-            const toast = document.createElement('div');
-            toast.className = `toast align-items-center text-bg-${type} border-0`;
-            toast.id = toastId;
-            toast.setAttribute('role', 'alert');
-            toast.setAttribute('aria-live', 'assertive');
-            toast.setAttribute('aria-atomic', 'true');
+            // Recarregar dados
+            await loadInputMovements();
+            await loadInputStatistics();
             
-            toast.innerHTML = `
-                <div class="d-flex">
-                    <div class="toast-body">
-                        <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'} me-2"></i>
-                        ${message}
-                    </div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-            `;
+            showToast('Entrada registrada com sucesso!', 'success');
             
-            toastContainer.appendChild(toast);
-            
-            const bsToast = new bootstrap.Toast(toast, {
-                delay: 5000
-            });
-            bsToast.show();
-            
-            toast.addEventListener('hidden.bs.toast', () => {
-                toast.remove();
-            });
+        } else {
+            showToast(result.message, 'danger');
         }
+    } catch (error) {
+        console.error('Erro ao registrar entrada:', error);
+        showToast('Erro de conexão. Tente novamente.', 'danger');
+    } finally {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    }
+});
 
-        // Atualizar informações do reagente selecionado
-        document.getElementById('reagent').addEventListener('change', function() {
-            const unitMeasure = document.getElementById('unit-measure');
-            const reagentInfo = document.getElementById('reagent-info');
-            const selectedOption = this.options[this.selectedIndex];
-            
-            if (selectedOption && selectedOption.value) {
-                const unit = selectedOption.dataset.unit;
-                const stock = parseFloat(selectedOption.dataset.stock);
-                const location = selectedOption.dataset.location;
-                
-                unitMeasure.textContent = unit;
-                reagentInfo.innerHTML = `
-                    <strong>Estoque atual:</strong> ${stock} ${unit} | 
-                    <strong>Localização:</strong> ${location}
-                    ${stock <= 5 ? '<span class="text-danger font-bold"> ⚠️ BAIXO ESTOQUE - REPOSIÇÃO NECESSÁRIA</span>' : ''}
-                `;
-            } else {
-                unitMeasure.textContent = 'unidade';
-                reagentInfo.textContent = 'Selecione um reagente para ver informações detalhadas';
-            }
-        });
-
-        // Envio do formulário de entrada
-        document.getElementById('input-form').addEventListener('submit', async function(event) {
-            event.preventDefault();
-            
-            const submitBtn = this.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            
-            // Mostrar loading
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Registrando...';
-            submitBtn.disabled = true;
-            
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData.entries());
-            
-            try {
-                const response = await fetch('/api/input', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    showToast(result.message, 'success');
-                    this.reset();
-                    
-                    // Recarregar dados
-                    await loadInputMovements();
-                    await loadInputStatistics();
-                    
-                    // Recarregar a página após 2 segundos para atualizar a lista de produtos
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 2000);
-                    
-                } else {
-                    showToast(result.message, 'danger');
-                }
-            } catch (error) {
-                console.error('Erro ao registrar entrada:', error);
-                showToast('Erro de conexão. Tente novamente.', 'danger');
-            } finally {
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            }
-        });
-
-        // Função para carregar movimentações de entrada
-        // Função para carregar movimentações de ENTRADA (4 últimas)
-// Função para carregar movimentações de ENTRADA (4 últimas)
+// Função para carregar as movimentações de ENTRADA (4 últimas)
 async function loadInputMovements() {
     try {
         console.log('🔄 Carregando últimas 4 entradas...');
         
         const response = await fetch('/api/input-movements');
-        console.log('📡 Resposta da API:', response.status, response.statusText);
-        
-        if (!response.ok) {
-            throw new Error(`Erro HTTP: ${response.status}`);
-        }
-        
         const movements = await response.json();
-        console.log('📦 Dados recebidos:', movements);
         
         const movementsList = document.getElementById('input-movements-list');
         movementsList.innerHTML = '';
         
+        console.log('Últimas entradas recebidas:', movements);
+        
         if (!movements || movements.length === 0) {
-            console.log('ℹ️ Nenhuma entrada encontrada');
             movementsList.innerHTML = `
                 <li class="movement-item text-center text-muted py-4">
                     <i class="fas fa-inbox fa-2x mb-2"></i>
@@ -813,11 +802,7 @@ async function loadInputMovements() {
             return;
         }
         
-        console.log(`✅ ${movements.length} entradas carregadas`);
-        
-        movements.forEach((movement, index) => {
-            console.log(`📝 Processando entrada ${index + 1}:`, movement);
-            
+        movements.forEach(movement => {
             const movementItem = document.createElement('li');
             movementItem.className = 'movement-item';
             
@@ -835,19 +820,18 @@ async function loadInputMovements() {
                         <span class="movement-date">${formattedDate}</span>
                         <span class="movement-responsible">por ${movement.responsible}</span>
                     </div>
-                    ${movement.supplier && movement.supplier !== 'Não informado' ? `<small class="text-muted">Fornecedor: ${movement.supplier}</small>` : ''}
-                    ${movement.project && !movement.project.includes('Fornecedor:') ? `<small class="text-muted">${movement.project}</small>` : ''}
+                    ${movement.project ? `<small class="text-muted">${movement.project}</small>` : ''}
                 </div>
             `;
             
             movementsList.appendChild(movementItem);
         });
         
-        document.getElementById('last-update').textContent = `Atualizado às ${new Date().toLocaleTimeString('pt-BR')}`;
-        document.getElementById('total-inputs').textContent = `${movements.length} registro${movements.length !== 1 ? 's' : ''}`;
+        // Atualizar o timestamp da última atualização
+        document.getElementById('last-update').textContent = `Atualizado às ${new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}`;
         
     } catch (error) {
-        console.error('❌ Erro ao carregar entradas:', error);
+        console.error('Erro ao carregar entradas:', error);
         const movementsList = document.getElementById('input-movements-list');
         movementsList.innerHTML = `
             <li class="movement-item text-center text-danger py-4">
@@ -858,97 +842,284 @@ async function loadInputMovements() {
         `;
     }
 }
-        // Função para carregar estatísticas de entrada
-        async function loadInputStatistics() {
-            try {
-                const response = await fetch('/api/input-statistics');
-                const stats = await response.json();
-                
-                // Atualizar contadores com animação
-                animateCounter('today-inputs', stats.todayInputs);
-                animateCounter('week-inputs', stats.weekInputs);
-                animateCounter('month-inputs', stats.monthInputs);
-                
-                // Atualizar status do estoque
-                document.getElementById('low-stock-items').textContent = stats.lowStockItems;
-                document.getElementById('out-of-stock-items').textContent = stats.outOfStockItems;
-                
-                // Atualizar estatísticas de fornecedores
-                const suppliersStats = document.getElementById('suppliers-stats');
-                suppliersStats.innerHTML = '';
-                
-                if (stats.recentSuppliers.length === 0) {
-                    suppliersStats.innerHTML = `
-                        <div class="text-center py-4 text-gray-500">
-                            <i class="fas fa-inbox fa-2x mb-2"></i>
-                            <p>Nenhum fornecedor registrado</p>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                const colors = ['#28a745', '#17a2b8', '#6f42c1'];
-                
-                stats.recentSuppliers.forEach((supplier, index) => {
-                    const supplierStat = document.createElement('div');
-                    supplierStat.className = 'supplier-stat';
-                    
-                    supplierStat.innerHTML = `
-                        <div class="supplier-info">
-                            <div class="supplier-color" style="background-color: ${colors[index]}"></div>
-                            <div class="supplier-name">${supplier.supplier || supplier.name}</div>
-                        </div>
-                        <div class="supplier-count">
-                            ${supplier.count} entradas
-                        </div>
-                    `;
-                    
-                    suppliersStats.appendChild(supplierStat);
-                });
-                
-            } catch (error) {
-                console.error('Erro ao carregar estatísticas de entrada:', error);
-            }
+
+// Função para carregar estatísticas de entrada
+async function loadInputStatistics() {
+    try {
+        console.log('📊 Carregando estatísticas de entrada...');
+        
+        const response = await fetch('/api/input-statistics');
+        if (!response.ok) {
+            throw new Error(`Erro HTTP: ${response.status}`);
+        }
+        
+        const stats = await response.json();
+        console.log('📈 Estatísticas recebidas:', stats);
+        
+        // Atualizar contadores
+        document.getElementById('today-inputs').textContent = stats.todayInputs;
+        document.getElementById('week-inputs').textContent = stats.weekInputs;
+        document.getElementById('month-inputs').textContent = stats.monthInputs;
+        
+        // Atualizar status do estoque
+        document.getElementById('low-stock-items').textContent = stats.lowStockItems;
+        document.getElementById('out-of-stock-items').textContent = stats.outOfStockItems;
+        
+        // Atualizar estatísticas de fornecedores
+        const suppliersStats = document.getElementById('suppliers-stats');
+        suppliersStats.innerHTML = '';
+        
+        if (!stats.recentSuppliers || stats.recentSuppliers.length === 0) {
+            suppliersStats.innerHTML = '<p class="text-muted text-center">Nenhum dado disponível</p>';
+            return;
+        }
+        
+        const colors = ['bg-success', 'bg-info', 'bg-primary'];
+        
+        
+    } catch (error) {
+        console.error('❌ Erro ao carregar estatísticas de entrada:', error);
+        // Valores padrão em caso de erro
+        document.getElementById('today-inputs').textContent = '0';
+        document.getElementById('week-inputs').textContent = '0';
+        document.getElementById('month-inputs').textContent = '0';
+        document.getElementById('low-stock-items').textContent = '0';
+        document.getElementById('out-of-stock-items').textContent = '0';
+        
+        const suppliersStats = document.getElementById('suppliers-stats');
+        suppliersStats.innerHTML = '<p class="text-muted text-center">Erro ao carregar dados</p>';
+    }
+}
+
+
+// Botão para ver todas as movimentações
+document.getElementById('view-all-inputs').addEventListener('click', function() {
+    window.location.href = '/movimentacoes';
+});
+
+// Carregar dados iniciais
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Página de entradas carregada, buscando dados...');
+    loadInputMovements();
+    loadInputStatistics();
+    
+    // Atualizar a cada 30 segundos
+    setInterval(() => {
+        loadInputMovements();
+        loadInputStatistics();
+    }, 30000);
+});
+
+// Variáveis globais para paginação
+let currentInputsPage = 1;
+const inputsPerPage = 10;
+let allInputsData = [];
+
+// Função para carregar todas as movimentações de entrada
+async function loadAllInputMovements(page = 1) {
+    try {
+        console.log(`📋 Carregando todas as entradas - página ${page}...`);
+        
+        const response = await fetch(`/api/all-input-movements?page=${page}&limit=${inputsPerPage}`);
+        const result = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(result.error || 'Erro ao carregar dados');
         }
 
-        // Função para animar contadores
-        function animateCounter(elementId, targetValue) {
-            const element = document.getElementById(elementId);
-            const currentValue = parseInt(element.textContent) || 0;
-            const duration = 1000;
-            const steps = 60;
-            const stepValue = (targetValue - currentValue) / steps;
-            let currentStep = 0;
+        allInputsData = result.data || [];
+        const totalPages = result.totalPages || 1;
+        
+        displayAllInputsTable(allInputsData);
+        updateInputsPagination(page, totalPages);
+        document.getElementById('inputsTotal').textContent = `Total: ${result.total || 0} registros`;
+        
+    } catch (error) {
+        console.error('❌ Erro ao carregar todas as entradas:', error);
+        document.getElementById('allInputsTable').innerHTML = `
+            <tr>
+                <td colspan="6" class="text-center text-danger py-4">
+                    <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                    <p>Erro ao carregar movimentações</p>
+                    <small>${error.message}</small>
+                </td>
+            </tr>
+        `;
+    }
+}
 
-            const timer = setInterval(() => {
-                currentStep++;
-                const value = Math.floor(currentValue + (stepValue * currentStep));
-                element.textContent = value;
+// Função para exibir dados na tabela
+function displayAllInputsTable(data) {
+    const tableBody = document.getElementById('allInputsTable');
+    
+    if (!data || data.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="6" class="text-center text-muted py-4">
+                    <i class="fas fa-inbox fa-2x mb-2"></i>
+                    <p>Nenhuma movimentação encontrada</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
 
-                if (currentStep >= steps) {
-                    element.textContent = targetValue;
-                    clearInterval(timer);
-                }
-            }, duration / steps);
+    tableBody.innerHTML = data.map(movement => {
+        const date = new Date(movement.date);
+        const formattedDate = date.toLocaleDateString('pt-BR');
+        const formattedTime = date.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+        
+        // Extrair fornecedor do campo project
+        let supplier = 'Não informado';
+        if (movement.project && movement.project.includes('Fornecedor:')) {
+            supplier = movement.project.replace('Fornecedor:', '').trim();
         }
+        
+        return `
+            <tr>
+                <td>
+                    <div class="small">${formattedDate}</div>
+                    <div class="text-muted smaller">${formattedTime}</div>
+                </td>
+                <td>
+                    <strong>${movement.reagent}</strong>
+                    <div class="text-muted smaller">${movement.unit}</div>
+                </td>
+                <td>
+                    <span class="badge bg-success fs-6">${movement.quantity}</span>
+                </td>
+                <td>${movement.responsible}</td>
+                <td>${supplier}</td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary" onclick="viewInputDetails(${movement.id})" title="Ver detalhes">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
 
-        // Botão de atualizar entradas
-        document.getElementById('refresh-inputs').addEventListener('click', function() {
-            loadInputMovements();
-            showToast('Entradas atualizadas!', 'info');
-        });
+// Função para atualizar a paginação
+function updateInputsPagination(currentPage, totalPages) {
+    const pagination = document.getElementById('inputsPagination');
+    
+    if (totalPages <= 1) {
+        pagination.innerHTML = '';
+        return;
+    }
 
-        // Carregar dados iniciais
-        document.addEventListener('DOMContentLoaded', function() {
-            loadInputMovements();
-            loadInputStatistics();
+    let paginationHTML = '';
+    
+    // Botão anterior
+    if (currentPage > 1) {
+        paginationHTML += `
+            <li class="page-item">
+                <button class="page-link" onclick="changeInputsPage(${currentPage - 1})">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            </li>
+        `;
+    }
+
+    // Páginas
+    for (let i = 1; i <= totalPages; i++) {
+        if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+            paginationHTML += `
+                <li class="page-item ${i === currentPage ? 'active' : ''}">
+                    <button class="page-link" onclick="changeInputsPage(${i})">${i}</button>
+                </li>
+            `;
+        } else if (i === currentPage - 2 || i === currentPage + 2) {
+            paginationHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+        }
+    }
+
+    // Botão próximo
+    if (currentPage < totalPages) {
+        paginationHTML += `
+            <li class="page-item">
+                <button class="page-link" onclick="changeInputsPage(${currentPage + 1})">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </li>
+        `;
+    }
+
+    pagination.innerHTML = paginationHTML;
+}
+
+// Função para mudar de página
+function changeInputsPage(page) {
+    currentInputsPage = page;
+    loadAllInputMovements(page);
+}
+
+// Função para visualizar detalhes (placeholder)
+function viewInputDetails(movementId) {
+    showToast(`Detalhes da movimentação #${movementId} - Funcionalidade em desenvolvimento`, 'info');
+}
+
+// Função para buscar/filtrar movimentações
+function searchInputs() {
+    const searchTerm = document.getElementById('searchInputs').value.toLowerCase();
+    const dateFilter = document.getElementById('dateFilterInputs').value;
+    
+    let filteredData = allInputsData;
+    
+    if (searchTerm) {
+        filteredData = filteredData.filter(movement => 
+            movement.reagent.toLowerCase().includes(searchTerm) ||
+            movement.responsible.toLowerCase().includes(searchTerm) ||
+            (movement.project && movement.project.toLowerCase().includes(searchTerm))
+        );
+    }
+    
+    if (dateFilter) {
+        const now = new Date();
+        filteredData = filteredData.filter(movement => {
+            const movementDate = new Date(movement.date);
             
-            // Atualizar a cada 30 segundos
-            setInterval(() => {
-                loadInputMovements();
-                loadInputStatistics();
-            }, 30000);
+            switch (dateFilter) {
+                case 'today':
+                    return movementDate.toDateString() === now.toDateString();
+                case 'week':
+                    const startOfWeek = new Date(now);
+                    startOfWeek.setDate(now.getDate() - now.getDay());
+                    startOfWeek.setHours(0, 0, 0, 0);
+                    return movementDate >= startOfWeek;
+                case 'month':
+                    return movementDate.getMonth() === now.getMonth() && 
+                           movementDate.getFullYear() === now.getFullYear();
+                default:
+                    return true;
+            }
         });
+    }
+    
+    displayAllInputsTable(filteredData);
+    document.getElementById('inputsTotal').textContent = `Filtrado: ${filteredData.length} registros`;
+}
+
+// Função para exportar dados (placeholder)
+function exportInputsData() {
+    showToast('Exportação de dados - Funcionalidade em desenvolvimento', 'info');
+}
+
+// Atualize o event listener do botão "Ver todas"
+document.getElementById('view-all-inputs').addEventListener('click', function() {
+    // Abre o modal
+    const modal = new bootstrap.Modal(document.getElementById('allInputsModal'));
+    modal.show();
+    
+    // Carrega os dados quando o modal é aberto
+    loadAllInputMovements(1);
+});
+
+// Event listeners para busca e filtros
+document.getElementById('searchInputs').addEventListener('input', searchInputs);
+document.getElementById('dateFilterInputs').addEventListener('change', searchInputs);
+document.getElementById('exportInputs').addEventListener('click', exportInputsData);
     </script>
 </body>
 </html>

@@ -407,21 +407,21 @@
                         <div class="p-6">
                             <div class="grid grid-cols-3 text-center mb-4">
                                 <div class="border-r">
-                                    <h4 class="text-danger text-2xl font-bold" id="today-outputs">28</h4>
+                                    <h4 class="text-danger text-2xl font-bold" id="today-outputs"></h4>
                                     <p class="text-muted mb-0 text-sm">Saídas hoje</p>
                                 </div>
                                 <div class="border-r">
-                                    <h4 class=" text-2xl font-bold" id="">142</h4>
+                                    <h4 class=" text-2xl font-bold" id="week-outputs"></h4>
                                     <p class="text-muted mb-0 text-sm">Saídas semana</p>
                                 </div>
                                 <div>
-                                    <h4 class="text-success text-2xl font-bold" id="month-outputs">520</h4>
+                                    <h4 class="text-success text-2xl font-bold" id="month-outputs"></h4>
                                     <p class="text-muted mb-0 text-sm">Saídas mês</p>
                                 </div>
                             </div>
                             
                             <div class="mt-4">
-                                <h6 class="font-semibold mb-3">Reagentes mais utilizados</h6>
+                                <h6 class="font-semibold mb-3"></h6>
                                 <div id="reagents-stats">
                                     <!-- As estatísticas serão carregadas via JavaScript -->
                                 </div>
@@ -581,59 +581,70 @@
         }
     });
 
-    // Função para carregar estatísticas
-    async function loadStatistics() {
-        try {
-            const response = await fetch('/api/statistics');
-            const stats = await response.json();
+    
+// Função para carregar estatísticas - VERSÃO CORRIGIDA
+async function loadStatistics() {
+    try {
+        const response = await fetch('/api/statistics');
+        const stats = await response.json();
+        
+        console.log('Estatísticas carregadas:', stats);
+        
+        // VERIFICAR SE OS ELEMENTOS EXISTEM ANTES DE TENTAR ACESSÁ-LOS
+        const todayOutputsElement = document.getElementById('today-outputs');
+        const weekOutputsElement = document.getElementById('week-outputs');
+        const monthOutputsElement = document.getElementById('month-outputs');
+        const totalItemsElement = document.getElementById('total-items');
+        const reagentsStatsElement = document.getElementById('reagents-stats');
+        
+        // Atualizar os contadores apenas se os elementos existirem
+        if (todayOutputsElement) {
+            todayOutputsElement.textContent = stats.todayOutputs || 0;
+        }
+        
+        if (weekOutputsElement) {
+            weekOutputsElement.textContent = stats.weekOutputs || 0;
+        }
+        
+        if (monthOutputsElement) {
+            monthOutputsElement.textContent = stats.monthOutputs || 0;
+        }
+        
+        if (totalItemsElement) {
+            totalItemsElement.textContent = `${stats.totalItems || 0} itens em inventário`;
+        }
+        
+        // Atualizar as estatísticas de reagentes apenas se o elemento existir
+        if (reagentsStatsElement) {
+            reagentsStatsElement.innerHTML = '';
             
-            console.log('Estatísticas carregadas:', stats);
-            
-            // Atualizar os contadores
-            document.getElementById('today-outputs').textContent = stats.todayOutputs;
-            document.getElementById('week-outputs').textContent = stats.weekOutputs;
-            document.getElementById('month-outputs').textContent = stats.monthOutputs;
-            document.getElementById('total-items').textContent = `${stats.totalItems} itens em inventário`;
-            
-            // Atualizar as estatísticas de reagentes
-            const reagentsStats = document.getElementById('reagents-stats');
-            reagentsStats.innerHTML = '';
-            
-            if (stats.mostUsedReagents.length === 0) {
-                reagentsStats.innerHTML = '<p class="text-muted text-center">Nenhum dado disponível</p>';
+            if (!stats.mostUsedReagents || stats.mostUsedReagents.length === 0) {
+                reagentsStatsElement.innerHTML = '<p class="text-muted text-center">Nenhum dado disponível</p>';
                 return;
             }
             
             const colors = ['bg-danger', 'bg-warning', 'bg-info'];
-            stats.mostUsedReagents.forEach((reagent, index) => {
-                const progressBar = document.createElement('div');
-                progressBar.className = 'd-flex align-items-center mt-3';
-                
-                progressBar.innerHTML = `
-                    <div class="flex-grow-1 me-3">
-                        <div class="small text-muted">${reagent.name}</div>
-                        <div class="progress mt-1" style="height: 8px;">
-                            <div class="progress-bar ${colors[index] || 'bg-primary'}" role="progressbar" 
-                                style="width: ${reagent.percentage}%" 
-                                aria-valuenow="${reagent.percentage}" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                    </div>
-                    <div class="flex-shrink-0">
-                        <span class="text-dark fw-bold">${reagent.percentage}%</span>
-                    </div>
-                `;
-                
-                reagentsStats.appendChild(progressBar);
-            });
-        } catch (error) {
-            console.error('Erro ao carregar estatísticas:', error);
         }
+    } catch (error) {
+        console.error('Erro ao carregar estatísticas:', error);
+        
+        // Apenas atualizar elementos que existem
+        const todayOutputsElement = document.getElementById('today-outputs');
+        const weekOutputsElement = document.getElementById('week-outputs');
+        const monthOutputsElement = document.getElementById('month-outputs');
+        const totalItemsElement = document.getElementById('total-items');
+        
+        if (todayOutputsElement) todayOutputsElement.textContent = '0';
+        if (weekOutputsElement) weekOutputsElement.textContent = '0';
+        if (monthOutputsElement) monthOutputsElement.textContent = '0';
+        if (totalItemsElement) totalItemsElement.textContent = '0 itens em inventário';
     }
+}
 
     // Botão para ver todas as movimentações
-    document.getElementById('view-all-movements').addEventListener('click', function() {
-        showToast('Funcionalidade em desenvolvimento', 'info');
-    });
+document.getElementById('view-all-movements').addEventListener('click', function() {
+    window.location.href = '/movimentacoes';
+});
 
     // Carregar dados iniciais
     document.addEventListener('DOMContentLoaded', function() {
@@ -646,7 +657,6 @@
         console.log(`Número de produtos carregados: ${reagentSelect.options.length - 1}`);
     });
 
-    // Função para carregar as movimentações de SAÍDA
 // Função para carregar as movimentações de SAÍDA (4 últimas)
 async function loadMovements() {
     try {

@@ -169,133 +169,13 @@
             color: #2d3748;
         }
         
-        /* Grid de gráficos e informações - Layout fixo */
-        .charts-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: auto auto;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        /* Card que ocupa a largura total (equivalente aos dois cards superiores) */
-        .full-width-card {
-            grid-column: 1 / -1; /* Ocupa todas as colunas */
-            grid-row: 2; /* Posiciona na segunda linha */
-        }
-        
-        .chart-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
-        }
-        
-        .chart-header {
-            margin-bottom: 1.25rem;
-        }
-        
-        .chart-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #2d3748;
-        }
-        
-        /* Barra de progresso para categorias */
-        .progress-item {
-            margin-bottom: 1.25rem;
-        }
-        
-        .progress-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.5rem;
-        }
-        
-        .progress-label {
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #4a5568;
-        }
-        
-        .progress-value {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: #2d3748;
-        }
-        
-        .progress-bar {
-            height: 8px;
-            background-color: #e2e8f0;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            border-radius: 4px;
-        }
-        
-        /* Lista de movimentações */
-        .movement-list {
-            list-style: none;
-        }
-        
-        .movement-item {
-            display: flex;
-            align-items: center;
-            padding: 0.875rem 0;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        
-        .movement-item:last-child {
-            border-bottom: none;
-        }
-        
-        .movement-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 1rem;
-            flex-shrink: 0;
-        }
-        
-        .movement-in {
-            background-color: rgba(67, 97, 238, 0.1);
-            color: var(--primary);
-        }
-        
-        .movement-out {
-            background-color: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
-        }
-        
-        .movement-content {
-            flex-grow: 1;
-        }
-        
-        .movement-title {
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #2d3748;
-            margin-bottom: 0.25rem;
-        }
-        
-        .movement-date {
-            font-size: 0.75rem;
-            color: #718096;
-        }
-        
         /* Tabela de reagentes */
         .table-container {
             background: white;
             border-radius: 12px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
             overflow: hidden;
-            margin-bottom: 0; /* Removido pois agora está dentro do grid */
+            margin-bottom: 2rem;
         }
         
         .table-header {
@@ -426,6 +306,185 @@
         .btn-delete:hover {
             background-color: #ef4444;
             color: white;
+        }
+        
+        /* Grid de gráficos e informações */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .chart-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+        }
+        
+        .chart-header {
+            margin-bottom: 1.25rem;
+        }
+        
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        /* Barra de progresso para categorias */
+        .progress-item {
+            margin-bottom: 1.25rem;
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #4a5568;
+        }
+        
+        .progress-value {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+        
+        /* Lista de movimentações */
+        .movement-list {
+            list-style: none;
+        }
+        
+        .movement-item {
+            display: flex;
+            align-items: center;
+            padding: 0.875rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .movement-item:last-child {
+            border-bottom: none;
+        }
+        
+        .movement-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .movement-in {
+            background-color: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+        }
+        
+        .movement-out {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+        
+        .movement-content {
+            flex-grow: 1;
+        }
+        
+        .movement-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #2d3748;
+            margin-bottom: 0.25rem;
+        }
+        
+        .movement-date {
+            font-size: 0.75rem;
+            color: #718096;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 1024px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .table-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .btn-add {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .reagent-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .icon-container {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+            
+            .movement-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.75rem;
+            }
+            
+            .movement-icon {
+                margin-right: 0;
+            }
         }
         
         /* Estilos melhorados para os componentes */
@@ -651,7 +710,7 @@
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             overflow: hidden;
-            margin-bottom: 0; /* Removido pois agora está dentro do grid */
+            margin-bottom: 2rem;
         }
 
         .table-header.with-background {
@@ -821,6 +880,28 @@
             gap: 0.4rem;
         }
 
+        @media (max-width: 768px) {
+            .table-header.with-background {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .table-footer {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .view-all-btn {
+                align-self: flex-end;
+            }
+        }
+        
         /* Cores para as categorias */
         .progress-acido { background: linear-gradient(90deg, #ff9a9e 0%, #e74c3c 100%); }
         .progress-base { background: linear-gradient(90deg, #a1c4fd 0%, #3498db 100%); }
@@ -860,122 +941,49 @@
             color: #495057;
         }
 
-        /* Estilos adicionais para a tabela de produtos */
-.reagent-info .reagent-details {
-    font-size: 0.8rem;
-    color: #6c757d;
-    margin-top: 0.2rem;
+        /* Novas cores para as barras de progresso */
+.progress-primary {
+    background: linear-gradient(90deg, #007bff, #0056b3);
 }
 
-.quantity-display .min-stock {
-    font-size: 0.7rem;
-    color: #6c757d;
-    margin-top: 0.1rem;
+.progress-success {
+    background: linear-gradient(90deg, #28a745, #1e7e34);
 }
 
-.table-header.with-background > div {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+.progress-warning {
+    background: linear-gradient(90deg, #ffc107, #e0a800);
 }
 
-/* Ajuste para responsividade */
-@media (max-width: 1024px) {
-    .charts-grid {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto auto auto;
-    }
-    
-    .full-width-card {
-        grid-column: 1;
-        grid-row: 3;
-    }
+
+
+.progress-secondary {
+    background: linear-gradient(90deg, #6c757d, #545b62);
 }
 
+/* Estatísticas adicionais */
+.progress-stats {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+}
+
+/* Melhorar a aparência das barras */
+.progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    position: relative;
+    transition: all 0.5s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.progress-fill:hover {
+    transform: scaleY(1.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Responsividade para estatísticas */
 @media (max-width: 768px) {
-    .main-container {
-        padding: 1rem;
-    }
-    
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .section-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-    }
-    
-    .table-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-    }
-    
-    .table-header.with-background {
-        flex-direction: column;
-        gap: 1rem;
-        align-items: flex-start;
-    }
-    
-    .btn-add {
-        width: 100%;
-        justify-content: center;
-    }
-    
-    .reagent-table {
-        display: block;
-        overflow-x: auto;
-    }
-    
-    .action-buttons {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-    
-    .table-header.with-background > div {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-    }
-    
-    .table-header.with-background .btn-add,
-    .table-header.with-background .view-all-btn {
-        width: 100%;
-        justify-content: center;
-    }
-    
-    .table-footer {
-        flex-direction: column;
-        gap: 1rem;
-        align-items: flex-start;
-    }
-    
-    .view-all-btn {
-        align-self: flex-end;
-    }
-}
-
-@media (max-width: 480px) {
-    .stats-card {
-        flex-direction: column;
+    .progress-stats {
         text-align: center;
-    }
-    
-    .icon-container {
-        margin-right: 0;
-        margin-bottom: 1rem;
-    }
-    
-    .movement-item {
-        flex-direction: column;
-        text-align: center;
-        gap: 0.75rem;
-    }
-    
-    .movement-icon {
-        margin-right: 0;
     }
 }
     </style>
@@ -1004,51 +1012,65 @@
                 </div>
             <% } %>
             
+            
+            
+            
             <!-- Gráficos e Informações -->
             <div class="charts-grid">
-                <!-- Reagentes por Categoria -->
+                <!-- Reagentes por Categoria (4 Mais Usados) -->
                 <div class="chart-card enhanced-card">
                     <div class="chart-header with-border-bottom">
                         <h2 class="chart-title with-icon">
                             <i class="fas fa-chart-pie"></i>
-                            Reagentes por Categoria
+                            Categorias Mais Utilizadas
                         </h2>
                     </div>
                     
                     <div class="progress-container">
                         <% if (typeof categorias !== 'undefined' && categorias.length > 0) { %>
-                            <% categorias.forEach(categoria => { %>
+                            <% 
+                            // Ordenar por porcentagem (maior primeiro)
+                            categorias.sort((a, b) => b.porcentagem - a.porcentagem);
+                            
+                            // Cores para as 4 categorias principais
+                            const colors = ['progress-primary', 'progress-success', 'progress-warning', 'progress-info'];
+                            %>
+                            
+                            <% categorias.forEach((categoria, index) => { %>
                                 <div class="progress-item">
                                     <div class="progress-info">
                                         <span class="progress-label">
-                                            <i class="fas fa-vial category-icon"></i>
-                                            <%= categoria.tipo %>
+                                            <i class="fas <%= getCategoryIcon(categoria.tipo) %> category-icon"></i>
+                                            <%= formatCategoryName(categoria.tipo) %>
                                         </span>
                                         <span class="progress-value"><%= categoria.porcentagem %>%</span>
                                     </div>
                                     <div class="progress-bar">
-                                        <div class="progress-fill progress-<%= categoria.tipo.toLowerCase() %>" style="width: <%= categoria.porcentagem %>%">
+                                        <div class="progress-fill <%= colors[index] || 'progress-secondary' %>" 
+                                            style="width: <%= categoria.porcentagem %>%">
                                             <span class="progress-tooltip"><%= categoria.porcentagem %>%</span>
                                         </div>
+                                    </div>
+                                    <div class="progress-stats">
+                                        <small class="text-muted">
+                                            <%= categoria.quantidade %> <%= categoria.quantidade === 1 ? 'item' : 'itens' %> 
+                                            • Total: <%= categoria.total_quantidade || categoria.quantidade %> unidades
+                                        </small>
                                     </div>
                                 </div>
                             <% }) %>
                         <% } else { %>
                             <div style="padding: 2rem; text-align: center; color: #6c757d;">
                                 <i class="fas fa-chart-pie" style="font-size: 2rem; margin-bottom: 1rem;"></i>
-                                <p>Nenhuma categoria cadastrada</p>
+                                <p>Nenhuma categoria com produtos cadastrada</p>
+                                <a href="/produtos/adicionar" class="primary-btn" style="margin-top: 1rem;">
+                                    <i class="fas fa-plus-circle"></i> Adicionar Primeiro Produto
+                                </a>
                             </div>
                         <% } %>
                     </div>
-                    
-                    <div class="chart-footer">
-                        <span class="stats-info">
-                            <i class="fas fa-info-circle"></i>
-                            Total: <%= typeof categorias !== 'undefined' ? categorias.length : 0 %> categorias
-                        </span>
-                    </div>
                 </div>
-                
+
                 <!-- Últimas Movimentações -->
                 <div class="chart-card enhanced-card">
                     <div class="chart-header with-border-bottom">
@@ -1061,10 +1083,10 @@
                     
                     <ul class="movement-list" id="movementsList">
                         <!-- As movimentações serão carregadas via JavaScript -->
-                        <div style="padding: 2rem; text-align: center; color: #6c757d;">
-                            <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 1rem;"></i>
-                            <p>Carregando movimentações...</p>
-                        </div>
+                        <li class="movement-item text-center text-muted py-4">
+                            <i class="fas fa-spinner fa-spin me-2"></i>
+                            Carregando movimentações...
+                        </li>
                     </ul>
                     
                     <div class="chart-footer">
@@ -1074,284 +1096,252 @@
                         </span>
                     </div>
                 </div>
+            </div>
+
+            <!-- Tabela de Reagentes -->
+            <div class="table-container enhanced-table">
+                <div class="table-header with-background">
+                    <h2 class="table-title with-icon">
+                        <i class="fas fa-flask"></i>
+                        Últimos Reagentes Adicionados
+                    </h2>
+                    <a href="/produtos/adicionar" class="btn-add">
+                        <i class="fas fa-plus-circle"></i> Novo Reagente
+                    </a>
+                </div>
                 
-                <!-- Tabela de Reagentes (card inferior que ocupa largura total) -->
-                <div class="table-container enhanced-table full-width-card">
-                    <div class="table-header with-background">
-                        <h2 class="table-title with-icon">
-                            <i class="fas fa-flask"></i>
-                            Últimos Reagentes Adicionados
-                        </h2>
-                        <div>
-                            <a href="/produtos/adicionar" class="btn-add">
-                                <i class="fas fa-plus-circle"></i> Novo Reagente
-                            </a>
-                            <a href="/produtos" class="view-all-btn" style="margin-left: 10px;">
-                                <i class="fas fa-list"></i> Ver Todos
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <div class="table-responsive">
-                        <table class="reagent-table">
-                            <thead>
-                                <tr>
-                                    <th class="text-left">Nome do Reagente</th>
-                                    <th class="text-left">Categoria</th>
-                                    <th class="text-center">Quantidade</th>
-                                    <th class="text-center">Localização</th>
-                                    <th class="text-center">Status</th>
-                                    <th class="text-center">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% if (typeof produtos !== 'undefined' && produtos.length > 0) { %>
-                                    <% produtos.forEach(produto => { %>
-                                        <tr>
-                                            <td>
-                                                <div class="reagent-info">
-                                                    <div class="reagent-name"><%= produto.nome %></div>
-                                                    <div class="reagent-details">
-                                                        ID: #<%= produto.id_produto %>
-                                                        <% if (produto.descricao) { %>
-                                                            • <%= produto.descricao.length > 50 ? produto.descricao.substring(0, 50) + '...' : produto.descricao %>
-                                                        <% } %>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="text-left">
-                                                <span class="badge"><%= produto.tipo %></span>
-                                            </td>
-                                            <td class="text-center">
-                                                <div class="quantity-display <%= produto.quantidade <= (produto.estoque_minimo || 10) ? 'warning-quantity' : '' %>">
-                                                    <%= produto.quantidade %> <%= produto.unidade_medida %>
-                                                </div>
-                                                <% if (produto.estoque_minimo && produto.estoque_minimo > 0) { %>
-                                                    <div style="font-size: 0.75rem; color: #6c757d; margin-top: 0.2rem;">
-                                                        Mín: <%= produto.estoque_minimo %>
-                                                    </div>
+                <div class="table-responsive">
+                    <table class="reagent-table">
+                        <thead>
+                            <tr>
+                                <th class="text-left">Nome do Reagente</th>
+                                <th class="text-left">Tipo</th>
+                                <th class="text-center">Quantidade</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (typeof produtos !== 'undefined' && produtos.length > 0) { %>
+                                <% produtos.forEach(produto => { %>
+                                    <tr>
+                                        <td>
+                                            <div class="reagent-info">
+                                                <div class="reagent-name"><%= produto.nome %></div>
+                                                <% if (produto.descricao) { %>
+                                                    <div class="reagent-details"><%= produto.descricao %></div>
                                                 <% } %>
-                                            </td>
-                                            <td class="text-center">
-                                                <span style="font-size: 0.85rem; color: #495057;">
-                                                    <%= produto.localizacao || 'Não informada' %>
-                                                </span>
-                                            </td>
-                                            <td class="text-center">
-                                                <% 
-                                                let statusClass, statusText, statusIcon;
-                                                if (produto.quantidade === 0) {
-                                                    statusClass = 'status-critical';
-                                                    statusText = 'Esgotado';
-                                                    statusIcon = 'fa-times-circle';
-                                                } else if (produto.quantidade <= (produto.estoque_minimo || 10)) {
-                                                    statusClass = 'status-warning';
-                                                    statusText = 'Baixo Estoque';
-                                                    statusIcon = 'fa-exclamation-triangle';
-                                                } else {
-                                                    statusClass = 'status-normal';
-                                                    statusText = 'Disponível';
-                                                    statusIcon = 'fa-check-circle';
-                                                }
-                                                %>
-                                                <span class="status-badge <%= statusClass %>">
-                                                    <i class="fas <%= statusIcon %>"></i> <%= statusText %>
-                                                </span>
-                                            </td>
-                                            <td class="text-center">
-                                                <div class="action-buttons">
-                                                    <button class="btn-action btn-edit" title="Editar" onclick="editarProduto(<%= produto.id_produto %>)">
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
-                                                    <button type="button" class="btn-action btn-delete" title="Excluir" onclick="confirmarExclusao(<%= produto.id_produto %>, '<%= produto.nome.replace(/'/g, "\\'") %>')">
+                                            </div>
+                                        </td>
+                                        <td class="text-left">
+                                            <span class="badge"><%= produto.tipo %></span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="quantity-display <%= produto.quantidade <= (produto.estoque_minimo || 10) ? 'warning-quantity' : '' %>">
+                                                <%= produto.quantidade %> <%= produto.unidade_medida %>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <% 
+                                            let statusClass, statusText, statusIcon;
+                                            if (produto.quantidade === 0) {
+                                                statusClass = 'status-critical';
+                                                statusText = 'Esgotado';
+                                                statusIcon = 'fa-times-circle';
+                                            } else if (produto.quantidade <= (produto.estoque_minimo || 10)) {
+                                                statusClass = 'status-warning';
+                                                statusText = 'Atenção';
+                                                statusIcon = 'fa-exclamation-triangle';
+                                            } else {
+                                                statusClass = 'status-normal';
+                                                statusText = 'Normal';
+                                                statusIcon = 'fa-check-circle';
+                                            }
+                                            %>
+                                            <span class="status-badge <%= statusClass %>">
+                                                <i class="fas <%= statusIcon %>"></i> <%= statusText %>
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="action-buttons">
+                                                <button class="btn-action btn-edit" title="Editar" onclick="editarProduto(<%= produto.id_produto %>)">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <form action="/produtos/deletar/<%= produto.id_produto %>" method="POST" style="display: inline;">
+                                                    <button type="button" class="btn-action btn-delete" title="Excluir" onclick="confirmarExclusao(this)">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    <% }) %>
-                                <% } else { %>
-                                    <tr>
-                                        <td colspan="6" class="text-center" style="padding: 2rem; color: #6c757d;">
-                                            <i class="fas fa-box-open" style="font-size: 2rem; margin-bottom: 1rem;"></i>
-                                            <p>Nenhum produto cadastrado</p>
-                                            <a href="/produtos/adicionar" class="primary-btn" style="margin-top: 1rem;">
-                                                <i class="fas fa-plus-circle"></i> Adicionar Primeiro Produto
-                                            </a>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
-                                <% } %>
-                            </tbody>
-                        </table>
+                                <% }) %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="5" class="text-center" style="padding: 2rem; color: #6c757d;">
+                                        <i class="fas fa-box-open" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                                        <p>Nenhum produto cadastrado. Adicione o primeiro produto!</p>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="table-footer">
+                    <div class="table-summary">
+                        <span class="summary-text">
+                            <i class="fas fa-database"></i> 
+                            Total de <%= typeof produtos !== 'undefined' ? produtos.length : 0 %> reagentes listados
+                        </span>
                     </div>
-                    
-                    <div class="table-footer">
-                        <div class="table-summary">
-                            <span class="summary-text">
-                                <i class="fas fa-database"></i> 
-                                Mostrando <%= typeof produtos !== 'undefined' ? produtos.length : 0 %> de 
-                                <%= typeof stats !== 'undefined' ? stats.total_produtos : 0 %> produtos no total
-                            </span>
-                        </div>
-                        <a href="/produtos" class="view-all-btn">
-                            <i class="fas fa-list"></i> Ver Todos os Produtos
-                        </a>
-                    </div>
+                    <a href="/produtos" class="view-all-btn">
+                        <i class="fas fa-list"></i> Ver Todos
+                    </a>
                 </div>
             </div>
         </div>
     </main>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Adicionar efeitos de hover nos cards
-            const cards = document.querySelectorAll('.stats-card');
-            cards.forEach(card => {
-                card.addEventListener('mouseenter', () => {
-                    card.style.boxShadow = '0 10px 20px rgba(0, 0, 0, 0.1)';
-                });
-                card.addEventListener('mouseleave', () => {
-                    card.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.04)';
-                });
-            });
-            
-            // Funções para a tabela
-            function confirmarExclusao(button) {
-                if (confirm('Tem certeza que deseja excluir este produto?')) {
-                    button.closest('form').submit();
-                }
-            }
+        // ===== FUNÇÕES PRINCIPAIS =====
 
-            function editarProduto(id) {
-                alert('Funcionalidade de edição em desenvolvimento! Produto ID: ' + id);
-                // Em desenvolvimento: window.location.href = '/produtos/editar/' + id;
-            }
-            
-            // Adicionar interatividade aos botões de ação
-            const actionButtons = document.querySelectorAll('.btn-action');
-            actionButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const action = this.classList.contains('btn-edit') ? 'editar' : 'excluir';
-                    const reagentName = this.closest('tr').querySelector('.reagent-name').textContent;
-                    console.log(`Ação: ${action} no reagente: ${reagentName}`);
-                });
-            });
-            
-            // Botão de adicionar novo reagente
-            const addButton = document.querySelector('.btn-add');
-            if (addButton) {
-                addButton.addEventListener('click', function(e) {
-                    if (this.tagName === 'A') return; // Se for link, deixar o comportamento padrão
-                    window.location.href = '/produtos/adicionar';
-                });
-            }
-        });
-
-        // Função para carregar as últimas 4 movimentações
-async function carregarUltimasMovimentacoes() {
+// Função para carregar as últimas 4 movimentações
+async function loadRecentMovements() {
     try {
-        const response = await fetch('/api/movements');
-        const movimentacoes = await response.json();
+        console.log('🔄 Carregando últimas 4 movimentações...');
         
+        const response = await fetch('/api/recent-movements');
+        if (!response.ok) {
+            throw new Error(`Erro na requisição: ${response.status}`);
+        }
+        
+        const movements = await response.json();
         const movementsList = document.getElementById('movementsList');
-        const lastUpdate = document.getElementById('lastUpdate');
         
-        if (!movimentacoes || movimentacoes.length === 0) {
+        console.log(`✅ ${movements ? movements.length : 0} movimentações recebidas`);
+        
+        // Limpar a lista
+        movementsList.innerHTML = '';
+        
+        if (!movements || movements.length === 0) {
             movementsList.innerHTML = `
-                <div style="padding: 2rem; text-align: center; color: #6c757d;">
-                    <i class="fas fa-exchange-alt" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                <li class="movement-item text-center text-muted py-4">
+                    <i class="fas fa-inbox fa-2x mb-2"></i>
                     <p>Nenhuma movimentação registrada</p>
-                    <small>As movimentações aparecerão aqui quando você fizer saídas ou entradas de reagentes.</small>
-                </div>
+                    <small class="text-muted">As movimentações aparecerão aqui quando forem registradas</small>
+                </li>
             `;
-            lastUpdate.textContent = 'Nenhuma movimentação';
+            updateLastUpdateTime();
             return;
         }
         
-        // Formatar a lista de movimentações (máximo 4)
-        movementsList.innerHTML = movimentacoes.map(mov => {
-            const isEntrada = mov.type === 'entrada';
-            const tipoTexto = isEntrada ? 'Entrada' : 'Saída';
-            const iconClass = isEntrada ? 'movement-in' : 'movement-out';
-            const icon = isEntrada ? 'fa-arrow-down' : 'fa-arrow-up';
-            
-            // Formatar data
-            const dataMov = new Date(mov.date);
-            const dataFormatada = dataMov.toLocaleDateString('pt-BR');
-            const horaFormatada = dataMov.toLocaleTimeString('pt-BR', { 
-                hour: '2-digit', 
-                minute: '2-digit' 
-            });
-            
-            // Extrair informações do projeto/fornecedor
-            let detalhesAdicionais = '';
-            if (mov.project) {
-                if (mov.project.includes('Fornecedor:')) {
-                    detalhesAdicionais = mov.project.replace('Fornecedor:', 'Fornecedor:');
-                } else {
-                    detalhesAdicionais = mov.project;
-                }
-            }
-            
-            return `
-                <li class="movement-item">
-                    <div class="movement-icon ${iconClass}">
-                        <i class="fas ${icon}"></i>
-                    </div>
-                    <div class="movement-content">
-                        <p class="movement-title">
-                            <strong>${tipoTexto}</strong> - ${mov.reagent}
-                        </p>
-                        <div class="movement-details">
-                            <span class="movement-quantity">
-                                ${mov.quantity} ${mov.unit}
-                            </span>
-                            ${detalhesAdicionais ? `<span class="movement-project">${detalhesAdicionais}</span>` : ''}
-                            <span class="movement-date">${dataFormatada} ${horaFormatada}</span>
-                        </div>
-                        <div class="movement-responsible">
-                            <small>Responsável: ${mov.responsible}</small>
-                        </div>
-                    </div>
-                </li>
-            `;
-        }).join('');
+        // Garantir que mostramos apenas 4 movimentações
+        const lastFourMovements = movements.slice(0, 4);
         
-        // Atualizar timestamp
-        lastUpdate.textContent = `Atualizado ${new Date().toLocaleTimeString('pt-BR', { 
-            hour: '2-digit', 
-            minute: '2-digit' 
-        })}`;
+        lastFourMovements.forEach(movement => {
+            const movementItem = createMovementItem(movement);
+            movementsList.appendChild(movementItem);
+        });
+        
+        updateLastUpdateTime();
         
     } catch (error) {
-        console.error('Erro ao carregar movimentações:', error);
-        const movementsList = document.getElementById('movementsList');
-        movementsList.innerHTML = `
-            <div style="padding: 2rem; text-align: center; color: #dc3545;">
-                <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
-                <p>Erro ao carregar movimentações</p>
-                <small>Tente recarregar a página</small>
-            </div>
-        `;
+        console.error('❌ Erro ao carregar movimentações:', error);
+        showMovementsError(error.message);
     }
 }
 
-// Carregar movimentações quando a página carregar
-document.addEventListener('DOMContentLoaded', function() {
-    carregarUltimasMovimentacoes();
+// Função para criar um item de movimentação
+function createMovementItem(movement) {
+    const movementItem = document.createElement('li');
+    movementItem.className = 'movement-item';
     
-    // Atualizar a cada 30 segundos
-    setInterval(carregarUltimasMovimentacoes, 30000);
-});
+    const date = new Date(movement.date);
+    const formattedDate = date.toLocaleDateString('pt-BR');
+    const formattedTime = date.toLocaleTimeString('pt-BR', {
+        hour: '2-digit', 
+        minute: '2-digit'
+    });
+    
+    const isEntrada = movement.type === 'entrada';
+    const iconClass = isEntrada ? 'fa-arrow-down text-success' : 'fa-arrow-up text-danger';
+    const bgClass = isEntrada ? 'movement-in' : 'movement-out';
+    const typeText = isEntrada ? 'Entrada' : 'Saída';
+    const quantityClass = isEntrada ? 'text-success' : 'text-danger';
+    
+    // Extrair informações do projeto/fornecedor
+    let projectInfo = movement.project || '';
+    if (isEntrada && projectInfo.includes('Fornecedor:')) {
+        projectInfo = projectInfo.replace('Fornecedor:', 'Fornecedor:').trim();
+    }
+    
+    movementItem.innerHTML = `
+        <div class="movement-icon ${bgClass}">
+            <i class="fas ${iconClass}"></i>
+        </div>
+        <div class="movement-content">
+            <p class="movement-title">
+                ${typeText} - ${movement.reagent}
+                <span class="movement-quantity ${quantityClass}">
+                    ${movement.quantity} ${movement.unit}
+                </span>
+            </p>
+            <div class="movement-details">
+                <span class="movement-date">
+                    <i class="far fa-calendar me-1"></i>${formattedDate}
+                </span>
+                <span class="movement-time">
+                    <i class="far fa-clock me-1"></i>${formattedTime}
+                </span>
+                <span class="movement-responsible">
+                    <i class="fas fa-user me-1"></i>${movement.responsible}
+                </span>
+            </div>
+            ${projectInfo ? `
+                <div class="movement-project">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>${projectInfo}
+                    </small>
+                </div>
+            ` : ''}
+        </div>
+    `;
+    
+    return movementItem;
+}
 
+// Função para atualizar o timestamp
+function updateLastUpdateTime() {
+    const lastUpdateElement = document.getElementById('lastUpdate');
+    if (lastUpdateElement) {
+        lastUpdateElement.textContent = `Atualizado às ${new Date().toLocaleTimeString('pt-BR', {
+            hour: '2-digit', 
+            minute: '2-digit'
+        })}`;
+    }
+}
 
+// Função para mostrar erro nas movimentações
+function showMovementsError(errorMessage) {
+    const movementsList = document.getElementById('movementsList');
+    movementsList.innerHTML = `
+        <li class="movement-item text-center text-danger py-4">
+            <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+            <p>Erro ao carregar movimentações</p>
+            <small class="text-muted">${errorMessage || 'Tente recarregar a página'}</small>
+        </li>
+    `;
+}
 
+// ===== FUNÇÕES PARA PRODUTOS =====
 
-// Funções para a tabela de produtos
+// Função para editar produto
 function editarProduto(id) {
     window.location.href = `/produtos/editar/${id}`;
 }
 
+// Função para confirmar exclusão de produto
 function confirmarExclusao(id, nome) {
     if (confirm(`Tem certeza que deseja excluir o produto "${nome}"?\n\nEsta ação não pode ser desfeita.`)) {
         // Criar um formulário dinâmico para enviar a requisição DELETE
@@ -1374,37 +1364,117 @@ function confirmarExclusao(id, nome) {
     }
 }
 
+// ===== EFEITOS VISUAIS =====
+
+// Adicionar efeitos de hover nos cards
+function initializeCardEffects() {
+    const cards = document.querySelectorAll('.stats-card, .chart-card, .enhanced-card');
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            card.style.transform = 'translateY(-5px)';
+            card.style.boxShadow = '0 10px 25px rgba(0, 0, 0, 0.1)';
+            card.style.transition = 'all 0.3s ease';
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'translateY(0)';
+            card.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.04)';
+        });
+    });
+}
+
 // Adicionar interatividade aos botões de ação
-document.addEventListener('DOMContentLoaded', function() {
+function initializeActionButtons() {
     const actionButtons = document.querySelectorAll('.btn-action');
     actionButtons.forEach(button => {
         button.addEventListener('click', function() {
             const action = this.classList.contains('btn-edit') ? 'editar' : 'excluir';
             const reagentName = this.closest('tr').querySelector('.reagent-name').textContent;
             console.log(`Ação: ${action} no reagente: ${reagentName}`);
+            
+            // Efeito visual no clique
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 150);
         });
     });
-    
-    // Adicionar efeitos de hover nos cards
-    const cards = document.querySelectorAll('.stats-card');
-    cards.forEach(card => {
-        card.addEventListener('mouseenter', () => {
-            card.style.boxShadow = '0 10px 20px rgba(0, 0, 0, 0.1)';
-        });
-        card.addEventListener('mouseleave', () => {
-            card.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.04)';
-        });
-    });
-    
-    // Botão de adicionar novo reagente
+}
+
+// Inicializar botão de adicionar
+function initializeAddButton() {
     const addButton = document.querySelector('.btn-add');
-    if (addButton) {
-        addButton.addEventListener('click', function(e) {
-            if (this.tagName === 'A') return;
+    if (addButton && addButton.tagName !== 'A') {
+        addButton.addEventListener('click', function() {
             window.location.href = '/produtos/adicionar';
         });
     }
+}
+
+// ===== INICIALIZAÇÃO =====
+
+// Função principal de inicialização
+function initializeDashboard() {
+    console.log('🚀 Inicializando dashboard...');
+    
+    // Carregar movimentações imediatamente
+    loadRecentMovements();
+    
+    // Inicializar efeitos visuais
+    initializeCardEffects();
+    initializeActionButtons();
+    initializeAddButton();
+    
+    // Configurar atualização automática
+    const refreshInterval = 30000; // 30 segundos
+    setInterval(loadRecentMovements, refreshInterval);
+    
+    console.log('✅ Dashboard inicializado com sucesso');
+}
+
+// ===== EVENT LISTENERS =====
+
+// Inicializar quando o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', initializeDashboard);
+
+// Adicionar listener para visibilidade da página (otimização)
+document.addEventListener('visibilitychange', function() {
+    if (!document.hidden) {
+        // Recarregar movimentações quando a página se tornar visível
+        loadRecentMovements();
+    }
 });
+
+// ===== FUNÇÕES AUXILIARES EJS (mantidas do seu código original) =====
+<%
+// Função para obter ícone baseado no tipo de categoria
+function getCategoryIcon(tipo) {
+    const tipoLower = tipo.toLowerCase();
+    if (tipoLower.includes('acido') || tipoLower.includes('ácido')) return 'fa-vial';
+    if (tipoLower.includes('base') || tipoLower.includes('alcali')) return 'fa-flask';
+    if (tipoLower.includes('solvente') || tipoLower.includes('orgânico')) return 'fa-tint';
+    if (tipoLower.includes('sal') || tipoLower.includes('inorgânico')) return 'fa-cube';
+    if (tipoLower.includes('oxidante')) return 'fa-fire';
+    if (tipoLower.includes('corrosivo')) return 'fa-exclamation-triangle';
+    return 'fa-vial';
+}
+
+// Função para formatar o nome da categoria
+function formatCategoryName(tipo) {
+    if (!tipo) return 'Outros';
+    
+    const tipoLower = tipo.toLowerCase();
+    if (tipoLower.includes('acido') || tipoLower.includes('ácido')) return 'Ácidos';
+    if (tipoLower.includes('base') || tipoLower.includes('alcali')) return 'Bases';
+    if (tipoLower.includes('solvente') || tipoLower.includes('orgânico')) return 'Solventes';
+    if (tipoLower.includes('sal') || tipoLower.includes('inorgânico')) return 'Sais';
+    if (tipoLower.includes('oxidante')) return 'Oxidantes';
+    if (tipoLower.includes('corrosivo')) return 'Corrosivos';
+    
+    // Capitalizar primeira letra
+    return tipo.charAt(0).toUpperCase() + tipo.slice(1).toLowerCase();
+}
+%>
     </script>
 </body>
 </html>
