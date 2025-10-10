@@ -954,7 +954,9 @@
     background: linear-gradient(90deg, #ffc107, #e0a800);
 }
 
-
+.progress-info {
+    background: linear-gradient(90deg, #17a2b8, #138496);
+}
 
 .progress-secondary {
     background: linear-gradient(90deg, #6c757d, #545b62);
@@ -1038,7 +1040,7 @@
                             
                             <% categorias.forEach((categoria, index) => { %>
                                 <div class="progress-item">
-                                    <div class="progress-info">
+                                    <div class="">
                                         <span class="progress-label">
                                             <i class="fas <%= getCategoryIcon(categoria.tipo) %> category-icon"></i>
                                             <%= formatCategoryName(categoria.tipo) %>
