@@ -128,14 +128,15 @@ router.get('/criar_conta', (req, res) => {
 router.get('/produtos', (req, res) => {
     const {
         search,
-        searchType = 'all',
+        searchType = 'name', // Padrão agora é 'name' em vez de 'all'
         category,
         status,
         dateFilter,
         dangerLevel,
         quantityFilter,
         supplier,
-        regulatoryOrg
+        regulatoryOrg,
+        orderBy = 'nome' // Novo parâmetro para ordenação
     } = req.query;
 
     let query = 'SELECT * FROM produtos WHERE 1=1';
@@ -164,10 +165,6 @@ router.get('/produtos', (req, res) => {
             case 'location':
                 query += ' AND localizacao LIKE ?';
                 queryParams.push(searchPattern);
-                break;
-            default: // 'all'
-                query += ' AND (id_produto LIKE ? OR nome LIKE ? OR tipo LIKE ? OR descricao LIKE ? OR fornecedor LIKE ? OR localizacao LIKE ?)';
-                queryParams.push(...Array(6).fill(searchPattern));
                 break;
         }
     }
@@ -251,7 +248,24 @@ router.get('/produtos', (req, res) => {
         queryParams.push(regulatoryOrg);
     }
 
-    query += ' ORDER BY nome';
+    // Ordenação padrão
+    let orderClause = ' ORDER BY ';
+    switch (orderBy) {
+        case 'id_produto':
+            orderClause += 'id_produto ASC';
+            break;
+        case 'quantidade':
+            orderClause += 'quantidade DESC';
+            break;
+        case 'data_criacao':
+            orderClause += 'data_criacao DESC';
+            break;
+        default: // 'nome' - ordem alfabética padrão
+            orderClause += 'nome ASC';
+            break;
+    }
+    
+    query += orderClause;
     
     db.query(query, queryParams, (err, results) => {
         if (err) {
@@ -269,7 +283,8 @@ router.get('/produtos', (req, res) => {
                 dangerLevel: dangerLevel || '',
                 quantityFilter: quantityFilter || '',
                 supplier: supplier || '',
-                regulatoryOrg: regulatoryOrg || ''
+                regulatoryOrg: regulatoryOrg || '',
+                orderBy: orderBy || 'nome'
             });
         }
         
@@ -286,7 +301,8 @@ router.get('/produtos', (req, res) => {
             dangerLevel: dangerLevel || '',
             quantityFilter: quantityFilter || '',
             supplier: supplier || '',
-            regulatoryOrg: regulatoryOrg || ''
+            regulatoryOrg: regulatoryOrg || '',
+            orderBy: orderBy || 'nome'
         });
     });
 });
@@ -358,18 +374,40 @@ router.post('/produtos/adicionar', (req, res) => {
     });
 });
 
-// Rota para deletar produto
+// Rota para deletar produto (versão simplificada)
 router.post('/produtos/deletar/:id', (req, res) => {
     const productId = req.params.id;
-    const query = 'DELETE FROM produtos WHERE id_produto = ?';
     
-    db.query(query, [productId], (err, result) => {
+    console.log('Tentando deletar produto ID:', productId);
+    
+    // Primeiro deleta as movimentações relacionadas
+    const deleteMovementsQuery = 'DELETE FROM movimentacoes WHERE id_produto = ?';
+    
+    db.query(deleteMovementsQuery, [productId], (err, movementResult) => {
         if (err) {
-            console.error('Erro ao deletar produto:', err);
-            return res.redirect('/produtos?error=Erro ao deletar produto');
+            console.error('Erro ao deletar movimentações:', err);
+            // Continua mesmo com erro (pode ser que não existam movimentações)
         }
         
-        res.redirect('/produtos?success=Produto deletado com sucesso');
+        console.log('Movimentações deletadas:', movementResult?.affectedRows || 0);
+        
+        // Agora deleta o produto
+        const deleteProductQuery = 'DELETE FROM produtos WHERE id_produto = ?';
+        
+        db.query(deleteProductQuery, [productId], (err, productResult) => {
+            if (err) {
+                console.error('Erro ao deletar produto:', err);
+                return res.redirect('/produtos?error=Erro ao deletar produto');
+            }
+            
+            if (productResult.affectedRows === 0) {
+                console.log('Produto não encontrado');
+                return res.redirect('/produtos?error=Produto não encontrado');
+            }
+            
+            console.log('Produto deletado com sucesso. Linhas afetadas:', productResult.affectedRows);
+            res.redirect('/produtos?success=Produto deletado com sucesso');
+        });
     });
 });
 
@@ -1407,12 +1445,7 @@ router.get('/api/recent-movements', requireAuth, (req, res) => {
     });
 });
 
-// ROTA PARA RELATÓRIOS
-router.get('/relatorios', requireAuth, (req, res) => {
-    res.render('relatorios', { 
-        user: req.session.user
-    });
-});
+
 
 // ROTA PARA LOGOUT
 router.get('/logout', requireAuth, (req, res) => {
@@ -1517,5 +1550,1071 @@ router.get('/vidracarias', requireAuth, (req, res) => {
         });
     });
 });
+
+
+
+
+
+
+
+
+
+
+
+// ROTA PARA RELATÓRIOS
+router.get('/relatorios', requireAuth, (req, res) => {
+    // Buscar estatísticas do banco - CORRIGIDAS
+    const totalReagentsQuery = 'SELECT COUNT(*) as total FROM produtos';
+    const lowStockQuery = 'SELECT COUNT(*) as total FROM produtos WHERE quantidade <= estoque_minimo AND quantidade > 0';
+    
+    // Buscar movimentações do mês atual - CORRIGIDAS
+    const monthInputsQuery = `
+        SELECT COUNT(*) as total 
+        FROM movimentacoes 
+        WHERE tipo = 'entrada' 
+        AND YEAR(data_movimentacao) = YEAR(CURDATE()) 
+        AND MONTH(data_movimentacao) = MONTH(CURDATE())
+    `;
+    
+    const monthOutputsQuery = `
+        SELECT COUNT(*) as total 
+        FROM movimentacoes 
+        WHERE tipo = 'saida' 
+        AND YEAR(data_movimentacao) = YEAR(CURDATE()) 
+        AND MONTH(data_movimentacao) = MONTH(CURDATE())
+    `;
+    
+    // Buscar itens com estoque crítico - CORRIGIDO
+    const criticalStockQuery = `
+        SELECT nome, tipo, quantidade, estoque_minimo, unidade_medida
+        FROM produtos 
+        WHERE quantidade <= estoque_minimo
+        ORDER BY quantidade ASC
+        LIMIT 10
+    `;
+
+    // Executar todas as queries
+    db.query(totalReagentsQuery, (err, totalResults) => {
+        if (err) {
+            console.error('Erro ao buscar total de reagentes:', err);
+            return res.render('relatorios', { 
+                user: req.session.user,
+                stats: {},
+                criticalItems: []
+            });
+        }
+
+        db.query(lowStockQuery, (err, lowStockResults) => {
+            if (err) {
+                console.error('Erro ao buscar estoque baixo:', err);
+                return res.render('relatorios', { 
+                    user: req.session.user,
+                    stats: {},
+                    criticalItems: []
+                });
+            }
+
+            db.query(monthInputsQuery, (err, monthInputsResults) => {
+                if (err) {
+                    console.error('Erro ao buscar entradas do mês:', err);
+                    return res.render('relatorios', { 
+                        user: req.session.user,
+                        stats: {},
+                        criticalItems: []
+                    });
+                }
+
+                db.query(monthOutputsQuery, (err, monthOutputsResults) => {
+                    if (err) {
+                        console.error('Erro ao buscar saídas do mês:', err);
+                        return res.render('relatorios', { 
+                            user: req.session.user,
+                            stats: {},
+                            criticalItems: []
+                        });
+                    }
+
+                    db.query(criticalStockQuery, (err, criticalItemsResults) => {
+                        if (err) {
+                            console.error('Erro ao buscar itens críticos:', err);
+                            return res.render('relatorios', { 
+                                user: req.session.user,
+                                stats: {},
+                                criticalItems: []
+                            });
+                        }
+
+                        console.log('Estatísticas encontradas:', {
+                            totalReagents: totalResults[0]?.total,
+                            monthInputs: monthInputsResults[0]?.total,
+                            monthOutputs: monthOutputsResults[0]?.total,
+                            lowStock: lowStockResults[0]?.total
+                        });
+
+                        // Preparar estatísticas
+                        const stats = {
+                            totalReagents: totalResults[0]?.total || 0,
+                            monthInputs: monthInputsResults[0]?.total || 0,
+                            monthOutputs: monthOutputsResults[0]?.total || 0,
+                            lowStock: lowStockResults[0]?.total || 0
+                        };
+
+                        // Preparar itens críticos
+                        const criticalItems = criticalItemsResults.map(item => ({
+                            reagent: item.nome,
+                            category: item.tipo,
+                            current: `${item.quantidade} ${item.unidade_medida}`,
+                            minimum: `${item.estoque_minimo} ${item.unidade_medida}`,
+                            status: item.quantidade === 0 ? 'Esgotado' : 
+                                   item.quantidade <= (item.estoque_minimo * 0.5) ? 'Crítico' : 'Atenção'
+                        }));
+
+                        res.render('relatorios', { 
+                            user: req.session.user,
+                            stats: stats,
+                            criticalItems: criticalItems
+                        });
+                    });
+                });
+            });
+        });
+    });
+});
+
+
+
+// API PARA ESTATÍSTICAS DOS RELATÓRIOS - CORRIGIDA
+router.get('/api/relatorios/stats', requireAuth, (req, res) => {
+    const totalReagentsQuery = 'SELECT COUNT(*) as total FROM produtos';
+    const lowStockQuery = 'SELECT COUNT(*) as total FROM produtos WHERE quantidade <= estoque_minimo AND quantidade > 0';
+    
+    const monthInputsQuery = `
+        SELECT COUNT(*) as total 
+        FROM movimentacoes 
+        WHERE tipo = 'entrada' 
+        AND YEAR(data_movimentacao) = YEAR(CURDATE()) 
+        AND MONTH(data_movimentacao) = MONTH(CURDATE())
+    `;
+    
+    const monthOutputsQuery = `
+        SELECT COUNT(*) as total 
+        FROM movimentacoes 
+        WHERE tipo = 'saida' 
+        AND YEAR(data_movimentacao) = YEAR(CURDATE()) 
+        AND MONTH(data_movimentacao) = MONTH(CURDATE())
+    `;
+
+    Promise.all([
+        new Promise(resolve => db.query(totalReagentsQuery, (err, res) => resolve(err ? 0 : res[0].total))),
+        new Promise(resolve => db.query(lowStockQuery, (err, res) => resolve(err ? 0 : res[0].total))),
+        new Promise(resolve => db.query(monthInputsQuery, (err, res) => resolve(err ? 0 : res[0].total))),
+        new Promise(resolve => db.query(monthOutputsQuery, (err, res) => resolve(err ? 0 : res[0].total)))
+    ]).then(([totalReagents, lowStock, monthInputs, monthOutputs]) => {
+        console.log('API Stats - Total Reagentes:', totalReagents);
+        console.log('API Stats - Entradas Mês:', monthInputs);
+        console.log('API Stats - Saídas Mês:', monthOutputs);
+        console.log('API Stats - Baixo Estoque:', lowStock);
+        
+        res.json({
+            totalReagents,
+            lowStock,
+            monthInputs,
+            monthOutputs
+        });
+    }).catch(error => {
+        console.error('Erro nas estatísticas dos relatórios:', error);
+        res.json({
+            totalReagents: 0,
+            lowStock: 0,
+            monthInputs: 0,
+            monthOutputs: 0
+        });
+    });
+});
+
+
+// API PARA DADOS DO GRÁFICO DE MOVIMENTAÇÃO - CORRIGIDA
+router.get('/api/relatorios/movimentacao-mensal', requireAuth, (req, res) => {
+    const query = `
+        SELECT 
+            MONTH(data_movimentacao) as mes,
+            YEAR(data_movimentacao) as ano,
+            tipo,
+            COUNT(*) as quantidade
+        FROM movimentacoes 
+        WHERE YEAR(data_movimentacao) = YEAR(CURDATE())
+        GROUP BY YEAR(data_movimentacao), MONTH(data_movimentacao), tipo
+        ORDER BY ano, mes
+    `;
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar dados de movimentação:', err);
+            return res.json({
+                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                outputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            });
+        }
+
+        // Inicializar arrays para os 12 meses
+        const inputs = Array(12).fill(0);
+        const outputs = Array(12).fill(0);
+
+        // Preencher os arrays com os dados do banco
+        results.forEach(item => {
+            const mesIndex = item.mes - 1; // Janeiro = 0, Dezembro = 11
+            if (item.tipo === 'entrada') {
+                inputs[mesIndex] = item.quantidade;
+            } else if (item.tipo === 'saida') {
+                outputs[mesIndex] = item.quantidade;
+            }
+        });
+
+        res.json({
+            labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+            inputs: inputs,
+            outputs: outputs
+        });
+    });
+});
+
+// API PARA DADOS DO GRÁFICO DE CATEGORIAS
+router.get('/api/relatorios/distribuicao-categorias', requireAuth, (req, res) => {
+    const query = `
+        SELECT 
+            tipo as categoria,
+            COUNT(*) as quantidade
+        FROM produtos 
+        GROUP BY tipo
+        ORDER BY quantidade DESC
+        LIMIT 6
+    `;
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar distribuição por categoria:', err);
+            return res.json({
+                labels: ['Sem dados'],
+                values: [100],
+                colors: ['#9CA3AF']
+            });
+        }
+
+        const labels = results.map(item => item.categoria);
+        const values = results.map(item => item.quantidade);
+        
+        // Cores para as categorias
+        const colors = ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EF4444', '#06B6D4'];
+
+        res.json({
+            labels: labels,
+            values: values,
+            colors: colors
+        });
+    });
+});
+
+
+// API PARA DADOS DETALHADOS DE MOVIMENTAÇÃO - CORRIGIDA
+router.get('/api/relatorios/movimentacao-detalhada', requireAuth, (req, res) => {
+    const { year = new Date().getFullYear(), month, type } = req.query;
+    
+    let whereClause = 'WHERE YEAR(data_movimentacao) = ?';
+    let queryParams = [year];
+
+    if (month) {
+        whereClause += ' AND MONTH(data_movimentacao) = ?';
+        queryParams.push(month);
+    }
+
+    if (type) {
+        whereClause += ' AND tipo = ?';
+        queryParams.push(type);
+    }
+
+    // Query para dados mensais
+    const monthlyQuery = `
+        SELECT 
+            MONTH(data_movimentacao) as mes,
+            tipo,
+            COUNT(*) as quantidade
+        FROM movimentacoes 
+        ${whereClause}
+        GROUP BY MONTH(data_movimentacao), tipo
+        ORDER BY mes
+    `;
+
+    // Query para estatísticas - CORRIGIDA (removido alias m)
+    const statsQuery = `
+        SELECT 
+            COUNT(*) as total_movements,
+            SUM(CASE WHEN tipo = 'entrada' THEN 1 ELSE 0 END) as total_inputs,
+            SUM(CASE WHEN tipo = 'saida' THEN 1 ELSE 0 END) as total_outputs
+        FROM movimentacoes 
+        ${whereClause}
+    `;
+
+    db.query(monthlyQuery, queryParams, (err, monthlyResults) => {
+        if (err) {
+            console.error('Erro ao buscar dados mensais:', err);
+            return res.json({
+                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                inputs: Array(12).fill(0),
+                outputs: Array(12).fill(0),
+                totalMovements: 0,
+                totalInputs: 0,
+                totalOutputs: 0,
+                avgDaily: 0
+            });
+        }
+
+        db.query(statsQuery, queryParams, (err, statsResults) => {
+            if (err) {
+                console.error('Erro ao buscar estatísticas:', err);
+                return res.json({
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    inputs: Array(12).fill(0),
+                    outputs: Array(12).fill(0),
+                    totalMovements: 0,
+                    totalInputs: 0,
+                    totalOutputs: 0,
+                    avgDaily: 0
+                });
+            }
+
+            // Processar dados mensais
+            const inputs = Array(12).fill(0);
+            const outputs = Array(12).fill(0);
+
+            monthlyResults.forEach(item => {
+                const mesIndex = item.mes - 1;
+                if (item.tipo === 'entrada') {
+                    inputs[mesIndex] = item.quantidade;
+                } else if (item.tipo === 'saida') {
+                    outputs[mesIndex] = item.quantidade;
+                }
+            });
+
+            const stats = statsResults[0];
+            const avgDaily = stats.total_movements ? (stats.total_movements / 30).toFixed(1) : 0;
+
+            res.json({
+                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                inputs: inputs,
+                outputs: outputs,
+                totalMovements: stats.total_movements || 0,
+                totalInputs: stats.total_inputs || 0,
+                totalOutputs: stats.total_outputs || 0,
+                avgDaily: avgDaily
+            });
+        });
+    });
+});
+
+// API PARA ÚLTIMAS MOVIMENTAÇÕES - CORRIGIDA
+router.get('/api/relatorios/ultimas-movimentacoes', requireAuth, (req, res) => {
+    const { year = new Date().getFullYear(), month, type } = req.query;
+    
+    let whereClause = 'WHERE YEAR(m.data_movimentacao) = ?';
+    let queryParams = [year];
+
+    if (month) {
+        whereClause += ' AND MONTH(m.data_movimentacao) = ?';
+        queryParams.push(month);
+    }
+
+    if (type) {
+        whereClause += ' AND m.tipo = ?';
+        queryParams.push(type);
+    }
+
+    const query = `
+        SELECT 
+            m.data_movimentacao,
+            p.nome,
+            m.tipo,
+            m.quantidade,
+            m.unidade_medida,
+            m.responsavel,
+            m.projeto_experimento
+        FROM movimentacoes m
+        JOIN produtos p ON m.id_produto = p.id_produto
+        ${whereClause}
+        ORDER BY m.data_movimentacao DESC
+        LIMIT 50
+    `;
+
+    db.query(query, queryParams, (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar últimas movimentações:', err);
+            return res.json([]);
+        }
+        res.json(results);
+    });
+});
+
+// API PARA ÚLTIMAS MOVIMENTAÇÕES
+router.get('/api/relatorios/ultimas-movimentacoes', requireAuth, (req, res) => {
+    const { year = new Date().getFullYear(), month, type } = req.query;
+    
+    let whereClause = 'WHERE YEAR(m.data_movimentacao) = ?';
+    let queryParams = [year];
+
+    if (month) {
+        whereClause += ' AND MONTH(m.data_movimentacao) = ?';
+        queryParams.push(month);
+    }
+
+    if (type) {
+        whereClause += ' AND m.tipo = ?';
+        queryParams.push(type);
+    }
+
+    const query = `
+        SELECT 
+            m.data_movimentacao,
+            p.nome,
+            m.tipo,
+            m.quantidade,
+            m.unidade_medida,
+            m.responsavel,
+            m.projeto_experimento
+        FROM movimentacoes m
+        JOIN produtos p ON m.id_produto = p.id_produto
+        ${whereClause}
+        ORDER BY m.data_movimentacao DESC
+        LIMIT 50
+    `;
+
+    db.query(query, queryParams, (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar últimas movimentações:', err);
+            return res.json([]);
+        }
+        res.json(results);
+    });
+});
+
+// ROTA PARA PÁGINA DE MOVIMENTAÇÃO DETALHADA
+router.get('/relatorios/movimentacao', requireAuth, (req, res) => {
+    res.render('relatorios-movimentacao', { 
+        user: req.session.user
+    });
+});
+
+
+// API PARA MOVIMENTAÇÕES COM PAGINAÇÃO E FILTROS
+router.get('/api/relatorios/movimentacoes', requireAuth, (req, res) => {
+    const { year = new Date().getFullYear(), month, type, reagent, page = 1, limit = 15 } = req.query;
+    
+    let whereClause = 'WHERE YEAR(m.data_movimentacao) = ?';
+    let queryParams = [year];
+
+    if (month) {
+        whereClause += ' AND MONTH(m.data_movimentacao) = ?';
+        queryParams.push(month);
+    }
+
+    if (type) {
+        whereClause += ' AND m.tipo = ?';
+        queryParams.push(type);
+    }
+
+    if (reagent) {
+        whereClause += ' AND p.nome LIKE ?';
+        queryParams.push(`%${reagent}%`);
+    }
+
+    const offset = (page - 1) * limit;
+
+    // Query para contar total
+    const countQuery = `
+        SELECT COUNT(*) as total
+        FROM movimentacoes m
+        JOIN produtos p ON m.id_produto = p.id_produto
+        ${whereClause}
+    `;
+
+    // Query para buscar dados
+    const dataQuery = `
+        SELECT 
+            m.data_movimentacao,
+            p.nome,
+            p.tipo as categoria,
+            m.tipo,
+            m.quantidade,
+            m.unidade_medida,
+            m.responsavel,
+            m.projeto_experimento,
+            m.observacoes
+        FROM movimentacoes m
+        JOIN produtos p ON m.id_produto = p.id_produto
+        ${whereClause}
+        ORDER BY m.data_movimentacao DESC
+        LIMIT ? OFFSET ?
+    `;
+
+    db.query(countQuery, queryParams, (err, countResults) => {
+        if (err) {
+            console.error('Erro ao contar movimentações:', err);
+            return res.json({ data: [], total: 0, totalPages: 0 });
+        }
+
+        const total = countResults[0].total;
+        const totalPages = Math.ceil(total / limit);
+
+        const dataParams = [...queryParams, parseInt(limit), parseInt(offset)];
+
+        db.query(dataQuery, dataParams, (err, dataResults) => {
+            if (err) {
+                console.error('Erro ao buscar movimentações:', err);
+                return res.json({ data: [], total: 0, totalPages: 0 });
+            }
+
+            res.json({
+                data: dataResults,
+                total: total,
+                totalPages: totalPages,
+                currentPage: parseInt(page)
+            });
+        });
+    });
+});
+
+// API PARA ESTATÍSTICAS DO REAGENTE
+router.get('/api/relatorios/estatisticas-reagente', requireAuth, (req, res) => {
+    const { reagent } = req.query;
+    
+    if (!reagent) {
+        return res.json(null);
+    }
+
+    const query = `
+        SELECT 
+            COUNT(*) as totalMovements,
+            SUM(CASE WHEN m.tipo = 'entrada' THEN 1 ELSE 0 END) as totalInputs,
+            SUM(CASE WHEN m.tipo = 'saida' THEN 1 ELSE 0 END) as totalOutputs,
+            p.nome,
+            p.tipo as categoria
+        FROM movimentacoes m
+        JOIN produtos p ON m.id_produto = p.id_produto
+        WHERE p.nome LIKE ?
+        GROUP BY p.id_produto, p.nome, p.tipo
+    `;
+
+    db.query(query, [`%${reagent}%`], (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar estatísticas do reagente:', err);
+            return res.json(null);
+        }
+
+        if (results.length === 0) {
+            return res.json(null);
+        }
+
+        res.json(results[0]);
+    });
+});
+
+// API PARA EXPORTAR MOVIMENTAÇÕES EM CSV
+router.get('/api/relatorios/exportar-movimentacoes', requireAuth, (req, res) => {
+    const { year = new Date().getFullYear(), month, type, reagent } = req.query;
+    
+    let whereClause = 'WHERE YEAR(m.data_movimentacao) = ?';
+    let queryParams = [year];
+
+    if (month) {
+        whereClause += ' AND MONTH(m.data_movimentacao) = ?';
+        queryParams.push(month);
+    }
+
+    if (type) {
+        whereClause += ' AND m.tipo = ?';
+        queryParams.push(type);
+    }
+
+    if (reagent) {
+        whereClause += ' AND p.nome LIKE ?';
+        queryParams.push(`%${reagent}%`);
+    }
+
+    const query = `
+        SELECT 
+            DATE_FORMAT(m.data_movimentacao, '%d/%m/%Y %H:%i') as data,
+            p.nome as reagente,
+            p.tipo as categoria,
+            CASE 
+                WHEN m.tipo = 'entrada' THEN 'Entrada'
+                ELSE 'Saída'
+            END as tipo,
+            m.quantidade,
+            m.unidade_medida,
+            m.responsavel,
+            COALESCE(m.projeto_experimento, '') as projeto,
+            COALESCE(m.observacoes, '') as observacoes
+        FROM movimentacoes m
+        JOIN produtos p ON m.id_produto = p.id_produto
+        ${whereClause}
+        ORDER BY m.data_movimentacao DESC
+    `;
+
+    db.query(query, queryParams, (err, results) => {
+        if (err) {
+            console.error('Erro ao exportar movimentações:', err);
+            return res.status(500).send('Erro ao gerar arquivo CSV');
+        }
+
+        // Converter para CSV
+        const headers = ['Data', 'Reagente', 'Categoria', 'Tipo', 'Quantidade', 'Unidade', 'Responsável', 'Projeto', 'Observações'];
+        let csvContent = headers.join(';') + '\n';
+        
+        results.forEach(row => {
+            const csvRow = [
+                row.data,
+                `"${row.reagente}"`,
+                `"${row.categoria}"`,
+                row.tipo,
+                row.quantidade,
+                row.unidade_medida,
+                `"${row.responsavel}"`,
+                `"${row.projeto}"`,
+                `"${row.observacoes}"`
+            ];
+            csvContent += csvRow.join(';') + '\n';
+        });
+
+        res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+        res.setHeader('Content-Disposition', `attachment; filename=movimentacoes-${year}.csv`);
+        res.send(csvContent);
+    });
+});
+
+
+// ROTA PARA PÁGINA DE CATEGORIAS
+router.get('/relatorios/categorias', requireAuth, (req, res) => {
+    res.render('relatorios-categorias', { 
+        user: req.session.user
+    });
+});
+
+
+
+
+
+
+// API PARA LISTA DE CATEGORIAS
+router.get('/api/relatorios/lista-categorias', requireAuth, (req, res) => {
+    const query = `
+        SELECT DISTINCT tipo 
+        FROM produtos 
+        WHERE tipo IS NOT NULL AND tipo != ''
+        ORDER BY tipo
+    `;
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar categorias:', err);
+            return res.json([]);
+        }
+        
+        const categories = results.map(row => row.tipo);
+        res.json(categories);
+    });
+});
+
+// API PARA DADOS DETALHADOS DAS CATEGORIAS
+router.get('/api/relatorios/dados-categorias', requireAuth, (req, res) => {
+    const { category, stockStatus, periculosidade, search } = req.query;
+    
+    let whereClause = 'WHERE 1=1';
+    let queryParams = [];
+
+    if (category) {
+        whereClause += ' AND p.tipo = ?';
+        queryParams.push(category);
+    }
+
+    if (periculosidade) {
+        whereClause += ' AND p.grau_periculosidade = ?';
+        queryParams.push(periculosidade);
+    }
+
+    if (search) {
+        whereClause += ' AND p.nome LIKE ?';
+        queryParams.push(`%${search}%`);
+    }
+
+    // Query para estatísticas gerais
+    const statsQuery = `
+        SELECT 
+            COUNT(DISTINCT p.tipo) as totalCategories,
+            COUNT(*) as totalReagents,
+            SUM(CASE WHEN p.quantidade > 0 AND p.quantidade <= p.estoque_minimo THEN 1 ELSE 0 END) as lowStock,
+            SUM(CASE WHEN p.quantidade = 0 OR p.quantidade <= (p.estoque_minimo * 0.3) THEN 1 ELSE 0 END) as criticalStock
+        FROM produtos p
+        ${whereClause}
+    `;
+
+    // Query para dados das categorias
+    const categoriesQuery = `
+        SELECT 
+            p.tipo as categoria,
+            COUNT(*) as totalReagentes,
+            SUM(CASE WHEN p.quantidade > 0 AND p.quantidade <= p.estoque_minimo THEN 1 ELSE 0 END) as baixoEstoque,
+            SUM(CASE WHEN p.quantidade = 0 OR p.quantidade <= (p.estoque_minimo * 0.3) THEN 1 ELSE 0 END) as estoqueCritico,
+            ROUND((COUNT(*) * 100.0 / (SELECT COUNT(*) FROM produtos ${whereClause})), 1) as percentage
+        FROM produtos p
+        ${whereClause}
+        GROUP BY p.tipo
+        ORDER BY totalReagentes DESC
+    `;
+
+    // Query para reagentes por categoria (limitado para mostrar nos cards)
+    const reagentsQuery = `
+        SELECT 
+            p.tipo,
+            p.nome,
+            p.quantidade,
+            p.estoque_minimo,
+            p.unidade_medida
+        FROM produtos p
+        ${whereClause}
+        ORDER BY p.tipo, p.quantidade ASC
+    `;
+
+    db.query(statsQuery, queryParams, (err, statsResults) => {
+        if (err) {
+            console.error('Erro ao buscar estatísticas:', err);
+            return res.json({
+                totalCategories: 0,
+                totalReagents: 0,
+                lowStock: 0,
+                criticalStock: 0,
+                labels: [],
+                values: [],
+                colors: [],
+                categories: []
+            });
+        }
+
+        db.query(categoriesQuery, queryParams, (err, categoriesResults) => {
+            if (err) {
+                console.error('Erro ao buscar dados das categorias:', err);
+                return res.json({
+                    totalCategories: 0,
+                    totalReagents: 0,
+                    lowStock: 0,
+                    criticalStock: 0,
+                    labels: [],
+                    values: [],
+                    colors: [],
+                    categories: []
+                });
+            }
+
+            db.query(reagentsQuery, queryParams, (err, reagentsResults) => {
+                if (err) {
+                    console.error('Erro ao buscar reagentes:', err);
+                    return res.json({
+                        totalCategories: 0,
+                        totalReagents: 0,
+                        lowStock: 0,
+                        criticalStock: 0,
+                        labels: [],
+                        values: [],
+                        colors: [],
+                        categories: []
+                    });
+                }
+
+                const stats = statsResults[0];
+                const labels = categoriesResults.map(cat => cat.categoria);
+                const values = categoriesResults.map(cat => cat.totalReagentes);
+                
+                // Cores para as categorias
+                const colors = ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EF4444', '#06B6D4', '#84CC16', '#F97316', '#6366F1', '#EC4899'];
+
+                // Agrupar reagentes por categoria
+                const reagentsByCategory = {};
+                reagentsResults.forEach(reagent => {
+                    if (!reagentsByCategory[reagent.tipo]) {
+                        reagentsByCategory[reagent.tipo] = [];
+                    }
+                    reagentsByCategory[reagent.tipo].push(reagent);
+                });
+
+                // Adicionar reagentes às categorias
+                const categoriesWithReagents = categoriesResults.map(category => {
+                    return {
+                        ...category,
+                        reagentes: reagentsByCategory[category.categoria] || [],
+                        color: colors[categoriesResults.indexOf(category) % colors.length]
+                    };
+                });
+
+                res.json({
+                    totalCategories: stats.totalCategories || 0,
+                    totalReagents: stats.totalReagents || 0,
+                    lowStock: stats.lowStock || 0,
+                    criticalStock: stats.criticalStock || 0,
+                    labels: labels,
+                    values: values,
+                    colors: colors.slice(0, labels.length),
+                    categories: categoriesWithReagents
+                });
+            });
+        });
+    });
+});
+
+// API PARA REAGENTES COM FILTROS
+router.get('/api/relatorios/reagentes', requireAuth, (req, res) => {
+    const { category, stockStatus, periculosidade, search, page = 1, limit = 15 } = req.query;
+    
+    let whereClause = 'WHERE 1=1';
+    let queryParams = [];
+
+    if (category) {
+        whereClause += ' AND tipo = ?';
+        queryParams.push(category);
+    }
+
+    if (periculosidade) {
+        whereClause += ' AND grau_periculosidade = ?';
+        queryParams.push(periculosidade);
+    }
+
+    if (search) {
+        whereClause += ' AND nome LIKE ?';
+        queryParams.push(`%${search}%`);
+    }
+
+    // Filtro por status do estoque
+    if (stockStatus) {
+        switch (stockStatus) {
+            case 'normal':
+                whereClause += ' AND quantidade > estoque_minimo';
+                break;
+            case 'baixo':
+                whereClause += ' AND quantidade > 0 AND quantidade <= estoque_minimo';
+                break;
+            case 'critico':
+                whereClause += ' AND quantidade > 0 AND quantidade <= (estoque_minimo * 0.3)';
+                break;
+            case 'esgotado':
+                whereClause += ' AND quantidade = 0';
+                break;
+        }
+    }
+
+    const offset = (page - 1) * limit;
+
+    // Query para contar total
+    const countQuery = `
+        SELECT COUNT(*) as total
+        FROM produtos
+        ${whereClause}
+    `;
+
+    // Query para buscar dados
+    const dataQuery = `
+        SELECT 
+            nome,
+            tipo,
+            grau_periculosidade,
+            quantidade,
+            estoque_minimo,
+            unidade_medida,
+            localizacao,
+            descricao
+        FROM produtos
+        ${whereClause}
+        ORDER BY tipo, nome
+        LIMIT ? OFFSET ?
+    `;
+
+    db.query(countQuery, queryParams, (err, countResults) => {
+        if (err) {
+            console.error('Erro ao contar reagentes:', err);
+            return res.json({ data: [], total: 0, totalPages: 0 });
+        }
+
+        const total = countResults[0].total;
+        const totalPages = Math.ceil(total / limit);
+
+        const dataParams = [...queryParams, parseInt(limit), parseInt(offset)];
+
+        db.query(dataQuery, dataParams, (err, dataResults) => {
+            if (err) {
+                console.error('Erro ao buscar reagentes:', err);
+                return res.json({ data: [], total: 0, totalPages: 0 });
+            }
+
+            res.json({
+                data: dataResults,
+                total: total,
+                totalPages: totalPages,
+                currentPage: parseInt(page)
+            });
+        });
+    });
+});
+
+// API PARA EXPORTAR CATEGORIAS EM CSV
+router.get('/api/relatorios/exportar-categorias', requireAuth, (req, res) => {
+    const { category, periculosidade, search } = req.query;
+    
+    let whereClause = 'WHERE 1=1';
+    let queryParams = [];
+
+    if (category) {
+        whereClause += ' AND p.tipo = ?';
+        queryParams.push(category);
+    }
+
+    if (periculosidade) {
+        whereClause += ' AND p.grau_periculosidade = ?';
+        queryParams.push(periculosidade);
+    }
+
+    if (search) {
+        whereClause += ' AND p.nome LIKE ?';
+        queryParams.push(`%${search}%`);
+    }
+
+    const query = `
+        SELECT 
+            p.tipo as categoria,
+            COUNT(*) as total_reagentes,
+            SUM(CASE WHEN p.quantidade > 0 AND p.quantidade <= p.estoque_minimo THEN 1 ELSE 0 END) as baixo_estoque,
+            SUM(CASE WHEN p.quantidade = 0 OR p.quantidade <= (p.estoque_minimo * 0.3) THEN 1 ELSE 0 END) as estoque_critico,
+            ROUND((COUNT(*) * 100.0 / (SELECT COUNT(*) FROM produtos ${whereClause})), 1) as porcentagem
+        FROM produtos p
+        ${whereClause}
+        GROUP BY p.tipo
+        ORDER BY total_reagentes DESC
+    `;
+
+    db.query(query, queryParams, (err, results) => {
+        if (err) {
+            console.error('Erro ao exportar categorias:', err);
+            return res.status(500).send('Erro ao gerar arquivo CSV');
+        }
+
+        // Converter para CSV
+        const headers = ['Categoria', 'Total de Reagentes', 'Baixo Estoque', 'Estoque Crítico', 'Porcentagem'];
+        let csvContent = headers.join(';') + '\n';
+        
+        results.forEach(row => {
+            const csvRow = [
+                `"${row.categoria}"`,
+                row.total_reagentes,
+                row.baixo_estoque,
+                row.estoque_critico,
+                `${row.porcentagem}%`
+            ];
+            csvContent += csvRow.join(';') + '\n';
+        });
+
+        res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+        res.setHeader('Content-Disposition', 'attachment; filename=categorias.csv');
+        res.send(csvContent);
+    });
+});
+
+// API PARA EXPORTAR REAGENTES EM CSV
+router.get('/api/relatorios/exportar-reagentes', requireAuth, (req, res) => {
+    const { category, stockStatus, periculosidade, search } = req.query;
+    
+    let whereClause = 'WHERE 1=1';
+    let queryParams = [];
+
+    if (category) {
+        whereClause += ' AND tipo = ?';
+        queryParams.push(category);
+    }
+
+    if (periculosidade) {
+        whereClause += ' AND grau_periculosidade = ?';
+        queryParams.push(periculosidade);
+    }
+
+    if (search) {
+        whereClause += ' AND nome LIKE ?';
+        queryParams.push(`%${search}%`);
+    }
+
+    if (stockStatus) {
+        switch (stockStatus) {
+            case 'normal':
+                whereClause += ' AND quantidade > estoque_minimo';
+                break;
+            case 'baixo':
+                whereClause += ' AND quantidade > 0 AND quantidade <= estoque_minimo';
+                break;
+            case 'critico':
+                whereClause += ' AND quantidade > 0 AND quantidade <= (estoque_minimo * 0.3)';
+                break;
+            case 'esgotado':
+                whereClause += ' AND quantidade = 0';
+                break;
+        }
+    }
+
+    const query = `
+        SELECT 
+            nome as reagente,
+            tipo as categoria,
+            COALESCE(grau_periculosidade, 'Não informado') as periculosidade,
+            quantidade,
+            estoque_minimo,
+            unidade_medida,
+            COALESCE(localizacao, 'Não informada') as localizacao,
+            COALESCE(descricao, '') as descricao,
+            CASE 
+                WHEN quantidade = 0 THEN 'Esgotado'
+                WHEN quantidade <= (estoque_minimo * 0.3) THEN 'Crítico'
+                WHEN quantidade <= estoque_minimo THEN 'Baixo'
+                ELSE 'Normal'
+            END as status_estoque
+        FROM produtos
+        ${whereClause}
+        ORDER BY tipo, nome
+    `;
+
+    db.query(query, queryParams, (err, results) => {
+        if (err) {
+            console.error('Erro ao exportar reagentes:', err);
+            return res.status(500).send('Erro ao gerar arquivo CSV');
+        }
+
+        // Converter para CSV
+        const headers = ['Reagente', 'Categoria', 'Periculosidade', 'Quantidade', 'Estoque Mínimo', 'Unidade', 'Localização', 'Descrição', 'Status do Estoque'];
+        let csvContent = headers.join(';') + '\n';
+        
+        results.forEach(row => {
+            const csvRow = [
+                `"${row.reagente}"`,
+                `"${row.categoria}"`,
+                `"${row.periculosidade}"`,
+                row.quantidade,
+                row.estoque_minimo,
+                row.unidade_medida,
+                `"${row.localizacao}"`,
+                `"${row.descricao}"`,
+                `"${row.status_estoque}"`
+            ];
+            csvContent += csvRow.join(';') + '\n';
+        });
+
+        res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+        res.setHeader('Content-Disposition', 'attachment; filename=reagentes.csv');
+        res.send(csvContent);
+    });
+});
+
+
+
 
 module.exports = router;

@@ -456,6 +456,24 @@
         .success-btn:hover i {
             transform: scale(1.1);
         }
+
+        .alert-success {
+    background-color: #d1fae5;
+    border: 1px solid #10b981;
+    color: #065f46;
+}
+
+.alert-danger {
+    background-color: #fee2e2;
+    border: 1px solid #ef4444;
+    color: #7f1d1d;
+}
+
+.alert {
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
     </style>
 </head>
 <body class="flex">
@@ -491,28 +509,6 @@
                                 <label for="end-date" class="form-label">Data Final</label>
                                 <input type="date" class="form-control" id="end-date" name="end-date">
                             </div>
-                            <div>
-                                <label for="category" class="form-label">Categoria</label>
-                                <select class="form-select" id="category" name="category">
-                                    <option value="" selected>Todas as categorias</option>
-                                    <option value="acidos">Ácidos</option>
-                                    <option value="bases">Bases</option>
-                                    <option value="solventes">Solventes</option>
-                                    <option value="indicadores">Indicadores</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="reagent" class="form-label">Reagente</label>
-                                <select class="form-select" id="reagent" name="reagent">
-                                    <option value="" selected>Todos os reagentes</option>
-                                    <option value="1">Ácido clorídrico (HCl)</option>
-                                    <option value="2">Hidróxido de sódio (NaOH)</option>
-                                    <option value="3">Sulfato de cobre (CuSO₄)</option>
-                                    <option value="4">Água destilada (H₂O)</option>
-                                    <option value="5">Cloreto de sódio (NaCl)</option>
-                                    <option value="6">Ácido sulfúrico (H₂SO₄)</option>
-                                </select>
-                            </div>
                         </div>
                         <div class="d-grid mt-4">
                             <button type="submit" class="success-btn py-3">
@@ -526,19 +522,27 @@
             <!-- Estatísticas Rápidas -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
                 <div class="card stats-card">
-                    <div class="text-primary stats-value" id="total-reagents">142</div>
+                    <div class="text-primary stats-value" id="total-reagents">
+                        <%= stats.totalReagents || 0 %>
+                    </div>
                     <div class="stats-label">Total de Reagentes</div>
                 </div>
                 <div class="card stats-card">
-                    <div class="text-success stats-value" id="month-inputs">28</div>
+                    <div class="text-success stats-value" id="month-inputs">
+                        <%= stats.monthInputs || 0 %>
+                    </div>
                     <div class="stats-label">Entradas (Mês)</div>
                 </div>
                 <div class="card stats-card">
-                    <div class="text-danger stats-value" id="month-outputs">35</div>
+                    <div class="text-danger stats-value" id="month-outputs">
+                        <%= stats.monthOutputs || 0 %>
+                    </div>
                     <div class="stats-label">Saídas (Mês)</div>
                 </div>
                 <div class="card stats-card">
-                    <div class="text-info stats-value" id="low-stock">7</div>
+                    <div class="text-info stats-value" id="low-stock">
+                        <%= stats.lowStock || 0 %>
+                    </div>
                     <div class="stats-label">Baixo Estoque</div>
                 </div>
             </div>
@@ -631,7 +635,27 @@
                                 </tr>
                             </thead>
                             <tbody id="low-stock-items">
-                                <!-- Itens com estoque crítico serão carregados via JavaScript -->
+                                <% if (criticalItems && criticalItems.length > 0) { %>
+                                    <% criticalItems.forEach(item => { %>
+                                        <tr class="border-b">
+                                            <td class="px-6 py-4 whitespace-nowrap"><%= item.reagent %></td>
+                                            <td class="px-6 py-4 whitespace-nowrap"><%= item.category %></td>
+                                            <td class="px-6 py-4 whitespace-nowrap"><%= item.current %></td>
+                                            <td class="px-6 py-4 whitespace-nowrap"><%= item.minimum %></td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <span class="px-2 py-1 text-xs font-semibold rounded-full <%= item.status === 'Crítico' ? 'bg-danger' : 'bg-warning' %> text-white">
+                                                    <%= item.status %>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                                            Nenhum item com estoque crítico encontrado
+                                        </td>
+                                    </tr>
+                                <% } %>
                             </tbody>
                         </table>
                     </div>
@@ -639,7 +663,7 @@
                 <div class="card-footer">
                     <span class="stats-info">
                         <i class="fas fa-history"></i>
-                        <span id="last-update">Atualizado agora</span>
+                        <span id="last-update">Atualizado em <%= new Date().toLocaleString('pt-BR') %></span>
                     </span>
                 </div>
             </div>
@@ -652,216 +676,258 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Dados de exemplo para demonstração
-        const sampleData = {
-            totalReagents: 142,
-            monthInputs: 28,
-            monthOutputs: 35,
-            lowStock: 7,
-            lowStockItems: [
-                { reagent: 'Ácido Sulfúrico', category: 'Ácidos', current: '120 mL', minimum: '200 mL', status: 'Crítico' },
-                { reagent: 'Hidróxido de Sódio', category: 'Bases', current: '150 g', minimum: '300 g', status: 'Atenção' },
-                { reagent: 'Fenolftaleína', category: 'Indicadores', current: '25 mL', minimum: '50 mL', status: 'Crítico' }
-            ],
+       // Variáveis globais para os gráficos
+let movementChart = null;
+let categoryChart = null;
+
+// Função para carregar dados dos gráficos
+async function loadChartData() {
+    try {
+        // Carregar dados de movimentação
+        const movementResponse = await fetch('/api/relatorios/movimentacao-mensal');
+        const movementData = await movementResponse.json();
+
+        // Carregar dados de categorias
+        const categoryResponse = await fetch('/api/relatorios/distribuicao-categorias');
+        const categoryData = await categoryResponse.json();
+
+        return {
+            movementData: movementData,
+            categoryData: categoryData
+        };
+    } catch (error) {
+        console.error('Erro ao carregar dados dos gráficos:', error);
+        return {
             movementData: {
                 labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
-                inputs: [12, 19, 15, 17, 14, 18, 16, 21, 19, 23, 25, 28],
-                outputs: [8, 12, 10, 14, 16, 20, 18, 22, 25, 28, 30, 35]
+                inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                outputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             },
             categoryData: {
-                labels: ['Ácidos', 'Bases', 'Solventes', 'Indicadores', 'Outros'],
-                values: [30, 25, 20, 15, 10],
-                colors: ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#9CA3AF']
+                labels: ['Sem dados'],
+                values: [100],
+                colors: ['#9CA3AF']
             }
         };
+    }
+}
 
-        // Função para exibir notificações
-        function showToast(message, type = 'success') {
-            const toastContainer = document.querySelector('.toast-container');
-            const toastId = 'toast-' + Date.now();
-            
-            const toast = document.createElement('div');
-            toast.className = `toast align-items-center text-bg-${type} border-0`;
-            toast.id = toastId;
-            toast.setAttribute('role', 'alert');
-            toast.setAttribute('aria-live', 'assertive');
-            toast.setAttribute('aria-atomic', 'true');
-            
-            toast.innerHTML = `
-                <div class="d-flex">
-                    <div class="toast-body">
-                        ${message}
-                    </div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-            `;
-            
-            toastContainer.appendChild(toast);
-            
-            const bsToast = new bootstrap.Toast(toast, {
-                delay: 5000
-            });
-            bsToast.show();
-            
-            // Remover o toast do DOM após ser escondido
-            toast.addEventListener('hidden.bs.toast', () => {
-                toast.remove();
-            });
-        }
+// Função para inicializar os gráficos
+async function initCharts() {
+    const chartData = await loadChartData();
 
-        // Função para carregar estatísticas
-        function loadStatistics() {
-            try {
-                // Atualizar os contadores
-                document.getElementById('total-reagents').textContent = sampleData.totalReagents;
-                document.getElementById('month-inputs').textContent = sampleData.monthInputs;
-                document.getElementById('month-outputs').textContent = sampleData.monthOutputs;
-                document.getElementById('low-stock').textContent = sampleData.lowStock;
-                
-                // Atualizar a tabela de itens com estoque crítico
-                const lowStockItems = document.getElementById('low-stock-items');
-                lowStockItems.innerHTML = '';
-                
-                sampleData.lowStockItems.forEach(item => {
-                    const statusClass = item.status === 'Crítico' ? 'bg-danger' : 'bg-warning';
-                    const row = document.createElement('tr');
-                    row.className = 'border-b';
-                    
-                    row.innerHTML = `
-                        <td class="px-6 py-4 whitespace-nowrap">${item.reagent}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">${item.category}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">${item.current}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">${item.minimum}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 py-1 text-xs font-semibold rounded-full ${statusClass} text-white">
-                                ${item.status}
-                            </span>
-                        </td>
-                    `;
-                    
-                    lowStockItems.appendChild(row);
-                });
-            } catch (error) {
-                console.error('Erro ao carregar estatísticas:', error);
-            }
-        }
+    // Destruir gráficos existentes
+    if (movementChart) {
+        movementChart.destroy();
+    }
+    if (categoryChart) {
+        categoryChart.destroy();
+    }
 
-        // Função para inicializar os gráficos
-        function initCharts() {
-            // Gráfico de Movimentação
-            const movementCtx = document.getElementById('movementChart').getContext('2d');
-            const movementChart = new Chart(movementCtx, {
-                type: 'line',
-                data: {
-                    labels: sampleData.movementData.labels,
-                    datasets: [
-                        {
-                            label: 'Entradas',
-                            data: sampleData.movementData.inputs,
-                            borderColor: '#10B981',
-                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                            tension: 0.3,
-                            fill: true
-                        },
-                        {
-                            label: 'Saídas',
-                            data: sampleData.movementData.outputs,
-                            borderColor: '#EF4444',
-                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                            tension: 0.3,
-                            fill: true
-                        }
-                    ]
+    // Gráfico de Movimentação
+    const movementCtx = document.getElementById('movementChart').getContext('2d');
+    movementChart = new Chart(movementCtx, {
+        type: 'line',
+        data: {
+            labels: chartData.movementData.labels,
+            datasets: [
+                {
+                    label: 'Entradas',
+                    data: chartData.movementData.inputs,
+                    borderColor: '#10B981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    tension: 0.3,
+                    fill: true,
+                    borderWidth: 2
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        }
+                {
+                    label: 'Saídas',
+                    data: chartData.movementData.outputs,
+                    borderColor: '#EF4444',
+                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                    tension: 0.3,
+                    fill: true,
+                    borderWidth: 2
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Movimentação Mensal - ' + new Date().getFullYear()
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Quantidade de Movimentações'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Meses'
                     }
                 }
-            });
-            
-            // Gráfico de Categorias
-            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
-            const categoryChart = new Chart(categoryCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: sampleData.categoryData.labels,
-                    datasets: [{
-                        data: sampleData.categoryData.values,
-                        backgroundColor: sampleData.categoryData.colors,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'right',
-                        }
-                    }
-                }
-            });
-        }
-
-        // Envio do formulário de filtros
-        document.getElementById('report-filter-form').addEventListener('submit', async function(event) {
-            event.preventDefault();
-            
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData.entries());
-            
-            try {
-                // Simular uma requisição de filtro
-                showToast('Filtros aplicados com sucesso!');
-                
-                // Recarregar os dados com os filtros aplicados
-                loadStatistics();
-                initCharts();
-            } catch (error) {
-                console.error('Erro ao aplicar filtros:', error);
-                showToast('Erro ao aplicar filtros. Tente novamente.', 'danger');
             }
-        });
-        
-        // Botões de exportação
-        document.getElementById('export-pdf').addEventListener('click', function() {
-            showToast('Relatório PDF gerado com sucesso!');
-        });
-        
-        document.getElementById('export-excel').addEventListener('click', function() {
-            showToast('Planilha Excel gerada com sucesso!');
-        });
-        
-        document.getElementById('export-csv').addEventListener('click', function() {
-            showToast('Arquivo CSV gerado com sucesso!');
-        });
-        
-        document.getElementById('export-print').addEventListener('click', function() {
-            window.print();
-        });
-        
-        // Botões de detalhes
-        document.getElementById('view-movement-details').addEventListener('click', function() {
-            window.location.href = '/relatorios/movimentacao';
-        });
-        
-        document.getElementById('view-category-details').addEventListener('click', function() {
-            window.location.href = '/relatorios/categorias';
-        });
-        
-        document.getElementById('view-all-low-stock').addEventListener('click', function() {
-            window.location.href = '/relatorios/estoque-baixo';
-        });
+        }
+    });
+    
+    // Gráfico de Categorias
+    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+    categoryChart = new Chart(categoryCtx, {
+        type: 'doughnut',
+        data: {
+            labels: chartData.categoryData.labels,
+            datasets: [{
+                data: chartData.categoryData.values,
+                backgroundColor: chartData.categoryData.colors,
+                borderWidth: 2,
+                borderColor: '#ffffff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                },
+                title: {
+                    display: true,
+                    text: 'Distribuição por Categoria'
+                }
+            }
+        }
+    });
+}
 
-        // Carregar dados iniciais
-        document.addEventListener('DOMContentLoaded', function() {
-            loadStatistics();
-            initCharts();
-        });
+// Função para exibir notificações
+function showToast(message, type = 'success') {
+    // Criar elemento de toast simples
+    const toast = document.createElement('div');
+    toast.className = `alert alert-${type === 'success' ? 'success' : 'danger'} mb-3`;
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 300px;
+    `;
+    toast.innerHTML = `
+        <div class="d-flex align-items-center">
+            <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'} me-2"></i>
+            <span>${message}</span>
+            <button type="button" class="btn-close ms-auto" onclick="this.parentElement.parentElement.remove()"></button>
+        </div>
+    `;
+    
+    document.querySelector('.toast-container').appendChild(toast);
+    
+    // Remover automaticamente após 5 segundos
+    setTimeout(() => {
+        if (toast.parentElement) {
+            toast.remove();
+        }
+    }, 5000);
+}
+
+// Função para carregar estatísticas em tempo real
+async function loadRealTimeStats() {
+    try {
+        const response = await fetch('/api/relatorios/stats');
+        const data = await response.json();
+        
+        // Atualizar os contadores
+        document.getElementById('total-reagents').textContent = data.totalReagents;
+        document.getElementById('month-inputs').textContent = data.monthInputs;
+        document.getElementById('month-outputs').textContent = data.monthOutputs;
+        document.getElementById('low-stock').textContent = data.lowStock;
+        
+        // Atualizar a data da última atualização
+        document.getElementById('last-update').textContent = `Atualizado em ${new Date().toLocaleString('pt-BR')}`;
+        
+    } catch (error) {
+        console.error('Erro ao carregar estatísticas em tempo real:', error);
+    }
+}
+
+// Envio do formulário de filtros
+document.getElementById('report-filter-form').addEventListener('submit', async function(event) {
+    event.preventDefault();
+    
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData.entries());
+    
+    try {
+        showToast('Filtros aplicados com sucesso!');
+        
+        // Recarregar os gráficos com os filtros (implementar filtros depois)
+        await initCharts();
+    } catch (error) {
+        console.error('Erro ao aplicar filtros:', error);
+        showToast('Erro ao aplicar filtros. Tente novamente.', 'danger');
+    }
+});
+
+// Botões de exportação
+document.getElementById('export-pdf').addEventListener('click', function() {
+    showToast('Relatório PDF gerado com sucesso!');
+});
+
+document.getElementById('export-excel').addEventListener('click', function() {
+    showToast('Planilha Excel gerada com sucesso!');
+});
+
+document.getElementById('export-csv').addEventListener('click', function() {
+    showToast('Arquivo CSV gerado com sucesso!');
+});
+
+document.getElementById('export-print').addEventListener('click', function() {
+    window.print();
+});
+
+// Botões de detalhes
+document.getElementById('view-movement-details').addEventListener('click', function() {
+    window.location.href = '/relatorios/movimentacao';
+});
+
+document.getElementById('view-category-details').addEventListener('click', function() {
+    window.location.href = '/relatorios/categorias';
+});
+
+document.getElementById('view-all-low-stock').addEventListener('click', function() {
+    showToast('Redirecionando para todos os itens com baixo estoque...');
+    // window.location.href = '/relatorios/estoque-baixo';
+});
+
+// Função para debug - verificar dados recebidos
+function debugStats() {
+    console.log('Dados das estatísticas:', {
+        totalReagents: <%= stats.totalReagents || 0 %>,
+        monthInputs: <%= stats.monthInputs || 0 %>,
+        monthOutputs: <%= stats.monthOutputs || 0 %>,
+        lowStock: <%= stats.lowStock || 0 %>
+    });
+}
+
+// Carregar dados iniciais quando a página carregar
+document.addEventListener('DOMContentLoaded', async function() {
+    debugStats();
+    await loadRealTimeStats();
+    await initCharts();
+    
+    // Atualizar a cada 30 segundos
+    setInterval(loadRealTimeStats, 30000);
+});
     </script>
 </body>
 </html>

@@ -1169,8 +1169,9 @@
                                                 <button class="btn-action btn-edit" title="Editar" onclick="editarProduto(<%= produto.id_produto %>)">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
-                                                <form action="/produtos/deletar/<%= produto.id_produto %>" method="POST" style="display: inline;">
-                                                    <button type="button" class="btn-action btn-delete" title="Excluir" onclick="confirmarExclusao(this)">
+                                                <form action="/produtos/deletar/<%= produto.id_produto %>" method="POST" style="display: inline;" 
+                                                    onsubmit="return confirm('Tem certeza que deseja excluir o produto \\'<%= produto.nome %>\\'? Esta ação não pode ser desfeita.');">
+                                                    <button type="submit" class="btn-action btn-delete" title="Excluir">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </button>
                                                 </form>
