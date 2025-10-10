@@ -4,22 +4,21 @@
     <%- include('./partials/head'); %>
     <style>
         :root {
-            --primary: #000000;
-            --secondary: #000000;
-            --success: #000000;
-            --warning: #3b3b3b;
-            --info: #353535;
+            --primary: #2d3748;
+            --secondary: #2d3748;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #e74c3c;
+            --info: #17a2b8;
             --light: #f8f9fa;
             --dark: #212529;
             --gray: #6c757d;
-            --light-gray: #e9ecef;
         }
         
         body {
             background-color: #f5f7fb;
             color: #333;
             min-height: 100vh;
-            font-family: 'Segoe UI', system-ui, sans-serif;
         }
         
         .main-container {
@@ -33,209 +32,291 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #e2e8f0;
         }
         
         .section-title {
             font-size: 1.75rem;
-            font-weight: 600;
+            font-weight: 700;
             color: #2d3748;
-        }
-        
-        .user-info {
-            font-size: 0.9rem;
-            color: #6c757d;
         }
         
         .card {
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             overflow: hidden;
-            margin-bottom: 1.5rem;
-            border: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
         }
         
         .card-header {
-            padding: 1rem 1.5rem;
+            padding: 1.25rem 1.5rem;
             border-bottom: 1px solid #e2e8f0;
-            background-color: #f8f9fa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
         }
         
         .card-title {
-            font-size: 1.1rem;
+            font-size: 1.25rem;
             font-weight: 600;
             color: #2d3748;
-            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         
         .card-body {
             padding: 1.5rem;
         }
         
-        .btn {
-            padding: 0.6rem 1rem;
-            border-radius: 6px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: 1px solid transparent;
-        }
-        
-        .btn-primary {
-            background-color: #000;
-            color: white;
-            border-color: #000;
-        }
-        
-        .btn-primary:hover {
-            background-color: #333;
-            border-color: #333;
-        }
-        
-        .btn-outline-secondary {
-            background-color: white;
-            color: #6c757d;
-            border-color: #d1d3e2;
-        }
-        
-        .btn-outline-secondary:hover {
-            background-color: #f8f9fa;
-            color: #495057;
-        }
-        
-        .form-control, .form-select {
-            padding: 0.6rem 0.8rem;
-            border-radius: 6px;
-            border: 1px solid #d1d3e2;
-            width: 100%;
+        .back-btn {
+            background: transparent;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 0.6rem 1.2rem;
             font-size: 0.9rem;
+            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
         }
         
-        .form-control:focus, .form-select:focus {
-            border-color: #000;
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+        .back-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
         }
+        
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        .text-success { color: var(--success); }
+        .text-danger { color: var(--danger); }
+        .text-primary { color: var(--primary); }
+        .text-info { color: var(--info); }
         
         .table-responsive {
-            border-radius: 6px;
-            overflow: hidden;
+            overflow-x: auto;
         }
         
-        .table {
+        .data-table {
             width: 100%;
-            margin-bottom: 0;
             border-collapse: collapse;
         }
         
-        .table thead th {
-            background-color: #f8f9fa;
-            padding: 0.8rem 1rem;
+        .data-table th,
+        .data-table td {
+            padding: 0.75rem;
             text-align: left;
-            font-weight: 600;
-            color: #495057;
-            border-bottom: 2px solid #e2e8f0;
-        }
-        
-        .table tbody tr {
             border-bottom: 1px solid #e2e8f0;
         }
         
-        .table tbody tr:hover {
+        .data-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .data-table tr:hover {
             background-color: #f8f9fa;
         }
         
-        .table tbody td {
-            padding: 0.8rem 1rem;
-            vertical-align: middle;
+        .badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
         }
         
-        .badge {
+        .badge-success { background: rgba(40, 167, 69, 0.15); color: var(--success); }
+        .badge-danger { background: rgba(231, 76, 60, 0.15); color: var(--danger); }
+        
+        .filter-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .form-control, .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d3e2;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .search-input {
+            position: relative;
+        }
+        
+        .search-input .form-control {
+            padding-left: 2.5rem;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
-            padding: 0.3rem 0.6rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            gap: 0.3rem;
+            gap: 0.5rem;
         }
         
-        .badge-entrada {
-            background-color: #e8f5e8;
-            color: #2e7d32;
-        }
-        
-        .badge-saida {
-            background-color: #ffeaea;
-            color: #c62828;
-        }
-        
-        .movement-icon {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-        }
-        
-        .movement-in {
-            background-color: #4caf50;
+        .btn-primary {
+            background: var(--primary);
             color: white;
         }
         
-        .movement-out {
-            background-color: #f44336;
+        .btn-primary:hover {
+            background: #2c5282;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: var(--gray);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .export-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .export-btn {
+            background: transparent;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .export-btn:hover {
+            background: var(--primary);
             color: white;
         }
         
         .pagination {
             display: flex;
-            gap: 0.3rem;
-            margin: 0;
-            padding: 0;
-            list-style: none;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
         }
         
-        .page-item .page-link {
-            padding: 0.4rem 0.7rem;
-            border: 1px solid #d1d3e2;
+        .page-btn {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #dee2e6;
+            background: white;
             border-radius: 4px;
-            color: #495057;
-            text-decoration: none;
-            background-color: white;
-            transition: all 0.2s ease;
+            cursor: pointer;
         }
         
-        .page-item.active .page-link {
-            background-color: #000;
-            border-color: #000;
+        .page-btn.active {
+            background: var(--primary);
             color: white;
+            border-color: var(--primary);
         }
         
-        .page-item .page-link:hover {
-            background-color: #f8f9fa;
+        .page-btn:hover:not(.active) {
+            background: #f8f9fa;
         }
         
-        .stats-info {
-            font-size: 0.8rem;
-            color: #6c757d;
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray);
         }
         
-        .input-group {
-            display: flex;
+        .reagent-summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
         }
         
-        .input-group .form-control {
-            border-radius: 6px 0 0 6px;
+        .reagent-summary h4 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.25rem;
         }
         
-        .input-group .btn {
-            border-radius: 0 6px 6px 0;
-            border-left: none;
+        .reagent-summary p {
+            margin: 0;
+            opacity: 0.9;
         }
         
         @media (max-width: 768px) {
@@ -245,17 +326,24 @@
             
             .section-header {
                 flex-direction: column;
-                align-items: flex-start;
                 gap: 1rem;
+                align-items: flex-start;
             }
             
-            .card-body {
-                padding: 1rem;
+            .stats-grid {
+                grid-template-columns: 1fr;
             }
             
-            .table thead th,
-            .table tbody td {
-                padding: 0.6rem 0.8rem;
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-container {
+                height: 300px;
+            }
+            
+            .export-buttons {
+                flex-wrap: wrap;
             }
         }
     </style>
@@ -269,353 +357,489 @@
             <!-- Header da Página -->
             <div class="section-header">
                 <h1 class="section-title">
-                    <i class="fas fa-exchange-alt mr-2"></i>
-                    Todas as Movimentações
+                    <i class="fas fa-chart-bar text-primary mr-2"></i>
+                    Detalhes da Movimentação
                 </h1>
-                <div class="user-info">
-                    <i class="fas fa-user mr-1"></i>
-                    Logado como: <strong><%= user.name %></strong>
+                <a href="/relatorios" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Voltar aos Relatórios
+                </a>
+            </div>
+            
+            <!-- Filtros Avançados -->
+            <div class="filter-section">
+                <h3 class="card-title mb-3">
+                    <i class="fas fa-filter text-primary"></i> Filtros de Pesquisa
+                </h3>
+                <form id="filter-form">
+                    <div class="filter-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="year">Ano</label>
+                            <select class="form-select" id="year" name="year">
+                                <option value="2024">2024</option>
+                                <option value="2025" selected>2025</option>
+                                <option value="2026">2026</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="month">Mês</label>
+                            <select class="form-select" id="month" name="month">
+                                <option value="">Todos os meses</option>
+                                <option value="1">Janeiro</option>
+                                <option value="2">Fevereiro</option>
+                                <option value="3">Março</option>
+                                <option value="4">Abril</option>
+                                <option value="5">Maio</option>
+                                <option value="6">Junho</option>
+                                <option value="7">Julho</option>
+                                <option value="8">Agosto</option>
+                                <option value="9">Setembro</option>
+                                <option value="10">Outubro</option>
+                                <option value="11">Novembro</option>
+                                <option value="12">Dezembro</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="type">Tipo</label>
+                            <select class="form-select" id="type" name="type">
+                                <option value="">Todos os tipos</option>
+                                <option value="entrada">Entradas</option>
+                                <option value="saida">Saídas</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="reagent">Reagente</label>
+                            <div class="search-input">
+                                <i class="fas fa-search search-icon"></i>
+                                <input type="text" class="form-control" id="reagent" name="reagent" 
+                                       placeholder="Digite o nome do reagente...">
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Pesquisar
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="clear-filters">
+                            <i class="fas fa-times"></i> Limpar Filtros
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Resumo do Reagente (aparece quando pesquisar por reagente específico) -->
+            <div id="reagent-summary" class="reagent-summary" style="display: none;">
+                <h4 id="reagent-name"></h4>
+                <p id="reagent-stats"></p>
+            </div>
+            
+            <!-- Estatísticas Rápidas -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value text-primary" id="total-movements">0</div>
+                    <div class="stat-label">Total de Movimentações</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value text-success" id="total-inputs">0</div>
+                    <div class="stat-label">Total de Entradas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value text-danger" id="total-outputs">0</div>
+                    <div class="stat-label">Total de Saídas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value text-info" id="avg-daily">0</div>
+                    <div class="stat-label">Média Diária</div>
                 </div>
             </div>
-
-            <!-- Card Principal -->
+            
+            <!-- Gráfico Detalhado -->
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-title">
-                        <i class="fas fa-list mr-2"></i>
+                        <i class="fas fa-chart-line text-primary"></i>
+                        Movimentação Mensal
+                    </h2>
+                    <div class="export-buttons">
+                        <button class="export-btn" id="export-chart-png">
+                            <i class="fas fa-download"></i> PNG
+                        </button>
+                        <button class="export-btn" id="export-chart-pdf">
+                            <i class="fas fa-file-pdf"></i> PDF
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="detailedMovementChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tabela de Movimentações -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-table text-primary"></i>
                         Histórico de Movimentações
                     </h2>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <span class="stats-info" id="table-info">Mostrando 0 registros</span>
+                        <button class="export-btn" id="export-table-csv">
+                            <i class="fas fa-file-csv"></i> CSV
+                        </button>
+                    </div>
                 </div>
-                
                 <div class="card-body">
-                    <!-- Barra de Ferramentas -->
-                    <div class="row mb-4">
-                        <div class="col-md-4 mb-3">
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="searchMovements" placeholder="Buscar por reagente, responsável...">
-                                <button class="btn btn-outline-secondary" type="button" id="searchBtn">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <select class="form-select" id="typeFilter">
-                                <option value="all">Todos os tipos</option>
-                                <option value="entrada">Apenas entradas</option>
-                                <option value="saida">Apenas saídas</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <button class="btn btn-outline-secondary w-100" id="refreshBtn">
-                                <i class="fas fa-sync-alt mr-2"></i> Atualizar
-                            </button>
-                        </div>
-                        <div class="col-md-2 mb-3">
-                            <button class="btn btn-primary w-100" id="exportData">
-                                <i class="fas fa-download mr-2"></i>Exportar
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Informações de atualização -->
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div class="stats-info">
-                            <i class="fas fa-history mr-1"></i>
-                            <span id="last-update">Atualizado às <span id="update-time"></span></span>
-                        </div>
-                        <div class="text-muted small" id="movementsTotal">Carregando...</div>
-                    </div>
-
-                    <!-- Tabela de Movimentações -->
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>Data/Hora</th>
-                                    <th>Tipo</th>
+                                    <th>Data</th>
                                     <th>Reagente</th>
+                                    <th>Tipo</th>
                                     <th>Quantidade</th>
                                     <th>Responsável</th>
-                                    <th>Projeto/Fornecedor</th>
+                                    <th>Projeto</th>
+                                    <th>Observações</th>
                                 </tr>
                             </thead>
-                            <tbody id="movementsTable">
+                            <tbody id="movements-table">
                                 <tr>
-                                    <td colspan="6" class="text-center text-muted py-4">
-                                        <div class="loading">
-                                            <i class="fas fa-spinner fa-spin loading-spinner mr-2"></i>
-                                            Carregando movimentações...
-                                        </div>
+                                    <td colspan="7" class="loading">
+                                        <i class="fas fa-spinner fa-spin"></i> Carregando dados...
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-
+                    
                     <!-- Paginação -->
-                    <div class="d-flex justify-content-center mt-4">
-                        <nav>
-                            <ul class="pagination" id="movementsPagination">
-                                <!-- Paginação será gerada via JavaScript -->
-                            </ul>
-                        </nav>
+                    <div class="pagination" id="pagination">
+                        <!-- Paginação será gerada via JavaScript -->
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Container para Notificações -->
-    <div class="toast-container"></div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Variáveis globais
+        let detailedChart = null;
+        let currentYear = new Date().getFullYear();
         let currentPage = 1;
-        const movementsPerPage = 15;
-        let currentTypeFilter = 'all';
-        let currentSearchTerm = '';
+        const itemsPerPage = 15;
+        let totalItems = 0;
 
-        // Função para exibir notificações
-        function showToast(message, type = 'info') {
-            const toastContainer = document.querySelector('.toast-container');
-            const toastId = 'toast-' + Date.now();
-            
-            const toast = document.createElement('div');
-            toast.className = `toast align-items-center text-bg-${type} border-0`;
-            toast.id = toastId;
-            toast.setAttribute('role', 'alert');
-            toast.setAttribute('aria-live', 'assertive');
-            toast.setAttribute('aria-atomic', 'true');
-            
-            toast.innerHTML = `
-                <div class="d-flex">
-                    <div class="toast-body">
-                        <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'} me-2"></i>
-                        ${message}
-                    </div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-            `;
-            
-            toastContainer.appendChild(toast);
-            
-            const bsToast = new bootstrap.Toast(toast, {
-                delay: 4000
-            });
-            bsToast.show();
-            
-            toast.addEventListener('hidden.bs.toast', () => {
-                toast.remove();
-            });
+        // Função para carregar dados detalhados
+        async function loadDetailedData(filters = {}) {
+            try {
+                const params = new URLSearchParams(filters);
+                const response = await fetch(`/api/relatorios/movimentacao-detalhada?${params}`);
+                return await response.json();
+            } catch (error) {
+                console.error('Erro ao carregar dados detalhados:', error);
+                return null;
+            }
         }
 
-        // Função para carregar movimentações
-        async function loadMovements(page = 1) {
+        // Função para carregar movimentações com paginação
+        async function loadMovements(filters = {}, page = 1) {
             try {
-                showLoading(true);
-                
                 const params = new URLSearchParams({
+                    ...filters,
                     page: page,
-                    limit: movementsPerPage,
-                    type: currentTypeFilter,
-                    search: currentSearchTerm
+                    limit: itemsPerPage
                 });
-
-                const response = await fetch(`/api/all-movements?${params}`);
-                if (!response.ok) throw new Error('Erro ao carregar movimentações');
-                
-                const result = await response.json();
-                
-                displayMovementsTable(result.data);
-                updateMovementsPagination(page, result.totalPages);
-                document.getElementById('movementsTotal').textContent = `${result.total} registros`;
-                document.getElementById('update-time').textContent = new Date().toLocaleTimeString('pt-BR');
-                
+                const response = await fetch(`/api/relatorios/movimentacoes?${params}`);
+                return await response.json();
             } catch (error) {
                 console.error('Erro ao carregar movimentações:', error);
-                document.getElementById('movementsTable').innerHTML = `
-                    <tr>
-                        <td colspan="6" class="text-center text-danger py-4">
-                            <i class="fas fa-exclamation-triangle mr-2"></i>
-                            Erro ao carregar movimentações
-                        </td>
-                    </tr>
-                `;
-            } finally {
-                showLoading(false);
+                return { data: [], total: 0, totalPages: 0 };
             }
         }
 
-        // Função para exibir dados na tabela
-        function displayMovementsTable(data) {
-            const tableBody = document.getElementById('movementsTable');
+        // Função para carregar estatísticas do reagente
+        async function loadReagentStats(reagentName) {
+            try {
+                const response = await fetch(`/api/relatorios/estatisticas-reagente?reagent=${encodeURIComponent(reagentName)}`);
+                return await response.json();
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas do reagente:', error);
+                return null;
+            }
+        }
+
+        // Função para atualizar estatísticas
+        function updateStats(data) {
+            if (!data) return;
+
+            document.getElementById('total-movements').textContent = data.totalMovements || 0;
+            document.getElementById('total-inputs').textContent = data.totalInputs || 0;
+            document.getElementById('total-outputs').textContent = data.totalOutputs || 0;
+            document.getElementById('avg-daily').textContent = data.avgDaily || 0;
+        }
+
+        // Função para mostrar/ocultar resumo do reagente
+        async function updateReagentSummary(reagentName) {
+            const summaryElement = document.getElementById('reagent-summary');
             
-            if (!data || data.length === 0) {
-                tableBody.innerHTML = `
+            if (!reagentName) {
+                summaryElement.style.display = 'none';
+                return;
+            }
+
+            const stats = await loadReagentStats(reagentName);
+            if (stats) {
+                document.getElementById('reagent-name').textContent = reagentName;
+                document.getElementById('reagent-stats').textContent = 
+                    `${stats.totalMovements} movimentações • ${stats.totalInputs} entradas • ${stats.totalOutputs} saídas`;
+                summaryElement.style.display = 'block';
+            } else {
+                summaryElement.style.display = 'none';
+            }
+        }
+
+        // Função para inicializar gráfico detalhado
+        function initDetailedChart(data) {
+            const ctx = document.getElementById('detailedMovementChart').getContext('2d');
+            
+            if (detailedChart) {
+                detailedChart.destroy();
+            }
+
+            detailedChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels || [],
+                    datasets: [
+                        {
+                            label: 'Entradas',
+                            data: data.inputs || [],
+                            backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                            borderColor: '#10B981',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Saídas',
+                            data: data.outputs || [],
+                            backgroundColor: 'rgba(239, 68, 68, 0.7)',
+                            borderColor: '#EF4444',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: `Movimentação Mensal - ${currentYear}`
+                        },
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Quantidade de Movimentações'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Meses'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Função para atualizar tabela
+        function updateTable(movements, total, currentPage, totalPages) {
+            const tbody = document.getElementById('movements-table');
+            const tableInfo = document.getElementById('table-info');
+            
+            totalItems = total;
+            tableInfo.textContent = `Mostrando ${movements.length} de ${total} registros`;
+
+            if (movements.length === 0) {
+                tbody.innerHTML = `
                     <tr>
-                        <td colspan="6" class="text-center text-muted py-4">
-                            <i class="fas fa-inbox mr-2"></i>
-                            Nenhuma movimentação encontrada
+                        <td colspan="7" class="loading">
+                            <i class="fas fa-search"></i> Nenhuma movimentação encontrada
                         </td>
                     </tr>
                 `;
                 return;
             }
 
-            tableBody.innerHTML = data.map(movement => {
-                const date = new Date(movement.date);
-                const formattedDate = date.toLocaleDateString('pt-BR');
-                const formattedTime = date.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+            let html = '';
+            movements.forEach(movement => {
+                const date = new Date(movement.data_movimentacao).toLocaleDateString('pt-BR');
+                const time = new Date(movement.data_movimentacao).toLocaleTimeString('pt-BR');
                 
-                const isEntrada = movement.type === 'entrada';
-                const badgeClass = isEntrada ? 'badge-entrada' : 'badge-saida';
-                const badgeText = isEntrada ? 'Entrada' : 'Saída';
-                const iconClass = isEntrada ? 'fa-arrow-down' : 'fa-arrow-up';
-                const iconContainerClass = isEntrada ? 'movement-in' : 'movement-out';
-                
-                // Extrair fornecedor ou projeto
-                let projectInfo = movement.project || '';
-                if (isEntrada && projectInfo.includes('Fornecedor:')) {
-                    projectInfo = projectInfo.replace('Fornecedor:', '').trim();
-                }
-                
-                return `
+                html += `
                     <tr>
                         <td>
-                            <div class="small">${formattedDate}</div>
-                            <div class="text-muted smaller">${formattedTime}</div>
+                            <div>${date}</div>
+                            <small class="text-muted">${time}</small>
                         </td>
                         <td>
-                            <span class="badge ${badgeClass}">
-                                <div class="movement-icon ${iconContainerClass}">
-                                    <i class="fas ${iconClass}"></i>
-                                </div>
-                                ${badgeText}
+                            <strong>${movement.nome}</strong>
+                            ${movement.tipo ? `<br><small class="text-muted">${movement.tipo}</small>` : ''}
+                        </td>
+                        <td>
+                            <span class="badge ${movement.tipo === 'entrada' ? 'badge-success' : 'badge-danger'}">
+                                ${movement.tipo === 'entrada' ? 'Entrada' : 'Saída'}
                             </span>
                         </td>
                         <td>
-                            <strong>${movement.reagent}</strong>
-                            <div class="text-muted small">${movement.unit}</div>
+                            <strong>${movement.quantidade}</strong>
+                            <div class="text-muted">${movement.unidade_medida}</div>
                         </td>
-                        <td>
-                            <span class="fw-bold ${isEntrada ? 'text-success' : 'text-danger'}">
-                                ${movement.quantity}
-                            </span>
-                        </td>
-                        <td>${movement.responsible}</td>
-                        <td>
-                            <small class="text-muted">${projectInfo || '-'}</small>
-                        </td>
+                        <td>${movement.responsavel}</td>
+                        <td>${movement.projeto_experimento || '-'}</td>
+                        <td>${movement.observacoes || '-'}</td>
                     </tr>
                 `;
-            }).join('');
+            });
+            
+            tbody.innerHTML = html;
+            updatePagination(currentPage, totalPages);
         }
 
-        // Função para atualizar a paginação
-        function updateMovementsPagination(currentPage, totalPages) {
-            const pagination = document.getElementById('movementsPagination');
+        // Função para atualizar paginação
+        function updatePagination(currentPage, totalPages) {
+            const paginationElement = document.getElementById('pagination');
             
             if (totalPages <= 1) {
-                pagination.innerHTML = '';
+                paginationElement.innerHTML = '';
                 return;
             }
 
-            let paginationHTML = '';
+            let html = '';
             
             // Botão anterior
-            if (currentPage > 1) {
-                paginationHTML += `
-                    <li class="page-item">
-                        <button class="page-link" onclick="changePage(${currentPage - 1})">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                    </li>
-                `;
-            }
-
+            html += `<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} 
+                     onclick="changePage(${currentPage - 1})">
+                     <i class="fas fa-chevron-left"></i></button>`;
+            
             // Páginas
             for (let i = 1; i <= totalPages; i++) {
                 if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
-                    paginationHTML += `
-                        <li class="page-item ${i === currentPage ? 'active' : ''}">
-                            <button class="page-link" onclick="changePage(${i})">${i}</button>
-                        </li>
-                    `;
+                    html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" 
+                             onclick="changePage(${i})">${i}</button>`;
                 } else if (i === currentPage - 2 || i === currentPage + 2) {
-                    paginationHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+                    html += `<span class="page-btn" style="border: none; background: transparent;">...</span>`;
                 }
             }
-
+            
             // Botão próximo
-            if (currentPage < totalPages) {
-                paginationHTML += `
-                    <li class="page-item">
-                        <button class="page-link" onclick="changePage(${currentPage + 1})">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                    </li>
-                `;
-            }
-
-            pagination.innerHTML = paginationHTML;
+            html += `<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} 
+                     onclick="changePage(${currentPage + 1})">
+                     <i class="fas fa-chevron-right"></i></button>`;
+            
+            paginationElement.innerHTML = html;
         }
 
         // Função para mudar de página
-        function changePage(page) {
+        async function changePage(page) {
+            if (page < 1 || page > Math.ceil(totalItems / itemsPerPage)) return;
+            
             currentPage = page;
-            loadMovements(page);
+            const formData = new FormData(document.getElementById('filter-form'));
+            const filters = getFiltersFromForm();
+            
+            const movementsData = await loadMovements(filters, page);
+            updateTable(movementsData.data, movementsData.total, page, movementsData.totalPages);
         }
 
-        // Função para mostrar/ocultar loading
-        function showLoading(show) {
-            const tableBody = document.getElementById('movementsTable');
-            if (show) {
-                tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="6" class="text-center text-muted py-4">
-                            <i class="fas fa-spinner fa-spin mr-2"></i>
-                            Carregando movimentações...
-                        </td>
-                    </tr>
-                `;
-            }
+        // Função para obter filtros do formulário
+        function getFiltersFromForm() {
+            const formData = new FormData(document.getElementById('filter-form'));
+            return {
+                year: formData.get('year') || currentYear,
+                month: formData.get('month') || '',
+                type: formData.get('type') || '',
+                reagent: formData.get('reagent') || ''
+            };
         }
 
         // Função para aplicar filtros
-        function applyFilters() {
-            currentPage = 1;
-            currentTypeFilter = document.getElementById('typeFilter').value;
-            currentSearchTerm = document.getElementById('searchMovements').value;
-            loadMovements(1);
-        }
+        async function applyFilters(page = 1) {
+            const filters = getFiltersFromForm();
+            
+            // Atualizar ano atual
+            currentYear = filters.year;
+            currentPage = page;
 
-        // Função para exportar dados
-        function exportData() {
-            showToast('Exportação de dados - Funcionalidade em desenvolvimento', 'info');
+            // Mostrar loading
+            document.getElementById('movements-table').innerHTML = `
+                <tr>
+                    <td colspan="7" class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Carregando dados...
+                    </td>
+                </tr>
+            `;
+
+            // Carregar dados em paralelo
+            const [detailedData, movementsData] = await Promise.all([
+                loadDetailedData(filters),
+                loadMovements(filters, page)
+            ]);
+
+            if (detailedData) {
+                updateStats(detailedData);
+                initDetailedChart(detailedData);
+            }
+
+            updateTable(movementsData.data, movementsData.total, page, movementsData.totalPages);
+            
+            // Atualizar resumo do reagente se houver pesquisa por reagente
+            if (filters.reagent) {
+                await updateReagentSummary(filters.reagent);
+            } else {
+                document.getElementById('reagent-summary').style.display = 'none';
+            }
         }
 
         // Event Listeners
-        document.getElementById('typeFilter').addEventListener('change', applyFilters);
-        document.getElementById('searchBtn').addEventListener('click', applyFilters);
-        document.getElementById('searchMovements').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') applyFilters();
+        document.getElementById('filter-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await applyFilters(1);
         });
-        document.getElementById('refreshBtn').addEventListener('click', () => {
-            applyFilters();
-            showToast('Dados atualizados!', 'success');
+
+        document.getElementById('clear-filters').addEventListener('click', () => {
+            document.getElementById('filter-form').reset();
+            document.getElementById('year').value = currentYear;
+            applyFilters(1);
         });
-        document.getElementById('exportData').addEventListener('click', exportData);
+
+        // Botões de exportação
+        document.getElementById('export-chart-png').addEventListener('click', () => {
+            if (detailedChart) {
+                const link = document.createElement('a');
+                link.download = `movimentacao-${currentYear}.png`;
+                link.href = detailedChart.toBase64Image();
+                link.click();
+            }
+        });
+
+        document.getElementById('export-table-csv').addEventListener('click', async () => {
+            const filters = getFiltersFromForm();
+            const params = new URLSearchParams({ ...filters, format: 'csv' });
+            window.open(`/api/relatorios/exportar-movimentacoes?${params}`, '_blank');
+        });
 
         // Carregar dados iniciais
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Página de movimentações carregada');
-            loadMovements(1);
-            
-            // Atualizar a cada 30 segundos
-            setInterval(() => {
-                loadMovements(currentPage);
-            }, 30000);
+        document.addEventListener('DOMContentLoaded', async () => {
+            await applyFilters(1);
         });
     </script>
 </body>
