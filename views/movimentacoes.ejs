@@ -142,6 +142,7 @@
             padding: 0.75rem;
             text-align: left;
             border-bottom: 1px solid #e2e8f0;
+            vertical-align: middle;
         }
         
         .data-table th {
@@ -319,6 +320,126 @@
             opacity: 0.9;
         }
         
+        /* BOTÕES DE AÇÃO PERFEITAMENTE ALINHADOS */
+        .actions-cell {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem;
+            width: 100%;
+            height: 100%;
+        }
+
+        .edit-btn, .delete-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border: 1px solid;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        .edit-btn {
+            border-color: #0ea5e9;
+            color: #0ea5e9;
+            background: transparent;
+        }
+
+        .edit-btn:hover {
+            background: #0ea5e9;
+            color: white;
+        }
+
+        .delete-btn {
+            border-color: #e53e3e;
+            color: #e53e3e;
+            background: transparent;
+        }
+
+        .delete-btn:hover {
+            background: #e53e3e;
+            color: white;
+        }
+
+        /* COLUNA DE AÇÕES CENTRALIZADA */
+        .data-table td:last-child {
+            width: 120px;
+            min-width: 120px;
+            text-align: center;
+            padding: 0.5rem;
+        }
+
+        .data-table td:last-child {
+            vertical-align: middle;
+        }
+
+        /* Loading no modal */
+        .modal-loading {
+            text-align: center;
+            padding: 2rem;
+            color: #6b7280;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        /* Notificação */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            z-index: 1001;
+            max-width: 400px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.success { background: #10B981; }
+        .notification.error { background: #EF4444; }
+        .notification.info { background: #3B82F6; }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
         @media (max-width: 768px) {
             .main-container {
                 padding: 1rem;
@@ -344,6 +465,11 @@
             
             .export-buttons {
                 flex-wrap: wrap;
+            }
+
+            .modal-content {
+                padding: 1rem;
+                margin: 1rem;
             }
         }
     </style>
@@ -459,14 +585,6 @@
                         <i class="fas fa-chart-line text-primary"></i>
                         Movimentação Mensal
                     </h2>
-                    <div class="export-buttons">
-                        <button class="export-btn" id="export-chart-png">
-                            <i class="fas fa-download"></i> PNG
-                        </button>
-                        <button class="export-btn" id="export-chart-pdf">
-                            <i class="fas fa-file-pdf"></i> PDF
-                        </button>
-                    </div>
                 </div>
                 <div class="card-body">
                     <div class="chart-container">
@@ -484,9 +602,6 @@
                     </h2>
                     <div style="display: flex; gap: 1rem; align-items: center;">
                         <span class="stats-info" id="table-info">Mostrando 0 registros</span>
-                        <button class="export-btn" id="export-table-csv">
-                            <i class="fas fa-file-csv"></i> CSV
-                        </button>
                     </div>
                 </div>
                 <div class="card-body">
@@ -494,24 +609,26 @@
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>Data</th>
-                                    <th>Reagente</th>
-                                    <th>Tipo</th>
-                                    <th>Quantidade</th>
-                                    <th>Responsável</th>
-                                    <th>Projeto</th>
-                                    <th>Observações</th>
+                                    <th style="width: 140px;">Data</th>
+                                    <th style="min-width: 180px;">Reagente</th>
+                                    <th style="width: 100px;">Tipo</th>
+                                    <th style="width: 120px;">Quantidade</th>
+                                    <th style="min-width: 150px;">Responsável</th>
+                                    <th style="min-width: 150px;">Projeto</th>
+                                    <th style="min-width: 200px;">Observações</th>
+                                    <th style="width: 120px; text-align: center;">Ações</th>
                                 </tr>
                             </thead>
                             <tbody id="movements-table">
                                 <tr>
-                                    <td colspan="7" class="loading">
+                                    <td colspan="8" class="loading">
                                         <i class="fas fa-spinner fa-spin"></i> Carregando dados...
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
+                    
                     
                     <!-- Paginação -->
                     <div class="pagination" id="pagination">
@@ -522,16 +639,60 @@
         </div>
     </main>
 
-    <!-- Chart.js -->
+    <!-- Modal de Confirmação de Exclusão -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                <div style="background: #fed7d7; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-exclamation-triangle" style="color: #e53e3e; font-size: 1.5rem;"></i>
+                </div>
+                <h3 style="margin: 0; color: #2d3748; font-size: 1.25rem;">Confirmar Exclusão</h3>
+            </div>
+            
+            <p id="deleteModalMessage" style="margin-bottom: 1.5rem; color: #4a5568; line-height: 1.5;">
+                Tem certeza que deseja excluir esta movimentação?
+            </p>
+            
+            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                <button id="cancelDelete" class="btn btn-secondary" style="padding: 0.6rem 1.2rem; border: 1px solid #d1d5db; background: white; color: #374151;">
+                    Cancelar
+                </button>
+                <button id="confirmDelete" class="btn btn-danger" style="padding: 0.6rem 1.2rem; background: #e53e3e; color: white; border: none; border-radius: 6px;">
+                    <i class="fas fa-trash"></i> Excluir
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Edição de Movimentação -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <div style="background: #e0f2fe; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-edit" style="color: #0ea5e9; font-size: 1.5rem;"></i>
+                </div>
+                <h3 style="margin: 0; color: #2d3748; font-size: 1.25rem;">Editar Movimentação</h3>
+            </div>
+            
+            <form id="editForm">
+                <!-- Formulário será preenchido dinamicamente -->
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        // Variáveis globais
         let detailedChart = null;
         let currentYear = new Date().getFullYear();
         let currentPage = 1;
         const itemsPerPage = 15;
         let totalItems = 0;
+        let movimentacaoToDelete = null;
+        let movimentacaoToEdit = null;
 
-        // Função para carregar dados detalhados
+        // Funções de API
         async function loadDetailedData(filters = {}) {
             try {
                 const params = new URLSearchParams(filters);
@@ -543,7 +704,6 @@
             }
         }
 
-        // Função para carregar movimentações com paginação
         async function loadMovements(filters = {}, page = 1) {
             try {
                 const params = new URLSearchParams({
@@ -552,14 +712,22 @@
                     limit: itemsPerPage
                 });
                 const response = await fetch(`/api/relatorios/movimentacoes?${params}`);
-                return await response.json();
+                const data = await response.json();
+                
+                if (data.data && data.data.length > 0) {
+                    data.data = data.data.map(item => ({
+                        ...item,
+                        id_movimentacao: item.id_movimentacao
+                    }));
+                }
+                
+                return data;
             } catch (error) {
                 console.error('Erro ao carregar movimentações:', error);
                 return { data: [], total: 0, totalPages: 0 };
             }
         }
 
-        // Função para carregar estatísticas do reagente
         async function loadReagentStats(reagentName) {
             try {
                 const response = await fetch(`/api/relatorios/estatisticas-reagente?reagent=${encodeURIComponent(reagentName)}`);
@@ -570,7 +738,8 @@
             }
         }
 
-        // Função para atualizar estatísticas
+
+        // Funções de UI
         function updateStats(data) {
             if (!data) return;
 
@@ -580,7 +749,6 @@
             document.getElementById('avg-daily').textContent = data.avgDaily || 0;
         }
 
-        // Função para mostrar/ocultar resumo do reagente
         async function updateReagentSummary(reagentName) {
             const summaryElement = document.getElementById('reagent-summary');
             
@@ -600,7 +768,6 @@
             }
         }
 
-        // Função para inicializar gráfico detalhado
         function initDetailedChart(data) {
             const ctx = document.getElementById('detailedMovementChart').getContext('2d');
             
@@ -660,61 +827,69 @@
             });
         }
 
-        // Função para atualizar tabela
         function updateTable(movements, total, currentPage, totalPages) {
-            const tbody = document.getElementById('movements-table');
-            const tableInfo = document.getElementById('table-info');
-            
-            totalItems = total;
-            tableInfo.textContent = `Mostrando ${movements.length} de ${total} registros`;
+    const tbody = document.getElementById('movements-table');
+    const tableInfo = document.getElementById('table-info');
+    
+    totalItems = total;
+    tableInfo.textContent = `Mostrando ${movements.length} de ${total} registros`;
 
-            if (movements.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="7" class="loading">
-                            <i class="fas fa-search"></i> Nenhuma movimentação encontrada
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
+    if (movements.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8" class="loading">
+                    <i class="fas fa-search"></i> Nenhuma movimentação encontrada
+                </td>
+            </tr>
+        `;
+        return;
+    }
 
-            let html = '';
-            movements.forEach(movement => {
-                const date = new Date(movement.data_movimentacao).toLocaleDateString('pt-BR');
-                const time = new Date(movement.data_movimentacao).toLocaleTimeString('pt-BR');
-                
-                html += `
-                    <tr>
-                        <td>
-                            <div>${date}</div>
-                            <small class="text-muted">${time}</small>
-                        </td>
-                        <td>
-                            <strong>${movement.nome}</strong>
-                            ${movement.tipo ? `<br><small class="text-muted">${movement.tipo}</small>` : ''}
-                        </td>
-                        <td>
-                            <span class="badge ${movement.tipo === 'entrada' ? 'badge-success' : 'badge-danger'}">
-                                ${movement.tipo === 'entrada' ? 'Entrada' : 'Saída'}
-                            </span>
-                        </td>
-                        <td>
-                            <strong>${movement.quantidade}</strong>
-                            <div class="text-muted">${movement.unidade_medida}</div>
-                        </td>
-                        <td>${movement.responsavel}</td>
-                        <td>${movement.projeto_experimento || '-'}</td>
-                        <td>${movement.observacoes || '-'}</td>
-                    </tr>
-                `;
-            });
-            
-            tbody.innerHTML = html;
-            updatePagination(currentPage, totalPages);
-        }
+    let html = '';
+    movements.forEach(movement => {
+        const date = new Date(movement.data_movimentacao).toLocaleDateString('pt-BR');
+        const time = new Date(movement.data_movimentacao).toLocaleTimeString('pt-BR');
+        
+        html += `
+            <tr>
+                <td>
+                    <div style="font-weight: 500;">${date}</div>
+                    <small style="color: #6b7280; font-size: 0.75rem;">${time}</small>
+                </td>
+                <td>
+                    <strong>${movement.nome}</strong>
+                    ${movement.categoria ? `<br><small style="color: #6b7280;">${movement.categoria}</small>` : ''}
+                </td>
+                <td>
+                    <span class="badge ${movement.tipo === 'entrada' ? 'badge-success' : 'badge-danger'}">
+                        ${movement.tipo === 'entrada' ? 'Entrada' : 'Saída'}
+                    </span>
+                </td>
+                <td>
+                    <strong>${movement.quantidade}</strong>
+                    <div style="color: #6b7280; font-size: 0.875rem;">${movement.unidade_medida}</div>
+                </td>
+                <td>${movement.responsavel}</td>
+                <td>${movement.projeto_experimento || '-'}</td>
+                <td>${movement.observacoes || '-'}</td>
 
-        // Função para atualizar paginação
+                <td>
+                    <div class="actions-cell">
+                        <button class="edit-btn" onclick="openEditModal('${movement.id_movimentacao}')" title="Editar movimentação">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="delete-btn" onclick="openDeleteModal('${movement.id_movimentacao}', {reagent: '${movement.nome.replace(/'/g, "\\'")}', quantidade: '${movement.quantidade}', unidade: '${movement.unidade_medida}'})" title="Excluir movimentação">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    });
+    
+    tbody.innerHTML = html;
+    updatePagination(currentPage, totalPages);
+}
         function updatePagination(currentPage, totalPages) {
             const paginationElement = document.getElementById('pagination');
             
@@ -748,19 +923,7 @@
             paginationElement.innerHTML = html;
         }
 
-        // Função para mudar de página
-        async function changePage(page) {
-            if (page < 1 || page > Math.ceil(totalItems / itemsPerPage)) return;
-            
-            currentPage = page;
-            const formData = new FormData(document.getElementById('filter-form'));
-            const filters = getFiltersFromForm();
-            
-            const movementsData = await loadMovements(filters, page);
-            updateTable(movementsData.data, movementsData.total, page, movementsData.totalPages);
-        }
-
-        // Função para obter filtros do formulário
+        // Funções de navegação e filtros
         function getFiltersFromForm() {
             const formData = new FormData(document.getElementById('filter-form'));
             return {
@@ -771,24 +934,20 @@
             };
         }
 
-        // Função para aplicar filtros
         async function applyFilters(page = 1) {
             const filters = getFiltersFromForm();
             
-            // Atualizar ano atual
             currentYear = filters.year;
             currentPage = page;
 
-            // Mostrar loading
             document.getElementById('movements-table').innerHTML = `
                 <tr>
-                    <td colspan="7" class="loading">
+                    <td colspan="8" class="loading">
                         <i class="fas fa-spinner fa-spin"></i> Carregando dados...
                     </td>
                 </tr>
             `;
 
-            // Carregar dados em paralelo
             const [detailedData, movementsData] = await Promise.all([
                 loadDetailedData(filters),
                 loadMovements(filters, page)
@@ -801,7 +960,6 @@
 
             updateTable(movementsData.data, movementsData.total, page, movementsData.totalPages);
             
-            // Atualizar resumo do reagente se houver pesquisa por reagente
             if (filters.reagent) {
                 await updateReagentSummary(filters.reagent);
             } else {
@@ -809,7 +967,215 @@
             }
         }
 
+        async function changePage(page) {
+            if (page < 1 || page > Math.ceil(totalItems / itemsPerPage)) return;
+            
+            currentPage = page;
+            const filters = getFiltersFromForm();
+            
+            const movementsData = await loadMovements(filters, page);
+            updateTable(movementsData.data, movementsData.total, page, movementsData.totalPages);
+        }
+
+        // Funções de exclusão
+        function openDeleteModal(movimentacaoId, movimentacaoData) {
+            movimentacaoToDelete = movimentacaoId;
+            const message = `Tem certeza que deseja excluir a movimentação de ${movimentacaoData.quantidade} ${movimentacaoData.unidade} de ${movimentacaoData.reagent}?`;
+            document.getElementById('deleteModalMessage').textContent = message;
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+            movimentacaoToDelete = null;
+        }
+
+        async function deleteMovimentacao(movimentacaoId) {
+            try {
+                const response = await fetch(`/api/movimentacoes/${movimentacaoId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showNotification(result.message, 'success');
+                    closeDeleteModal();
+                    await applyFilters(currentPage);
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error('Erro ao excluir movimentação:', error);
+                showNotification('Erro ao excluir movimentação: ' + error.message, 'error');
+            }
+        }
+
+        // Funções de edição
+        async function openEditModal(movimentacaoId) {
+            movimentacaoToEdit = movimentacaoId;
+            
+            document.getElementById('editForm').innerHTML = `
+                <div class="modal-loading">
+                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+                    <p>Carregando dados da movimentação...</p>
+                </div>
+            `;
+            
+            document.getElementById('editModal').style.display = 'flex';
+
+            try {
+                const response = await fetch(`/api/movimentacoes/${movimentacaoId}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    const movimentacao = result.data;
+                    populateEditForm(movimentacao);
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error('Erro ao carregar dados da movimentação:', error);
+                showNotification('Erro ao carregar dados: ' + error.message, 'error');
+                closeEditModal();
+            }
+        }
+
+        function populateEditForm(movimentacao) {
+            document.getElementById('editForm').innerHTML = `
+                <input type="hidden" id="editMovimentacaoId" value="${movimentacao.id_movimentacao}">
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div class="form-group">
+                        <label class="form-label" for="editProduto">Produto</label>
+                        <input type="text" class="form-control" id="editProduto" value="${movimentacao.produto_nome}" readonly style="background: #f9fafb;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="editTipo">Tipo</label>
+                        <input type="text" class="form-control" id="editTipo" value="${movimentacao.tipo === 'entrada' ? 'Entrada' : 'Saída'}" readonly style="background: #f9fafb;">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div class="form-group">
+                        <label class="form-label" for="editQuantidade">Quantidade *</label>
+                        <input type="number" class="form-control" id="editQuantidade" value="${movimentacao.quantidade}" step="0.01" min="0.01" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="editUnidade">Unidade</label>
+                        <input type="text" class="form-control" id="editUnidade" value="${movimentacao.unidade_medida}" readonly style="background: #f9fafb;">
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label class="form-label" for="editResponsavel">Responsável *</label>
+                    <input type="text" class="form-control" id="editResponsavel" value="${movimentacao.responsavel}" required>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label class="form-label" for="editProjeto">Projeto/Experimento</label>
+                    <input type="text" class="form-control" id="editProjeto" value="${movimentacao.projeto_experimento || ''}">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label class="form-label" for="editObservacoes">Observações</label>
+                    <textarea class="form-control" id="editObservacoes" rows="3">${movimentacao.observacoes || ''}</textarea>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label class="form-label" for="editData">Data da Movimentação</label>
+                    <input type="datetime-local" class="form-control" id="editData" value="${movimentacao.data_movimentacao_formatada}">
+                </div>
+
+                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+                    <button type="button" id="cancelEdit" class="btn btn-secondary" style="padding: 0.6rem 1.2rem; border: 1px solid #d1d5db; background: white; color: #374151;">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary" style="padding: 0.6rem 1.2rem; background: #0ea5e9; color: white; border: none; border-radius: 6px;">
+                        <i class="fas fa-save"></i> Salvar Alterações
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('cancelEdit').addEventListener('click', closeEditModal);
+            document.getElementById('editForm').addEventListener('submit', handleEditSubmit);
+        }
+
+        async function handleEditSubmit(e) {
+            e.preventDefault();
+            
+            const formData = {
+                quantidade: document.getElementById('editQuantidade').value,
+                responsavel: document.getElementById('editResponsavel').value,
+                projeto_experimento: document.getElementById('editProjeto').value,
+                observacoes: document.getElementById('editObservacoes').value,
+                data_movimentacao: document.getElementById('editData').value
+            };
+
+            if (!formData.quantidade || !formData.responsavel) {
+                showNotification('Quantidade e responsável são obrigatórios', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/movimentacoes/${movimentacaoToEdit}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showNotification(result.message, 'success');
+                    closeEditModal();
+                    await applyFilters(currentPage);
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error('Erro ao atualizar movimentação:', error);
+                showNotification('Erro ao atualizar movimentação: ' + error.message, 'error');
+            }
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+            movimentacaoToEdit = null;
+        }
+
+        // Funções utilitárias
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'exclamation-triangle' : 'info'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 5000);
+        }
+
         // Event Listeners
+        document.addEventListener('DOMContentLoaded', async () => {
+            await applyFilters(1);
+        });
+
         document.getElementById('filter-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             await applyFilters(1);
@@ -821,7 +1187,6 @@
             applyFilters(1);
         });
 
-        // Botões de exportação
         document.getElementById('export-chart-png').addEventListener('click', () => {
             if (detailedChart) {
                 const link = document.createElement('a');
@@ -837,10 +1202,26 @@
             window.open(`/api/relatorios/exportar-movimentacoes?${params}`, '_blank');
         });
 
-        // Carregar dados iniciais
-        document.addEventListener('DOMContentLoaded', async () => {
-            await applyFilters(1);
+        document.getElementById('cancelDelete').addEventListener('click', closeDeleteModal);
+        document.getElementById('confirmDelete').addEventListener('click', () => {
+            if (movimentacaoToDelete) {
+                deleteMovimentacao(movimentacaoToDelete);
+            }
         });
+
+        document.getElementById('deleteModal').addEventListener('click', (e) => {
+            if (e.target.id === 'deleteModal') {
+                closeDeleteModal();
+            }
+        });
+
+        document.getElementById('editModal').addEventListener('click', (e) => {
+            if (e.target.id === 'editModal') {
+                closeEditModal();
+            }
+        });
+
+        
     </script>
 </body>
 </html>

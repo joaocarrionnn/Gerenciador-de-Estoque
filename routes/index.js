@@ -1457,109 +1457,6 @@ router.get('/logout', requireAuth, (req, res) => {
     });
 });
 
-// ROTA PARA VIDRAÇARIAS
-router.get('/vidracarias', requireAuth, (req, res) => {
-    const {
-        search,
-        category,
-        status
-    } = req.query;
-
-    let query = 'SELECT * FROM vidracarias WHERE 1=1';
-    let queryParams = [];
-
-    // Filtro por pesquisa
-    if (search) {
-        query += ' AND (nome LIKE ? OR descricao LIKE ? OR material LIKE ?)';
-        const searchPattern = `%${search}%`;
-        queryParams.push(searchPattern, searchPattern, searchPattern);
-    }
-
-    // Filtro por categoria
-    if (category) {
-        query += ' AND categoria = ?';
-        queryParams.push(category);
-    }
-
-    // Filtro por status
-    if (status) {
-        switch (status) {
-            case 'available':
-                query += ' AND quantidade > 0';
-                break;
-            case 'low_stock':
-                query += ' AND quantidade > 0 AND quantidade <= estoque_minimo';
-                break;
-            case 'out_of_stock':
-                query += ' AND quantidade = 0';
-                break;
-        }
-    }
-
-    query += ' ORDER BY nome';
-
-    // Primeiro, buscar as categorias disponíveis
-    const categoriesQuery = 'SELECT DISTINCT categoria FROM vidracarias ORDER BY categoria';
-    
-    db.query(categoriesQuery, (err, categoriesResults) => {
-        if (err) {
-            console.error('Erro ao buscar categorias:', err);
-            categoriesResults = [];
-        }
-
-        // Agora buscar as vidrarias
-        db.query(query, queryParams, (err, vidracariasResults) => {
-            if (err) {
-                console.error('Erro ao buscar vidrarias:', err);
-                return res.render('vidracarias', {
-                    user: req.session.user,
-                    vidracarias: [],
-                    categories: categoriesResults || [],
-                    stats: {
-                        total_vidracarias: 0,
-                        total_estoque: 0,
-                        baixo_estoque: 0,
-                        esgotadas: 0
-                    },
-                    searchTerm: search || '',
-                    selectedCategory: category || '',
-                    status: status || '',
-                    error: 'Erro ao carregar vidrarias'
-                });
-            }
-
-            // Calcular estatísticas
-            const stats = {
-                total_vidracarias: vidracariasResults.length,
-                total_estoque: vidracariasResults.filter(v => v.quantidade > 0).length,
-                baixo_estoque: vidracariasResults.filter(v => v.quantidade > 0 && v.quantidade <= v.estoque_minimo).length,
-                esgotadas: vidracariasResults.filter(v => v.quantidade === 0).length
-            };
-
-            res.render('vidracarias', {
-                user: req.session.user,
-                vidracarias: vidracariasResults || [],
-                categories: categoriesResults || [],
-                stats: stats,
-                searchTerm: search || '',
-                selectedCategory: category || '',
-                status: status || '',
-                success: req.query.success,
-                error: req.query.error
-            });
-        });
-    });
-});
-
-
-
-
-
-
-
-
-
-
 
 // ROTA PARA RELATÓRIOS
 router.get('/relatorios', requireAuth, (req, res) => {
@@ -2004,6 +1901,414 @@ router.get('/relatorios/movimentacao', requireAuth, (req, res) => {
 });
 
 
+
+// ROTA PARA BUSCAR DADOS DE UMA MOVIMENTAÇÃO ESPECÍFICA
+router.get('/api/movimentacoes/:id', requireAuth, (req, res) => {
+    const movimentacaoId = req.params.id;
+    
+    console.log('🔍 Buscando movimentação ID:', movimentacaoId);
+
+    const query = `
+        SELECT 
+            m.id_movimentacao,
+            m.id_produto,
+            m.tipo,
+            m.quantidade,
+            m.unidade_medida,
+            m.responsavel,
+            m.projeto_experimento,
+            m.observacoes,
+            m.data_movimentacao,
+            p.nome as produto_nome,
+            p.tipo as categoria
+        FROM movimentacoes m
+        JOIN produtos p ON m.id_produto = p.id_produto
+        WHERE m.id_movimentacao = ?
+    `;
+
+    db.query(query, [movimentacaoId], (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar movimentação:', err);
+            return res.status(500).json({
+                success: false,
+                message: 'Erro ao buscar dados da movimentação'
+            });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Movimentação não encontrada'
+            });
+        }
+
+        const movimentacao = results[0];
+        
+        // Formatar a data para o input datetime-local
+        const dataMovimentacao = new Date(movimentacao.data_movimentacao);
+        const dataFormatada = dataMovimentacao.toISOString().slice(0, 16);
+
+        res.json({
+            success: true,
+            data: {
+                ...movimentacao,
+                data_movimentacao_formatada: dataFormatada
+            }
+        });
+    });
+});
+
+
+
+// ROTA PARA EXCLUIR MOVIMENTAÇÃO (CORRIGIDA PARA MYSQL2)
+router.delete('/api/movimentacoes/:id', requireAuth, (req, res) => {
+    const movimentacaoId = req.params.id;
+    
+    console.log('🗑️ Tentando excluir movimentação ID:', movimentacaoId);
+
+    // Primeiro, buscar os dados da movimentação para reverter o estoque
+    const selectQuery = `
+        SELECT 
+            m.id_movimentacao,
+            m.id_produto,
+            m.tipo,
+            m.quantidade,
+            p.nome,
+            p.quantidade as estoque_atual
+        FROM movimentacoes m
+        JOIN produtos p ON m.id_produto = p.id_produto
+        WHERE m.id_movimentacao = ?
+    `;
+
+    db.query(selectQuery, [movimentacaoId], (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar dados da movimentação:', err);
+            return res.status(500).json({
+                success: false,
+                message: 'Erro ao buscar dados da movimentação'
+            });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Movimentação não encontrada'
+            });
+        }
+
+        const movimentacao = results[0];
+        console.log('📋 Dados da movimentação:', movimentacao);
+
+        // Converter quantidade para número (lidar com DECIMAL vs INT)
+        const quantidadeMovimentacao = parseFloat(movimentacao.quantidade);
+        const estoqueAtual = parseInt(movimentacao.estoque_atual);
+
+        // Reverter o estoque baseado no tipo de movimentação
+        let novaQuantidade;
+        if (movimentacao.tipo === 'entrada') {
+            // Se era uma entrada, subtrair a quantidade do estoque
+            novaQuantidade = estoqueAtual - quantidadeMovimentacao;
+        } else if (movimentacao.tipo === 'saida') {
+            // Se era uma saída, adicionar a quantidade ao estoque
+            novaQuantidade = estoqueAtual + quantidadeMovimentacao;
+        }
+
+        console.log('🔄 Cálculo do estoque:', {
+            tipo: movimentacao.tipo,
+            quantidadeMovimentacao: quantidadeMovimentacao,
+            estoqueAtual: estoqueAtual,
+            novaQuantidade: novaQuantidade
+        });
+
+        // Verificar se a nova quantidade não é negativa
+        if (novaQuantidade < 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Não é possível excluir esta movimentação: estoque ficaria negativo'
+            });
+        }
+
+        // Iniciar transação manualmente
+        db.query('START TRANSACTION', (err) => {
+            if (err) {
+                console.error('Erro ao iniciar transação:', err);
+                return res.status(500).json({
+                    success: false,
+                    message: 'Erro interno do servidor'
+                });
+            }
+
+            // 1. Atualizar o estoque do produto
+            const updateEstoqueQuery = 'UPDATE produtos SET quantidade = ? WHERE id_produto = ?';
+            
+            db.query(updateEstoqueQuery, [novaQuantidade, movimentacao.id_produto], (err, updateResult) => {
+                if (err) {
+                    console.error('Erro ao atualizar estoque:', err);
+                    return db.query('ROLLBACK', () => {
+                        res.status(500).json({
+                            success: false,
+                            message: 'Erro ao atualizar estoque: ' + err.message
+                        });
+                    });
+                }
+
+                console.log('✅ Estoque atualizado:', updateResult.affectedRows, 'linhas afetadas');
+
+                // 2. Excluir a movimentação
+                const deleteQuery = 'DELETE FROM movimentacoes WHERE id_movimentacao = ?';
+                
+                db.query(deleteQuery, [movimentacaoId], (err, deleteResult) => {
+                    if (err) {
+                        console.error('Erro ao excluir movimentação:', err);
+                        return db.query('ROLLBACK', () => {
+                            res.status(500).json({
+                                success: false,
+                                message: 'Erro ao excluir movimentação: ' + err.message
+                            });
+                        });
+                    }
+
+                    if (deleteResult.affectedRows === 0) {
+                        return db.query('ROLLBACK', () => {
+                            res.status(404).json({
+                                success: false,
+                                message: 'Movimentação não encontrada'
+                            });
+                        });
+                    }
+
+                    console.log('✅ Movimentação excluída:', deleteResult.affectedRows, 'linhas afetadas');
+
+                    // Commit da transação
+                    db.query('COMMIT', (err) => {
+                        if (err) {
+                            console.error('Erro ao fazer commit:', err);
+                            return db.query('ROLLBACK', () => {
+                                res.status(500).json({
+                                    success: false,
+                                    message: 'Erro ao finalizar operação: ' + err.message
+                                });
+                            });
+                        }
+
+                        console.log('✅ Transação concluída com sucesso');
+                        res.json({
+                            success: true,
+                            message: `Movimentação excluída com sucesso! Estoque do produto ${movimentacao.nome} atualizado.`,
+                            data: {
+                                produto: movimentacao.nome,
+                                tipo: movimentacao.tipo,
+                                quantidade: quantidadeMovimentacao,
+                                estoque_anterior: estoqueAtual,
+                                estoque_atual: novaQuantidade
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    });
+});
+
+
+
+// ROTA PARA ATUALIZAR MOVIMENTAÇÃO
+router.put('/api/movimentacoes/:id', requireAuth, (req, res) => {
+    const movimentacaoId = req.params.id;
+    const { 
+        quantidade, 
+        responsavel, 
+        projeto_experimento, 
+        observacoes,
+        data_movimentacao 
+    } = req.body;
+    
+    console.log('✏️ Atualizando movimentação ID:', movimentacaoId, req.body);
+
+    // Validações
+    if (!quantidade || !responsavel) {
+        return res.status(400).json({
+            success: false,
+            message: 'Quantidade e responsável são obrigatórios'
+        });
+    }
+
+    const novaQuantidade = parseFloat(quantidade);
+    if (isNaN(novaQuantidade) || novaQuantidade <= 0) {
+        return res.status(400).json({
+            success: false,
+            message: 'Quantidade deve ser um número positivo'
+        });
+    }
+
+    // Primeiro buscar os dados atuais da movimentação
+    const selectQuery = `
+        SELECT 
+            m.id_produto,
+            m.tipo,
+            m.quantidade as quantidade_antiga,
+            p.quantidade as estoque_atual,
+            p.nome as produto_nome
+        FROM movimentacoes m
+        JOIN produtos p ON m.id_produto = p.id_produto
+        WHERE m.id_movimentacao = ?
+    `;
+
+    db.query(selectQuery, [movimentacaoId], (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar dados atuais:', err);
+            return res.status(500).json({
+                success: false,
+                message: 'Erro ao buscar dados da movimentação'
+            });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Movimentação não encontrada'
+            });
+        }
+
+        const movimentacaoAtual = results[0];
+        const quantidadeAntiga = parseFloat(movimentacaoAtual.quantidade_antiga);
+        const estoqueAtual = parseInt(movimentacaoAtual.estoque_atual);
+
+        console.log('📊 Dados para atualização:', {
+            quantidadeAntiga,
+            novaQuantidade,
+            estoqueAtual,
+            tipo: movimentacaoAtual.tipo
+        });
+
+        // Calcular a diferença no estoque
+        let diferencaQuantidade;
+        let novoEstoque;
+
+        if (movimentacaoAtual.tipo === 'entrada') {
+            // Para entrada: (novaQuantidade - quantidadeAntiga) = ajuste no estoque
+            diferencaQuantidade = novaQuantidade - quantidadeAntiga;
+            novoEstoque = estoqueAtual + diferencaQuantidade;
+        } else {
+            // Para saída: (quantidadeAntiga - novaQuantidade) = ajuste no estoque
+            diferencaQuantidade = quantidadeAntiga - novaQuantidade;
+            novoEstoque = estoqueAtual + diferencaQuantidade;
+        }
+
+        console.log('🔄 Cálculo do estoque:', {
+            diferencaQuantidade,
+            novoEstoque
+        });
+
+        // Verificar se o novo estoque não fica negativo
+        if (novoEstoque < 0) {
+            return res.status(400).json({
+                success: false,
+                message: `Não é possível atualizar: estoque do produto ${movimentacaoAtual.produto_nome} ficaria negativo (${novoEstoque})`
+            });
+        }
+
+        // Iniciar transação
+        db.query('START TRANSACTION', (err) => {
+            if (err) {
+                console.error('Erro ao iniciar transação:', err);
+                return res.status(500).json({
+                    success: false,
+                    message: 'Erro interno do servidor'
+                });
+            }
+
+            // 1. Atualizar o estoque do produto
+            const updateEstoqueQuery = 'UPDATE produtos SET quantidade = ? WHERE id_produto = ?';
+            
+            db.query(updateEstoqueQuery, [novoEstoque, movimentacaoAtual.id_produto], (err, updateResult) => {
+                if (err) {
+                    console.error('Erro ao atualizar estoque:', err);
+                    return db.query('ROLLBACK', () => {
+                        res.status(500).json({
+                            success: false,
+                            message: 'Erro ao atualizar estoque: ' + err.message
+                        });
+                    });
+                }
+
+                console.log('✅ Estoque atualizado:', updateResult.affectedRows, 'linhas afetadas');
+
+                // 2. Atualizar a movimentação
+                const updateMovimentacaoQuery = `
+                    UPDATE movimentacoes 
+                    SET quantidade = ?, responsavel = ?, projeto_experimento = ?, observacoes = ?, data_movimentacao = ?
+                    WHERE id_movimentacao = ?
+                `;
+
+                const dataMovimentacao = data_movimentacao ? new Date(data_movimentacao) : new Date();
+
+                db.query(updateMovimentacaoQuery, [
+                    novaQuantidade,
+                    responsavel,
+                    projeto_experimento || null,
+                    observacoes || null,
+                    dataMovimentacao,
+                    movimentacaoId
+                ], (err, updateMovResult) => {
+                    if (err) {
+                        console.error('Erro ao atualizar movimentação:', err);
+                        return db.query('ROLLBACK', () => {
+                            res.status(500).json({
+                                success: false,
+                                message: 'Erro ao atualizar movimentação: ' + err.message
+                            });
+                        });
+                    }
+
+                    if (updateMovResult.affectedRows === 0) {
+                        return db.query('ROLLBACK', () => {
+                            res.status(404).json({
+                                success: false,
+                                message: 'Movimentação não encontrada'
+                            });
+                        });
+                    }
+
+                    console.log('✅ Movimentação atualizada:', updateMovResult.affectedRows, 'linhas afetadas');
+
+                    // Commit da transação
+                    db.query('COMMIT', (err) => {
+                        if (err) {
+                            console.error('Erro ao fazer commit:', err);
+                            return db.query('ROLLBACK', () => {
+                                res.status(500).json({
+                                    success: false,
+                                    message: 'Erro ao finalizar operação: ' + err.message
+                                });
+                            });
+                        }
+
+                        console.log('✅ Transação concluída com sucesso');
+                        res.json({
+                            success: true,
+                            message: `Movimentação atualizada com sucesso! Estoque do produto ${movimentacaoAtual.produto_nome} ajustado.`,
+                            data: {
+                                produto: movimentacaoAtual.produto_nome,
+                                tipo: movimentacaoAtual.tipo,
+                                quantidade_anterior: quantidadeAntiga,
+                                quantidade_nova: novaQuantidade,
+                                estoque_anterior: estoqueAtual,
+                                estoque_atual: novoEstoque
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    });
+});
+
+
+
+
+
+
 // API PARA MOVIMENTAÇÕES COM PAGINAÇÃO E FILTROS
 router.get('/api/relatorios/movimentacoes', requireAuth, (req, res) => {
     const { year = new Date().getFullYear(), month, type, reagent, page = 1, limit = 15 } = req.query;
@@ -2036,23 +2341,25 @@ router.get('/api/relatorios/movimentacoes', requireAuth, (req, res) => {
         ${whereClause}
     `;
 
+    
     // Query para buscar dados
     const dataQuery = `
-        SELECT 
-            m.data_movimentacao,
-            p.nome,
-            p.tipo as categoria,
-            m.tipo,
-            m.quantidade,
-            m.unidade_medida,
-            m.responsavel,
-            m.projeto_experimento,
-            m.observacoes
-        FROM movimentacoes m
-        JOIN produtos p ON m.id_produto = p.id_produto
-        ${whereClause}
-        ORDER BY m.data_movimentacao DESC
-        LIMIT ? OFFSET ?
+    SELECT 
+        m.id_movimentacao,
+        m.data_movimentacao,
+        p.nome,
+        p.tipo as categoria,
+        m.tipo,
+        m.quantidade,
+        m.unidade_medida,
+        m.responsavel,
+        m.projeto_experimento,
+        m.observacoes
+    FROM movimentacoes m
+    JOIN produtos p ON m.id_produto = p.id_produto
+    ${whereClause}
+    ORDER BY m.data_movimentacao DESC
+    LIMIT ? OFFSET ?
     `;
 
     db.query(countQuery, queryParams, (err, countResults) => {
@@ -2117,78 +2424,7 @@ router.get('/api/relatorios/estatisticas-reagente', requireAuth, (req, res) => {
     });
 });
 
-// API PARA EXPORTAR MOVIMENTAÇÕES EM CSV
-router.get('/api/relatorios/exportar-movimentacoes', requireAuth, (req, res) => {
-    const { year = new Date().getFullYear(), month, type, reagent } = req.query;
-    
-    let whereClause = 'WHERE YEAR(m.data_movimentacao) = ?';
-    let queryParams = [year];
 
-    if (month) {
-        whereClause += ' AND MONTH(m.data_movimentacao) = ?';
-        queryParams.push(month);
-    }
-
-    if (type) {
-        whereClause += ' AND m.tipo = ?';
-        queryParams.push(type);
-    }
-
-    if (reagent) {
-        whereClause += ' AND p.nome LIKE ?';
-        queryParams.push(`%${reagent}%`);
-    }
-
-    const query = `
-        SELECT 
-            DATE_FORMAT(m.data_movimentacao, '%d/%m/%Y %H:%i') as data,
-            p.nome as reagente,
-            p.tipo as categoria,
-            CASE 
-                WHEN m.tipo = 'entrada' THEN 'Entrada'
-                ELSE 'Saída'
-            END as tipo,
-            m.quantidade,
-            m.unidade_medida,
-            m.responsavel,
-            COALESCE(m.projeto_experimento, '') as projeto,
-            COALESCE(m.observacoes, '') as observacoes
-        FROM movimentacoes m
-        JOIN produtos p ON m.id_produto = p.id_produto
-        ${whereClause}
-        ORDER BY m.data_movimentacao DESC
-    `;
-
-    db.query(query, queryParams, (err, results) => {
-        if (err) {
-            console.error('Erro ao exportar movimentações:', err);
-            return res.status(500).send('Erro ao gerar arquivo CSV');
-        }
-
-        // Converter para CSV
-        const headers = ['Data', 'Reagente', 'Categoria', 'Tipo', 'Quantidade', 'Unidade', 'Responsável', 'Projeto', 'Observações'];
-        let csvContent = headers.join(';') + '\n';
-        
-        results.forEach(row => {
-            const csvRow = [
-                row.data,
-                `"${row.reagente}"`,
-                `"${row.categoria}"`,
-                row.tipo,
-                row.quantidade,
-                row.unidade_medida,
-                `"${row.responsavel}"`,
-                `"${row.projeto}"`,
-                `"${row.observacoes}"`
-            ];
-            csvContent += csvRow.join(';') + '\n';
-        });
-
-        res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-        res.setHeader('Content-Disposition', `attachment; filename=movimentacoes-${year}.csv`);
-        res.send(csvContent);
-    });
-});
 
 
 // ROTA PARA PÁGINA DE CATEGORIAS
@@ -2461,158 +2697,544 @@ router.get('/api/relatorios/reagentes', requireAuth, (req, res) => {
     });
 });
 
-// API PARA EXPORTAR CATEGORIAS EM CSV
-router.get('/api/relatorios/exportar-categorias', requireAuth, (req, res) => {
-    const { category, periculosidade, search } = req.query;
-    
-    let whereClause = 'WHERE 1=1';
+// =============================================
+// ROTAS PARA VIDRARIAS - ADICIONAR APÓS A ROTA DE RELATÓRIOS
+// =============================================
+
+// Rota para exibir vidrarias
+router.get('/vidracarias', requireAuth, (req, res) => {
+    const { search, category, status, material } = req.query;
+
+    let query = 'SELECT * FROM vidracarias WHERE 1=1';
     let queryParams = [];
 
-    if (category) {
-        whereClause += ' AND p.tipo = ?';
-        queryParams.push(category);
-    }
-
-    if (periculosidade) {
-        whereClause += ' AND p.grau_periculosidade = ?';
-        queryParams.push(periculosidade);
-    }
-
+    // Filtro por termo de pesquisa
     if (search) {
-        whereClause += ' AND p.nome LIKE ?';
+        query += ' AND nome LIKE ?';
         queryParams.push(`%${search}%`);
     }
 
-    const query = `
-        SELECT 
-            p.tipo as categoria,
-            COUNT(*) as total_reagentes,
-            SUM(CASE WHEN p.quantidade > 0 AND p.quantidade <= p.estoque_minimo THEN 1 ELSE 0 END) as baixo_estoque,
-            SUM(CASE WHEN p.quantidade = 0 OR p.quantidade <= (p.estoque_minimo * 0.3) THEN 1 ELSE 0 END) as estoque_critico,
-            ROUND((COUNT(*) * 100.0 / (SELECT COUNT(*) FROM produtos ${whereClause})), 1) as porcentagem
-        FROM produtos p
-        ${whereClause}
-        GROUP BY p.tipo
-        ORDER BY total_reagentes DESC
-    `;
-
-    db.query(query, queryParams, (err, results) => {
-        if (err) {
-            console.error('Erro ao exportar categorias:', err);
-            return res.status(500).send('Erro ao gerar arquivo CSV');
-        }
-
-        // Converter para CSV
-        const headers = ['Categoria', 'Total de Reagentes', 'Baixo Estoque', 'Estoque Crítico', 'Porcentagem'];
-        let csvContent = headers.join(';') + '\n';
-        
-        results.forEach(row => {
-            const csvRow = [
-                `"${row.categoria}"`,
-                row.total_reagentes,
-                row.baixo_estoque,
-                row.estoque_critico,
-                `${row.porcentagem}%`
-            ];
-            csvContent += csvRow.join(';') + '\n';
-        });
-
-        res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-        res.setHeader('Content-Disposition', 'attachment; filename=categorias.csv');
-        res.send(csvContent);
-    });
-});
-
-// API PARA EXPORTAR REAGENTES EM CSV
-router.get('/api/relatorios/exportar-reagentes', requireAuth, (req, res) => {
-    const { category, stockStatus, periculosidade, search } = req.query;
-    
-    let whereClause = 'WHERE 1=1';
-    let queryParams = [];
-
+    // Filtro por categoria
     if (category) {
-        whereClause += ' AND tipo = ?';
+        query += ' AND categoria = ?';
         queryParams.push(category);
     }
 
-    if (periculosidade) {
-        whereClause += ' AND grau_periculosidade = ?';
-        queryParams.push(periculosidade);
-    }
-
-    if (search) {
-        whereClause += ' AND nome LIKE ?';
-        queryParams.push(`%${search}%`);
-    }
-
-    if (stockStatus) {
-        switch (stockStatus) {
-            case 'normal':
-                whereClause += ' AND quantidade > estoque_minimo';
+    // Filtro por status
+    if (status) {
+        switch (status) {
+            case 'available':
+                query += ' AND quantidade > 0';
                 break;
-            case 'baixo':
-                whereClause += ' AND quantidade > 0 AND quantidade <= estoque_minimo';
+            case 'low_stock':
+                query += ' AND quantidade > 0 AND quantidade <= estoque_minimo';
                 break;
-            case 'critico':
-                whereClause += ' AND quantidade > 0 AND quantidade <= (estoque_minimo * 0.3)';
-                break;
-            case 'esgotado':
-                whereClause += ' AND quantidade = 0';
+            case 'out_of_stock':
+                query += ' AND quantidade = 0';
                 break;
         }
     }
 
-    const query = `
-        SELECT 
-            nome as reagente,
-            tipo as categoria,
-            COALESCE(grau_periculosidade, 'Não informado') as periculosidade,
-            quantidade,
-            estoque_minimo,
-            unidade_medida,
-            COALESCE(localizacao, 'Não informada') as localizacao,
-            COALESCE(descricao, '') as descricao,
-            CASE 
-                WHEN quantidade = 0 THEN 'Esgotado'
-                WHEN quantidade <= (estoque_minimo * 0.3) THEN 'Crítico'
-                WHEN quantidade <= estoque_minimo THEN 'Baixo'
-                ELSE 'Normal'
-            END as status_estoque
-        FROM produtos
-        ${whereClause}
-        ORDER BY tipo, nome
-    `;
+    // Filtro por material
+    if (material) {
+        query += ' AND material = ?';
+        queryParams.push(material);
+    }
+
+    query += ' ORDER BY nome ASC';
 
     db.query(query, queryParams, (err, results) => {
         if (err) {
-            console.error('Erro ao exportar reagentes:', err);
-            return res.status(500).send('Erro ao gerar arquivo CSV');
+            console.error('Erro ao buscar vidrarias:', err);
+            return res.render('vidracarias', {
+                user: req.session.user,
+                vidracarias: [],
+                error: 'Erro ao carregar vidrarias',
+                searchTerm: search || '',
+                selectedCategory: category || '',
+                status: status || '',
+                material: material || ''
+            });
         }
 
-        // Converter para CSV
-        const headers = ['Reagente', 'Categoria', 'Periculosidade', 'Quantidade', 'Estoque Mínimo', 'Unidade', 'Localização', 'Descrição', 'Status do Estoque'];
-        let csvContent = headers.join(';') + '\n';
-        
-        results.forEach(row => {
-            const csvRow = [
-                `"${row.reagente}"`,
-                `"${row.categoria}"`,
-                `"${row.periculosidade}"`,
-                row.quantidade,
-                row.estoque_minimo,
-                row.unidade_medida,
-                `"${row.localizacao}"`,
-                `"${row.descricao}"`,
-                `"${row.status_estoque}"`
-            ];
-            csvContent += csvRow.join(';') + '\n';
+        res.render('vidracarias', {
+            user: req.session.user,
+            vidracarias: results || [],
+            success: req.query.success,
+            error: req.query.error,
+            searchTerm: search || '',
+            selectedCategory: category || '',
+            status: status || '',
+            material: material || ''
         });
-
-        res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-        res.setHeader('Content-Disposition', 'attachment; filename=reagentes.csv');
-        res.send(csvContent);
     });
 });
+
+// Rota para exibir formulário de adição de vidraria
+router.get('/vidracarias/adicionar', requireAuth, (req, res) => {
+    res.render('adicionar-vidracaria', {
+        user: req.session.user,
+        formData: null,
+        error: null,
+        success: null
+    });
+});
+
+// Rota para processar adição de vidraria
+router.post('/vidracarias/adicionar', requireAuth, (req, res) => {
+    const {
+        nome,
+        categoria,
+        capacidade,
+        material,
+        descricao,
+        quantidade,
+        estoque_minimo,
+        localizacao,
+        fornecedor,
+        data_aquisicao,
+        observacoes
+    } = req.body;
+
+    const query = `
+        INSERT INTO vidracarias 
+        (nome, categoria, capacidade, material, descricao, quantidade, estoque_minimo, 
+         localizacao, fornecedor, data_aquisicao, observacoes)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    const values = [
+        nome,
+        categoria,
+        capacidade,
+        material,
+        descricao,
+        parseInt(quantidade) || 0,
+        parseInt(estoque_minimo) || 5,
+        localizacao,
+        fornecedor,
+        data_aquisicao,
+        observacoes
+    ];
+
+    db.query(query, values, (err, result) => {
+        if (err) {
+            console.error('Erro ao adicionar vidraria:', err);
+            return res.render('adicionar-vidracaria', {
+                user: req.session.user,
+                error: 'Erro ao adicionar vidraria',
+                formData: req.body,
+                success: null
+            });
+        }
+
+        res.redirect('/vidracarias?success=Vidraria adicionada com sucesso');
+    });
+});
+
+// Rota para exibir formulário de edição de vidraria
+router.get('/vidracarias/editar/:id', requireAuth, (req, res) => {
+    const vidracariaId = req.params.id;
+    const query = 'SELECT * FROM vidracarias WHERE id = ?';
+    
+    db.query(query, [vidracariaId], (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar vidraria:', err);
+            return res.redirect('/vidracarias?error=Erro ao carregar vidraria para edição');
+        }
+        
+        if (results.length === 0) {
+            return res.redirect('/vidracarias?error=Vidraria não encontrada');
+        }
+        
+        res.render('editar-vidracaria', {
+            user: req.session.user,
+            vidracaria: results[0],
+            error: null
+        });
+    });
+});
+
+// Rota para processar edição de vidraria
+router.post('/vidracarias/editar/:id', requireAuth, (req, res) => {
+    const vidracariaId = req.params.id;
+    const {
+        nome,
+        categoria,
+        capacidade,
+        material,
+        descricao,
+        quantidade,
+        estoque_minimo,
+        localizacao,
+        fornecedor,
+        data_aquisicao,
+        observacoes
+    } = req.body;
+
+    const query = `
+        UPDATE vidracarias 
+        SET nome = ?, categoria = ?, capacidade = ?, material = ?, descricao = ?, 
+            quantidade = ?, estoque_minimo = ?, localizacao = ?, fornecedor = ?, 
+            data_aquisicao = ?, observacoes = ?
+        WHERE id = ?
+    `;
+
+    const values = [
+        nome,
+        categoria,
+        capacidade,
+        material,
+        descricao,
+        parseInt(quantidade) || 0,
+        parseInt(estoque_minimo) || 5,
+        localizacao,
+        fornecedor,
+        data_aquisicao,
+        observacoes,
+        vidracariaId
+    ];
+
+    db.query(query, values, (err, result) => {
+        if (err) {
+            console.error('Erro ao editar vidraria:', err);
+            return res.redirect(`/vidracarias/editar/${vidracariaId}?error=Erro ao editar vidraria`);
+        }
+        
+        res.redirect('/vidracarias?success=Vidraria editada com sucesso');
+    });
+});
+
+// Rota para deletar vidraria
+router.post('/vidracarias/deletar/:id', requireAuth, (req, res) => {
+    const vidracariaId = req.params.id;
+    
+    console.log('Tentando deletar vidraria ID:', vidracariaId);
+    
+    const query = 'DELETE FROM vidracarias WHERE id = ?';
+    
+    db.query(query, [vidracariaId], (err, result) => {
+        if (err) {
+            console.error('Erro ao deletar vidraria:', err);
+            return res.redirect('/vidracarias?error=Erro ao deletar vidraria');
+        }
+        
+        if (result.affectedRows === 0) {
+            console.log('Vidraria não encontrada');
+            return res.redirect('/vidracarias?error=Vidraria não encontrada');
+        }
+        
+        console.log('Vidraria deletada com sucesso. Linhas afetadas:', result.affectedRows);
+        res.redirect('/vidracarias?success=Vidraria deletada com sucesso');
+    });
+});
+
+// API para estatísticas de vidrarias
+router.get('/api/vidracarias/statistics', requireAuth, (req, res) => {
+    const totalQuery = 'SELECT COUNT(*) as total FROM vidracarias';
+    const availableQuery = 'SELECT COUNT(*) as available FROM vidracarias WHERE quantidade > 0';
+    const lowStockQuery = 'SELECT COUNT(*) as lowStock FROM vidracarias WHERE quantidade > 0 AND quantidade <= estoque_minimo';
+    const outOfStockQuery = 'SELECT COUNT(*) as outOfStock FROM vidracarias WHERE quantidade = 0';
+    
+    const categoriesQuery = `
+        SELECT 
+            categoria,
+            COUNT(*) as count
+        FROM vidracarias 
+        GROUP BY categoria
+        ORDER BY count DESC
+    `;
+
+    Promise.all([
+        new Promise(resolve => db.query(totalQuery, (err, res) => resolve(err ? {total: 0} : res[0]))),
+        new Promise(resolve => db.query(availableQuery, (err, res) => resolve(err ? {available: 0} : res[0]))),
+        new Promise(resolve => db.query(lowStockQuery, (err, res) => resolve(err ? {lowStock: 0} : res[0]))),
+        new Promise(resolve => db.query(outOfStockQuery, (err, res) => resolve(err ? {outOfStock: 0} : res[0]))),
+        new Promise(resolve => db.query(categoriesQuery, (err, res) => resolve(err ? [] : res)))
+    ]).then(([totalResults, availableResults, lowStockResults, outOfStockResults, categoriesResults]) => {
+        res.json({
+            total: totalResults.total || 0,
+            available: availableResults.available || 0,
+            lowStock: lowStockResults.lowStock || 0,
+            outOfStock: outOfStockResults.outOfStock || 0,
+            categories: categoriesResults || []
+        });
+    }).catch(error => {
+        console.error('Erro nas estatísticas:', error);
+        res.json({
+            total: 0,
+            available: 0,
+            lowStock: 0,
+            outOfStock: 0,
+            categories: []
+        });
+    });
+});
+
+// API para listar vidrarias (JSON)
+router.get('/api/vidracarias/list', requireAuth, (req, res) => {
+    const query = 'SELECT * FROM vidracarias ORDER BY nome ASC';
+    
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar vidrarias:', err);
+            return res.json([]);
+        }
+        res.json(results);
+    });
+});
+
+// Rota para registrar movimentação de vidraria
+router.post('/api/vidracarias/movimentacao', requireAuth, (req, res) => {
+    const { vidraria_id, tipo, quantidade, observacao } = req.body;
+    const usuario = req.session.user.nome || req.session.user.username;
+
+    const query = `
+        INSERT INTO movimentacoes_vidracarias 
+        (vidraria_id, tipo, quantidade, usuario, observacao)
+        VALUES (?, ?, ?, ?, ?)
+    `;
+
+    const values = [vidraria_id, tipo, parseInt(quantidade), usuario, observacao];
+
+    db.query(query, values, (err, result) => {
+        if (err) {
+            console.error('Erro ao registrar movimentação:', err);
+            return res.status(500).json({ error: 'Erro ao registrar movimentação' });
+        }
+
+        // Atualizar estoque da vidraria
+        const updateQuery = tipo === 'retirada' 
+            ? 'UPDATE vidracarias SET quantidade = GREATEST(0, quantidade - ?) WHERE id = ?'
+            : 'UPDATE vidracarias SET quantidade = quantidade + ? WHERE id = ?';
+
+        db.query(updateQuery, [quantidade, vidraria_id], (updateErr) => {
+            if (updateErr) {
+                console.error('Erro ao atualizar estoque:', updateErr);
+                return res.status(500).json({ error: 'Erro ao atualizar estoque' });
+            }
+
+            res.json({ success: true, message: 'Movimentação registrada com sucesso' });
+        });
+    });
+});
+
+// API para obter últimas movimentações
+router.get('/api/vidracarias/movimentacoes', requireAuth, (req, res) => {
+    const limit = parseInt(req.query.limit) || 10;
+    
+    const query = `
+        SELECT 
+            mv.*,
+            v.nome as vidraria_nome,
+            v.capacidade,
+            v.localizacao
+        FROM movimentacoes_vidracarias mv
+        JOIN vidracarias v ON mv.vidraria_id = v.id
+        ORDER BY mv.data_movimentacao DESC
+        LIMIT ?
+    `;
+
+    db.query(query, [limit], (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar movimentações:', err);
+            return res.json([]);
+        }
+        res.json(results);
+    });
+});
+
+// Rota para exibir página de movimentação
+router.get('/movimentacao-vidracarias', requireAuth, (req, res) => {
+    const query = 'SELECT * FROM vidracarias ORDER BY nome ASC';
+    
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar vidrarias:', err);
+            return res.render('movimentacao-vidracarias', {
+                user: req.session.user,
+                vidracarias: [],
+                error: 'Erro ao carregar vidrarias'
+            });
+        }
+
+        res.render('movimentacao-vidracarias', {
+            user: req.session.user,
+            vidracarias: results || [],
+            error: null
+        });
+    });
+});
+
+// Rota para página de movimentação individual
+router.get('/vidracarias/movimentar/:id', requireAuth, (req, res) => {
+    const vidracariaId = req.params.id;
+    const query = 'SELECT * FROM vidracarias WHERE id = ?';
+    
+    db.query(query, [vidracariaId], (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar vidraria:', err);
+            return res.redirect('/vidracarias?error=Erro ao carregar vidraria');
+        }
+        
+        if (results.length === 0) {
+            return res.redirect('/vidracarias?error=Vidraria não encontrada');
+        }
+        
+        res.render('movimentar-vidracaria', {
+            user: req.session.user,
+            vidracaria: results[0],
+            error: null
+        });
+    });
+});
+
+// Rota para processar movimentação individual
+router.post('/vidracarias/movimentar/:id', requireAuth, (req, res) => {
+    const vidracariaId = req.params.id;
+    const { tipo, quantidade, responsavel, projeto, fornecedor, observacoes } = req.body;
+    const usuario = req.session.user.nome || req.session.user.username;
+
+    // Validar dados
+    if (!tipo || !quantidade || !responsavel) {
+        return res.redirect(`/vidracarias/movimentar/${vidracariaId}?error=Preencha todos os campos obrigatórios`);
+    }
+
+    // Construir observação
+    let observacao = [];
+    if (projeto) observacao.push(`Projeto: ${projeto}`);
+    if (fornecedor) observacao.push(`Fornecedor: ${fornecedor}`);
+    if (observacoes) observacao.push(`Obs: ${observacoes}`);
+    
+    const observacaoFinal = observacao.join(' | ');
+
+    // Inserir movimentação
+    const movimentacaoQuery = `
+        INSERT INTO movimentacoes_vidracarias 
+        (vidraria_id, tipo, quantidade, usuario, observacao)
+        VALUES (?, ?, ?, ?, ?)
+    `;
+
+    db.query(movimentacaoQuery, [vidracariaId, tipo, parseInt(quantidade), usuario, observacaoFinal], (err, result) => {
+        if (err) {
+            console.error('Erro ao registrar movimentação:', err);
+            return res.redirect(`/vidracarias/movimentar/${vidracariaId}?error=Erro ao registrar movimentação`);
+        }
+
+        // Atualizar estoque
+        const updateQuery = tipo === 'retirada' 
+            ? 'UPDATE vidracarias SET quantidade = GREATEST(0, quantidade - ?) WHERE id = ?'
+            : 'UPDATE vidracarias SET quantidade = quantidade + ? WHERE id = ?';
+
+        db.query(updateQuery, [quantidade, vidracariaId], (updateErr) => {
+            if (updateErr) {
+                console.error('Erro ao atualizar estoque:', updateErr);
+                return res.redirect(`/vidracarias/movimentar/${vidracariaId}?error=Erro ao atualizar estoque`);
+            }
+
+            res.redirect('/vidracarias?success=Movimentação registrada com sucesso');
+        });
+    });
+});
+
+// API para movimentação rápida (AJAX)
+router.post('/api/vidracarias/movimentacao-rapida', requireAuth, (req, res) => {
+    const { vidraria_id, tipo, quantidade, responsavel, projeto, fornecedor, observacoes } = req.body;
+    const usuario = req.session.user.nome || req.session.user.username;
+
+    // Validar dados
+    if (!vidraria_id || !tipo || !quantidade || !responsavel) {
+        return res.status(400).json({ 
+            success: false, 
+            error: 'Preencha todos os campos obrigatórios' 
+        });
+    }
+
+    // Verificar estoque para retirada
+    if (tipo === 'retirada') {
+        const checkQuery = 'SELECT quantidade FROM vidracarias WHERE id = ?';
+        db.query(checkQuery, [vidraria_id], (checkErr, checkResults) => {
+            if (checkErr) {
+                console.error('Erro ao verificar estoque:', checkErr);
+                return res.status(500).json({ 
+                    success: false, 
+                    error: 'Erro ao verificar estoque' 
+                });
+            }
+
+            if (checkResults.length === 0) {
+                return res.status(404).json({ 
+                    success: false, 
+                    error: 'Vidraria não encontrada' 
+                });
+            }
+
+            const estoqueAtual = checkResults[0].quantidade;
+            if (parseInt(quantidade) > estoqueAtual) {
+                return res.status(400).json({ 
+                    success: false, 
+                    error: `Quantidade solicitada (${quantidade}) excede o estoque disponível (${estoqueAtual})` 
+                });
+            }
+
+            processarMovimentacao();
+        });
+    } else {
+        processarMovimentacao();
+    }
+
+    function processarMovimentacao() {
+        // Construir observação
+        let observacao = [];
+        if (projeto) observacao.push(`Projeto: ${projeto}`);
+        if (fornecedor) observacao.push(`Fornecedor: ${fornecedor}`);
+        if (observacoes) observacao.push(`Obs: ${observacoes}`);
+        
+        const observacaoFinal = observacao.join(' | ');
+
+        // Inserir movimentação
+        const movimentacaoQuery = `
+            INSERT INTO movimentacoes_vidracarias 
+            (vidraria_id, tipo, quantidade, usuario, observacao)
+            VALUES (?, ?, ?, ?, ?)
+        `;
+
+        db.query(movimentacaoQuery, [vidraria_id, tipo, parseInt(quantidade), usuario, observacaoFinal], (err, result) => {
+            if (err) {
+                console.error('Erro ao registrar movimentação:', err);
+                return res.status(500).json({ 
+                    success: false, 
+                    error: 'Erro ao registrar movimentação' 
+                });
+            }
+
+            // Atualizar estoque
+            const updateQuery = tipo === 'retirada' 
+                ? 'UPDATE vidracarias SET quantidade = GREATEST(0, quantidade - ?) WHERE id = ?'
+                : 'UPDATE vidracarias SET quantidade = quantidade + ? WHERE id = ?';
+
+            db.query(updateQuery, [quantidade, vidraria_id], (updateErr) => {
+                if (updateErr) {
+                    console.error('Erro ao atualizar estoque:', updateErr);
+                    return res.status(500).json({ 
+                        success: false, 
+                        error: 'Erro ao atualizar estoque' 
+                    });
+                }
+
+                res.json({ 
+                    success: true, 
+                    message: 'Movimentação registrada com sucesso',
+                    movimentacao_id: result.insertId
+                });
+            });
+        });
+    }
+});
+
+// =============================================
+// FIM DAS ROTAS PARA VIDRARIAS
+// =============================================
 
 
 

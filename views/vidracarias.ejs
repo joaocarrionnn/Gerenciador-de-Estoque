@@ -3,37 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Vidrarias de Química</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Vidrarias - Sistema de Estoque</title>
     <%- include('./partials/head'); %>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root {
             --primary: #2c3e50;
             --secondary: #34495e;
             --success: #27ae60;
             --warning: #f39c12;
-            --info: #3498db;
             --danger: #e74c3c;
-            --light: #f8f9fa;
-            --dark: #2c3e50;
-            --gray: #6c757d;
-            --light-gray: #e9ecef;
-            --card-padding: 1.8rem;
-            --section-spacing: 2rem;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
             background-color: #f5f7fb;
-            color: #333;
-            min-height: 100vh;
-            line-height: 1.6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         .main-container {
@@ -64,16 +50,10 @@
             box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
             overflow: hidden;
             margin-bottom: 2.5rem;
-            transition: all 0.3s ease;
-        }
-        
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
         }
         
         .card-header {
-            padding: 1.5rem var(--card-padding);
+            padding: 1.5rem 1.8rem;
             border-bottom: 1px solid #e2e8f0;
             display: flex;
             justify-content: space-between;
@@ -91,237 +71,96 @@
         }
         
         .primary-btn {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 0.85rem 1.5rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 8px rgba(78, 84, 200, 0.25);
-            text-decoration: none;
-            font-size: 0.95rem;
-        }
-        
-        .primary-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(78, 84, 200, 0.35);
-        }
-        
-        .danger-btn {
-            background: linear-gradient(135deg, var(--danger) 0%, #c0392b 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 0.85rem 1.5rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 8px rgba(231, 76, 60, 0.25);
-            font-size: 0.95rem;
-        }
-        
-        .danger-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(231, 76, 60, 0.35);
-        }
-        
-        .form-control, .form-select {
-            padding: 0.85rem 1.2rem;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
-            border: 1px solid #d1d3e2;
-            width: 100%;
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-        
-        .form-control:focus, .form-select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
-        }
-        
-        .form-label {
-            font-weight: 600;
-            color: var(--dark);
-            margin-bottom: 0.75rem;
-            display: block;
-            font-size: 1rem;
-        }
-        
-        .required-field::after {
-            content: " *";
-            color: var(--danger);
-        }
-        
-        .input-group {
-            display: flex;
-        }
-        
-        .input-group .form-control {
-            margin-bottom: 0;
-            border-top-right-radius: 0;
-            border-bottom-right-radius: 0;
-        }
-        
-        .input-group-text {
-            background-color: #f8f9fa;
-            border: 1px solid #d1d3e2;
-            border-left: none;
-            padding: 0.85rem 1.2rem;
-            border-top-right-radius: 10px;
-            border-bottom-right-radius: 10px;
-            color: #6c757d;
-        }
-        
-        .alert {
-            padding: 1.2rem;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
-            line-height: 1.5;
-        }
-        
-        .alert-warning {
-            background-color: rgba(255, 193, 7, 0.15);
-            border-left: 5px solid #ffc107;
-            color: #856404;
-        }
-        
-        .alert ul {
-            margin-top: 0.5rem;
-            padding-left: 1.5rem;
-        }
-        
-        .alert li {
-            margin-bottom: 0.4rem;
-        }
-        
-        .movement-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        
-        .movement-item {
-            display: flex;
-            align-items: center;
-            padding: 1.3rem var(--card-padding);
-            border-bottom: 1px solid #e3e6f0;
-            transition: background-color 0.3s;
-        }
-        
-        .movement-item:hover {
-            background-color: #f8f9fc;
-        }
-        
-        .movement-item:last-child {
-            border-bottom: none;
-        }
-        
-        .movement-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 1.2rem;
-            flex-shrink: 0;
-            font-size: 1.1rem;
-        }
-        
-        .movement-in {
-            background-color: rgba(52, 168, 83, 0.2);
-            color: #28a745;
-        }
-        
-        .movement-out {
-            background-color: rgba(231, 74, 59, 0.2);
-            color: #e74c3c;
-        }
-        
-        .movement-content {
-            flex-grow: 1;
-        }
-        
-        .movement-title {
-            font-weight: 600;
-            margin: 0 0 0.5rem 0;
-            color: var(--dark);
-            font-size: 1.05rem;
-        }
-        
-        .movement-details {
-            display: flex;
-            gap: 1.2rem;
-            margin-bottom: 0.4rem;
-        }
-        
-        .movement-quantity, .movement-date {
-            font-size: 0.9rem;
-            color: #6e707e;
-        }
-        
-        .movement-content small {
-            color: var(--gray);
-            font-size: 0.85rem;
-        }
-        
-        .stats-info {
-            font-size: 0.9rem;
-            color: #6c757d;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .view-all-btn {
             background: transparent;
             border: 1px solid #dee2e6;
-            border-radius: 10px;
-            padding: 0.75rem 1.4rem;
-            font-size: 0.95rem;
+            border-radius: 8px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
             color: var(--primary);
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 0.6rem;
+            gap: 0.5rem;
             text-decoration: none;
         }
         
-        .view-all-btn:hover {
+        .primary-btn:hover {
             background: var(--primary);
             color: white;
             border-color: var(--primary);
             transform: translateY(-2px);
-            box-shadow: 0 5px 12px rgba(67, 97, 238, 0.25);
+            box-shadow: 0 4px 8px rgba(67, 97, 238, 0.2);
         }
-        
-        .toast-container {
-            position: fixed;
-            top: 25px;
-            right: 25px;
-            z-index: 9999;
+
+        /* Container para botões - Versão melhorada */
+        .button-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 1.5rem;
         }
-        
-        .toast {
-            margin-bottom: 15px;
+
+        .primary-btn-adicionar {
+            background:#2c3e50;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 600;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
         }
+
+        .primary-btn-adicionar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.7s ease;
+        }
+
+        .primary-btn-adicionar:hover::before {
+            left: 100%;
+        }
+
+        .primary-btn-adicionar:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        .primary-btn-adicionar:active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .primary-btn-adicionar i {
+            font-size: 1.1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .primary-btn-adicionar:hover i {
+            transform: scale(1.1);
+        }
+
+    
         
         .glassware-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 25px;
-            padding: var(--card-padding);
+            padding: 1.8rem;
         }
         
         .glassware-card {
@@ -330,8 +169,6 @@
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
             transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
         }
         
         .glassware-card:hover {
@@ -355,22 +192,17 @@
         
         .glassware-content {
             padding: 1.8rem;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
         }
         
         .glassware-name {
             font-size: 1.3rem;
             font-weight: 600;
             margin-bottom: 1rem;
-            color: var(--dark);
-            line-height: 1.3;
+            color: var(--primary);
         }
         
         .glassware-details {
             margin-bottom: 1.5rem;
-            flex-grow: 1;
         }
         
         .glassware-detail {
@@ -378,12 +210,71 @@
             justify-content: space-between;
             margin-bottom: 0.9rem;
             font-size: 0.95rem;
-            line-height: 1.4;
         }
         
         .glassware-detail span:first-child {
             font-weight: 600;
-            color: var(--gray);
+            color: #6c757d;
+        }
+        
+        .glassware-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+        
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-edit {
+            background: rgba(23, 162, 184, 0.1);
+            color: #17a2b8;
+            border: 1px solid #17a2b8;
+        }
+
+        .btn-edit:hover {
+            background: #17a2b8;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-delete {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            border: 1px solid #dc3545;
+        }
+
+        .btn-delete:hover {
+            background: #dc3545;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-action {
+            border: none;
+            border-radius: 10px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            margin: 0 2px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 10px;
         }
         
         .glassware-status {
@@ -392,8 +283,6 @@
             border-radius: 50px;
             font-size: 0.85rem;
             font-weight: 600;
-            align-self: flex-start;
-            margin-top: auto;
         }
         
         .status-available {
@@ -412,7 +301,7 @@
         }
         
         .search-container {
-            padding: 1.2rem var(--card-padding);
+            padding: 1.2rem 1.8rem;
             background-color: white;
             border-bottom: 1px solid #e2e8f0;
         }
@@ -423,640 +312,1513 @@
             border-radius: 10px;
             border: 1px solid #d1d3e2;
             font-size: 1rem;
-            transition: all 0.3s;
         }
         
-        .search-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
-        }
-        
-        .p-6 {
+        .stats-card {
             padding: 1.8rem;
         }
         
-        .grid.grid-cols-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .grid.grid-cols-2 .border-r {
-            border-right: 1px solid #e2e8f0;
-            padding-right: 1.5rem;
-        }
-        
-        .grid.grid-cols-2 > div {
+        .stat-item {
             text-align: center;
-        }
-        
-        .text-primary {
-            color: var(--primary);
-        }
-        
-        .text-success {
-            color: var(--success);
-        }
-        
-        .text-2xl {
-            font-size: 2.2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-        
-        .text-muted {
-            color: var(--gray);
-            font-size: 0.95rem;
-        }
-        
-        .mb-0 {
-            margin-bottom: 0;
-        }
-        
-        .mb-3, .mb-4 {
-            margin-bottom: 1.5rem;
-        }
-        
-        .mt-3, .mt-4 {
-            margin-top: 1.5rem;
-        }
-        
-        .font-semibold {
-            font-weight: 600;
-        }
-        
-        .flex.items-center {
-            display: flex;
-            align-items: center;
-            padding: 1.2rem;
-            background-color: #2c3e50;
-            border-radius: 10px;
-            margin-top: 1.5rem;
-        }
-        
-        .flex-shrink-0 {
-            flex-shrink: 0;
-        }
-        
-        .flex-grow-1 {
-            flex-grow: 1;
-        }
-        
-        .ms-3 {
-            margin-left: 1.2rem;
-        }
-        
-        .bg-primary {
-            background-color: var(--primary);
-        }
-        
-        .bg-opacity-10 {
-            opacity: 0.1;
-        }
-        
-        .p-3 {
             padding: 1rem;
         }
         
-        .rounded {
-            border-radius: 10px;
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary);
         }
         
-        .fa-lg {
-            font-size: 1.5rem;
-        }
-        
-        .progress {
-            height: 10px;
-            background-color: #e9ecef;
-            border-radius: 5px;
-            overflow: hidden;
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.95rem;
             margin-top: 0.5rem;
         }
         
-        .progress-bar {
-            height: 100%;
-            background-color: var(--primary);
-            border-radius: 5px;
-            transition: width 0.6s ease;
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
         }
         
-        .small {
-            font-size: 0.9rem;
+        .alert-success {
+            background-color: rgba(52, 168, 83, 0.15);
+            color: #28a745;
+            border-left: 4px solid #28a745;
         }
         
-        .text-dark {
-            color: var(--dark);
+        .alert-danger {
+            background-color: rgba(231, 74, 59, 0.15);
+            color: #e74c3c;
+            border-left: 4px solid #e74c3c;
         }
         
-        .fw-bold {
-            font-weight: 700;
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
         }
         
-        .d-flex {
-            display: flex;
-        }
-        
-        .align-items-center {
-            align-items: center;
-        }
-        
-        .me-3 {
-            margin-right: 1rem;
-        }
-        
-        .flex-shrink-0 {
-            flex-shrink: 0;
-        }
-        
-        @media (max-width: 1024px) {
-            .glassware-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-                gap: 20px;
-            }
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
         }
         
         @media (max-width: 768px) {
-            .main-container {
-                padding: 1.5rem 1rem;
-            }
-            
             .section-header {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 1.2rem;
-                margin-bottom: 2rem;
-            }
-            
-            .section-title {
-                font-size: 1.7rem;
-            }
-            
-            .card-header {
-                flex-direction: column;
-                gap: 1.2rem;
-                align-items: flex-start;
-                padding: 1.3rem;
-            }
-            
-            .movement-details {
-                flex-direction: column;
-                gap: 0.5rem;
+                gap: 1rem;
             }
             
             .glassware-grid {
                 grid-template-columns: 1fr;
-                gap: 20px;
-                padding: 1.3rem;
             }
-            
-            .grid.grid-cols-2 {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-            
-            .grid.grid-cols-2 .border-r {
-                border-right: none;
-                border-bottom: 1px solid #e2e8f0;
-                padding-right: 0;
-                padding-bottom: 1.5rem;
-            }
-            
-            .movement-item {
-                padding: 1.2rem;
-            }
-            
-            .glassware-content {
-                padding: 1.5rem;
-            }
-            
-            .p-6 {
-                padding: 1.5rem;
-            }
-            
-            .primary-btn, .danger-btn, .view-all-btn {
-                width: 100%;
-                justify-content: center;
-            }
+        }
+
+        /* Estilos para a lista de movimentações */
+        .movement-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .movement-item {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .movement-item:last-child {
+            border-bottom: none;
+        }
+
+        .movement-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .movement-icon.retirada {
+            background-color: rgba(231, 76, 60, 0.15);
+            color: #e74c3c;
+        }
+
+        .movement-icon.reposicao {
+            background-color: rgba(46, 204, 113, 0.15);
+            color: #2ecc71;
+        }
+
+        .movement-content {
+            flex: 1;
+        }
+
+        .movement-title {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.25rem;
+        }
+
+        .movement-details {
+            font-size: 0.875rem;
+            color: #6c757d;
+        }
+
+        .movement-quantity {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .movement-quantity.retirada {
+            color: #e74c3c;
+        }
+
+        .movement-quantity.reposicao {
+            color: #2ecc71;
+        }
+
+        .movement-time {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            text-align: right;
+        }
+
+        .empty-movements {
+            text-align: center;
+            padding: 2rem;
+            color: #6c757d;
+        }
+
+        .empty-movements i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        /* Estilos para botões de movimentação */
+        .movement-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-take {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .btn-take:hover:not(:disabled) {
+            background: #e74c3c;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-take:disabled {
+            background: rgba(108, 117, 125, 0.1);
+            color: #6c757d;
+            border-color: #6c757d;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .btn-add {
+            background: rgba(46, 204, 113, 0.1);
+            color: #2ecc71;
+            border: 1px solid #2ecc71;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .btn-add:hover {
+            background: #2ecc71;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(46, 204, 113, 0.3);
+        }
+
+        .required-field::after {
+            content: " *";
+            color: #e74c3c;
+        }
+
+        /* Estilos para os modais */
+        .modal-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .modal-title {
+            font-weight: 600;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+        }
+
+        .form-text {
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Estilos para os botões de movimentação */
+        .movement-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-take {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            border: 1px solid #dc2626;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .btn-take:hover:not(:disabled) {
+            background: #dc2626;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-take:disabled {
+            background: rgba(107, 114, 128, 0.1);
+            color: #6b7280;
+            border-color: #9ca3af;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .btn-add {
+            background: rgba(34, 197, 94, 0.1);
+            color: #16a34a;
+            border: 1px solid #16a34a;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .btn-add:hover {
+            background: #16a34a;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(22, 163, 74, 0.3);
+        }
+
+        .required-field::after {
+            content: " *";
+            color: #dc2626;
+        }
+
+        /* Estilos para a tabela no modal */
+        .table-responsive {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        /* Melhorar aparência dos filtros */
+        .filter-group {
+            margin-bottom: 1rem;
+        }
+
+        /* Estilos para paginação */
+        .pagination {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .page-item.active .page-link {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        /* Ajustes para o modal grande */
+        .modal-xl {
+            max-width: 1200px;
         }
     </style>
 </head>
 <body>
     <%- include('./partials/header'); %>
     
-    <!-- Conteúdo Principal -->
     <main class="flex-1 overflow-auto bg-gray-50 min-h-screen">
         <div class="main-container">
             <!-- Header da Página -->
             <div class="section-header">
                 <h1 class="section-title">
                     <i class="fas fa-flask"></i>
-                    Vidrarias de Química em Estoque
+                    Vidrarias de Laboratório
                 </h1>
-                <button class="primary-btn" id="add-glassware">
-                    <i class="fas fa-plus"></i> Adicionar Vidraria
-                </button>
+                <div class="button-container">
+                    <a href="/vidracarias/adicionar" class="primary-btn-adicionar">
+                        <i class="fas fa-plus-circle"></i> Adicionar Vidraria
+                    </a>
+                </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Lista de Vidrarias -->
-                <div class="lg:col-span-2">
-                    <div class="card">
-                        <div class="card-header">
-                            <h2 class="card-title">
-                                <i class="fas fa-vial"></i>
-                                Vidrarias Disponíveis
-                            </h2>
-                            <div class="view-all-btn">
-                                <i class="fas fa-filter"></i> Filtrar
-                            </div>
-                        </div>
+            <!-- Alertas -->
+            <% if (typeof success !== 'undefined' && success) { %>
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle me-2"></i><%= success %>
+                </div>
+            <% } %>
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle me-2"></i><%= error %>
+                </div>
+            <% } %>
 
-                        <div class="search-container">
-                            <input type="text" class="search-input" placeholder="Buscar vidraria...">
+            <!-- Estatísticas -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-chart-pie"></i>
+                        Estatísticas do Estoque
+                    </h2>
+                </div>
+                <div class="stats-card">
+                    <div class="row">
+                        <div class="col-md-3 stat-item">
+                            <div class="stat-value" id="total-vidrarias">0</div>
+                            <div class="stat-label">Total de Vidrarias</div>
                         </div>
-
-                        <div class="glassware-grid" id="glassware-list">
-                            <!-- As vidrarias serão carregadas via JavaScript -->
+                        <div class="col-md-3 stat-item">
+                            <div class="stat-value text-success" id="disponiveis">0</div>
+                            <div class="stat-label">Disponíveis</div>
+                        </div>
+                        <div class="col-md-3 stat-item">
+                            <div class="stat-value text-warning" id="estoque-baixo">0</div>
+                            <div class="stat-label">Estoque Baixo</div>
+                        </div>
+                        <div class="col-md-3 stat-item">
+                            <div class="stat-value text-danger" id="esgotados">0</div>
+                            <div class="stat-label">Esgotados</div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Estatísticas e Informações -->
-                <div>
-                    <div class="card">
-                        <div class="card-header">
-                            <h2 class="card-title">
-                                <i class="fas fa-chart-pie text-success"></i>
-                                Estatísticas do Estoque
-                            </h2>
-                        </div>
-                        <div class="p-6">
-                            <div class="grid grid-cols-2 text-center mb-4">
-                                <div class="border-r">
-                                    <h4 class="text-primary text-2xl font-bold" id="total-glassware">42</h4>
-                                    <p class="text-muted mb-0 text-sm">Total de vidrarias</p>
-                                </div>
-                                <div>
-                                    <h4 class="text-success text-2xl font-bold" id="available-glassware">35</h4>
-                                    <p class="text-muted mb-0 text-sm">Disponíveis</p>
-                                </div>
+            <!-- Card de Movimentações -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-exchange-alt"></i>
+                        Últimas Movimentações
+                    </h2>
+                    <div class="flex gap-2">
+                        <button type="button" class="primary-btn" onclick="openAllMovementsModal()">
+                            <i class="fas fa-list"></i> Ver Todas
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="search-container">
+                    <ul class="movement-list" id="movementsList">
+                        <li class="movement-item text-center text-muted py-4">
+                            <i class="fas fa-spinner fa-spin me-2"></i>
+                            Carregando movimentações...
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="card-footer" style="padding: 1rem 1.8rem; background-color: #f8f9fa; border-top: 1px solid #e2e8f0;">
+                    <span class="stats-info">
+                        <i class="fas fa-history"></i>
+                        <span id="lastUpdate">Carregando...</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Modal para Todas as Movimentações -->
+            <div id="allMovementsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                <div class="bg-white rounded-lg shadow-xl w-full max-w-6xl mx-4 max-h-[90vh] flex flex-col">
+                    <div class="flex items-center justify-between p-6 border-b border-gray-200">
+                        <h3 class="text-xl font-semibold text-gray-900 flex items-center">
+                            <i class="fas fa-exchange-alt text-blue-500 mr-2"></i>
+                            Todas as Movimentações
+                        </h3>
+                        <button type="button" onclick="closeAllMovementsModal()" class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times text-lg"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="p-6 flex-1 overflow-auto">
+                        <!-- Filtros -->
+                        <div class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Buscar</label>
+                                <input type="text" id="searchMovements" placeholder="Buscar movimentação..." 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
-
-                            <div class="mt-4">
-                                <h6 class="font-semibold mb-3">Categorias</h6>
-                                <div id="category-stats">
-                                    <!-- As estatísticas serão carregadas via JavaScript -->
-                                </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Tipo</label>
+                                <select id="filterType" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Todos os tipos</option>
+                                    <option value="retirada">Retirada</option>
+                                    <option value="reposicao">Reposição</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Data Início</label>
+                                <input type="date" id="filterStartDate" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Data Fim</label>
+                                <input type="date" id="filterEndDate" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+                        
+                        <!-- Tabela de Movimentações -->
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Data/Hora
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Vidraria
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Tipo
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Quantidade
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Usuário
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Observações
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="allMovementsTable" class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                                            <i class="fas fa-spinner fa-spin mr-2"></i>
+                                            Carregando movimentações...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Paginação -->
+                        <div class="mt-6 flex items-center justify-between">
+                            <div class="text-sm text-gray-700" id="movementsPaginationInfo">
+                                Mostrando 0 de 0 registros
+                            </div>
+                            <div class="flex gap-2" id="movementsPagination">
+                                <!-- Paginação será gerada via JavaScript -->
                             </div>
                         </div>
                     </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <h2 class="card-title">
-                                <i class="fas fa-info-circle text-info"></i>
-                                Informações Importantes
-                            </h2>
-                        </div>
-                        <div class="p-6">
-                            <div class="alert alert-warning">
-                                <h6 class="font-semibold"><i class="fas fa-exclamation-triangle me-2"></i>Cuidados com vidrarias:</h6>
-                                <ul class="mb-0 mt-2 ps-4">
-                                    <li>Manusear com atenção para evitar quebra</li>
-                                    <li>Verificar trincas ou rachaduras antes do uso</li>
-                                    <li>Limpar adequadamente após cada uso</li>
-                                </ul>
-                            </div>
-
-                            <div class="flex items-center mt-4">
-                                <div class="flex-shrink-0 bg-primary bg-opacity-10 p-3 rounded">
-                                    <i class="fas fa-boxes fa-lg text-primary"></i>
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h6 class="font-semibold mb-0">Estoque Total</h6>
-                                    <p class="text-muted mb-0" id="total-items">184 itens em inventário</p>
-                                </div>
-                            </div>
-                        </div>
+                    
+                    <div class="flex justify-end gap-3 p-6 border-t border-gray-200 bg-gray-50 rounded-b-lg">
+                        <button type="button" onclick="closeAllMovementsModal()" 
+                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Fechar
+                        </button>
+                        <button type="button" onclick="exportMovements()"
+                                class="px-4 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 flex items-center">
+                            <i class="fas fa-download mr-2"></i>
+                            Exportar
+                        </button>
                     </div>
+                </div>
+            </div>
 
-                    <div class="card">
-                        <div class="card-header">
-                            <h2 class="card-title">
-                                <i class="fas fa-exchange-alt text-warning"></i>
-                                Movimentações Recentes
-                            </h2>
+
+            <!-- Lista de Vidrarias -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-vial"></i>
+                        Vidrarias Cadastradas
+                    </h2>
+                </div>
+
+                <div class="search-container">
+                    <input type="text" id="search-input" class="search-input" placeholder="Buscar vidraria...">
+                </div>
+
+                <div class="glassware-grid" id="glassware-list">
+                    <% if (typeof vidracarias !== 'undefined' && vidracarias.length > 0) { %>
+                        <% vidracarias.forEach(vidraria => { %>
+                            <div class="glassware-card" data-name="<%= vidraria.nome.toLowerCase() %>" data-category="<%= vidraria.categoria.toLowerCase() %>">
+                                <div class="glassware-content">
+                                    <h3 class="glassware-name"><%= vidraria.nome %></h3>
+                                    <div class="glassware-details">
+                                        <div class="glassware-detail">
+                                            <span>Quantidade:</span>
+                                            <span><%= vidraria.quantidade %> unidades</span>
+                                        </div>
+                                        <% if (vidraria.capacidade) { %>
+                                        <div class="glassware-detail">
+                                            <span>Capacidade:</span>
+                                            <span><%= vidraria.capacidade %></span>
+                                        </div>
+                                        <% } %>
+                                        <% if (vidraria.localizacao) { %>
+                                        <div class="glassware-detail">
+                                            <span>Localização:</span>
+                                            <span><%= vidraria.localizacao %></span>
+                                        </div>
+                                        <% } %>
+                                        <div class="glassware-detail">
+                                            <span>Categoria:</span>
+                                            <span><%= vidraria.categoria %></span>
+                                        </div>
+                                    </div>
+                                    
+                                    <% 
+                                    let statusClass = 'status-available';
+                                    let statusText = 'Disponível';
+                                    if (vidraria.quantidade === 0) {
+                                        statusClass = 'status-unavailable';
+                                        statusText = 'Esgotado';
+                                    } else if (vidraria.quantidade <= vidraria.estoque_minimo) {
+                                        statusClass = 'status-low';
+                                        statusText = 'Estoque Baixo';
+                                    }
+                                    %>
+                                    <span class="glassware-status <%= statusClass %>"><%= statusText %></span>
+                                    
+                                    <!-- Botões de Movimentação -->
+                                    <div class="movement-buttons">
+                                        <button type="button" class="btn-action btn-take" 
+                                                onclick="openTakeModal(<%= vidraria.id %>, '<%= vidraria.nome.replace(/'/g, "\\'") %>', <%= vidraria.quantidade %>)"
+                                                <%= vidraria.quantidade === 0 ? 'disabled' : '' %>>
+                                            <i class="fas fa-sign-out-alt"></i> Retirar
+                                        </button>
+                                        <button type="button" class="btn-action btn-add" 
+                                                onclick="openAddModal(<%= vidraria.id %>, '<%= vidraria.nome.replace(/'/g, "\\'") %>')">
+                                            <i class="fas fa-sign-in-alt"></i> Adicionar
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="action-buttons">
+                                        <a href="/vidracarias/editar/<%= vidraria.id %>" class="btn-action btn-edit" title="Editar">
+                                            <i class="fas fa-edit"></i> Editar
+                                        </a>
+                                        <form action="/vidracarias/deletar/<%= vidraria.id %>" method="POST" style="display: inline;" 
+                                            onsubmit="return confirm('Tem certeza que deseja excluir esta vidraria? Esta ação não pode ser desfeita.');">
+                                            <button type="submit" class="btn-action btn-delete" title="Excluir">
+                                                <i class="fas fa-trash-alt"></i> Excluir
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }) %>
+                    <% } else { %>
+                        <div class="empty-state" style="grid-column: 1/-1;">
+                            <i class="fas fa-flask"></i>
+                            <p>Nenhuma vidraria cadastrada ainda.</p>
+                            <a href="/vidracarias/adicionar" class="primary-btn" style="margin-top: 1rem;">
+                                <i class="fas fa-plus"></i> Adicionar Primeira Vidraria
+                            </a>
                         </div>
+                    <% } %>
+                </div>
+            </div>
+                        
+            <!-- Modal para Pegar Vidraria -->
+            <div id="takeModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+                    <div class="flex items-center justify-between p-6 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                            <i class="fas fa-sign-out-alt text-red-500 mr-2"></i>
+                            Retirar Vidraria
+                        </h3>
+                        <button type="button" onclick="closeTakeModal()" class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times text-lg"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="p-6">
+                        <form id="takeForm">
+                            <input type="hidden" id="takeVidrariaId" name="vidraria_id">
+                            <input type="hidden" id="takeTipo" name="tipo" value="retirada">
+                            
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Vidraria</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50" 
+                                    id="takeVidrariaName" readonly>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="takeQuantity" class="block text-sm font-medium text-gray-700 mb-2 required-field">
+                                    Quantidade a Retirar
+                                </label>
+                                <div class="flex">
+                                    <input type="number" class="flex-1 px-3 py-2 border border-gray-300 rounded-l-md" 
+                                        id="takeQuantity" name="quantidade" min="1" required placeholder="Ex: 1">
+                                    <span class="px-3 py-2 bg-gray-100 border border-l-0 border-gray-300 rounded-r-md text-gray-600">unidades</span>
+                                </div>
+                                <small class="text-sm text-gray-500 mt-1" id="takeStockInfo">
+                                    Estoque disponível: <span id="takeStock">0</span> unidades
+                                </small>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="takeResponsible" class="block text-sm font-medium text-gray-700 mb-2 required-field">
+                                    Responsável
+                                </label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md" 
+                                    id="takeResponsible" name="responsavel" required placeholder="Digite seu nome">
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="takeProject" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Projeto/Experimento
+                                </label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md" 
+                                    id="takeProject" name="projeto" placeholder="Digite o projeto ou experimento">
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="takeNotes" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Observações
+                                </label>
+                                <textarea class="w-full px-3 py-2 border border-gray-300 rounded-md" 
+                                        id="takeNotes" name="observacoes" rows="3" 
+                                        placeholder="Observações adicionais..."></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="flex justify-end gap-3 p-6 border-t border-gray-200 bg-gray-50 rounded-b-lg">
+                        <button type="button" onclick="closeTakeModal()" 
+                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Cancelar
+                        </button>
+                        <button type="button" onclick="registrarMovimentacao('retirada')"
+                                class="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 flex items-center">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            Registrar Retirada
+                        </button>
+                    </div>
+                </div>
+            </div>
 
-                        <ul class="movement-list" id="movements-list">
-                            <!-- As movimentações serão carregadas via JavaScript -->
-                        </ul>
+            <!-- Modal para Adicionar Vidraria -->
+            <div id="addModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+                    <div class="flex items-center justify-between p-6 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                            <i class="fas fa-sign-in-alt text-green-500 mr-2"></i>
+                            Adicionar Vidraria ao Estoque
+                        </h3>
+                        <button type="button" onclick="closeAddModal()" class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times text-lg"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="p-6">
+                        <form id="addForm">
+                            <input type="hidden" id="addVidrariaId" name="vidraria_id">
+                            <input type="hidden" id="addTipo" name="tipo" value="reposicao">
+                            
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Vidraria</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50" 
+                                    id="addVidrariaName" readonly>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="addQuantity" class="block text-sm font-medium text-gray-700 mb-2 required-field">
+                                    Quantidade a Adicionar
+                                </label>
+                                <div class="flex">
+                                    <input type="number" class="flex-1 px-3 py-2 border border-gray-300 rounded-l-md" 
+                                        id="addQuantity" name="quantidade" min="1" required placeholder="Ex: 5">
+                                    <span class="px-3 py-2 bg-gray-100 border border-l-0 border-gray-300 rounded-r-md text-gray-600">unidades</span>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="addResponsible" class="block text-sm font-medium text-gray-700 mb-2 required-field">
+                                    Responsável
+                                </label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md" 
+                                    id="addResponsible" name="responsavel" required placeholder="Digite seu nome">
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="addSupplier" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Fornecedor
+                                </label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md" 
+                                    id="addSupplier" name="fornecedor" placeholder="Digite o nome do fornecedor">
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="addPurchaseDate" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Data da Aquisição
+                                </label>
+                                <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded-md" 
+                                    id="addPurchaseDate" name="data_aquisicao">
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="addNotes" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Observações
+                                </label>
+                                <textarea class="w-full px-3 py-2 border border-gray-300 rounded-md" 
+                                        id="addNotes" name="observacoes" rows="3" 
+                                        placeholder="Observações adicionais..."></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="flex justify-end gap-3 p-6 border-t border-gray-200 bg-gray-50 rounded-b-lg">
+                        <button type="button" onclick="closeAddModal()" 
+                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Cancelar
+                        </button>
+                        <button type="button" onclick="registrarMovimentacao('reposicao')"
+                                class="px-4 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 flex items-center">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            Registrar Adição
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </main>
-    <!-- Container para toasts (notificações) -->
-    <div class="toast-container"></div>
+
+
+    <!-- Container para Notificações -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 max-w-sm"></div>
+
 
     <script>
-        // Dados de exemplo para as vidrarias
-        const glasswareData = [
-            {
-                id: 1,
-                name: "Balão Volumétrico",
-                quantity: 12,
-                capacity: "250 mL",
-                material: "Vidro borossilicato",
-                status: "available",
-                category: "Volumétrico"
-            },
-            {
-                id: 2,
-                name: "Béquer",
-                quantity: 25,
-                capacity: "500 mL",
-                material: "Vidro temperado",
-                status: "available",
-                category: "Utilidade geral"
-            },
-            {
-                id: 3,
-                name: "Erlenmeyer",
-                quantity: 18,
-                capacity: "250 mL",
-                material: "Vidro borossilicato",
-                status: "available",
-                category: "Aquecimento"
-            },
-            {
-                id: 4,
-                name: "Pipeta Graduada",
-                quantity: 3,
-                capacity: "10 mL",
-                material: "Vidro borossilicato",
-                status: "low",
-                category: "Medição"
-            },
-            {
-                id: 5,
-                name: "Bureta",
-                quantity: 8,
-                capacity: "50 mL",
-                material: "Vidro borossilicato",
-                status: "available",
-                category: "Titulação"
-            },
-            {
-                id: 6,
-                name: "Condensador de Liebig",
-                quantity: 0,
-                capacity: "300 mm",
-                material: "Vidro borossilicato",
-                status: "unavailable",
-                category: "Destilação"
-            },
-            {
-                id: 7,
-                name: "Funil de Separação",
-                quantity: 5,
-                capacity: "250 mL",
-                material: "Vidro borossilicato",
-                status: "available",
-                category: "Separação"
-            },
-            {
-                id: 8,
-                name: "Proveta",
-                quantity: 2,
-                capacity: "100 mL",
-                material: "Vidro borossilicato",
-                status: "low",
-                category: "Medição"
-            }
-        ];
+        // Carregar estatísticas
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulação de dados - substitua pela sua API real
+            const statistics = {
+                total: <%= typeof vidracarias !== 'undefined' ? vidracarias.length : 0 %>,
+                disponiveis: <%= typeof vidracarias !== 'undefined' ? vidracarias.filter(v => v.quantidade > v.estoque_minimo).length : 0 %>,
+                estoqueBaixo: <%= typeof vidracarias !== 'undefined' ? vidracarias.filter(v => v.quantidade <= v.estoque_minimo && v.quantidade > 0).length : 0 %>,
+                esgotados: <%= typeof vidracarias !== 'undefined' ? vidracarias.filter(v => v.quantidade === 0).length : 0 %>
+            };
 
-        // Dados de exemplo para movimentações
-        const movementData = [
-            {
-                id: 1,
-                type: "out",
-                glassware: "Béquer 500mL",
-                quantity: 5,
-                date: "2023-06-15T10:30:00",
-                responsible: "Dr. Silva"
-            },
-            {
-                id: 2,
-                type: "in",
-                glassware: "Pipeta Graduada 10mL",
-                quantity: 10,
-                date: "2023-06-14T16:45:00",
-                responsible: "Lab. Central"
-            },
-            {
-                id: 3,
-                type: "out",
-                glassware: "Erlenmeyer 250mL",
-                quantity: 8,
-                date: "2023-06-14T09:15:00",
-                responsible: "Profa. Oliveira"
-            },
-            {
-                id: 4,
-                type: "in",
-                glassware: "Balão Volumétrico 250mL",
-                quantity: 6,
-                date: "2023-06-13T14:20:00",
-                responsible: "Fornecedor XYZ"
-            }
-        ];
+            document.getElementById('total-vidrarias').textContent = statistics.total;
+            document.getElementById('disponiveis').textContent = statistics.disponiveis;
+            document.getElementById('estoque-baixo').textContent = statistics.estoqueBaixo;
+            document.getElementById('esgotados').textContent = statistics.esgotados;
 
-        // Função para exibir notificações
+            // Sistema de busca
+            const searchInput = document.getElementById('search-input');
+            const glasswareCards = document.querySelectorAll('.glassware-card');
+
+            searchInput.addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase().trim();
+                
+                glasswareCards.forEach(card => {
+                    const name = card.getAttribute('data-name');
+                    const category = card.getAttribute('data-category');
+                    
+                    if (name.includes(searchTerm) || category.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+
+            // Animações de contagem para as estatísticas
+            function animateCounter(element, target) {
+                let current = 0;
+                const increment = target / 50;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        element.textContent = target;
+                        clearInterval(timer);
+                    } else {
+                        element.textContent = Math.floor(current);
+                    }
+                }, 40);
+            }
+
+            // Aplicar animação aos contadores
+            setTimeout(() => {
+                animateCounter(document.getElementById('total-vidrarias'), statistics.total);
+                animateCounter(document.getElementById('disponiveis'), statistics.disponiveis);
+                animateCounter(document.getElementById('estoque-baixo'), statistics.estoqueBaixo);
+                animateCounter(document.getElementById('esgotados'), statistics.esgotados);
+            }, 500);
+        });
+
+        // Função para confirmar exclusão
+        function confirmDelete(event) {
+            if (!confirm('Tem certeza que deseja excluir esta vidraria?')) {
+                event.preventDefault();
+            }
+        }
+
+        // Adicionar event listeners para os formulários de exclusão
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteForms = document.querySelectorAll('form[action*="deletar"]');
+            deleteForms.forEach(form => {
+                form.addEventListener('submit', confirmDelete);
+            });
+        });
+
+
+        // Carregar movimentações
+        function carregarMovimentacoes() {
+            fetch('/api/vidracarias/movimentacoes?limit=8')
+                .then(response => response.json())
+                .then(movimentacoes => {
+                    const movementsList = document.getElementById('movementsList');
+                    const lastUpdate = document.getElementById('lastUpdate');
+                    
+                    if (movimentacoes.length === 0) {
+                        movementsList.innerHTML = `
+                            <div class="empty-movements">
+                                <i class="fas fa-exchange-alt"></i>
+                                <p>Nenhuma movimentação registrada</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    movementsList.innerHTML = movimentacoes.map(mov => `
+                        <li class="movement-item">
+                            <div class="movement-icon ${mov.tipo}">
+                                <i class="fas ${mov.tipo === 'retirada' ? 'fa-arrow-up' : 'fa-arrow-down'}"></i>
+                            </div>
+                            <div class="movement-content">
+                                <div class="movement-title">${mov.vidraria_nome}</div>
+                                <div class="movement-details">
+                                    ${mov.tipo === 'retirada' ? 'Retirada' : 'Reposição'} por ${mov.usuario}
+                                    ${mov.observacao ? ` • ${mov.observacao}` : ''}
+                                </div>
+                            </div>
+                            <div class="movement-quantity ${mov.tipo}">
+                                ${mov.tipo === 'retirada' ? '-' : '+'}${mov.quantidade}
+                            </div>
+                            <div class="movement-time">
+                                ${new Date(mov.data_movimentacao).toLocaleDateString('pt-BR')}
+                            </div>
+                        </li>
+                    `).join('');
+                    
+                    lastUpdate.textContent = `Atualizado ${new Date().toLocaleTimeString('pt-BR')}`;
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar movimentações:', error);
+                    document.getElementById('movementsList').innerHTML = `
+                        <div class="empty-movements">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>Erro ao carregar movimentações</p>
+                        </div>
+                    `;
+                });
+        }
+
+        // Carregar vidrarias no modal
+        function carregarVidrariasParaMovimentacao() {
+            fetch('/api/vidracarias/list')
+                .then(response => response.json())
+                .then(vidracarias => {
+                    const select = document.getElementById('vidrariaSelect');
+                    select.innerHTML = '<option value="">Selecione uma vidraria...</option>' +
+                        vidracarias.map(v => `
+                            <option value="${v.id}" data-stock="${v.quantidade}">
+                                ${v.nome} (Estoque: ${v.quantidade})
+                            </option>
+                        `).join('');
+                });
+        }
+
+        // Registrar nova movimentação
+        function registrarMovimentacao() {
+            const form = document.getElementById('movimentacaoForm');
+            const vidrariaId = document.getElementById('vidrariaSelect').value;
+            const tipo = document.getElementById('tipoMovimentacao').value;
+            const quantidade = document.getElementById('quantidadeMovimentacao').value;
+            const observacao = document.getElementById('observacaoMovimentacao').value;
+            
+            if (!vidrariaId || !tipo || !quantidade) {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+                return;
+            }
+            
+            const selectedOption = document.getElementById('vidrariaSelect').selectedOptions[0];
+            const estoqueAtual = parseInt(selectedOption.getAttribute('data-stock'));
+            
+            if (tipo === 'retirada' && parseInt(quantidade) > estoqueAtual) {
+                alert('Quantidade de retirada não pode ser maior que o estoque atual.');
+                return;
+            }
+            
+            fetch('/api/vidracarias/movimentacao', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    vidraria_id: vidrariaId,
+                    tipo: tipo,
+                    quantidade: quantidade,
+                    observacao: observacao
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Fechar modal e limpar formulário
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('movimentacaoModal'));
+                    modal.hide();
+                    form.reset();
+                    
+                    // Recarregar movimentações e estatísticas
+                    carregarMovimentacoes();
+                    location.reload(); // Recarrega a página para atualizar estatísticas
+                } else {
+                    alert(data.error || 'Erro ao registrar movimentação');
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro ao registrar movimentação');
+            });
+        }
+
+        // Inicializar quando a página carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            carregarMovimentacoes();
+            
+            // Configurar modal
+            const movimentacaoModal = document.getElementById('movimentacaoModal');
+            if (movimentacaoModal) {
+                movimentacaoModal.addEventListener('show.bs.modal', function() {
+                    carregarVidrariasParaMovimentacao();
+                });
+            }
+            
+            // Atualizar movimentações a cada 30 segundos
+            setInterval(carregarMovimentacoes, 30000);
+        });
+
+        // Funções para os modais - Tailwind Version
+        function openTakeModal(vidrariaId, vidrariaNome, estoqueAtual) {
+            console.log('Abrindo modal de retirada:', { vidrariaId, vidrariaNome, estoqueAtual });
+            
+            // Preencher os campos do modal
+            document.getElementById('takeVidrariaId').value = vidrariaId;
+            document.getElementById('takeVidrariaName').value = vidrariaNome;
+            document.getElementById('takeStock').textContent = estoqueAtual;
+            document.getElementById('takeQuantity').max = estoqueAtual;
+            document.getElementById('takeQuantity').value = '1';
+            document.getElementById('takeResponsible').value = '';
+            document.getElementById('takeProject').value = '';
+            document.getElementById('takeNotes').value = '';
+            
+            // Mostrar o modal
+            document.getElementById('takeModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevenir scroll
+        }
+
+        function openAddModal(vidrariaId, vidrariaNome) {
+            console.log('Abrindo modal de adição:', { vidrariaId, vidrariaNome });
+            
+            // Preencher os campos do modal
+            document.getElementById('addVidrariaId').value = vidrariaId;
+            document.getElementById('addVidrariaName').value = vidrariaNome;
+            document.getElementById('addQuantity').value = '1';
+            document.getElementById('addResponsible').value = '';
+            document.getElementById('addSupplier').value = '';
+            document.getElementById('addPurchaseDate').value = '';
+            document.getElementById('addNotes').value = '';
+            
+            // Mostrar o modal
+            document.getElementById('addModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevenir scroll
+        }
+
+        function closeTakeModal() {
+            document.getElementById('takeModal').classList.add('hidden');
+            document.body.style.overflow = ''; // Restaurar scroll
+        }
+
+        function closeAddModal() {
+            document.getElementById('addModal').classList.add('hidden');
+            document.body.style.overflow = ''; // Restaurar scroll
+        }
+
+        // Fechar modais clicando fora
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fechar modal de retirada clicando fora
+            document.getElementById('takeModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeTakeModal();
+                }
+            });
+            
+            // Fechar modal de adição clicando fora
+            document.getElementById('addModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeAddModal();
+                }
+            });
+            
+            // Fechar com ESC key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeTakeModal();
+                    closeAddModal();
+                }
+            });
+        });
+
+        // Função principal para registrar movimentação
+        function registrarMovimentacao(tipo) {
+            console.log('Registrando movimentação:', tipo);
+            
+            let form, modal;
+            
+            if (tipo === 'retirada') {
+                form = document.getElementById('takeForm');
+                modal = document.getElementById('takeModal');
+            } else {
+                form = document.getElementById('addForm');
+                modal = document.getElementById('addModal');
+            }
+            
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            
+            console.log('Dados do formulário:', data);
+            
+            // Validar campos obrigatórios
+            if (!data.vidraria_id || !data.quantidade || !data.responsavel) {
+                showToast('Por favor, preencha todos os campos obrigatórios.', 'danger');
+                return;
+            }
+            
+            // Converter quantidade para número
+            data.quantidade = parseInt(data.quantidade);
+            if (data.quantidade <= 0) {
+                showToast('A quantidade deve ser maior que zero.', 'danger');
+                return;
+            }
+            
+            // Verificar estoque para retirada
+            if (tipo === 'retirada') {
+                const estoqueAtual = parseInt(document.getElementById('takeStock').textContent);
+                if (data.quantidade > estoqueAtual) {
+                    showToast(`Quantidade solicitada (${data.quantidade}) excede o estoque disponível (${estoqueAtual})`, 'danger');
+                    return;
+                }
+            }
+            
+            // Mostrar loading
+            const submitBtn = modal.querySelector('button[onclick*="registrarMovimentacao"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processando...';
+            submitBtn.disabled = true;
+            
+            // Enviar para API
+            fetch('/api/vidracarias/movimentacao-rapida', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log('Resposta da API:', result);
+                
+                if (result.success) {
+                    showToast(result.message, 'success');
+                    
+                    // Fechar modal
+                    if (tipo === 'retirada') {
+                        closeTakeModal();
+                    } else {
+                        closeAddModal();
+                    }
+                    
+                    // Recarregar dados após um breve delay
+                    setTimeout(() => {
+                        carregarMovimentacoes();
+                        location.reload();
+                    }, 1500);
+                    
+                } else {
+                    showToast(result.error || 'Erro ao registrar movimentação', 'danger');
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                showToast('Erro de conexão. Tente novamente.', 'danger');
+            })
+            .finally(() => {
+                // Restaurar botão
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
+        }
+
+        // Função para exibir notificações (Toast)
         function showToast(message, type = 'success') {
-            const toastContainer = document.querySelector('.toast-container');
+            const toastContainer = document.getElementById('toast-container') || createToastContainer();
+            
             const toastId = 'toast-' + Date.now();
-            
             const toast = document.createElement('div');
-            toast.className = `toast align-items-center text-bg-${type} border-0`;
-            toast.id = toastId;
-            toast.setAttribute('role', 'alert');
-            toast.setAttribute('aria-live', 'assertive');
-            toast.setAttribute('aria-atomic', 'true');
             
+            const bgColor = type === 'success' ? 'bg-green-500' : 
+                        type === 'danger' ? 'bg-red-500' : 
+                        'bg-blue-500';
+            
+            toast.className = `${bgColor} text-white px-6 py-4 rounded-lg shadow-lg mb-2 transform transition-all duration-300 ease-in-out opacity-0 translate-y-2`;
             toast.innerHTML = `
-                <div class="d-flex">
-                    <div class="toast-body">
-                        ${message}
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'} mr-2"></i>
+                        <span>${message}</span>
                     </div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-200">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
             `;
             
             toastContainer.appendChild(toast);
             
-            // Remover o toast após 5 segundos
+            // Animar entrada
             setTimeout(() => {
-                if (toast.parentNode) {
-                    toast.parentNode.removeChild(toast);
+                toast.classList.remove('opacity-0', 'translate-y-2');
+                toast.classList.add('opacity-100', 'translate-y-0');
+            }, 10);
+            
+            // Auto-remover após 4 segundos
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.classList.add('opacity-0', 'translate-y-2');
+                    setTimeout(() => {
+                        if (toast.parentElement) {
+                            toast.remove();
+                        }
+                    }, 300);
                 }
-            }, 5000);
+            }, 4000);
         }
 
-        // Função para carregar as vidrarias
-        function loadGlassware() {
-            const glasswareList = document.getElementById('glassware-list');
-            glasswareList.innerHTML = '';
-            
-            glasswareData.forEach(glassware => {
-                const glasswareCard = document.createElement('div');
-                glasswareCard.className = 'glassware-card';
-                
-                // Determinar ícone com base no tipo de vidraria
-                let iconClass = 'fas fa-flask'; // padrão
-                if (glassware.name.includes('Balão')) iconClass = 'fas fa-weight';
-                if (glassware.name.includes('Béquer')) iconClass = 'fas fa-glass-whiskey';
-                if (glassware.name.includes('Erlenmeyer')) iconClass = 'fas fa-mortar-pestle';
-                if (glassware.name.includes('Pipeta')) iconClass = 'fas fa-tint';
-                if (glassware.name.includes('Bureta')) iconClass = 'fas fa-ruler-vertical';
-                if (glassware.name.includes('Condensador')) iconClass = 'fas fa-wind';
-                if (glassware.name.includes('Funil')) iconClass = 'fas fa-filter';
-                if (glassware.name.includes('Proveta')) iconClass = 'fas fa-vial';
-                
-                // Determinar classe de status
-                let statusClass = 'status-available';
-                let statusText = 'Disponível';
-                if (glassware.status === 'low') {
-                    statusClass = 'status-low';
-                    statusText = 'Estoque Baixo';
-                } else if (glassware.status === 'unavailable') {
-                    statusClass = 'status-unavailable';
-                    statusText = 'Indisponível';
-                }
-                
-                glasswareCard.innerHTML = `
-                    <div class="glassware-image">
-                        <i class="${iconClass}"></i>
-                    </div>
-                    <div class="glassware-content">
-                        <h3 class="glassware-name">${glassware.name}</h3>
-                        <div class="glassware-details">
-                            <div class="glassware-detail">
-                                <span>Quantidade:</span>
-                                <span>${glassware.quantity} unidades</span>
-                            </div>
-                            <div class="glassware-detail">
-                                <span>Capacidade:</span>
-                                <span>${glassware.capacity}</span>
-                            </div>
-                            <div class="glassware-detail">
-                                <span>Material:</span>
-                                <span>${glassware.material}</span>
-                            </div>
-                            <div class="glassware-detail">
-                                <span>Categoria:</span>
-                                <span>${glassware.category}</span>
-                            </div>
-                        </div>
-                        <span class="glassware-status ${statusClass}">${statusText}</span>
-                    </div>
-                `;
-                
-                glasswareList.appendChild(glasswareCard);
-            });
+        function createToastContainer() {
+            const container = document.createElement('div');
+            container.id = 'toast-container';
+            container.className = 'fixed top-4 right-4 z-50 max-w-sm';
+            document.body.appendChild(container);
+            return container;
         }
 
-        // Função para carregar as movimentações
-        function loadMovements() {
-            const movementsList = document.getElementById('movements-list');
-            movementsList.innerHTML = '';
-            
-            movementData.forEach(movement => {
-                const movementItem = document.createElement('li');
-                movementItem.className = 'movement-item';
-                
-                movementItem.innerHTML = `
-                    <div class="movement-icon ${movement.type === 'in' ? 'movement-in' : 'movement-out'}">
-                        <i class="fas fa-arrow-${movement.type === 'in' ? 'down' : 'up'}"></i>
-                    </div>
-                    <div class="movement-content">
-                        <p class="movement-title">${movement.type === 'in' ? 'Entrada' : 'Saída'} - ${movement.glassware}</p>
-                        <div class="movement-details">
-                            <span class="movement-quantity">${movement.quantity} unidades</span>
-                            <span class="movement-date">${new Date(movement.date).toLocaleString('pt-BR')}</span>
-                        </div>
-                        <small>Por: ${movement.responsible}</small>
-                    </div>
-                `;
-                
-                movementsList.appendChild(movementItem);
-            });
-        }
-
-        // Função para carregar estatísticas
-        function loadStatistics() {
-            // Calcular totais
-            const totalGlassware = glasswareData.reduce((sum, item) => sum + item.quantity, 0);
-            const availableGlassware = glasswareData.filter(item => item.status === 'available')
-                .reduce((sum, item) => sum + item.quantity, 0);
-            
-            // Atualizar os contadores
-            document.getElementById('total-glassware').textContent = totalGlassware;
-            document.getElementById('available-glassware').textContent = availableGlassware;
-            document.getElementById('total-items').textContent = `${totalGlassware} itens em inventário`;
-            
-            // Calcular estatísticas por categoria
-            const categoryStats = {};
-            glasswareData.forEach(item => {
-                if (!categoryStats[item.category]) {
-                    categoryStats[item.category] = 0;
-                }
-                categoryStats[item.category] += item.quantity;
-            });
-            
-            // Atualizar as estatísticas de categorias
-            const categoryStatsElement = document.getElementById('category-stats');
-            categoryStatsElement.innerHTML = '';
-            
-            for (const category in categoryStats) {
-                const percentage = Math.round((categoryStats[category] / totalGlassware) * 100);
-                const progressBar = document.createElement('div');
-                progressBar.className = 'd-flex align-items-center mt-3';
-                
-                progressBar.innerHTML = `
-                    <div class="flex-grow-1 me-3">
-                        <div class="small text-muted">${category}</div>
-                        <div class="progress mt-1" style="height: 8px;">
-                            <div class="progress-bar bg-primary" role="progressbar" style="width: ${percentage}%" 
-                                aria-valuenow="${percentage}" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                    </div>
-                    <div class="flex-shrink-0">
-                        <span class="text-dark fw-bold">${percentage}%</span>
-                    </div>
-                `;
-                
-                categoryStatsElement.appendChild(progressBar);
-            }
-        }
-
-        // Botão para adicionar vidraria
-        document.getElementById('add-glassware').addEventListener('click', function() {
-            showToast('Funcionalidade de adicionar vidraria em desenvolvimento', 'info');
-        });
-
-        // Carregar dados iniciais
+        // Validação em tempo real para quantidade de retirada
         document.addEventListener('DOMContentLoaded', function() {
-            loadGlassware();
-            loadMovements();
-            loadStatistics();
-            
-            // Simular carregamento de dados
-            showToast('Estoque de vidrarias carregado com sucesso!');
+            const takeQuantity = document.getElementById('takeQuantity');
+            if (takeQuantity) {
+                takeQuantity.addEventListener('input', function() {
+                    const max = parseInt(this.max);
+                    const value = parseInt(this.value) || 0;
+                    const stockInfo = document.getElementById('takeStockInfo');
+                    
+                    if (value > max) {
+                        this.classList.add('border-red-500', 'ring-2', 'ring-red-200');
+                        stockInfo.innerHTML = `<span class="text-red-600 font-medium">Quantidade excede o estoque disponível (${max} unidades)</span>`;
+                    } else {
+                        this.classList.remove('border-red-500', 'ring-2', 'ring-red-200');
+                        stockInfo.innerHTML = `Estoque disponível: <span id="takeStock">${max}</span> unidades`;
+                    }
+                });
+            }
         });
+
+        // Variáveis para paginação
+        let currentPage = 1;
+        const movementsPerPage = 10;
+        let allMovementsData = [];
+        let filteredMovements = [];
+
+        // Funções para o modal de todas as movimentações
+        function openAllMovementsModal() {
+            console.log('Abrindo modal de todas as movimentações');
+            document.getElementById('allMovementsModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            
+            // Carregar todas as movimentações
+            loadAllMovements();
+        }
+
+        function closeAllMovementsModal() {
+            document.getElementById('allMovementsModal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        // Carregar movimentações (apenas 4 últimas para o card)
+        function carregarMovimentacoes() {
+            fetch('/api/vidracarias/movimentacoes?limit=4')
+                .then(response => response.json())
+                .then(movimentacoes => {
+                    const movementsList = document.getElementById('movementsList');
+                    const lastUpdate = document.getElementById('lastUpdate');
+                    
+                    if (movimentacoes.length === 0) {
+                        movementsList.innerHTML = `
+                            <div class="empty-movements">
+                                <i class="fas fa-exchange-alt"></i>
+                                <p>Nenhuma movimentação registrada</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    movementsList.innerHTML = movimentacoes.map(mov => `
+                        <li class="movement-item">
+                            <div class="movement-icon ${mov.tipo}">
+                                <i class="fas ${mov.tipo === 'retirada' ? 'fa-arrow-up' : 'fa-arrow-down'}"></i>
+                            </div>
+                            <div class="movement-content">
+                                <div class="movement-title">${mov.vidraria_nome}</div>
+                                <div class="movement-details">
+                                    ${mov.tipo === 'retirada' ? 'Retirada' : 'Reposição'} por ${mov.usuario}
+                                    ${mov.observacao ? ` • ${mov.observacao}` : ''}
+                                </div>
+                            </div>
+                            <div class="movement-quantity ${mov.tipo}">
+                                ${mov.tipo === 'retirada' ? '-' : '+'}${mov.quantidade}
+                            </div>
+                            <div class="movement-time">
+                                ${new Date(mov.data_movimentacao).toLocaleDateString('pt-BR')}
+                                <br>
+                                <small>${new Date(mov.data_movimentacao).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}</small>
+                            </div>
+                        </li>
+                    `).join('');
+                    
+                    lastUpdate.textContent = `Atualizado ${new Date().toLocaleTimeString('pt-BR')}`;
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar movimentações:', error);
+                    document.getElementById('movementsList').innerHTML = `
+                        <div class="empty-movements">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>Erro ao carregar movimentações</p>
+                        </div>
+                    `;
+                });
+        }
+
+        // Carregar todas as movimentações para o modal
+        function loadAllMovements(page = 1) {
+            fetch('/api/vidracarias/movimentacoes?limit=1000') // Buscar muitas movimentações
+                .then(response => response.json())
+                .then(movimentacoes => {
+                    allMovementsData = movimentacoes;
+                    filteredMovements = [...movimentacoes];
+                    currentPage = page;
+                    
+                    applyFilters();
+                    updateMovementsTable();
+                    updatePagination();
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar todas as movimentações:', error);
+                    document.getElementById('allMovementsTable').innerHTML = `
+                        <tr>
+                            <td colspan="6" class="px-6 py-4 text-center text-red-500">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>
+                                Erro ao carregar movimentações
+                            </td>
+                        </tr>
+                    `;
+                });
+        }
+
+        // Aplicar filtros
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchMovements').value.toLowerCase();
+            const typeFilter = document.getElementById('filterType').value;
+            const startDate = document.getElementById('filterStartDate').value;
+            const endDate = document.getElementById('filterEndDate').value;
+            
+            filteredMovements = allMovementsData.filter(mov => {
+                // Filtro de busca
+                const matchesSearch = !searchTerm || 
+                    mov.vidraria_nome.toLowerCase().includes(searchTerm) ||
+                    mov.usuario.toLowerCase().includes(searchTerm) ||
+                    (mov.observacao && mov.observacao.toLowerCase().includes(searchTerm));
+                
+                // Filtro de tipo
+                const matchesType = !typeFilter || mov.tipo === typeFilter;
+                
+                // Filtro de data
+                const movDate = new Date(mov.data_movimentacao).toISOString().split('T')[0];
+                const matchesStartDate = !startDate || movDate >= startDate;
+                const matchesEndDate = !endDate || movDate <= endDate;
+                
+                return matchesSearch && matchesType && matchesStartDate && matchesEndDate;
+            });
+            
+            currentPage = 1;
+            updateMovementsTable();
+            updatePagination();
+        }
+
+        // Atualizar tabela de movimentações
+        function updateMovementsTable() {
+            const tableBody = document.getElementById('allMovementsTable');
+            const startIndex = (currentPage - 1) * movementsPerPage;
+            const endIndex = startIndex + movementsPerPage;
+            const currentMovements = filteredMovements.slice(startIndex, endIndex);
+            
+            if (currentMovements.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                            <i class="fas fa-inbox text-4xl mb-3 opacity-30"></i>
+                            <p class="text-lg">Nenhuma movimentação encontrada</p>
+                            <p class="text-sm">Tente ajustar os filtros</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tableBody.innerHTML = currentMovements.map(mov => {
+                const movDate = new Date(mov.data_movimentacao);
+                const formattedDate = movDate.toLocaleDateString('pt-BR');
+                const formattedTime = movDate.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+                
+                const tipoBadge = mov.tipo === 'retirada' ? 
+                    '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Retirada</span>' :
+                    '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Reposição</span>';
+                
+                const quantidadeClass = mov.tipo === 'retirada' ? 'text-red-600 font-bold' : 'text-green-600 font-bold';
+                const quantidadeSymbol = mov.tipo === 'retirada' ? '-' : '+';
+                
+                return `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            <div class="font-medium">${formattedDate}</div>
+                            <div class="text-gray-500">${formattedTime}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            <div class="font-medium">${mov.vidraria_nome}</div>
+                            ${mov.capacidade ? `<div class="text-gray-500 text-xs">${mov.capacidade}</div>` : ''}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            ${tipoBadge}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm ${quantidadeClass}">
+                            ${quantidadeSymbol}${mov.quantidade}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            ${mov.usuario}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-900 max-w-xs">
+                            <div class="truncate" title="${mov.observacao || 'Sem observações'}">
+                                ${mov.observacao || '<span class="text-gray-400">-</span>'}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Atualizar paginação
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredMovements.length / movementsPerPage);
+            const paginationContainer = document.getElementById('movementsPagination');
+            const paginationInfo = document.getElementById('movementsPaginationInfo');
+            
+            // Informações da paginação
+            const startItem = (currentPage - 1) * movementsPerPage + 1;
+            const endItem = Math.min(currentPage * movementsPerPage, filteredMovements.length);
+            paginationInfo.textContent = `Mostrando ${startItem}-${endItem} de ${filteredMovements.length} registros`;
+            
+            if (totalPages <= 1) {
+                paginationContainer.innerHTML = '';
+                return;
+            }
+            
+            let paginationHTML = '';
+            
+            // Botão anterior
+            if (currentPage > 1) {
+                paginationHTML += `
+                    <button onclick="changePage(${currentPage - 1})" 
+                            class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                `;
+            }
+            
+            // Páginas
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    paginationHTML += `
+                        <button onclick="changePage(${i})" 
+                                class="px-3 py-2 text-sm font-medium border ${i === currentPage ? 
+                                    'bg-blue-600 text-white border-blue-600' : 
+                                    'text-gray-500 bg-white border-gray-300 hover:bg-gray-50'} rounded-md">
+                            ${i}
+                        </button>
+                    `;
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    paginationHTML += `<span class="px-3 py-2 text-sm text-gray-500">...</span>`;
+                }
+            }
+            
+            // Botão próximo
+            if (currentPage < totalPages) {
+                paginationHTML += `
+                    <button onclick="changePage(${currentPage + 1})" 
+                            class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                `;
+            }
+            
+            paginationContainer.innerHTML = paginationHTML;
+        }
+
+        // Mudar página
+        function changePage(page) {
+            currentPage = page;
+            updateMovementsTable();
+            updatePagination();
+            
+            // Scroll para o topo da tabela
+            document.getElementById('allMovementsTable').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Exportar movimentações (placeholder)
+        function exportMovements() {
+            showToast('Funcionalidade de exportação em desenvolvimento', 'info');
+        }
+
+        // Configurar event listeners para os filtros
+        document.addEventListener('DOMContentLoaded', function() {
+            // Filtros do modal de todas as movimentações
+            document.getElementById('searchMovements')?.addEventListener('input', applyFilters);
+            document.getElementById('filterType')?.addEventListener('change', applyFilters);
+            document.getElementById('filterStartDate')?.addEventListener('change', applyFilters);
+            document.getElementById('filterEndDate')?.addEventListener('change', applyFilters);
+            
+            // Fechar modal clicando fora
+            document.getElementById('allMovementsModal')?.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeAllMovementsModal();
+                }
+            });
+            
+            // Fechar com ESC
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && !document.getElementById('allMovementsModal').classList.contains('hidden')) {
+                    closeAllMovementsModal();
+                }
+            });
+        });
+
+        // Atualizar movimentações a cada 30 segundos
+        setInterval(carregarMovimentacoes, 30000);
     </script>
 </body>
 </html>

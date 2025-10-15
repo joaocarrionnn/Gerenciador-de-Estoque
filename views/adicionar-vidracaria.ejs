@@ -7,165 +7,637 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        .card {
-            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-            border: 1px solid #e3e6f0;
+        :root {
+            --primary: #2d3748;
+            --secondary: #2d3748;
+            --success: #2d3748;
+            --warning: #2d3748;
+            --info: #2d3748;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
         }
-        .form-section {
-            background: #f8f9fc;
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fb;
+            color: #333;
+            min-height: 100vh;
+        }
+        
+        .flex {
+            display: flex;
+        }
+        
+        .flex-1 {
+            flex: 1;
+        }
+        
+        .overflow-auto {
+            overflow: auto;
+        }
+        
+        .min-h-screen {
+            min-height: 100vh;
+        }
+        
+        /* Layout principal */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
             padding: 1.5rem;
-            border-radius: 0.35rem;
+        }
+        
+        /* Header da seção */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 1.5rem;
-            border-left: 0.25rem solid #4e73df;
+        }
+        
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+        
+        /* Card do formulário */
+        .form-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .form-card-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+        
+        .form-card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .form-card-body {
+            padding: 1.5rem;
+        }
+        
+        .form-section {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .form-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .section-heading {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #4361ee;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .required-label::after {
+            content: " *";
+            color: #e53e3e;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #4361ee;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: white;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        
+        .form-select:focus {
+            outline: none;
+            border-color: #4361ee;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+        }
+        
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-check {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .form-check-input {
+            width: 18px;
+            height: 18px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            appearance: none;
+            -webkit-appearance: none;
+            background-color: white;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .form-check-input:checked {
+            background-color: #4361ee;
+            border-color: #4361ee;
+        }
+        
+        .form-check-input:checked::before {
+            content: "✓";
+            position: absolute;
+            color: white;
+            font-size: 12px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .form-check-label {
+            font-weight: 400;
+            color: #4a5568;
+            cursor: pointer;
+        }
+        
+        .form-check-inline {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 1rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .danger-zone {
+            background: rgba(245, 101, 101, 0.1);
+            border-left: 4px solid #e53e3e;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .danger-zone h6 {
+            color: #e53e3e;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .danger-zone p {
+            color: #718096;
+            margin-bottom: 0;
+            font-size: 0.9rem;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .is-invalid {
+            border-color: #e53e3e;
+        }
+        
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Estilos para formulário responsivo */
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -0.75rem;
+        }
+
+        .form-group {
+            flex: 1 0 100%;
+            padding: 0 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .radio-group {
+            margin-top: 0.5rem;
+        }
+
+        .form-check {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Para tablets */
+        @media (min-width: 576px) {
+            .form-row .form-group {
+                flex: 0 0 50%;
+                max-width: 50%;
+            }
+            
+            .form-row-3 .form-group {
+                flex: 0 0 33.333333%;
+                max-width: 33.333333%;
+            }
+        }
+
+        /* Para desktop */
+        @media (min-width: 992px) {
+            .form-row .form-group {
+                flex: 0 0 50%;
+                max-width: 50%;
+            }
+            
+            .form-row-3 .form-group {
+                flex: 0 0 33.333333%;
+                max-width: 33.333333%;
+            }
+        }
+
+        /* Ajustes para telas muito pequenas (menos de 400px) */
+        @media (max-width: 400px) {
+            .form-group {
+                flex: 1 0 100%;
+                max-width: 100%;
+            }
+            
+            .radio-group {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            padding: 20px;
+            justify-content: center;
+            align-items: center;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 8px;
+            padding: 14px 26px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background-color: #2c3e50;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background-color: rgb(62, 75, 87);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: #ffffff;
+        }
+
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.7s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn i {
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        .btn:hover i {
+            transform: rotate(90deg);
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border: 1px solid transparent;
+        }
+        
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
         }
     </style>
 </head>
-<body>
+<body class="flex">
     <%- include('partials/header') %>
-
-    <div class="container mt-4">
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <!-- Cabeçalho -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <h2><i class="fas fa-flask me-2"></i>Adicionar Nova Vidraria</h2>
-                        <p class="text-muted">Cadastre uma nova vidraria ou equipamento de laboratório</p>
-                    </div>
-                    <a href="/vidracarias" class="btn btn-outline-secondary">
-                        <i class="fas fa-arrow-left me-2"></i>Voltar para Lista
-                    </a>
+    
+    <!-- Conteúdo Principal -->
+    <main class="flex-1 overflow-auto bg-gray-50 min-h-screen">
+        <div class="main-container">
+            <!-- Header da Página -->
+            <div class="section-header">
+                <h1 class="section-title">Adicionar Nova Vidraria</h1>
+                <a href="/vidracarias" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Voltar para Lista
+                </a>
+            </div>
+            
+            <!-- Formulário de Adição de Vidraria -->
+            <div class="form-card">
+                <div class="form-card-header">
+                    <h2 class="form-card-title">
+                        <i class="fas fa-flask"></i>
+                        Formulário de Cadastro de Vidraria
+                    </h2>
                 </div>
-
-                <!-- Alertas -->
-                <% if (error) { %>
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <i class="fas fa-exclamation-circle me-2"></i><%= error %>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                <% } %>
-                <% if (success) { %>
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <i class="fas fa-check-circle me-2"></i><%= success %>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                <% } %>
-
-                <!-- Formulário -->
-                <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Informações da Vidraria</h5>
-                    </div>
-                    <div class="card-body">
-                        <form action="/vidracarias/adicionar" method="POST">
-                            <div class="form-section">
-                                <h6 class="text-primary mb-3"><i class="fas fa-tag me-2"></i>Informações Básicas</h6>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="nome" class="form-label">Nome da Vidraria *</label>
-                                        <input type="text" class="form-control" id="nome" name="nome" 
-                                               value="<%= formData ? formData.nome : '' %>" required>
-                                        <div class="form-text">Ex: Béquer, Erlenmeyer, Pipeta, etc.</div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="categoria" class="form-label">Categoria *</label>
-                                        <select class="form-select" id="categoria" name="categoria" required>
-                                            <option value="">Selecione uma categoria</option>
-                                            <option value="volumetrico" <%= formData && formData.categoria === 'volumetrico' ? 'selected' : '' %>>Volumétrico</option>
-                                            <option value="transferencia" <%= formData && formData.categoria === 'transferencia' ? 'selected' : '' %>>Transferência</option>
-                                            <option value="aquecimento" <%= formData && formData.categoria === 'aquecimento' ? 'selected' : '' %>>Aquecimento</option>
-                                            <option value="separacao" <%= formData && formData.categoria === 'separacao' ? 'selected' : '' %>>Separação</option>
-                                            <option value="suporte" <%= formData && formData.categoria === 'suporte' ? 'selected' : '' %>>Suporte</option>
-                                            <option value="medicao" <%= formData && formData.categoria === 'medicao' ? 'selected' : '' %>>Medição</option>
-                                        </select>
-                                    </div>
+                <div class="form-card-body">
+                    <form id="vidrariaForm" action="/vidracarias/adicionar" method="POST">
+                        <!-- Mensagens de erro -->
+                        <% if (error) { %>
+                            <div class="alert alert-danger">
+                                <i class="fas fa-exclamation-circle me-2"></i><%= error %>
+                            </div>
+                        <% } %>
+                        <% if (success) { %>
+                            <div class="alert alert-success">
+                                <i class="fas fa-check-circle me-2"></i><%= success %>
+                            </div>
+                        <% } %>
+                        
+                        <!-- Informações Básicas -->
+                        <div class="form-section">
+                            <h5 class="section-heading">
+                                <i class="fas fa-info-circle"></i>
+                                Informações Básicas
+                            </h5>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="nome" class="form-label required-label">Nome da Vidraria</label>
+                                    <input type="text" class="form-control" id="nome" name="nome" 
+                                           value="<%= formData ? formData.nome : '' %>" required>
+                                    <div class="form-text">Ex: Béquer, Erlenmeyer, Pipeta, etc.</div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="capacidade" class="form-label">Capacidade</label>
-                                        <input type="text" class="form-control" id="capacidade" name="capacidade"
-                                               value="<%= formData ? formData.capacidade : '' %>" 
-                                               placeholder="Ex: 250mL, 500mL, 1000mL">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="material" class="form-label">Material</label>
-                                        <select class="form-select" id="material" name="material">
-                                            <option value="">Selecione o material</option>
-                                            <option value="vidro borossilicato" <%= formData && formData.material === 'vidro borossilicato' ? 'selected' : '' %>>Vidro Borossilicato</option>
-                                            <option value="vidro" <%= formData && formData.material === 'vidro' ? 'selected' : '' %>>Vidro Comum</option>
-                                            <option value="plastico" <%= formData && formData.material === 'plastico' ? 'selected' : '' %>>Plástico</option>
-                                            <option value="quartzo" <%= formData && formData.material === 'quartzo' ? 'selected' : '' %>>Quartzo</option>
-                                            <option value="porcelana" <%= formData && formData.material === 'porcelana' ? 'selected' : '' %>>Porcelana</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="descricao" class="form-label">Descrição</label>
-                                    <textarea class="form-control" id="descricao" name="descricao" rows="3"
-                                              placeholder="Descrição detalhada da vidraria..."><%= formData ? formData.descricao : '' %></textarea>
+                                
+                                <div class="form-group">
+                                    <label for="categoria" class="form-label required-label">Categoria</label>
+                                    <select class="form-select" id="categoria" name="categoria" required>
+                                        <option value="" selected disabled>Selecione uma categoria</option>
+                                        <option value="volumetrico" <%= formData && formData.categoria === 'volumetrico' ? 'selected' : '' %>>Volumétrico</option>
+                                        <option value="transferencia" <%= formData && formData.categoria === 'transferencia' ? 'selected' : '' %>>Transferência</option>
+                                        <option value="aquecimento" <%= formData && formData.categoria === 'aquecimento' ? 'selected' : '' %>>Aquecimento</option>
+                                        <option value="separacao" <%= formData && formData.categoria === 'separacao' ? 'selected' : '' %>>Separação</option>
+                                        <option value="suporte" <%= formData && formData.categoria === 'suporte' ? 'selected' : '' %>>Suporte</option>
+                                        <option value="medicao" <%= formData && formData.categoria === 'medicao' ? 'selected' : '' %>>Medição</option>
+                                    </select>
                                 </div>
                             </div>
-
-                            <div class="form-section">
-                                <h6 class="text-primary mb-3"><i class="fas fa-boxes me-2"></i>Controle de Estoque</h6>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="quantidade" class="form-label">Quantidade em Estoque</label>
-                                        <input type="number" class="form-control" id="quantidade" name="quantidade"
-                                               value="<%= formData ? formData.quantidade : '0' %>" min="0" step="1">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="estoque_minimo" class="form-label">Estoque Mínimo</label>
-                                        <input type="number" class="form-control" id="estoque_minimo" name="estoque_minimo"
-                                               value="<%= formData ? formData.estoque_minimo : '5' %>" min="1" step="1">
-                                        <div class="form-text">Alerta será gerado quando estoque atingir este valor</div>
-                                    </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="capacidade" class="form-label">Capacidade</label>
+                                    <input type="text" class="form-control" id="capacidade" name="capacidade"
+                                           value="<%= formData ? formData.capacidade : '' %>" 
+                                           placeholder="Ex: 250mL, 500mL, 1000mL">
                                 </div>
-                                <div class="mb-3">
-                                    <label for="localizacao" class="form-label">Localização</label>
-                                    <input type="text" class="form-control" id="localizacao" name="localizacao"
-                                           value="<%= formData ? formData.localizacao : '' %>"
-                                           placeholder="Ex: Prateleira 1A, Armário B2, Gaveta Pipetas...">
+                                
+                                <div class="form-group">
+                                    <label for="material" class="form-label">Material</label>
+                                    <select class="form-select" id="material" name="material">
+                                        <option value="" selected disabled>Selecione o material</option>
+                                        <option value="vidro borossilicato" <%= formData && formData.material === 'vidro borossilicato' ? 'selected' : '' %>>Vidro Borossilicato</option>
+                                        <option value="vidro" <%= formData && formData.material === 'vidro' ? 'selected' : '' %>>Vidro Comum</option>
+                                        <option value="plastico" <%= formData && formData.material === 'plastico' ? 'selected' : '' %>>Plástico</option>
+                                        <option value="quartzo" <%= formData && formData.material === 'quartzo' ? 'selected' : '' %>>Quartzo</option>
+                                        <option value="porcelana" <%= formData && formData.material === 'porcelana' ? 'selected' : '' %>>Porcelana</option>
+                                    </select>
                                 </div>
                             </div>
-
-                            <div class="form-section">
-                                <h6 class="text-primary mb-3"><i class="fas fa-truck me-2"></i>Informações de Aquisição</h6>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="fornecedor" class="form-label">Fornecedor</label>
-                                        <input type="text" class="form-control" id="fornecedor" name="fornecedor"
-                                               value="<%= formData ? formData.fornecedor : '' %>"
-                                               placeholder="Ex: Sigma-Aldrich, Merck, Glassco...">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="data_aquisicao" class="form-label">Data de Aquisição</label>
-                                        <input type="date" class="form-control" id="data_aquisicao" name="data_aquisicao"
-                                               value="<%= formData ? formData.data_aquisicao : '' %>">
-                                    </div>
+                            
+                            <div class="form-group">
+                                <label for="descricao" class="form-label">Descrição</label>
+                                <textarea class="form-control" id="descricao" name="descricao" rows="2"
+                                          placeholder="Descrição detalhada da vidraria..."><%= formData ? formData.descricao : '' %></textarea>
+                            </div>
+                        </div>
+                    
+                        <!-- Controle de Estoque -->
+                        <div class="form-section">
+                            <h5 class="section-heading">
+                                <i class="fas fa-boxes"></i>
+                                Controle de Estoque
+                            </h5>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="quantidade" class="form-label">Quantidade em Estoque</label>
+                                    <input type="number" class="form-control" id="quantidade" name="quantidade"
+                                           value="<%= formData ? formData.quantidade : '0' %>" min="0" step="1">
                                 </div>
-                                <div class="mb-3">
-                                    <label for="observacoes" class="form-label">Observações</label>
-                                    <textarea class="form-control" id="observacoes" name="observacoes" rows="3"
-                                              placeholder="Observações adicionais..."><%= formData ? formData.observacoes : '' %></textarea>
+                                
+                                <div class="form-group">
+                                    <label for="estoque_minimo" class="form-label">Estoque Mínimo</label>
+                                    <input type="number" class="form-control" id="estoque_minimo" name="estoque_minimo"
+                                           value="<%= formData ? formData.estoque_minimo : '5' %>" min="1" step="1">
+                                    <div class="form-text">Alerta será gerado quando estoque atingir este valor</div>
                                 </div>
                             </div>
-
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <a href="/vidracarias" class="btn btn-outline-secondary me-md-2">
-                                    <i class="fas fa-times me-2"></i>Cancelar
-                                </a>
-                                <button type="submit" class="btn btn-success">
-                                    <i class="fas fa-save me-2"></i>Salvar Vidraria
-                                </button>
+                            
+                            <div class="form-group">
+                                <label for="localizacao" class="form-label">Localização</label>
+                                <input type="text" class="form-control" id="localizacao" name="localizacao"
+                                       value="<%= formData ? formData.localizacao : '' %>"
+                                       placeholder="Ex: Prateleira 1A, Armário B2, Gaveta Pipetas...">
                             </div>
-                        </form>
-                    </div>
+                        </div>
+                    
+                        <!-- Informações de Aquisição -->
+                        <div class="form-section">
+                            <h5 class="section-heading">
+                                <i class="fas fa-truck"></i>
+                                Informações de Aquisição
+                            </h5>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="fornecedor" class="form-label">Fornecedor</label>
+                                    <input type="text" class="form-control" id="fornecedor" name="fornecedor"
+                                           value="<%= formData ? formData.fornecedor : '' %>"
+                                           placeholder="Ex: Sigma-Aldrich, Merck, Glassco...">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="data_aquisicao" class="form-label">Data de Aquisição</label>
+                                    <input type="date" class="form-control" id="data_aquisicao" name="data_aquisicao"
+                                           value="<%= formData ? formData.data_aquisicao : '' %>">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="observacoes" class="form-label">Observações</label>
+                                <textarea class="form-control" id="observacoes" name="observacoes" rows="2"
+                                          placeholder="Observações adicionais..."><%= formData ? formData.observacoes : '' %></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <a href="/vidracarias" class="btn btn-secondary">
+                                <i class="fas fa-times-circle"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Salvar Vidraria
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('vidrariaForm');
+            
+            // Validação do formulário
+            form.addEventListener('submit', function(event) {
+                let isValid = true;
+                
+                // Verificar campos obrigatórios
+                const requiredFields = form.querySelectorAll('[required]');
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        field.classList.add('is-invalid');
+                    } else {
+                        field.classList.remove('is-invalid');
+                    }
+                });
+                
+                if (!isValid) {
+                    event.preventDefault();
+                    alert('Por favor, preencha todos os campos obrigatórios.');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
