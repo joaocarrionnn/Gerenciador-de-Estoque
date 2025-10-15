@@ -626,6 +626,142 @@
         .modal-xl {
             max-width: 1200px;
         }
+
+        /* Estilos para o botão de menu de três pontos */
+/* Estilos para o botão de menu de três pontos */
+.glassware-menu {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
+.menu-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #6b7280;
+}
+
+.menu-btn:hover {
+    background: #f8f9fa;
+    border-color: #d1d5db;
+    color: #374151;
+    transform: scale(1.05);
+}
+
+.menu-btn i {
+    font-size: 0.875rem;
+}
+
+/* Estilos para o modal de detalhes no estilo da imagem */
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+
+
+.detail-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-value {
+    font-size: 1rem;
+    color: #1f2937;
+    font-weight: 500;
+}
+
+.detail-value.empty {
+    color: #9ca3af;
+    font-style: italic;
+}
+
+.info-section {
+    margin-bottom: 2.5rem;
+}
+
+.info-section:last-child {
+    margin-bottom: 0;
+}
+
+.section-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.status-available-badge {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.status-low-badge {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.status-unavailable-badge {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+/* Estilo específico para o grau de periculosidade como na imagem */
+.hazard-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.hazard-high {
+    background-color: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.hazard-medium {
+    background-color: #fef3c7;
+    color: #d97706;
+    border: 1px solid #fde68a;
+}
+
+.hazard-low {
+    background-color: #d1fae5;
+    color: #059669;
+    border: 1px solid #a7f3d0;
+}
     </style>
 </head>
 <body>
@@ -836,7 +972,14 @@
                 <div class="glassware-grid" id="glassware-list">
                     <% if (typeof vidracarias !== 'undefined' && vidracarias.length > 0) { %>
                         <% vidracarias.forEach(vidraria => { %>
-                            <div class="glassware-card" data-name="<%= vidraria.nome.toLowerCase() %>" data-category="<%= vidraria.categoria.toLowerCase() %>">
+                            <div class="glassware-card relative" data-name="<%= vidraria.nome.toLowerCase() %>" data-category="<%= vidraria.categoria.toLowerCase() %>">
+                                <!-- Botão de menu de três pontos -->
+                                <div class="glassware-menu">
+                                    <button type="button" class="menu-btn" onclick="openDetailsModal(<%= vidraria.id %>, '<%= vidraria.nome.replace(/'/g, "\\'") %>')" title="Ver detalhes">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                </div>
+                                
                                 <div class="glassware-content">
                                     <h3 class="glassware-name"><%= vidraria.nome %></h3>
                                     <div class="glassware-details">
@@ -1076,6 +1219,131 @@
                     </div>
                 </div>
             </div>
+            <!-- Modal de Detalhes da Vidraria -->
+<!-- Modal de Detalhes da Vidraria -->
+<div id="detailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl mx-4 max-h-[90vh] flex flex-col">
+        <div class="flex items-center justify-between p-6 border-b border-gray-200">
+            <h3 class="text-xl font-semibold text-gray-900 flex items-center">
+                <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                Detalhes da Vidraria
+            </h3>
+            <button type="button" onclick="closeDetailsModal()" class="text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+        </div>
+        
+        <div class="p-6 flex-1 overflow-auto">
+            <!-- Informações Básicas -->
+            <div class="info-section">
+                <h4 class="section-title">
+                    <i class="fas fa-tag"></i>
+                    Informações Básicas
+                </h4>
+                <div class="detail-grid">
+                    <div class="detail-group">
+                        <div class="detail-label">ID do Produto</div>
+                        <div class="detail-value" id="detailId">-</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Categoria</div>
+                        <div class="detail-value" id="detailCategoria">-</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Nome</div>
+                        <div class="detail-value" id="detailNome">-</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Grau de Periculosidade</div>
+                        <div id="detailPericulosidade">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estoque e Localização -->
+            <div class="info-section">
+                <h4 class="section-title">
+                    <i class="fas fa-boxes"></i>
+                    Estoque e Localização
+                </h4>
+                <div class="detail-grid">
+                    <div class="detail-group">
+                        <div class="detail-label">Quantidade</div>
+                        <div class="detail-value" id="detailQuantidade">-</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Localização</div>
+                        <div class="detail-value" id="detailLocalizacao">-</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Estoque Mínimo</div>
+                        <div class="detail-value" id="detailEstoqueMinimo">-</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Status</div>
+                        <div id="detailStatus">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fornecedor e Regulamentação -->
+            <div class="info-section">
+                <h4 class="section-title">
+                    <i class="fas fa-truck"></i>
+                    Fornecedor e Regulamentação
+                </h4>
+                <div class="detail-grid">
+                    <div class="detail-group">
+                        <div class="detail-label">Fornecedor</div>
+                        <div class="detail-value" id="detailFornecedor">-</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Data de Aquisição</div>
+                        <div class="detail-value" id="detailDataAquisicao">-</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Órgão Regulador</div>
+                        <div class="detail-value" id="detailOrgaoRegulador">-</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Disponível</div>
+                        <div class="detail-value" id="detailDisponivel">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Informações Adicionais -->
+            <div class="info-section">
+                <h4 class="section-title">
+                    <i class="fas fa-file-alt"></i>
+                    Informações Adicionais
+                </h4>
+                <div class="detail-grid">
+                    <div class="detail-group" style="grid-column: 1 / -1;">
+                        <div class="detail-label">Descrição</div>
+                        <div class="detail-value" id="detailDescricao">-</div>
+                    </div>
+                    <div class="detail-group" style="grid-column: 1 / -1;">
+                        <div class="detail-label">Instruções de Segurança</div>
+                        <div class="detail-value" id="detailInstrucoesSeguranca">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="flex justify-end gap-3 p-6 border-t border-gray-200 bg-gray-50 rounded-b-lg">
+            <button type="button" onclick="closeDetailsModal()" 
+                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                Fechar
+            </button>
+            <button type="button" id="editDetailsBtn"
+                    class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 flex items-center">
+                <i class="fas fa-edit mr-2"></i>
+                Editar Vidraria
+            </button>
+        </div>
+    </div>
+</div>
         </div>
     </main>
 
@@ -1819,6 +2087,154 @@
 
         // Atualizar movimentações a cada 30 segundos
         setInterval(carregarMovimentacoes, 30000);
+
+// Funções para o modal de detalhes
+function openDetailsModal(vidrariaId, vidrariaNome) {
+    console.log('Abrindo modal de detalhes para:', { vidrariaId, vidrariaNome });
+    
+    // Buscar dados completos da vidraria
+    fetch(`/api/vidracarias/${vidrariaId}`)
+        .then(response => response.json())
+        .then(vidraria => {
+            preencherModalDetalhes(vidraria);
+            document.getElementById('detailsModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        })
+        .catch(error => {
+            console.error('Erro ao carregar detalhes da vidraria:', error);
+            showToast('Erro ao carregar detalhes da vidraria', 'danger');
+        });
+}
+
+function closeDetailsModal() {
+    document.getElementById('detailsModal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+function preencherModalDetalhes(vidraria) {
+    // Informações Básicas
+    document.getElementById('detailId').textContent = vidraria.id ? `#${vidraria.id}` : '-';
+    document.getElementById('detailCategoria').textContent = formatCategoria(vidraria.categoria) || '-';
+    document.getElementById('detailNome').textContent = vidraria.nome || '-';
+    
+    // Grau de Periculosidade (estilo similar à imagem)
+    const periculosidadeElement = document.getElementById('detailPericulosidade');
+    const periculosidade = vidraria.grau_periculosidade || vidraria.periculosidade || 'Não informado';
+    let periculosidadeClass = 'hazard-badge ';
+    
+    if (periculosidade.toLowerCase().includes('alto') || periculosidade.toLowerCase().includes('high')) {
+        periculosidadeClass += 'hazard-high';
+    } else if (periculosidade.toLowerCase().includes('médio') || periculosidade.toLowerCase().includes('medium')) {
+        periculosidadeClass += 'hazard-medium';
+    } else if (periculosidade.toLowerCase().includes('baixo') || periculosidade.toLowerCase().includes('low')) {
+        periculosidadeClass += 'hazard-low';
+    } else {
+        periculosidadeClass = 'detail-value';
+    }
+    
+    periculosidadeElement.innerHTML = periculosidadeClass.includes('hazard-badge') ? 
+        `<span class="${periculosidadeClass}">${periculosidade}</span>` : 
+        `<span class="detail-value">${periculosidade}</span>`;
+
+    // Estoque e Localização
+    document.getElementById('detailQuantidade').textContent = vidraria.quantidade ? `${vidraria.quantidade} ${vidraria.unidade_medida || 'unidades'}` : '0 unidades';
+    document.getElementById('detailLocalizacao').textContent = vidraria.localizacao || 'Não informada';
+    document.getElementById('detailEstoqueMinimo').textContent = vidraria.estoque_minimo ? `${vidraria.estoque_minimo} ${vidraria.unidade_medida || 'unidades'}` : 'Não definido';
+    
+    // Status
+    const statusElement = document.getElementById('detailStatus');
+    let statusClass, statusText;
+    
+    if (vidraria.quantidade === 0) {
+        statusClass = 'status-unavailable-badge';
+        statusText = 'Indisponível';
+    } else if (vidraria.quantidade <= vidraria.estoque_minimo) {
+        statusClass = 'status-low-badge';
+        statusText = 'Estoque Baixo';
+    } else {
+        statusClass = 'status-available-badge';
+        statusText = 'Disponível';
+    }
+    
+    statusElement.innerHTML = `<span class="status-badge ${statusClass}">${statusText}</span>`;
+
+    // Fornecedor e Regulamentação
+    document.getElementById('detailFornecedor').textContent = vidraria.fornecedor || 'Não informado';
+    document.getElementById('detailDataAquisicao').textContent = vidraria.data_aquisicao ? 
+        new Date(vidraria.data_aquisicao).toLocaleDateString('pt-BR') : 'Não informada';
+    document.getElementById('detailOrgaoRegulador').textContent = vidraria.orgao_regulador || 'ANVISA';
+    document.getElementById('detailDisponivel').textContent = vidraria.quantidade > 0 ? 'Sim' : 'Não';
+
+    // Informações Adicionais
+    document.getElementById('detailDescricao').textContent = vidraria.descricao || 'Nenhuma descrição fornecida';
+    document.getElementById('detailInstrucoesSeguranca').textContent = vidraria.instrucoes_seguranca || 'Nenhuma instrução de segurança específica';
+
+    // Configurar botão de editar
+    const editBtn = document.getElementById('editDetailsBtn');
+    editBtn.onclick = function() {
+        window.location.href = `/vidracarias/editar/${vidraria.id}`;
+    };
+
+    // Adicionar classes para campos vazios
+    const emptyFields = [
+        'detailCategoria', 'detailLocalizacao', 'detailFornecedor', 
+        'detailDataAquisicao', 'detailDescricao', 'detailInstrucoesSeguranca'
+    ];
+    
+    emptyFields.forEach(fieldId => {
+        const element = document.getElementById(fieldId);
+        if (element.textContent === '-' || 
+            element.textContent === 'Não informado' || 
+            element.textContent === 'Não informada' || 
+            element.textContent === 'Nenhuma descrição fornecida' ||
+            element.textContent === 'Nenhuma instrução de segurança específica') {
+            element.classList.add('empty');
+        } else {
+            element.classList.remove('empty');
+        }
+    });
+}
+
+// Funções auxiliares para formatação
+function formatCategoria(categoria) {
+    const categorias = {
+        'volumetrico': 'Volumétrico',
+        'transferencia': 'Transferência',
+        'aquecimento': 'Aquecimento',
+        'separacao': 'Separação',
+        'suporte': 'Suporte',
+        'medicao': 'Medição'
+    };
+    return categorias[categoria] || categoria;
+}
+
+function formatMaterial(material) {
+    const materiais = {
+        'vidro borossilicato': 'Vidro Borossilicato',
+        'vidro': 'Vidro Comum',
+        'plastico': 'Plástico',
+        'quartzo': 'Quartzo',
+        'porcelana': 'Porcelana'
+    };
+    return materiais[material] || material;
+}
+
+// Adicionar event listeners para o modal de detalhes
+document.addEventListener('DOMContentLoaded', function() {
+    // Fechar modal clicando fora
+    document.getElementById('detailsModal')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeDetailsModal();
+        }
+    });
+    
+    // Fechar com ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !document.getElementById('detailsModal').classList.contains('hidden')) {
+            closeDetailsModal();
+        }
+    });
+});
     </script>
 </body>
 </html>

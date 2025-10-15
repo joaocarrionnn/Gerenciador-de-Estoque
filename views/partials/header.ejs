@@ -344,44 +344,47 @@
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       // Função para determinar a página atual e destacar o menu correspondente
-      function setActiveMenu() {
-        const path = window.location.pathname;
-        let activeMenuId = '';
-        
-        // Determinar qual menu deve estar ativo baseado na URL
-        if (path.includes('/produtos') || path === '/produtos') {
-          activeMenuId = 'produtos-menu';
-        } else if (path.includes('/entrada-reagentes') || path === '/entrada-reagentes') {
-          activeMenuId = 'entradas-menu';
-        } else if (path.includes('/saida-reagentes') || path === '/saida-reagentes') {
-          activeMenuId = 'saidas-menu';
-        } else if (path.includes('/relatorios') || path === '/relatorios') {
-          activeMenuId = 'relatorios-menu';
-        } else if (path === '/' || path.includes('/dashboard')) {
-          activeMenuId = 'dashboard-menu'; // Página inicial ou dashboard
-        } else if (path.includes('/perfil') || path === '/perfil') {
-          activeMenuId = 'perfil-menu'; // Página de perfil
-        }
-        
-        // Remover a classe 'active' de todos os menus
-        const allMenuItems = document.querySelectorAll('.menu-item-custom, .mobile-nav-item');
-        allMenuItems.forEach(item => {
-          item.classList.remove('active');
-        });
-        
-        // Adicionar a classe 'active' ao menu correspondente
-        const activeMenuItem = document.getElementById(activeMenuId);
-        if (activeMenuItem) {
-          activeMenuItem.classList.add('active');
-        }
-        
-        // Atualizar também o menu mobile
-        const mobileMenuId = 'mobile-' + activeMenuId.split('-')[0];
-        const activeMobileMenuItem = document.getElementById(mobileMenuId);
-        if (activeMobileMenuItem) {
-          activeMobileMenuItem.classList.add('active');
-        }
-      }
+      // Função para determinar a página atual e destacar o menu correspondente
+function setActiveMenu() {
+    const path = window.location.pathname;
+    let activeMenuId = '';
+    
+    // Determinar qual menu deve estar ativo baseado na URL
+    if (path.includes('/produtos') || path === '/produtos') {
+        activeMenuId = 'produtos-menu';
+    } else if (path.includes('/entrada-reagentes') || path === '/entrada-reagentes') {
+        activeMenuId = 'entradas-menu';
+    } else if (path.includes('/saida-reagentes') || path === '/saida-reagentes') {
+        activeMenuId = 'saidas-menu';
+    } else if (path.includes('/relatorios') || path === '/relatorios') {
+        activeMenuId = 'relatorios-menu';
+    } else if (path.includes('/vidracarias') || path === '/vidracarias') { // LINHA ADICIONADA
+        activeMenuId = 'vidracarias-menu'; // LINHA ADICIONADA
+    } else if (path === '/' || path.includes('/dashboard')) {
+        activeMenuId = 'dashboard-menu'; // Página inicial ou dashboard
+    } else if (path.includes('/perfil') || path === '/perfil') {
+        activeMenuId = 'perfil-menu'; // Página de perfil
+    }
+    
+    // Remover a classe 'active' de todos os menus
+    const allMenuItems = document.querySelectorAll('.menu-item-custom, .mobile-nav-item');
+    allMenuItems.forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    // Adicionar a classe 'active' ao menu correspondente
+    const activeMenuItem = document.getElementById(activeMenuId);
+    if (activeMenuItem) {
+        activeMenuItem.classList.add('active');
+    }
+    
+    // Atualizar também o menu mobile
+    const mobileMenuId = 'mobile-' + activeMenuId.split('-')[0];
+    const activeMobileMenuItem = document.getElementById(mobileMenuId);
+    if (activeMobileMenuItem) {
+        activeMobileMenuItem.classList.add('active');
+    }
+}
       
       // Chamar a função ao carregar a página
       setActiveMenu();

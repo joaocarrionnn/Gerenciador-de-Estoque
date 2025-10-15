@@ -3232,6 +3232,25 @@ router.post('/api/vidracarias/movimentacao-rapida', requireAuth, (req, res) => {
     }
 });
 
+// API para buscar dados completos de uma vidraria
+router.get('/api/vidracarias/:id', requireAuth, (req, res) => {
+    const vidracariaId = req.params.id;
+    const query = 'SELECT * FROM vidracarias WHERE id = ?';
+    
+    db.query(query, [vidracariaId], (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar vidraria:', err);
+            return res.status(500).json({ error: 'Erro ao carregar dados da vidraria' });
+        }
+        
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'Vidraria não encontrada' });
+        }
+        
+        res.json(results[0]);
+    });
+});
+
 // =============================================
 // FIM DAS ROTAS PARA VIDRARIAS
 // =============================================
