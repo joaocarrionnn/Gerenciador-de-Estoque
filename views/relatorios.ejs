@@ -585,31 +585,7 @@
                 </div>
             </div>
             
-            <!-- Relatórios para Exportação -->
-            <div class="card mt-6">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <i class="fas fa-file-export text-primary"></i>
-                        Exportar Relatórios
-                    </h2>
-                </div>
-                <div class="card-body">
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                        <button class="export-btn" id="export-pdf">
-                            <i class="fas fa-file-pdf"></i> PDF
-                        </button>
-                        <button class="export-btn" id="export-excel">
-                            <i class="fas fa-file-excel"></i> Excel
-                        </button>
-                        <button class="export-btn" id="export-csv">
-                            <i class="fas fa-file-csv"></i> CSV
-                        </button>
-                        <button class="export-btn" id="export-print">
-                            <i class="fas fa-print"></i> Imprimir
-                        </button>
-                    </div>
-                </div>
-            </div>
+            
             
             <!-- Tabela de Itens com Baixo Estoque -->
             <div class="card mt-6">
@@ -878,22 +854,7 @@ document.getElementById('report-filter-form').addEventListener('submit', async f
     }
 });
 
-// Botões de exportação
-document.getElementById('export-pdf').addEventListener('click', function() {
-    showToast('Relatório PDF gerado com sucesso!');
-});
 
-document.getElementById('export-excel').addEventListener('click', function() {
-    showToast('Planilha Excel gerada com sucesso!');
-});
-
-document.getElementById('export-csv').addEventListener('click', function() {
-    showToast('Arquivo CSV gerado com sucesso!');
-});
-
-document.getElementById('export-print').addEventListener('click', function() {
-    window.print();
-});
 
 // Botões de detalhes
 document.getElementById('view-movement-details').addEventListener('click', function() {

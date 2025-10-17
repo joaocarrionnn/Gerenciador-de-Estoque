@@ -476,14 +476,6 @@
                         <i class="fas fa-chart-pie text-primary"></i>
                         Distribuição por Categoria
                     </h2>
-                    <div class="export-buttons">
-                        <button class="export-btn" id="export-chart-png">
-                            <i class="fas fa-download"></i> PNG
-                        </button>
-                        <button class="export-btn" id="export-chart-pdf">
-                            <i class="fas fa-file-pdf"></i> PDF
-                        </button>
-                    </div>
                 </div>
                 <div class="card-body">
                     <div class="chart-container">
@@ -499,9 +491,6 @@
                         <i class="fas fa-layer-group text-primary"></i>
                         Detalhes por Categoria
                     </h2>
-                    <button class="export-btn" id="export-categories-csv">
-                        <i class="fas fa-file-csv"></i> CSV
-                    </button>
                 </div>
                 <div class="card-body">
                     <div id="categories-container">
@@ -716,19 +705,6 @@
             }
         }
 
-        // Botões de exportação
-        document.getElementById('export-chart-png').addEventListener('click', () => {
-            if (categoriesChart) {
-                const link = document.createElement('a');
-                link.download = `categorias-distribuicao.png`;
-                link.href = categoriesChart.toBase64Image();
-                link.click();
-            }
-        });
-
-        document.getElementById('export-categories-csv').addEventListener('click', async () => {
-            window.open('/api/relatorios/exportar-categorias', '_blank');
-        });
 
         // Carregar dados iniciais
         document.addEventListener('DOMContentLoaded', async () => {
