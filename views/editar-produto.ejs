@@ -487,14 +487,9 @@
                                 
                                 <div class="form-group">
                                     <label for="productType" class="form-label required-label">Categoria</label>
-                                    <select class="form-select" id="productType" name="productType" required>
+                                    <select class="form-select dynamic-select" id="productType" name="productType" required data-campo="productType">
                                         <option value="">Selecione uma categoria</option>
-                                        <option value="acido" <%= produto.tipo === 'acido' ? 'selected' : '' %>>Ácido</option>
-                                        <option value="base" <%= produto.tipo === 'base' ? 'selected' : '' %>>Base</option>
-                                        <option value="solvente" <%= produto.tipo === 'solvente' ? 'selected' : '' %>>Solvente</option>
-                                        <option value="indicador" <%= produto.tipo === 'indicador' ? 'selected' : '' %>>Indicador</option>
-                                        <option value="sal" <%= produto.tipo === 'sal' ? 'selected' : '' %>>Sal</option>
-                                        <option value="outro" <%= produto.tipo === 'outro' ? 'selected' : '' %>>Outro</option>
+                                        <!-- Opções serão carregadas via JavaScript -->
                                     </select>
                                 </div>
                             </div>
@@ -515,18 +510,18 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="dangerLevel" class="form-label">Grau de Periculosidade</label>
-                                    <select class="form-select" id="dangerLevel" name="dangerLevel">
+                                    <select class="form-select dynamic-select" id="dangerLevel" name="dangerLevel" data-campo="dangerLevel">
                                         <option value="">Selecione o grau</option>
-                                        <option value="baixo" <%= produto.grau_periculosidade === 'baixo' ? 'selected' : '' %>>Baixo</option>
-                                        <option value="medio" <%= produto.grau_periculosidade === 'medio' ? 'selected' : '' %>>Médio</option>
-                                        <option value="alto" <%= produto.grau_periculosidade === 'alto' ? 'selected' : '' %>>Alto</option>
-                                        <option value="muito_alto" <%= produto.grau_periculosidade === 'muito_alto' ? 'selected' : '' %>>Muito Alto</option>
+                                        <!-- Opções serão carregadas via JavaScript -->
                                     </select>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label for="regulatoryOrg" class="form-label">Órgão Regulador</label>
-                                    <input type="text" class="form-control" id="regulatoryOrg" name="regulatoryOrg" value="<%= produto.orgao_regulador || '' %>">
+                                    <select class="form-select dynamic-select" id="regulatoryOrg" name="regulatoryOrg" data-campo="regulatoryOrg">
+                                        <option value="">Selecione o órgão</option>
+                                        <!-- Opções serão carregadas via JavaScript -->
+                                    </select>
                                 </div>
                             </div>
                             
@@ -556,14 +551,9 @@
                                 
                                 <div class="form-group">
                                     <label for="unit" class="form-label required-label">Unidade de Medida</label>
-                                    <select class="form-select" id="unit" name="unit" required>
+                                    <select class="form-select dynamic-select" id="unit" name="unit" required data-campo="unit">
                                         <option value="">Selecione a unidade</option>
-                                        <option value="ml" <%= produto.unidade_medida === 'ml' ? 'selected' : '' %>>ml</option>
-                                        <option value="l" <%= produto.unidade_medida === 'l' ? 'selected' : '' %>>l</option>
-                                        <option value="mg" <%= produto.unidade_medida === 'mg' ? 'selected' : '' %>>mg</option>
-                                        <option value="g" <%= produto.unidade_medida === 'g' ? 'selected' : '' %>>g</option>
-                                        <option value="kg" <%= produto.unidade_medida === 'kg' ? 'selected' : '' %>>kg</option>
-                                        <option value="unidade" <%= produto.unidade_medida === 'unidade' ? 'selected' : '' %>>Unidade</option>
+                                        <!-- Opções serão carregadas via JavaScript -->
                                     </select>
                                 </div>
                             </div>
@@ -579,12 +569,12 @@
                                     <div class="radio-group">
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="availability" id="available" 
-                                                   value="available" <%= produto.disponivel ? 'checked' : '' %>>
+                                                value="available" <%= produto.disponivel ? 'checked' : '' %>>
                                             <label class="form-check-label" for="available">Disponível</label>
                                         </div>
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="availability" id="unavailable" 
-                                                   value="unavailable" <%= !produto.disponivel ? 'checked' : '' %>>
+                                                value="unavailable" <%= !produto.disponivel ? 'checked' : '' %>>
                                             <label class="form-check-label" for="unavailable">Indisponível</label>
                                         </div>
                                     </div>
@@ -602,13 +592,16 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="supplier" class="form-label">Fornecedor</label>
-                                    <input type="text" class="form-control" id="supplier" name="supplier" value="<%= produto.fornecedor || '' %>">
+                                    <select class="form-select dynamic-select" id="supplier" name="supplier" data-campo="supplier">
+                                        <option value="">Selecione o fornecedor</option>
+                                        <!-- Opções serão carregadas via JavaScript -->
+                                    </select>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label for="purchaseDate" class="form-label">Data de Aquisição</label>
                                     <input type="date" class="form-control" id="purchaseDate" name="purchaseDate" 
-                                           value="<%= produto.data_aquisicao ? produto.data_aquisicao.toISOString().split('T')[0] : '' %>">
+                                        value="<%= produto.data_aquisicao ? produto.data_aquisicao.toISOString().split('T')[0] : '' %>">
                                 </div>
                             </div>
                             
@@ -634,17 +627,269 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const form = document.querySelector('.product-form');
-            
+            // Dados do produto atual para pré-seleção
+            const produtoAtual = {
+                productType: '<%= produto.tipo %>',
+                dangerLevel: '<%= produto.grau_periculosidade %>',
+                regulatoryOrg: '<%= produto.orgao_regulador %>',
+                unit: '<%= produto.unidade_medida %>',
+                supplier: '<%= produto.fornecedor %>'
+            };
+        
+            // Mapeamento de campos para labels
+            const campoLabels = {
+                'productType': 'Categoria',
+                'dangerLevel': 'Grau de Periculosidade', 
+                'regulatoryOrg': 'Órgão Regulador',
+                'unit': 'Unidade de Medida',
+                'supplier': 'Fornecedor'
+            };
+        
+            // Opções padrão para cada campo
+            const opcoesPadrao = {
+                'productType': ['acido', 'base', 'solvente', 'indicador', 'sal', 'outro'],
+                'dangerLevel': ['baixo', 'medio', 'alto', 'muito_alto'],
+                'regulatoryOrg': ['policia-federal', 'exercito', 'anvisa', 'outro'],
+                'unit': ['ml', 'l', 'mg', 'g', 'kg', 'unidade'],
+                'supplier': []
+            };
+        
+            // Formatador de texto para exibição
+            function formatarTexto(texto) {
+                if (!texto) return '';
+                return texto
+                    .split('_')
+                    .map(palavra => palavra.charAt(0).toUpperCase() + palavra.slice(1))
+                    .join(' ')
+                    .replace(/\b\w/g, l => l.toUpperCase());
+            }
+        
+            // Carregar opções para todos os selects dinâmicos
+            async function carregarOpcoes() {
+                const selects = document.querySelectorAll('.dynamic-select');
+                
+                for (const select of selects) {
+                    const campo = select.dataset.campo;
+                    await carregarOpcoesCampo(select, campo);
+                }
+            }
+        
+            // Carregar opções para um campo específico
+            async function carregarOpcoesCampo(select, campo) {
+                try {
+                    const response = await fetch(`/api/opcoes/${campo}`);
+                    const opcoes = await response.json();
+                    
+                    // Limpar opções existentes (exceto a primeira placeholder)
+                    while (select.options.length > 0) {
+                        select.remove(0);
+                    }
+                    
+                    // Adicionar placeholder
+                    const placeholder = document.createElement('option');
+                    placeholder.value = '';
+                    placeholder.textContent = `Selecione ${campoLabels[campo].toLowerCase()}...`;
+                    placeholder.disabled = true;
+                    placeholder.selected = true;
+                    select.appendChild(placeholder);
+                    
+                    // Adicionar opção "Adicionar nova..."
+                    const addOption = document.createElement('option');
+                    addOption.value = '_add_new_';
+                    addOption.textContent = '+ Adicionar nova opção...';
+                    addOption.style.color = '#4361ee';
+                    addOption.style.fontWeight = 'bold';
+                    select.appendChild(addOption);
+                    
+                    // Adicionar opções existentes do banco
+                    opcoes.forEach(opcao => {
+                        if (opcao && opcao.trim() !== '') {
+                            const option = document.createElement('option');
+                            option.value = opcao;
+                            option.textContent = formatarTexto(opcao);
+                            select.appendChild(option);
+                        }
+                    });
+                    
+                    // Adicionar opções padrão que não estão no banco
+                    if (opcoesPadrao[campo]) {
+                        opcoesPadrao[campo].forEach(opcao => {
+                            if (!opcoes.includes(opcao)) {
+                                const option = document.createElement('option');
+                                option.value = opcao;
+                                option.textContent = formatarTexto(opcao);
+                                select.appendChild(option);
+                            }
+                        });
+                    }
+                    
+                    // Selecionar o valor atual do produto
+                    const valorAtual = produtoAtual[campo];
+                    if (valorAtual && valorAtual !== 'null' && valorAtual !== 'undefined' && valorAtual.trim() !== '') {
+                        const optionParaSelecionar = select.querySelector(`option[value="${valorAtual}"]`);
+                        if (optionParaSelecionar) {
+                            optionParaSelecionar.selected = true;
+                            placeholder.selected = false;
+                        } else {
+                            // Se o valor atual não existe nas opções, adicionar como nova opção
+                            const novaOption = document.createElement('option');
+                            novaOption.value = valorAtual;
+                            novaOption.textContent = formatarTexto(valorAtual);
+                            select.insertBefore(novaOption, addOption);
+                            novaOption.selected = true;
+                            placeholder.selected = false;
+                        }
+                    }
+                    
+                } catch (error) {
+                    console.error(`Erro ao carregar opções para ${campo}:`, error);
+                    carregarOpcoesPadrao(select, campo);
+                }
+            }
+        
+            // Carregar opções padrão em caso de erro
+            function carregarOpcoesPadrao(select, campo) {
+                while (select.options.length > 0) {
+                    select.remove(0);
+                }
+                
+                // Placeholder
+                const placeholder = document.createElement('option');
+                placeholder.value = '';
+                placeholder.textContent = `Selecione ${campoLabels[campo].toLowerCase()}...`;
+                placeholder.disabled = true;
+                select.appendChild(placeholder);
+                
+                // Opção "Adicionar nova"
+                const addOption = document.createElement('option');
+                addOption.value = '_add_new_';
+                addOption.textContent = '+ Adicionar nova opção...';
+                addOption.style.color = '#4361ee';
+                addOption.style.fontWeight = 'bold';
+                select.appendChild(addOption);
+                
+                // Opções padrão
+                if (opcoesPadrao[campo]) {
+                    opcoesPadrao[campo].forEach(opcao => {
+                        const option = document.createElement('option');
+                        option.value = opcao;
+                        option.textContent = formatarTexto(opcao);
+                        select.appendChild(option);
+                    });
+                }
+                
+                // Selecionar valor atual
+                const valorAtual = produtoAtual[campo];
+                if (valorAtual && valorAtual !== 'null' && valorAtual !== 'undefined' && valorAtual.trim() !== '') {
+                    const optionParaSelecionar = select.querySelector(`option[value="${valorAtual}"]`);
+                    if (optionParaSelecionar) {
+                        optionParaSelecionar.selected = true;
+                        placeholder.selected = false;
+                    }
+                }
+            }
+        
+            // Adicionar nova opção
+            async function adicionarNovaOpcao(select, campo) {
+                const label = campoLabels[campo] || campo;
+                const novaOpcao = prompt(`Digite o novo valor para "${label}":`);
+                
+                if (!novaOpcao || novaOpcao.trim() === '') {
+                    return;
+                }
+                
+                const opcaoFormatada = novaOpcao.trim().toLowerCase();
+                
+                // Verificar se já existe localmente
+                const opcoesExistentes = Array.from(select.options).map(opt => opt.value.toLowerCase());
+                if (opcoesExistentes.includes(opcaoFormatada)) {
+                    alert('⚠️ Esta opção já existe!');
+                    return;
+                }
+                
+                try {
+                    // Salvar no backend
+                    const response = await fetch(`/api/opcoes/${campo}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ novaOpcao: opcaoFormatada })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        // Criar nova opção
+                        const novaOption = document.createElement('option');
+                        novaOption.value = opcaoFormatada;
+                        novaOption.textContent = formatarTexto(opcaoFormatada);
+                        
+                        // Inserir antes da opção "Adicionar nova"
+                        const addOption = select.querySelector('option[value="_add_new_"]');
+                        select.insertBefore(novaOption, addOption);
+                        
+                        // Selecionar a nova opção
+                        select.value = opcaoFormatada;
+                        
+                        // Disparar evento change
+                        select.dispatchEvent(new Event('change'));
+                        
+                        alert('✅ Opção adicionada com sucesso!');
+                    } else {
+                        alert('❌ Erro ao adicionar opção: ' + result.message);
+                    }
+                    
+                } catch (error) {
+                    console.error('Erro ao adicionar opção:', error);
+                    
+                    // Fallback: adicionar localmente mesmo com erro no backend
+                    const novaOption = document.createElement('option');
+                    novaOption.value = opcaoFormatada;
+                    novaOption.textContent = formatarTexto(opcaoFormatada);
+                    
+                    const addOption = select.querySelector('option[value="_add_new_"]');
+                    select.insertBefore(novaOption, addOption);
+                    select.value = opcaoFormatada;
+                    select.dispatchEvent(new Event('change'));
+                    
+                    alert('✅ Opção adicionada localmente!');
+                }
+            }
+        
+            // Event listener para os selects
+            function configurarEventos() {
+                document.querySelectorAll('.dynamic-select').forEach(select => {
+                    select.addEventListener('change', function() {
+                        if (this.value === '_add_new_') {
+                            const campo = this.dataset.campo;
+                            adicionarNovaOpcao(this, campo);
+                        }
+                    });
+                });
+            }
+        
             // Validação do formulário
+            const form = document.querySelector('.product-form');
             form.addEventListener('submit', function(e) {
+                // Verificar se algum select tem a opção "Adicionar nova" selecionada
+                const invalidSelects = document.querySelectorAll('.dynamic-select[value="_add_new_"]');
+                
+                if (invalidSelects.length > 0) {
+                    e.preventDefault();
+                    alert('❌ Por favor, selecione uma opção válida ou adicione uma nova opção.');
+                    invalidSelects[0].focus();
+                    return;
+                }
+        
+                // Validação de quantidade vs estoque mínimo
                 const quantity = document.getElementById('stockQuantity').value;
                 const minStock = document.getElementById('minStock').value;
                 
                 if (minStock && parseInt(quantity) < parseInt(minStock)) {
                     e.preventDefault();
                     alert('A quantidade em estoque não pode ser menor que o estoque mínimo!');
-                    return false;
+                    return;
                 }
                 
                 // Verificar campos obrigatórios
@@ -665,6 +910,39 @@
                     alert('Por favor, preencha todos os campos obrigatórios.');
                 }
             });
+        
+            // Inicializar
+            carregarOpcoes().then(() => {
+                configurarEventos();
+                console.log('Sistema de selects dinâmicos carregado para edição');
+            });
+        
+            // Adicionar estilos
+            const style = document.createElement('style');
+            style.textContent = `
+                .dynamic-select option[value="_add_new_"] {
+                    background-color: #f8f9fa;
+                    border-top: 1px solid #dee2e6;
+                    margin-top: 5px;
+                    padding-top: 5px;
+                    font-weight: bold;
+                }
+                
+                .dynamic-select:focus {
+                    border-color: #4361ee;
+                    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+                }
+                
+                .form-select {
+                    cursor: pointer;
+                }
+                
+                .is-invalid {
+                    border-color: #e53e3e !important;
+                    box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.15) !important;
+                }
+            `;
+            document.head.appendChild(style);
         });
     </script>
 </body>

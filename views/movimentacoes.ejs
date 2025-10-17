@@ -1187,20 +1187,9 @@
             applyFilters(1);
         });
 
-        document.getElementById('export-chart-png').addEventListener('click', () => {
-            if (detailedChart) {
-                const link = document.createElement('a');
-                link.download = `movimentacao-${currentYear}.png`;
-                link.href = detailedChart.toBase64Image();
-                link.click();
-            }
-        });
+        
 
-        document.getElementById('export-table-csv').addEventListener('click', async () => {
-            const filters = getFiltersFromForm();
-            const params = new URLSearchParams({ ...filters, format: 'csv' });
-            window.open(`/api/relatorios/exportar-movimentacoes?${params}`, '_blank');
-        });
+       
 
         document.getElementById('cancelDelete').addEventListener('click', closeDeleteModal);
         document.getElementById('confirmDelete').addEventListener('click', () => {

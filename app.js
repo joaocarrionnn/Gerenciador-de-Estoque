@@ -17,6 +17,13 @@ app.use(session({
     }
 }));
 
+app.locals.formatarNumero = function(num) {
+    if (num === null || num === undefined || num === '') return '0,0';
+    const numero = parseFloat(num);
+    if (isNaN(numero)) return '0,0';
+    return numero.toFixed(1).replace('.', ',');
+};
+
 // Middleware para disponibilizar usuário nas views
 app.use((req, res, next) => {
     res.locals.user = req.session.user || null;

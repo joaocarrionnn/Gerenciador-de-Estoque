@@ -471,17 +471,9 @@
                                 
                                 <div class="form-group">
                                     <label for="productType" class="form-label required-label">Tipo do Produto</label>
-                                    <select class="form-select" id="productType" name="productType" required>
+                                    <select class="form-select dynamic-select" id="productType" name="productType" required data-campo="productType">
                                         <option value="" selected disabled>Selecione o tipo...</option>
-                                        <option value="reagente" <%= formData && formData.productType === 'reagente' ? 'selected' : '' %>>Reagente Químico</option>
-                                        <option value="solvente" <%= formData && formData.productType === 'solvente' ? 'selected' : '' %>>Solvente</option>
-                                        <option value="acido" <%= formData && formData.productType === 'acido' ? 'selected' : '' %>>Ácido</option>
-                                        <option value="base" <%= formData && formData.productType === 'base' ? 'selected' : '' %>>Base</option>
-                                        <option value="explosivo" <%= formData && formData.productType === 'explosivo' ? 'selected' : '' %>>Explosivo</option>
-                                        <option value="inflamavel" <%= formData && formData.productType === 'inflamavel' ? 'selected' : '' %>>Inflamável</option>
-                                        <option value="toxico" <%= formData && formData.productType === 'toxico' ? 'selected' : '' %>>Tóxico</option>
-                                        <option value="radioativo" <%= formData && formData.productType === 'radioativo' ? 'selected' : '' %>>Radioativo</option>
-                                        <option value="outro" <%= formData && formData.productType === 'outro' ? 'selected' : '' %>>Outro</option>
+                                        <!-- As opções serão carregadas via JavaScript -->
                                     </select>
                                 </div>
                             </div>
@@ -502,21 +494,17 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="dangerLevel" class="form-label required-label">Grau de Periculosidade</label>
-                                    <select class="form-select" id="dangerLevel" name="dangerLevel" required>
+                                    <select class="form-select dynamic-select" id="dangerLevel" name="dangerLevel" required data-campo="dangerLevel">
                                         <option value="" selected disabled>Selecione o grau...</option>
-                                        <option value="baixo" <%= formData && formData.dangerLevel === 'baixo' ? 'selected' : '' %>>Baixo</option>
-                                        <option value="moderado" <%= formData && formData.dangerLevel === 'moderado' ? 'selected' : '' %>>Moderado</option>
-                                        <option value="alto" <%= formData && formData.dangerLevel === 'alto' ? 'selected' : '' %>>Alto</option>
-                                        <option value="extremo" <%= formData && formData.dangerLevel === 'extremo' ? 'selected' : '' %>>Extremo</option>
+                                        <!-- As opções serão carregadas via JavaScript -->
                                     </select>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label for="regulatoryOrg" class="form-label required-label">Órgão Regulador</label>
-                                    <select class="form-select" id="regulatoryOrg" name="regulatoryOrg" required>
+                                    <select class="form-select dynamic-select" id="regulatoryOrg" name="regulatoryOrg" required data-campo="regulatoryOrg">
                                         <option value="" selected disabled>Selecione o órgão...</option>
-                                        <option value="policia-federal" <%= formData && formData.regulatoryOrg === 'policia-federal' ? 'selected' : '' %>>Polícia Federal</option>
-                                        <option value="exercito" <%= formData && formData.regulatoryOrg === 'exercito' ? 'selected' : '' %>>Exército</option>
+                                        <!-- As opções serão carregadas via JavaScript -->
                                     </select>
                                 </div>
                             </div>
@@ -549,14 +537,9 @@
                                 
                                 <div class="form-group">
                                     <label for="unit" class="form-label required-label">Unidade de Medida</label>
-                                    <select class="form-select" id="unit" name="unit" required>
+                                    <select class="form-select dynamic-select" id="unit" name="unit" required data-campo="unit">
                                         <option value="" selected disabled>Selecione a unidade...</option>
-                                        <option value="unidade" <%= formData && formData.unit === 'unidade' ? 'selected' : '' %>>Unidades</option>
-                                        <option value="litro" <%= formData && formData.unit === 'litro' ? 'selected' : '' %>>Litros</option>
-                                        <option value="ml" <%= formData && formData.unit === 'ml' ? 'selected' : '' %>>Mililitros</option>
-                                        <option value="grama" <%= formData && formData.unit === 'grama' ? 'selected' : '' %>>Gramas</option>
-                                        <option value="kg" <%= formData && formData.unit === 'kg' ? 'selected' : '' %>>Quilogramas</option>
-                                        <option value="caixa" <%= formData && formData.unit === 'caixa' ? 'selected' : '' %>>Caixas</option>
+                                        <!-- As opções serão carregadas via JavaScript -->
                                     </select>
                                 </div>
                             </div>
@@ -594,11 +577,21 @@
                             </h5>
                             
                             <div class="row" style="display: flex; flex-wrap: wrap; margin: 0 -0.75rem;">
-                                <div class="col-md-6 mb-3" style="flex: 0 0 50%; max-width: 50%; padding: 0 0.75rem;">
-                                    <label for="supplier" class="form-label">Fornecedor</label>
-                                    <input type="text" class="form-control" id="supplier" name="supplier" 
-                                           value="<%= formData ? formData.supplier : '' %>">
-                                </div>
+<!-- Para campos não obrigatórios como fornecedor, você pode usar esta versão -->
+<div class="form-group">
+    <label for="supplier" class="form-label">Fornecedor</label>
+    <div style="position: relative;">
+        <select class="form-select dynamic-select" id="supplier" name="supplier" data-campo="supplier">
+            <option value="">Selecione o fornecedor...</option>
+        </select>
+        <input type="text" 
+               class="form-control" 
+               id="supplierText" 
+               name="supplierText" 
+               style="display: none; margin-top: 5px;" 
+               placeholder="Digite o nome do fornecedor...">
+    </div>
+</div>
                                 
                                 <div class="col-md-6 mb-3" style="flex: 0 0 50%; max-width: 50%; padding: 0 0.75rem;">
                                     <label for="purchaseDate" class="form-label">Data de Aquisição</label>
@@ -684,6 +677,267 @@
             // Inicialmente ocultar a zona de perigo
             dangerZone.style.display = 'none';
         });
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+    // Mapeamento de campos para labels
+    const campoLabels = {
+        'productType': 'Tipo do Produto',
+        'dangerLevel': 'Grau de Periculosidade', 
+        'regulatoryOrg': 'Órgão Regulador',
+        'unit': 'Unidade de Medida',
+        'supplier': 'Fornecedor'
+    };
+
+    // Opções padrão para cada campo
+    const opcoesPadrao = {
+        'productType': [
+            'reagente', 'solvente', 'acido', 'base', 'explosivo', 
+            'inflamavel', 'toxico', 'radioativo', 'outro'
+        ],
+        'dangerLevel': ['baixo', 'moderado', 'alto', 'extremo'],
+        'regulatoryOrg': ['policia-federal', 'exercito', 'anvisa', 'outro'],
+        'unit': ['unidade', 'litro', 'ml', 'grama', 'kg', 'caixa']
+    };
+
+    // Carregar opções para todos os selects dinâmicos
+    async function carregarOpcoes() {
+        const selects = document.querySelectorAll('.dynamic-select');
+        
+        for (const select of selects) {
+            const campo = select.dataset.campo;
+            await carregarOpcoesCampo(select, campo);
+        }
+    }
+
+    // Carregar opções para um campo específico
+    async function carregarOpcoesCampo(select, campo) {
+        try {
+            const response = await fetch(`/api/opcoes/${campo}`);
+            const opcoes = await response.json();
+            
+            // Limpar opções existentes (exceto a primeira placeholder)
+            while (select.options.length > 1) {
+                select.remove(1);
+            }
+            
+            // Adicionar opção "Adicionar nova..."
+            const addOption = document.createElement('option');
+            addOption.value = '_add_new_';
+            addOption.textContent = '+ Adicionar nova opção...';
+            addOption.style.color = '#4361ee';
+            addOption.style.fontWeight = 'bold';
+            select.appendChild(addOption);
+            
+            // Adicionar opções existentes do banco
+            opcoes.forEach(opcao => {
+                if (opcao && opcao.trim() !== '') {
+                    const option = document.createElement('option');
+                    option.value = opcao;
+                    option.textContent = formatarTexto(opcao);
+                    select.appendChild(option);
+                }
+            });
+            
+            // Adicionar opções padrão que não estão no banco
+            if (opcoesPadrao[campo]) {
+                opcoesPadrao[campo].forEach(opcao => {
+                    if (!opcoes.includes(opcao)) {
+                        const option = document.createElement('option');
+                        option.value = opcao;
+                        option.textContent = formatarTexto(opcao);
+                        select.appendChild(option);
+                    }
+                });
+            }
+            
+            // Restaurar valor selecionado se existir no formData
+            const formDataValue = '<%= formData ? formData[select.name] : "" %>';
+            if (formDataValue && select.querySelector(`option[value="${formDataValue}"]`)) {
+                select.value = formDataValue;
+            }
+            
+        } catch (error) {
+            console.error(`Erro ao carregar opções para ${campo}:`, error);
+            carregarOpcoesPadrao(select, campo);
+        }
+    }
+
+    // Carregar opções padrão em caso de erro
+    function carregarOpcoesPadrao(select, campo) {
+        while (select.options.length > 1) {
+            select.remove(1);
+        }
+        
+        const addOption = document.createElement('option');
+        addOption.value = '_add_new_';
+        addOption.textContent = '+ Adicionar nova opção...';
+        addOption.style.color = '#4361ee';
+        addOption.style.fontWeight = 'bold';
+        select.appendChild(addOption);
+        
+        if (opcoesPadrao[campo]) {
+            opcoesPadrao[campo].forEach(opcao => {
+                const option = document.createElement('option');
+                option.value = opcao;
+                option.textContent = formatarTexto(opcao);
+                select.appendChild(option);
+            });
+        }
+    }
+
+    // Formatador de texto para exibição
+    function formatarTexto(texto) {
+        return texto
+            .split('-')
+            .map(palavra => palavra.charAt(0).toUpperCase() + palavra.slice(1))
+            .join(' ')
+            .replace(/\b\w/g, l => l.toUpperCase());
+    }
+
+    // Adicionar nova opção
+    async function adicionarNovaOpcao(select, campo) {
+        const label = campoLabels[campo] || campo;
+        const novaOpcao = prompt(`Digite o novo valor para "${label}":`);
+        
+        if (!novaOpcao || novaOpcao.trim() === '') {
+            return;
+        }
+        
+        const opcaoFormatada = novaOpcao.trim().toLowerCase();
+        
+        // Verificar se já existe localmente
+        const opcoesExistentes = Array.from(select.options).map(opt => opt.value.toLowerCase());
+        if (opcoesExistentes.includes(opcaoFormatada)) {
+            alert('⚠️ Esta opção já existe!');
+            return;
+        }
+        
+        try {
+            // Salvar no backend
+            const response = await fetch(`/api/opcoes/${campo}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ novaOpcao: opcaoFormatada })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                // Criar nova opção
+                const novaOption = document.createElement('option');
+                novaOption.value = opcaoFormatada;
+                novaOption.textContent = formatarTexto(opcaoFormatada);
+                
+                // Inserir antes da opção "Adicionar nova"
+                const addOption = select.querySelector('option[value="_add_new_"]');
+                select.insertBefore(novaOption, addOption);
+                
+                // Selecionar a nova opção
+                select.value = opcaoFormatada;
+                
+                // Disparar evento change
+                select.dispatchEvent(new Event('change'));
+                
+                alert('✅ Opção adicionada com sucesso!');
+            } else {
+                alert('❌ Erro ao adicionar opção: ' + result.message);
+            }
+            
+        } catch (error) {
+            console.error('Erro ao adicionar opção:', error);
+            
+            // Fallback: adicionar localmente mesmo com erro no backend
+            const novaOption = document.createElement('option');
+            novaOption.value = opcaoFormatada;
+            novaOption.textContent = formatarTexto(opcaoFormatada);
+            
+            const addOption = select.querySelector('option[value="_add_new_"]');
+            select.insertBefore(novaOption, addOption);
+            select.value = opcaoFormatada;
+            select.dispatchEvent(new Event('change'));
+            
+            alert('✅ Opção adicionada localmente!');
+        }
+    }
+
+    // Event listener para os selects
+    function configurarEventos() {
+        document.querySelectorAll('.dynamic-select').forEach(select => {
+            select.addEventListener('change', function() {
+                if (this.value === '_add_new_') {
+                    const campo = this.dataset.campo;
+                    adicionarNovaOpcao(this, campo);
+                }
+            });
+        });
+    }
+
+    // Validação do formulário para garantir que não seja selecionada a opção "Adicionar nova"
+    document.getElementById('productForm').addEventListener('submit', function(e) {
+        const invalidSelects = document.querySelectorAll('.dynamic-select[value="_add_new_"]');
+        
+        if (invalidSelects.length > 0) {
+            e.preventDefault();
+            alert('❌ Por favor, selecione uma opção válida ou adicione uma nova opção.');
+            invalidSelects[0].focus();
+        }
+    });
+
+    // Inicializar
+    carregarOpcoes().then(() => {
+        configurarEventos();
+    });
+
+    // Adicionar alguns estilos
+    const style = document.createElement('style');
+    style.textContent = `
+        .dynamic-select option[value="_add_new_"] {
+            background-color: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+            margin-top: 5px;
+            padding-top: 5px;
+        }
+        
+        .dynamic-select:focus {
+            border-color: #4361ee;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+        }
+        
+        .form-select {
+            cursor: pointer;
+        }
+    `;
+    document.head.appendChild(style);
+});
+
+// Para campos com input alternativo
+function configurarCampoComInput(select, inputId) {
+    const input = document.getElementById(inputId);
+    
+    select.addEventListener('change', function() {
+        if (this.value === '_add_new_') {
+            input.style.display = 'block';
+            input.focus();
+        } else if (this.value === '') {
+            input.style.display = 'block';
+        } else {
+            input.style.display = 'none';
+            input.value = '';
+        }
+    });
+    
+    input.addEventListener('input', function() {
+        if (this.value.trim() !== '') {
+            select.value = '';
+        }
+    });
+}
+
+// Usar assim para o fornecedor:
+// configurarCampoComInput(document.getElementById('supplier'), 'supplierText');
     </script>
 </body>
 </html>

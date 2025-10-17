@@ -4,6 +4,8 @@ const db = require('../config/database');
 const { requireAuth } = require('../middlewares/authMiddleware');
 
 
+
+
 // Rota para a dashboard principal (VERSÃO ATUALIZADA - 4 MAIS USADOS)
 router.get('/', requireAuth, (req, res) => {
     // Buscar últimos produtos
@@ -128,7 +130,7 @@ router.get('/criar_conta', (req, res) => {
 router.get('/produtos', (req, res) => {
     const {
         search,
-        searchType = 'name', // Padrão agora é 'name' em vez de 'all'
+        searchType = 'name',
         category,
         status,
         dateFilter,
@@ -136,7 +138,7 @@ router.get('/produtos', (req, res) => {
         quantityFilter,
         supplier,
         regulatoryOrg,
-        orderBy = 'nome' // Novo parâmetro para ordenação
+        orderBy = 'nome'
     } = req.query;
 
     let query = 'SELECT * FROM produtos WHERE 1=1';
@@ -307,6 +309,7 @@ router.get('/produtos', (req, res) => {
     });
 });
 
+
 // Rota para exibir formulário de adição
 router.get('/produtos/adicionar', (req, res) => {
     res.render('adicionar', {
@@ -334,6 +337,17 @@ router.post('/produtos/adicionar', (req, res) => {
         purchaseDate,
         notes
     } = req.body;
+
+    // Lista de valores permitidos para cada campo (opcional - para validação)
+    const valoresPermitidos = {
+        productType: ['reagente', 'solvente', 'acido', 'base', 'explosivo', 'inflamavel', 'toxico', 'radioativo', 'outro'],
+        dangerLevel: ['baixo', 'moderado', 'alto', 'extremo'],
+        regulatoryOrg: ['policia-federal', 'exercito', 'anvisa', 'outro'],
+        unit: ['unidade', 'litro', 'ml', 'grama', 'kg', 'caixa']
+    };
+
+    // Se o valor não estiver na lista permitida, ele será aceito como um novo valor
+    // Isso permite flexibilidade para novos tipos
 
     const query = `
         INSERT INTO produtos 
@@ -374,6 +388,62 @@ router.post('/produtos/adicionar', (req, res) => {
     });
 });
 
+// Adicione estas rotas API para gerenciar opções dinâmicas
+
+// API para buscar opções existentes
+router.get('/api/opcoes/:campo', requireAuth, (req, res) => {
+    const campo = req.params.campo;
+    let query = '';
+    
+    switch(campo) {
+        case 'productType':
+            query = 'SELECT DISTINCT tipo as valor FROM produtos WHERE tipo IS NOT NULL AND tipo != "" ORDER BY tipo';
+            break;
+        case 'dangerLevel':
+            query = 'SELECT DISTINCT grau_periculosidade as valor FROM produtos WHERE grau_periculosidade IS NOT NULL AND grau_periculosidade != "" ORDER BY grau_periculosidade';
+            break;
+        case 'regulatoryOrg':
+            query = 'SELECT DISTINCT orgao_regulador as valor FROM produtos WHERE orgao_regulador IS NOT NULL AND orgao_regulador != "" ORDER BY orgao_regulador';
+            break;
+        case 'unit':
+            query = 'SELECT DISTINCT unidade_medida as valor FROM produtos WHERE unidade_medida IS NOT NULL AND unidade_medida != "" ORDER BY unidade_medida';
+            break;
+        case 'supplier':
+            query = 'SELECT DISTINCT fornecedor as valor FROM produtos WHERE fornecedor IS NOT NULL AND fornecedor != "" ORDER BY fornecedor';
+            break;
+        default:
+            return res.json([]);
+    }
+    
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error(`Erro ao buscar opções para ${campo}:`, err);
+            return res.json([]);
+        }
+        res.json(results.map(item => item.valor));
+    });
+});
+
+// API para adicionar nova opção
+router.post('/api/opcoes/:campo', requireAuth, (req, res) => {
+    const campo = req.params.campo;
+    const { novaOpcao } = req.body;
+    
+    if (!novaOpcao || novaOpcao.trim() === '') {
+        return res.status(400).json({ success: false, message: 'Opção não pode estar vazia' });
+    }
+    
+    // Aqui você pode salvar em uma tabela de opções personalizadas se quiser
+    // Por enquanto, apenas retornamos sucesso
+    console.log(`Nova opção adicionada para ${campo}:`, novaOpcao);
+    
+    res.json({ 
+        success: true, 
+        message: 'Opção adicionada com sucesso',
+        opcao: novaOpcao 
+    });
+});
+
 // Rota para deletar produto (versão simplificada)
 router.post('/produtos/deletar/:id', (req, res) => {
     const productId = req.params.id;
@@ -411,29 +481,6 @@ router.post('/produtos/deletar/:id', (req, res) => {
     });
 });
 
-// Rota para exibir formulário de edição
-router.get('/produtos/editar/:id', (req, res) => {
-    const productId = req.params.id;
-    const query = 'SELECT * FROM produtos WHERE id_produto = ?';
-    
-    db.query(query, [productId], (err, results) => {
-        if (err) {
-            console.error('Erro ao buscar produto:', err);
-            return res.redirect('/produtos?error=Erro ao carregar produto para edição');
-        }
-        
-        if (results.length === 0) {
-            return res.redirect('/produtos?error=Produto não encontrado');
-        }
-        
-        res.render('editar-produto', {
-            user: req.session.user,
-            produto: results[0],
-            error: null
-        });
-    });
-});
-
 // Rota para processar edição de produto
 router.post('/produtos/editar/:id', (req, res) => {
     const productId = req.params.id;
@@ -453,6 +500,9 @@ router.post('/produtos/editar/:id', (req, res) => {
         purchaseDate,
         notes
     } = req.body;
+
+    // Os valores dos selects dinâmicos serão aceitos automaticamente
+    // mesmo que não estejam na lista de valores permitidos
 
     const query = `
         UPDATE produtos 
@@ -488,7 +538,36 @@ router.post('/produtos/editar/:id', (req, res) => {
         
         res.redirect('/produtos?success=Produto editado com sucesso');
     });
+}); 
+
+// Rota para exibir formulário de edição - VERIFIQUE SE ESTÁ CORRETA
+router.get('/produtos/editar/:id', (req, res) => {
+    const productId = req.params.id;
+    console.log('🔍 Buscando produto para edição ID:', productId); // Debug
+    
+    const query = 'SELECT * FROM produtos WHERE id_produto = ?';
+    
+    db.query(query, [productId], (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar produto:', err);
+            return res.redirect('/produtos?error=Erro ao carregar produto para edição');
+        }
+        
+        if (results.length === 0) {
+            console.log('❌ Produto não encontrado ID:', productId);
+            return res.redirect('/produtos?error=Produto não encontrado');
+        }
+        
+        console.log('✅ Produto encontrado:', results[0].nome);
+        res.render('editar-produto', {
+            user: req.session.user,
+            produto: results[0],
+            error: null
+        });
+    });
 });
+
+
 
 // ROTA PARA SAÍDA DE REAGENTES
 router.get('/saida-reagentes', requireAuth, (req, res) => {
