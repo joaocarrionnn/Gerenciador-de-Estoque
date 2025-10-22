@@ -21,53 +21,111 @@ class AuthController {
     static async processarCriarConta(req, res) {
         try {
             console.log('📨 Body recebido:', req.body);
-            const { nome, email, turma, senha, confirmar_senha } = req.body;
+            const { nome, usuario, senha, turma, cpf, palavraChave, email } = req.body;
             
             console.log('📨 Dados recebidos do formulário:', {
-                nome, email, turma, 
-                senha: senha ? '***' : 'vazia'
+                nome, usuario, turma, cpf, email,
+                senha: senha ? '***' : 'vazia',
+                palavraChave: palavraChave ? '***' : 'vazia'
             });
 
-            // Validações
+            // Validações básicas
+            if (!nome || !usuario || !senha || !turma || !cpf || !palavraChave || !email) {
+                return res.render("auth/criar_conta", { 
+                    error: "Todos os campos são obrigatórios!",
+                    success: null,
+                    nome, usuario, email, turma, cpf
+                });
+            }
+
             if (senha.length < 6) {
                 console.log('❌ Senha muito curta');
                 return res.render("auth/criar_conta", { 
                     error: "A senha deve ter pelo menos 6 caracteres!",
                     success: null,
-                    nome, email, turma, 
+                    nome, usuario, email, turma, cpf
                 });
             }
 
-            // Verificar se usuário já existe
-            console.log('🔍 Verificando se usuário já existe...');
-            const usuarioExistente = await AuthModel.verificarUsuarioExistente(email);
-            if (usuarioExistente) {
-                console.log('❌ Usuário já existe');
+            // Limpar formatação do CPF para validação
+            const cpfLimpo = cpf.replace(/\D/g, '');
+
+            // Verificar se CPF é válido (11 dígitos)
+            if (cpfLimpo.length !== 11) {
                 return res.render("auth/criar_conta", { 
-                    error: "Já existe um usuário com este e-mail!",
+                    error: "CPF inválido! Digite um CPF com 11 dígitos.",
                     success: null,
-                    nome, email: '', turma 
+                    nome, usuario, email, turma, cpf
                 });
             }
 
-            // Criar hash da senha
+            // Verificar se email é válido
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                return res.render("auth/criar_conta", { 
+                    error: "E-mail inválido! Digite um e-mail válido.",
+                    success: null,
+                    nome, usuario, email, turma, cpf
+                });
+            }
+
+            // Verificar duplicidades individuais
+            console.log('🔍 Verificando duplicidades...');
+            
+            const [cpfExistente, usuarioExistente, emailExistente] = await Promise.all([
+                AuthModel.verificarUsuarioExistentePorCampo('cpf', cpfLimpo),
+                AuthModel.verificarUsuarioExistentePorCampo('usuario', usuario),
+                AuthModel.verificarUsuarioExistentePorCampo('email', email)
+            ]);
+
+            // Mensagens de erro específicas
+            let mensagemErro = null;
+            
+            if (cpfExistente) {
+                mensagemErro = "Já existe uma conta cadastrada com este CPF! Por favor, use outro CPF.";
+            } else if (usuarioExistente) {
+                mensagemErro = "Nome de usuário já está em uso! Por favor, escolha outro nome de usuário.";
+            } else if (emailExistente) {
+                mensagemErro = "E-mail já está cadastrado! Por favor, use outro e-mail.";
+            }
+
+            if (mensagemErro) {
+                console.log('❌', mensagemErro);
+                return res.render("auth/criar_conta", { 
+                    error: mensagemErro,
+                    success: null,
+                    nome, 
+                    usuario: usuarioExistente ? '' : usuario,
+                    email: emailExistente ? '' : email,
+                    turma, 
+                    cpf: cpfExistente ? '' : cpf
+                });
+            }
+
+            // Criar hash da senha e palavra-chave
             console.log('🔐 Criando hash da senha...');
             const saltRounds = 10;
             const senhaHash = await bcrypt.hash(senha, saltRounds);
-
-            // Gerar nome de usuário a partir do email
-            const usuario = email.split('@')[0];
+            const palavraChaveHash = await bcrypt.hash(palavraChave, saltRounds);
 
             // Dados para salvar no banco
             const dadosUsuario = {
                 nome_completo: nome,
                 usuario: usuario,
+                email: email,
                 senha: senhaHash,
+                cpf: cpfLimpo, // Salvar sem formatação
+                palavra_chave: palavraChaveHash,
                 turma: turma,
-                tipo: 'usuario'
+                tipo: 'usuario',
+                status: 'aprovado'
             };
 
-            console.log('💾 Dados para salvar:', { ...dadosUsuario, senha: '***' });
+            console.log('💾 Dados para salvar:', { 
+                ...dadosUsuario, 
+                senha: '***', 
+                palavra_chave: '***' 
+            });
 
             // Salvar no banco
             console.log('💾 Salvando no banco...');
@@ -77,18 +135,34 @@ class AuthController {
 
             res.render("auth/criar_conta", { 
                 error: null, 
-                success: "Solicitação enviada com sucesso! Aguarde a aprovação do administrador.",
-                nome: '', email: '', turma: ''
+                success: "Conta criada com sucesso! Agora faça login para acessar o sistema.",
+                nome: '', usuario: '', email: '', turma: '', cpf: ''
             });
 
         } catch (error) {
             console.error('💥 Erro completo ao criar conta:', error);
+            
+            let mensagemErro = "Erro ao processar solicitação. Tente novamente.";
+            
+            // Verificar se é erro de duplicidade do MySQL
+            if (error.code === 'ER_DUP_ENTRY') {
+                if (error.sqlMessage.includes('usuario')) {
+                    mensagemErro = "Nome de usuário já está em uso!";
+                } else if (error.sqlMessage.includes('email')) {
+                    mensagemErro = "E-mail já está cadastrado!";
+                } else if (error.sqlMessage.includes('cpf')) {
+                    mensagemErro = "CPF já está cadastrado!";
+                }
+            }
+            
             res.render("auth/criar_conta", { 
-                error: "Erro ao processar solicitação. Tente novamente.",
+                error: mensagemErro,
                 success: null,
                 nome: req.body.nome, 
+                usuario: req.body.usuario,
                 email: req.body.email, 
-                turma: req.body.turma
+                turma: req.body.turma,
+                cpf: req.body.cpf
             });
         }
     }
@@ -160,43 +234,6 @@ class AuthController {
             }
             res.redirect("/auth/login");
         });
-    }
-
-    // Criação de conta
-    // Processar criação de conta (POST /criar-conta)
-  static async processarCriarConta(req, res) {
-    try {
-        const { nome, usuario, senha, turma, cpf, palavraChave, email } = req.body;
-    
-        const senhaHash = await bcrypt.hash(senha, 10);
-    
-        const dados = {
-          nome_completo: nome,
-          usuario,
-          senha: senhaHash,
-          turma,
-          cpf,
-          palavra_chave: palavraChave,
-          email,
-          tipo: 'usuario'
-        };
-    
-        const resultado = await AuthModel.criarUsuario(dados);
-    
-        console.log("✅ Usuário criado ID:", resultado.insertId);
-    
-        res.render("auth/criar_conta", {
-          success: "Conta criada com sucesso! Agora faça login para acessar o sistema.",
-          error: null
-        });
-    
-      } catch (err) {
-        console.error("❌ Erro ao criar conta:", err);
-        res.render("auth/criar_conta", {
-          error: "Erro ao criar conta. Tente novamente.",
-          success: null
-        });
-      }
     }
 }
 

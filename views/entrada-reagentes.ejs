@@ -704,38 +704,80 @@ function formatarNumeroJS(num) {
     return numero.toFixed(1).replace('.', ',');
 }
 
-// Função para exibir notificações
+// Função para exibir notificações no novo estilo
 function showToast(message, type = 'success') {
-    const toastContainer = document.querySelector('.toast-container');
-    const toastId = 'toast-' + Date.now();
+    const notification = document.createElement('div');
     
-    const toast = document.createElement('div');
-    toast.className = `toast align-items-center text-bg-${type} border-0`;
-    toast.id = toastId;
-    toast.setAttribute('role', 'alert');
-    toast.setAttribute('aria-live', 'assertive');
-    toast.setAttribute('aria-atomic', 'true');
+    // Mapear tipos para ícones
+    let icon = 'info';
+    if (type === 'success') icon = 'check';
+    if (type === 'danger') icon = 'exclamation-triangle';
+    if (type === 'warning') icon = 'exclamation-circle';
     
-    toast.innerHTML = `
-        <div class="d-flex">
-            <div class="toast-body">
-                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'} me-2"></i>
-                ${message}
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
+    notification.className = `notification ${type}`;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        color: white;
+        font-weight: 500;
+        z-index: 9999;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        animation: slideIn 0.3s ease-out;
+        max-width: 400px;
+        background: ${type === 'success' ? '#28a745' : 
+                     type === 'danger' ? '#dc3545' : 
+                     type === 'warning' ? '#ffc107' : '#17a2b8'};
     `;
     
-    toastContainer.appendChild(toast);
-    
-    const bsToast = new bootstrap.Toast(toast, {
-        delay: 5000
-    });
-    bsToast.show();
-    
-    toast.addEventListener('hidden.bs.toast', () => {
-        toast.remove();
-    });
+    notification.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fas fa-${icon}" style="font-size: 1.1rem;"></i>
+            <span>${message}</span>
+        </div>
+    `;
+
+    document.body.appendChild(notification);
+
+    // Adicionar animação de entrada
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease-in forwards';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+            if (style.parentNode) {
+                style.parentNode.removeChild(style);
+            }
+        }, 300);
+    }, 4000);
 }
 
 // Atualizar informações quando o usuário digitar ou selecionar um reagente
@@ -844,7 +886,11 @@ function configurarEnvioFormularioEntrada() {
             console.log('Resposta do servidor:', result);
             
             if (result.success) {
-                showToast(result.message, 'success');
+                const reagentName = document.getElementById('reagent').value;
+                const quantity = document.getElementById('quantity').value;
+                const unit = document.getElementById('unit-measure').textContent;
+                
+                showToast(`Entrada de ${quantity} ${unit} de ${reagentName} registrada com sucesso! Estoque atualizado.`, 'success');
                 this.reset();
                 document.getElementById('reagent-id').value = '';
                 

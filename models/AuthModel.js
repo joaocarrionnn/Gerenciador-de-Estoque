@@ -18,17 +18,49 @@ class AuthModel {
         });
     }
 
-    static verificarUsuarioExistente(email) {
+    static verificarUsuarioExistente(usuario, email, cpf) {
         return new Promise((resolve, reject) => {
-            console.log('🔍 Verificando se email existe:', email);
-            const query = "SELECT * FROM usuarios WHERE email = ?";
+            console.log('🔍 Verificando se usuário/email/cpf existe:', usuario, email, cpf);
+            const query = "SELECT * FROM usuarios WHERE usuario = ? OR email = ? OR cpf = ?";
             
-            db.query(query, [email], (err, results) => {
+            db.query(query, [usuario, email, cpf], (err, results) => {
                 if (err) {
                     console.error('❌ Erro no SQL (verificarUsuarioExistente):', err.message);
                     return reject(err);
                 }
-                console.log('📋 Email já existe?', results.length > 0);
+                console.log('📋 Usuário/Email/CPF já existe?', results.length > 0);
+                resolve(results);
+            });
+        });
+    }
+
+    static verificarCPFExistente(cpf) {
+        return new Promise((resolve, reject) => {
+            console.log('🔍 Verificando CPF:', cpf);
+            const query = "SELECT * FROM usuarios WHERE cpf = ?";
+            
+            db.query(query, [cpf], (err, results) => {
+                if (err) {
+                    console.error('❌ Erro no SQL (verificarCPFExistente):', err.message);
+                    return reject(err);
+                }
+                console.log('📋 CPF já existe?', results.length > 0);
+                resolve(results.length > 0);
+            });
+        });
+    }
+
+    static verificarUsuarioExistentePorCampo(campo, valor) {
+        return new Promise((resolve, reject) => {
+            console.log(`🔍 Verificando ${campo}:`, valor);
+            const query = `SELECT * FROM usuarios WHERE ${campo} = ?`;
+            
+            db.query(query, [valor], (err, results) => {
+                if (err) {
+                    console.error(`❌ Erro no SQL (verificar${campo}Existente):`, err.message);
+                    return reject(err);
+                }
+                console.log(`📋 ${campo} já existe?`, results.length > 0);
                 resolve(results.length > 0);
             });
         });

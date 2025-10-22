@@ -828,68 +828,70 @@
         }
 
         function updateTable(movements, total, currentPage, totalPages) {
-    const tbody = document.getElementById('movements-table');
-    const tableInfo = document.getElementById('table-info');
+            const tbody = document.getElementById('movements-table');
+            const tableInfo = document.getElementById('table-info');
+            
+            totalItems = total;
+            tableInfo.textContent = `Mostrando ${movements.length} de ${total} registros`;
+
+            if (movements.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="loading">
+                            <i class="fas fa-search"></i> Nenhuma movimentação encontrada
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            let html = '';
+            movements.forEach(movement => {
+                const date = new Date(movement.data_movimentacao).toLocaleDateString('pt-BR');
+                const time = new Date(movement.data_movimentacao).toLocaleTimeString('pt-BR');
+                
+                html += `
+                    <tr>
+                        <td>
+                            <div style="font-weight: 500;">${date}</div>
+                            <small style="color: #6b7280; font-size: 0.75rem;">${time}</small>
+                        </td>
+                        <td>
+                            <strong>${movement.nome}</strong>
+                            ${movement.categoria ? `<br><small style="color: #6b7280;">${movement.categoria}</small>` : ''}
+                        </td>
+                        <td>
+                            <span class="badge ${movement.tipo === 'entrada' ? 'badge-success' : 'badge-danger'}">
+                                ${movement.tipo === 'entrada' ? 'Entrada' : 'Saída'}
+                            </span>
+                        </td>
+                        <td>
+                            <strong>${movement.quantidade}</strong>
+                            <div style="color: #6b7280; font-size: 0.875rem;">${movement.unidade_medida}</div>
+                        </td>
+                        <td>${movement.responsavel}</td>
+                        <td>${movement.projeto_experimento || '-'}</td>
+                        <td>${movement.observacoes || '-'}</td>
+
+                        <td>
+                            <div class="actions-cell">
+                                <button class="edit-btn" onclick="openEditModal('${movement.id_movimentacao}')" title="Editar movimentação">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="delete-btn" onclick="openDeleteModal('${movement.id_movimentacao}', {reagent: '${movement.nome.replace(/'/g, "\\'")}', quantidade: '${movement.quantidade}', unidade: '${movement.unidade_medida}'})" title="Excluir movimentação">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
     
-    totalItems = total;
-    tableInfo.textContent = `Mostrando ${movements.length} de ${total} registros`;
+             tbody.innerHTML = html;
+            updatePagination(currentPage, totalPages);
+        }
 
-    if (movements.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="8" class="loading">
-                    <i class="fas fa-search"></i> Nenhuma movimentação encontrada
-                </td>
-            </tr>
-        `;
-        return;
-    }
-
-    let html = '';
-    movements.forEach(movement => {
-        const date = new Date(movement.data_movimentacao).toLocaleDateString('pt-BR');
-        const time = new Date(movement.data_movimentacao).toLocaleTimeString('pt-BR');
         
-        html += `
-            <tr>
-                <td>
-                    <div style="font-weight: 500;">${date}</div>
-                    <small style="color: #6b7280; font-size: 0.75rem;">${time}</small>
-                </td>
-                <td>
-                    <strong>${movement.nome}</strong>
-                    ${movement.categoria ? `<br><small style="color: #6b7280;">${movement.categoria}</small>` : ''}
-                </td>
-                <td>
-                    <span class="badge ${movement.tipo === 'entrada' ? 'badge-success' : 'badge-danger'}">
-                        ${movement.tipo === 'entrada' ? 'Entrada' : 'Saída'}
-                    </span>
-                </td>
-                <td>
-                    <strong>${movement.quantidade}</strong>
-                    <div style="color: #6b7280; font-size: 0.875rem;">${movement.unidade_medida}</div>
-                </td>
-                <td>${movement.responsavel}</td>
-                <td>${movement.projeto_experimento || '-'}</td>
-                <td>${movement.observacoes || '-'}</td>
-
-                <td>
-                    <div class="actions-cell">
-                        <button class="edit-btn" onclick="openEditModal('${movement.id_movimentacao}')" title="Editar movimentação">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="delete-btn" onclick="openDeleteModal('${movement.id_movimentacao}', {reagent: '${movement.nome.replace(/'/g, "\\'")}', quantidade: '${movement.quantidade}', unidade: '${movement.unidade_medida}'})" title="Excluir movimentação">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </td>
-            </tr>
-        `;
-    });
-    
-    tbody.innerHTML = html;
-    updatePagination(currentPage, totalPages);
-}
         function updatePagination(currentPage, totalPages) {
             const paginationElement = document.getElementById('pagination');
             

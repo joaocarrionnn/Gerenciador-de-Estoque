@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const PerfilController = require('../controllers/PerfilController');
-const upload = require('../config/upload'); // Agora usando config separada
+const upload = require('../config/upload');
 
 router.get('/', PerfilController.perfil);
 router.post('/upload-foto', upload.single('profilePhoto'), PerfilController.uploadFoto);

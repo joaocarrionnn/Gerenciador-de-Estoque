@@ -17,7 +17,9 @@
                         secondary: '#6b7280',
                         accent: '#225c96',
                         light: '#f3f4f6',
-                        dark: '#1e293b'
+                        dark: '#1e293b',
+                        error: '#dc2626',
+                        success: '#16a34a'
                     }
                 }
             }
@@ -26,6 +28,12 @@
     <style>
         .bg-custom-gradient {
             background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+        }
+        .error-border {
+            border-color: #dc2626 !important;
+        }
+        .success-border {
+            border-color: #16a34a !important;
         }
         @media (max-width: 768px) {
             .form-columns {
@@ -56,7 +64,7 @@
             
             <% if (typeof error !== 'undefined' && error) { %>
                 <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mx-6 mt-4" role="alert">
-                    <p class="font-bold">Erro</p>
+                    <p class="font-bold">Atenção</p>
                     <p><%= error %></p>
                 </div>
             <% } %>
@@ -64,46 +72,56 @@
 
         <!-- Formulário de Criação de Conta -->
         <div class="p-6">
-            <form action="/criar_conta" method="POST" class="space-y-4">
+            <form action="/auth/criar-conta" method="POST" class="space-y-4" id="formCriarConta">
                 <div class="form-columns grid grid-cols-2 gap-4">
                     <!-- Coluna 1 -->
                     <div class="space-y-4">
                         <div>
                             <label class="block text-gray-700 text-sm font-medium mb-2" for="nome">
-                                Nome Completo
+                                Nome Completo *
                             </label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <i class="fas fa-user text-gray-400"></i>
                                 </div>
                                 <input class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
-                                       id="nome" name="nome" type="text" placeholder="Seu nome completo" required>
+                                       id="nome" name="nome" type="text" placeholder="Seu nome completo" required
+                                       value="<%= typeof nome !== 'undefined' ? nome : '' %>">
                             </div>
                         </div>
 
                         <div>
                             <label class="block text-gray-700 text-sm font-medium mb-2" for="usuario">
-                                Usuário
+                                Nome de Usuário *
                             </label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <i class="fas fa-user-circle text-gray-400"></i>
                                 </div>
                                 <input class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
-                                       id="usuario" name="usuario" type="text" placeholder="Nome de usuário" required>
+                                       id="usuario" name="usuario" type="text" placeholder="Escolha um nome de usuário" required
+                                       value="<%= typeof usuario !== 'undefined' ? usuario : '' %>">
+                                <div id="usuario-status" class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none hidden">
+                                    <i class="fas fa-exclamation-circle text-red-500"></i>
+                                </div>
                             </div>
+                            <p class="text-xs text-gray-500 mt-1">Este será seu nome de login</p>
                         </div>
 
                         <div>
                             <label class="block text-gray-700 text-sm font-medium mb-2" for="senha">
-                                Senha
+                                Senha *
                             </label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <i class="fas fa-lock text-gray-400"></i>
                                 </div>
                                 <input class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
-                                       id="senha" name="senha" type="password" placeholder="Crie uma senha" required>
+                                       id="senha" name="senha" type="password" placeholder="Crie uma senha forte" required
+                                       minlength="6">
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-info-circle text-gray-400" title="Mínimo 6 caracteres"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -112,40 +130,49 @@
                     <div class="space-y-4">
                         <div>
                             <label class="block text-gray-700 text-sm font-medium mb-2" for="cpf">
-                                CPF
+                                CPF *
                             </label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <i class="fas fa-id-card text-gray-400"></i>
                                 </div>
                                 <input class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
-                                       id="cpf" name="cpf" type="text" placeholder="000.000.000-00" required>
+                                       id="cpf" name="cpf" type="text" placeholder="000.000.000-00" required
+                                       value="<%= typeof cpf !== 'undefined' ? cpf : '' %>">
+                                <div id="cpf-status" class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none hidden">
+                                    <i class="fas fa-exclamation-circle text-red-500"></i>
+                                </div>
                             </div>
                         </div>
 
                         <div>
                             <label class="block text-gray-700 text-sm font-medium mb-2" for="palavraChave">
-                                Palavra-Chave
+                                Palavra-Chave de Segurança *
                             </label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <i class="fas fa-key text-gray-400"></i>
                                 </div>
                                 <input class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
-                                       id="palavraChave" name="palavraChave" type="password" placeholder="Sua palavra-chave" required>
+                                       id="palavraChave" name="palavraChave" type="password" placeholder="Sua palavra-chave de segurança" required>
                             </div>
+                            <p class="text-xs text-gray-500 mt-1">Usada para recuperação de conta</p>
                         </div>
                         
                         <div>
                             <label class="block text-gray-700 text-sm font-medium mb-2" for="email">
-                                E-mail educacional
+                                E-mail Educacional *
                             </label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <i class="fas fa-envelope text-gray-400"></i>
                                 </div>
                                 <input class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
-                                       id="email" name="email" type="email" placeholder="seu.email@escola.com" required>
+                                       id="email" name="email" type="email" placeholder="seu.email@escola.com" required
+                                       value="<%= typeof email !== 'undefined' ? email : '' %>">
+                                <div id="email-status" class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none hidden">
+                                    <i class="fas fa-exclamation-circle text-red-500"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -154,7 +181,7 @@
                 <!-- Campo de turma (largura completa) -->
                 <div>
                     <label class="block text-gray-700 text-sm font-medium mb-2" for="turma">
-                        Turma
+                        Turma *
                     </label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -163,13 +190,26 @@
                         <select class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent appearance-none" 
                                 id="turma" name="turma" required>
                             <option value="">Selecione sua turma</option>
-                            <option value="quimica1A">Turma química 1º-A</option>
-                            <option value="quimica1B">Turma química 1º-B</option>
-                            <option value="quimica2A">Turma química 2º-A</option>
-                            <option value="quimica2B">Turma química 2º-B</option>
+                            <option value="quimica1A" <%= typeof turma !== 'undefined' && turma === 'quimica1A' ? 'selected' : '' %>>Turma química 1º-A</option>
+                            <option value="quimica1B" <%= typeof turma !== 'undefined' && turma === 'quimica1B' ? 'selected' : '' %>>Turma química 1º-B</option>
+                            <option value="quimica2A" <%= typeof turma !== 'undefined' && turma === 'quimica2A' ? 'selected' : '' %>>Turma química 2º-A</option>
+                            <option value="quimica2B" <%= typeof turma !== 'undefined' && turma === 'quimica2B' ? 'selected' : '' %>>Turma química 2º-B</option>
                         </select>
                         <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                             <i class="fas fa-chevron-down text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-triangle text-yellow-400"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-yellow-700">
+                                <strong>Importante:</strong> Verifique se todos os dados estão corretos antes de criar a conta.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -184,7 +224,7 @@
             <div class="mt-6 text-center">
                 <p class="text-sm text-gray-600">
                     Já tem uma conta? 
-                    <a href="/login" class="font-medium text-primary hover:underline">Fazer login</a>
+                    <a href="/auth/login" class="font-medium text-primary hover:underline">Fazer login</a>
                 </p>
             </div>
         </div>
@@ -197,30 +237,12 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Validação simples do formulário
-            const form = document.querySelector('form');
-            
-            form.addEventListener('submit', function(event) {
-                let isValid = true;
-                const inputs = form.querySelectorAll('input, select, textarea');
-                
-                inputs.forEach(input => {
-                    if (!input.value.trim()) {
-                        isValid = false;
-                        input.classList.add('border-red-500');
-                    } else {
-                        input.classList.remove('border-red-500');
-                    }
-                });
-                
-                if (!isValid) {
-                    event.preventDefault();
-                    alert('Por favor, preencha todos os campos obrigatórios.');
-                }
-            });
+            const form = document.getElementById('formCriarConta');
+            const cpfInput = document.getElementById('cpf');
+            const usuarioInput = document.getElementById('usuario');
+            const emailInput = document.getElementById('email');
             
             // Formatação automática do CPF
-            const cpfInput = document.getElementById('cpf');
             cpfInput.addEventListener('input', function(e) {
                 let value = e.target.value.replace(/\D/g, '');
                 if (value.length > 11) value = value.slice(0, 11);
@@ -235,6 +257,91 @@
                 
                 e.target.value = value;
             });
+
+            // Validação em tempo real dos campos únicos
+            function validarCampoUnico(campo, valor, statusElement) {
+                if (valor.length < 3) {
+                    statusElement.classList.add('hidden');
+                    campo.classList.remove('error-border');
+                    return;
+                }
+
+                // Aqui você pode adicionar validação AJAX se quiser verificar em tempo real
+                // Por enquanto, apenas remove a borda de erro se o usuário alterar o valor
+                statusElement.classList.add('hidden');
+                campo.classList.remove('error-border');
+            }
+
+            usuarioInput.addEventListener('input', function() {
+                validarCampoUnico(usuarioInput, usuarioInput.value, document.getElementById('usuario-status'));
+            });
+
+            cpfInput.addEventListener('input', function() {
+                validarCampoUnico(cpfInput, cpfInput.value, document.getElementById('cpf-status'));
+            });
+
+            emailInput.addEventListener('input', function() {
+                validarCampoUnico(emailInput, emailInput.value, document.getElementById('email-status'));
+            });
+
+            // Validação do formulário
+            form.addEventListener('submit', function(event) {
+                let isValid = true;
+                const inputs = form.querySelectorAll('input[required], select[required]');
+                
+                inputs.forEach(input => {
+                    if (!input.value.trim()) {
+                        isValid = false;
+                        input.classList.add('border-red-500');
+                    } else {
+                        input.classList.remove('border-red-500');
+                    }
+                });
+
+                // Validação específica do CPF
+                const cpfValue = cpfInput.value.replace(/\D/g, '');
+                if (cpfValue.length !== 11) {
+                    isValid = false;
+                    cpfInput.classList.add('border-red-500');
+                    alert('CPF deve conter 11 dígitos.');
+                }
+
+                // Validação de senha
+                const senhaInput = document.getElementById('senha');
+                if (senhaInput.value.length < 6) {
+                    isValid = false;
+                    senhaInput.classList.add('border-red-500');
+                    alert('A senha deve ter pelo menos 6 caracteres.');
+                }
+                
+                if (!isValid) {
+                    event.preventDefault();
+                }
+            });
+
+            // Focar no primeiro campo com erro após submit com erro
+            <% if (typeof error !== 'undefined' && error) { %>
+                setTimeout(() => {
+                    // Se o erro menciona CPF, foca no CPF
+                    if (<%= typeof error !== 'undefined' && error.includes('CPF') %>) {
+                        cpfInput.focus();
+                        cpfInput.classList.add('error-border');
+                        document.getElementById('cpf-status').classList.remove('hidden');
+                    }
+                    // Se o erro menciona usuário, foca no usuário
+                    else if (<%= typeof error !== 'undefined' && error.includes('usuário') %>) {
+                        usuarioInput.focus();
+                        usuarioInput.classList.add('error-border');
+                        document.getElementById('usuario-status').classList.remove('hidden');
+                    }
+                    // Se o erro menciona e-mail, foca no email
+                    else if (<%= typeof error !== 'undefined' && error.includes('E-mail') %>) {
+                        emailInput.focus();
+                        emailInput.classList.add('error-border');
+                        document.getElementById('email-status').classList.remove('hidden');
+                    }
+                }, 100);
+            <% } %>
         });
     </script>
 </body>

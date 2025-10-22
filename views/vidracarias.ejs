@@ -762,6 +762,40 @@
     color: #059669;
     border: 1px solid #a7f3d0;
 }
+
+/* Estilos para os modais */
+.modal-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .modal-title {
+            font-weight: 600;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Corrigir z-index e overflow dos modais */
+        .fixed.inset-0 {
+            z-index: 9999 !important;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        /* Container do modal centralizado */
+        .fixed.inset-0.flex {
+            align-items: flex-start;
+            padding-top: 3rem;
+            padding-bottom: 3rem;
+        }
+
+        /* Prevenir que o modal saia da tela */
+        .fixed.inset-0 > div {
+            max-height: calc(100vh - 6rem);
+            overflow-y: auto;
+            margin: auto;
+        }
     </style>
 </head>
 <body>

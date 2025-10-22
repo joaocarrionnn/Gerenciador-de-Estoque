@@ -79,7 +79,12 @@ const { requireAuth } = require('./middlewares/authMiddleware');
 
 // Rotas de autenticação (não protegidas)
 const authRoutes = require('./routes/auth');
-app.use('/auth', authRoutes);
+app.use('/auth', authRoutes)
+
+app.post('/criar_conta', (req, res) => {
+    const AuthController = require('./controllers/AuthController');
+    AuthController.processarCriarConta(req, res);
+});
 
 // Rotas principais (protegidas)
 const indexRoutes = require('./routes/index');

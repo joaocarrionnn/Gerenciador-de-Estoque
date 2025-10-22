@@ -5,7 +5,6 @@ const { requireAuth } = require('../middlewares/authMiddleware');
 
 
 
-///////////////////// DASHBOARD /////////////////////////////////////////////
 
 // Rota para a dashboard principal (VERSÃO ATUALIZADA - 4 MAIS USADOS)
 router.get('/', requireAuth, (req, res) => {
@@ -119,9 +118,13 @@ router.get('/', requireAuth, (req, res) => {
     });
 });
 
+router.get('/login', (req, res) => {
+    res.render('Auth/login');
+});
 
-
-///////////////// REAGENTES ///////////////////////////////////////// 
+router.get('/criar_conta', (req, res) => {
+    res.render('Auth/criar_conta');
+});
 
 // Rota para exibir produtos (com suporte a pesquisa avançada)
 router.get('/produtos', (req, res) => {
@@ -335,7 +338,7 @@ router.post('/produtos/adicionar', (req, res) => {
         notes
     } = req.body;
 
-    // Lista de valores permitidos para cada campo 
+    // Lista de valores permitidos para cada campo (opcional - para validação)
     const valoresPermitidos = {
         productType: ['reagente', 'solvente', 'acido', 'base', 'explosivo', 'inflamavel', 'toxico', 'radioativo', 'outro'],
         dangerLevel: ['baixo', 'moderado', 'alto', 'extremo'],
@@ -343,6 +346,8 @@ router.post('/produtos/adicionar', (req, res) => {
         unit: ['unidade', 'litro', 'ml', 'grama', 'kg', 'caixa']
     };
 
+    // Se o valor não estiver na lista permitida, ele será aceito como um novo valor
+    // Isso permite flexibilidade para novos tipos
 
     const query = `
         INSERT INTO produtos 
@@ -383,7 +388,7 @@ router.post('/produtos/adicionar', (req, res) => {
     });
 });
 
-
+// Adicione estas rotas API para gerenciar opções dinâmicas
 
 // API para buscar opções existentes
 router.get('/api/opcoes/:campo', requireAuth, (req, res) => {
@@ -428,6 +433,8 @@ router.post('/api/opcoes/:campo', requireAuth, (req, res) => {
         return res.status(400).json({ success: false, message: 'Opção não pode estar vazia' });
     }
     
+    // Aqui você pode salvar em uma tabela de opções personalizadas se quiser
+    // Por enquanto, apenas retornamos sucesso
     console.log(`Nova opção adicionada para ${campo}:`, novaOpcao);
     
     res.json({ 
@@ -449,11 +456,12 @@ router.post('/produtos/deletar/:id', (req, res) => {
     db.query(deleteMovementsQuery, [productId], (err, movementResult) => {
         if (err) {
             console.error('Erro ao deletar movimentações:', err);
+            // Continua mesmo com erro (pode ser que não existam movimentações)
         }
         
         console.log('Movimentações deletadas:', movementResult?.affectedRows || 0);
         
-        // deleta o produto
+        // Agora deleta o produto
         const deleteProductQuery = 'DELETE FROM produtos WHERE id_produto = ?';
         
         db.query(deleteProductQuery, [productId], (err, productResult) => {
@@ -493,6 +501,8 @@ router.post('/produtos/editar/:id', (req, res) => {
         notes
     } = req.body;
 
+    // Os valores dos selects dinâmicos serão aceitos automaticamente
+    // mesmo que não estejam na lista de valores permitidos
 
     const query = `
         UPDATE produtos 
@@ -530,7 +540,7 @@ router.post('/produtos/editar/:id', (req, res) => {
     });
 }); 
 
-// Rota para exibir formulário de edição 
+// Rota para exibir formulário de edição - VERIFIQUE SE ESTÁ CORRETA
 router.get('/produtos/editar/:id', (req, res) => {
     const productId = req.params.id;
     console.log('🔍 Buscando produto para edição ID:', productId); // Debug
@@ -558,9 +568,6 @@ router.get('/produtos/editar/:id', (req, res) => {
 });
 
 
-
-
-////////////// SAIDA REAGENTES //////////////////////
 
 // ROTA PARA SAÍDA DE REAGENTES
 router.get('/saida-reagentes', requireAuth, (req, res) => {
@@ -801,7 +808,33 @@ router.get('/api/output-movements', requireAuth, (req, res) => {
     });
 });
 
+// API PARA MOVIMENTAÇÕES DE ENTRADA
+router.get('/api/input-movements', requireAuth, (req, res) => {
+    const query = `
+        SELECT 
+            m.id_movimentacao as id,
+            p.nome as reagent,
+            m.tipo as type,
+            m.quantidade as quantity,
+            m.unidade_medida as unit,
+            m.responsavel as responsible,
+            m.projeto_experimento as project,
+            m.data_movimentacao as date
+        FROM movimentacoes m
+        JOIN produtos p ON m.id_produto = p.id_produto
+        WHERE m.tipo = 'entrada'
+        ORDER BY m.data_movimentacao DESC
+        LIMIT 4
+    `;
 
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar movimentações de entrada:', err);
+            return res.status(500).json({ error: 'Erro no servidor' });
+        }
+        res.json(results);
+    });
+});
 
 // API PARA ESTATÍSTICAS
 router.get('/api/statistics', requireAuth, (req, res) => {
@@ -920,10 +953,6 @@ router.get('/api/statistics', requireAuth, (req, res) => {
         });
     });
 });
-
-
-
-////////////// ENTRADA REAGENTES //////////////////////////////
 
 // ROTA PARA ENTRADA DE REAGENTES
 router.get('/entrada-reagentes', requireAuth, (req, res) => {
@@ -1065,10 +1094,161 @@ router.post('/api/input', requireAuth, (req, res) => {
     })();
 });
 
-
 // API PARA MOVIMENTAÇÕES DE ENTRADA
 router.get('/api/input-movements', requireAuth, (req, res) => {
-    const query = `
+    // Verificar se a tabela existe
+    const checkTableQuery = `
+        SELECT COUNT(*) as table_exists 
+        FROM information_schema.tables 
+        WHERE table_schema = 'sistema_estoque' 
+        AND table_name = 'movimentacoes'
+    `;
+
+    db.query(checkTableQuery, (err, result) => {
+        if (err || result[0].table_exists === 0) {
+            return res.json(mockData);
+        }
+
+        // Buscar dados reais de entrada
+        const query = `
+            SELECT 
+                m.id_movimentacao as id,
+                p.nome as reagent,
+                m.tipo as type,
+                m.quantidade as quantity,
+                m.unidade_medida as unit,
+                m.responsavel as responsible,
+                m.projeto_experimento as project,
+                m.data_movimentacao as date
+            FROM movimentacoes m
+            JOIN produtos p ON m.id_produto = p.id_produto
+            WHERE m.tipo = 'entrada'
+            ORDER BY m.data_movimentacao DESC
+            LIMIT 10
+        `;
+
+        db.query(query, (err, results) => {
+            if (err) {
+                console.error('Erro ao buscar movimentações de entrada:', err);
+                return res.json([]);
+            }
+            res.json(results);
+        });
+    });
+});
+
+// API PARA ESTATÍSTICAS DE ENTRADA
+router.get('/api/input-statistics', requireAuth, (req, res) => {
+    const today = new Date().toISOString().split('T')[0];
+
+    // Buscar produtos com estoque baixo
+    const lowStockQuery = 'SELECT COUNT(*) as count FROM produtos WHERE quantidade <= estoque_minimo AND quantidade > 0';
+    const outOfStockQuery = 'SELECT COUNT(*) as count FROM produtos WHERE quantidade = 0';
+    
+    // Buscar estatísticas de entrada
+    const todayQuery = `
+        SELECT COUNT(*) as count 
+        FROM movimentacoes 
+        WHERE tipo = 'entrada' AND DATE(data_movimentacao) = ?
+    `;
+
+    const weekQuery = `
+        SELECT COUNT(*) as count 
+        FROM movimentacoes 
+        WHERE tipo = 'entrada' 
+        AND YEARWEEK(data_movimentacao, 1) = YEARWEEK(CURDATE(), 1)
+    `;
+
+    const monthQuery = `
+        SELECT COUNT(*) as count 
+        FROM movimentacoes 
+        WHERE tipo = 'entrada' 
+        AND YEAR(data_movimentacao) = YEAR(CURDATE()) 
+        AND MONTH(data_movimentacao) = MONTH(CURDATE())
+    `;
+
+    const suppliersQuery = `
+        SELECT 
+            SUBSTRING_INDEX(SUBSTRING_INDEX(projeto_experimento, 'Fornecedor: ', -1), ' ', 1) as supplier,
+            COUNT(*) as count
+        FROM movimentacoes 
+        WHERE tipo = 'entrada' AND projeto_experimento LIKE 'Fornecedor: %'
+        GROUP BY supplier
+        ORDER BY count DESC
+        LIMIT 3
+    `;
+
+    // Executar todas as queries
+    db.query(lowStockQuery, (err, lowStockResults) => {
+        if (err) {
+            console.error('Erro ao buscar estoque baixo:', err);
+            return res.status(500).json({ error: 'Erro no servidor' });
+        }
+
+        db.query(outOfStockQuery, (err, outOfStockResults) => {
+            if (err) {
+                console.error('Erro ao buscar estoque esgotado:', err);
+                return res.status(500).json({ error: 'Erro no servidor' });
+            }
+
+            // Executar queries de estatísticas
+            db.query(todayQuery, [today], (err, todayResults) => {
+                if (err) {
+                    console.error('Erro ao buscar entradas de hoje:', err);
+                    return res.status(500).json({ error: 'Erro no servidor' });
+                }
+
+                db.query(weekQuery, (err, weekResults) => {
+                    if (err) {
+                        console.error('Erro ao buscar entradas da semana:', err);
+                        return res.status(500).json({ error: 'Erro no servidor' });
+                    }
+
+                    db.query(monthQuery, (err, monthResults) => {
+                        if (err) {
+                            console.error('Erro ao buscar entradas do mês:', err);
+                            return res.status(500).json({ error: 'Erro no servidor' });
+                        }
+
+                        db.query(suppliersQuery, (err, suppliersResults) => {
+                            if (err) {
+                                console.error('Erro ao buscar fornecedores:', err);
+                                // Continua mesmo com erro nos fornecedores
+                            }
+
+                            res.json({
+                                todayInputs: todayResults[0]?.count || 0,
+                                weekInputs: weekResults[0]?.count || 0,
+                                monthInputs: monthResults[0]?.count || 0,
+                                lowStockItems: lowStockResults[0]?.count || 0,
+                                outOfStockItems: outOfStockResults[0]?.count || 0,
+                                recentSuppliers: suppliersResults || []
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    });
+});
+
+
+// API PARA TODAS AS MOVIMENTAÇÕES DE ENTRADA (COM PAGINAÇÃO)
+router.get('/api/all-input-movements', requireAuth, (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = (page - 1) * limit;
+
+    // Query para contar o total
+    const countQuery = `
+        SELECT COUNT(*) as total 
+        FROM movimentacoes m
+        JOIN produtos p ON m.id_produto = p.id_produto
+        WHERE m.tipo = 'entrada'
+    `;
+
+    // Query para buscar os dados
+    const dataQuery = `
         SELECT 
             m.id_movimentacao as id,
             p.nome as reagent,
@@ -1082,25 +1262,280 @@ router.get('/api/input-movements', requireAuth, (req, res) => {
         JOIN produtos p ON m.id_produto = p.id_produto
         WHERE m.tipo = 'entrada'
         ORDER BY m.data_movimentacao DESC
-        LIMIT 4
+        LIMIT ? OFFSET ?
     `;
 
-    db.query(query, (err, results) => {
+    db.query(countQuery, (err, countResults) => {
         if (err) {
-            console.error('Erro ao buscar movimentações de entrada:', err);
+            console.error('Erro ao contar movimentações:', err);
             return res.status(500).json({ error: 'Erro no servidor' });
         }
-        res.json(results);
+
+        const total = countResults[0].total;
+        const totalPages = Math.ceil(total / limit);
+
+        db.query(dataQuery, [limit, offset], (err, dataResults) => {
+            if (err) {
+                console.error('Erro ao buscar movimentações:', err);
+                return res.status(500).json({ error: 'Erro no servidor' });
+            }
+
+            res.json({
+                data: dataResults,
+                total: total,
+                totalPages: totalPages,
+                currentPage: page
+            });
+        });
+    });
+});
+
+// API PARA TODAS AS MOVIMENTAÇÕES (ENTRADAS E SAÍDAS)
+router.get('/api/all-movements', requireAuth, (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 15;
+    const offset = (page - 1) * limit;
+    const typeFilter = req.query.type || 'all';
+    const searchTerm = req.query.search || '';
+
+    let whereClause = 'WHERE 1=1';
+    let queryParams = [];
+
+    // Filtro por tipo
+    if (typeFilter !== 'all') {
+        whereClause += ' AND m.tipo = ?';
+        queryParams.push(typeFilter);
+    }
+
+    // Filtro por busca
+    if (searchTerm) {
+        whereClause += ' AND (p.nome LIKE ? OR m.responsavel LIKE ? OR m.projeto_experimento LIKE ?)';
+        const searchPattern = `%${searchTerm}%`;
+        queryParams.push(searchPattern, searchPattern, searchPattern);
+    }
+
+    // Query para contar o total
+    const countQuery = `
+        SELECT COUNT(*) as total 
+        FROM movimentacoes m
+        JOIN produtos p ON m.id_produto = p.id_produto
+        ${whereClause}
+    `;
+
+    // Query para buscar os dados
+    const dataQuery = `
+        SELECT 
+            m.id_movimentacao as id,
+            p.nome as reagent,
+            m.tipo as type,
+            m.quantidade as quantity,
+            m.unidade_medida as unit,
+            m.responsavel as responsible,
+            m.projeto_experimento as project,
+            m.data_movimentacao as date
+        FROM movimentacoes m
+        JOIN produtos p ON m.id_produto = p.id_produto
+        ${whereClause}
+        ORDER BY m.data_movimentacao DESC
+        LIMIT ? OFFSET ?
+    `;
+
+    db.query(countQuery, queryParams, (err, countResults) => {
+        if (err) {
+            console.error('Erro ao contar movimentações:', err);
+            return res.status(500).json({ error: 'Erro no servidor' });
+        }
+
+        const total = countResults[0].total;
+        const totalPages = Math.ceil(total / limit);
+
+        // Adicionar limit e offset aos parâmetros
+        const dataParams = [...queryParams, limit, offset];
+
+        db.query(dataQuery, dataParams, (err, dataResults) => {
+            if (err) {
+                console.error('Erro ao buscar movimentações:', err);
+                return res.status(500).json({ error: 'Erro no servidor' });
+            }
+
+            res.json({
+                data: dataResults,
+                total: total,
+                totalPages: totalPages,
+                currentPage: page
+            });
+        });
+    });
+});
+
+// API PARA ESTATÍSTICAS DAS MOVIMENTAÇÕES
+router.get('/api/movements-statistics', requireAuth, (req, res) => {
+    // Contar totais por tipo
+    const totalsQuery = `
+        SELECT 
+            tipo,
+            COUNT(*) as count
+        FROM movimentacoes 
+        GROUP BY tipo
+    `;
+
+    // Contar reagentes únicos
+    const uniqueReagentsQuery = `
+        SELECT COUNT(DISTINCT id_produto) as count
+        FROM movimentacoes
+    `;
+
+    // Buscar movimentações do mês atual
+    const monthQuery = `
+        SELECT 
+            tipo,
+            COUNT(*) as count
+        FROM movimentacoes 
+        WHERE YEAR(data_movimentacao) = YEAR(CURDATE()) 
+        AND MONTH(data_movimentacao) = MONTH(CURDATE())
+        GROUP BY tipo
+    `;
+
+    Promise.all([
+        new Promise(resolve => 
+            db.query(totalsQuery, (err, res) => resolve(err ? [] : res))
+        ),
+        new Promise(resolve => 
+            db.query(uniqueReagentsQuery, (err, res) => resolve(err ? 0 : res[0].count))
+        ),
+        new Promise(resolve => 
+            db.query(monthQuery, (err, res) => resolve(err ? [] : res))
+        )
+    ]).then(([totals, uniqueReagents, monthStats]) => {
+        const totalEntradas = totals.find(t => t.tipo === 'entrada')?.count || 0;
+        const totalSaidas = totals.find(t => t.tipo === 'saida')?.count || 0;
+        const entradasMes = monthStats.find(t => t.tipo === 'entrada')?.count || 0;
+        const saidasMes = monthStats.find(t => t.tipo === 'saida')?.count || 0;
+
+        res.json({
+            totalEntradas,
+            totalSaidas,
+            totalMovimentacoes: totalEntradas + totalSaidas,
+            reagentesUnicos: uniqueReagents,
+            entradasMes,
+            saidasMes
+        });
+    }).catch(error => {
+        console.error('Erro nas estatísticas:', error);
+        res.json({
+            totalEntradas: 0,
+            totalSaidas: 0,
+            totalMovimentacoes: 0,
+            reagentesUnicos: 0,
+            entradasMes: 0,
+            saidasMes: 0
+        });
+    });
+});
+
+// ROTA PARA PÁGINA DE MOVIMENTAÇÕES
+router.get('/movimentacoes', requireAuth, (req, res) => {
+    res.render('movimentacoes', { 
+        user: req.session.user
+    });
+});
+
+// API PARA ÚLTIMAS MOVIMENTAÇÕES (TODOS OS TIPOS)
+router.get('/api/recent-movements', requireAuth, (req, res) => {
+    // Verificar se a tabela existe
+    const checkTableQuery = `
+        SELECT COUNT(*) as table_exists 
+        FROM information_schema.tables 
+        WHERE table_schema = 'sistema_estoque' 
+        AND table_name = 'movimentacoes'
+    `;
+
+    db.query(checkTableQuery, (err, result) => {
+        if (err || result[0].table_exists === 0) {
+            // Dados mockados se a tabela não existir
+            return res.json([
+                {
+                    id: 1,
+                    reagent: 'Ácido Clorídrico P.A.',
+                    type: 'saida',
+                    quantity: 2.5,
+                    unit: 'L',
+                    responsible: 'João Silva',
+                    project: 'Projeto A',
+                    date: new Date().toISOString()
+                },
+                {
+                    id: 2,
+                    reagent: 'Hidróxido de Sódio',
+                    type: 'entrada',
+                    quantity: 5.0,
+                    unit: 'kg',
+                    responsible: 'Maria Santos',
+                    project: 'Fornecedor: Química Ltda',
+                    date: new Date(Date.now() - 86400000).toISOString()
+                },
+                {
+                    id: 3,
+                    reagent: 'Sulfato de Cobre II',
+                    type: 'saida',
+                    quantity: 1.0,
+                    unit: 'kg',
+                    responsible: 'Pedro Oliveira',
+                    project: 'Projeto B',
+                    date: new Date(Date.now() - 172800000).toISOString()
+                },
+                {
+                    id: 4,
+                    reagent: 'Ácido Sulfúrico',
+                    type: 'entrada',
+                    quantity: 3.0,
+                    unit: 'L',
+                    responsible: 'Ana Costa',
+                    project: 'Fornecedor: LabSupply',
+                    date: new Date(Date.now() - 259200000).toISOString()
+                }
+            ]);
+        }
+
+        // Buscar dados reais - últimas 4 movimentações de qualquer tipo
+        const query = `
+            SELECT 
+                m.id_movimentacao as id,
+                p.nome as reagent,
+                m.tipo as type,
+                m.quantidade as quantity,
+                m.unidade_medida as unit,
+                m.responsavel as responsible,
+                m.projeto_experimento as project,
+                m.data_movimentacao as date
+            FROM movimentacoes m
+            JOIN produtos p ON m.id_produto = p.id_produto
+            ORDER BY m.data_movimentacao DESC
+            LIMIT 4
+        `;
+
+        db.query(query, (err, results) => {
+            if (err) {
+                console.error('Erro ao buscar movimentações recentes:', err);
+                return res.json([]);
+            }
+            res.json(results);
+        });
     });
 });
 
 
 
+// ROTA PARA LOGOUT
+router.get('/logout', requireAuth, (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Erro ao fazer logout:', err);
+        }
+        res.redirect('/login');
+    });
+});
 
-
-
-
-//////////////// RELATORIOS ///////////////////////////////////
 
 // ROTA PARA RELATÓRIOS
 router.get('/relatorios', requireAuth, (req, res) => {
@@ -1224,7 +1659,7 @@ router.get('/relatorios', requireAuth, (req, res) => {
 
 
 
-// API PARA ESTATÍSTICAS DOS RELATÓRIOS 
+// API PARA ESTATÍSTICAS DOS RELATÓRIOS - CORRIGIDA
 router.get('/api/relatorios/stats', requireAuth, (req, res) => {
     const totalReagentsQuery = 'SELECT COUNT(*) as total FROM produtos';
     const lowStockQuery = 'SELECT COUNT(*) as total FROM produtos WHERE quantidade <= estoque_minimo AND quantidade > 0';
@@ -1274,7 +1709,7 @@ router.get('/api/relatorios/stats', requireAuth, (req, res) => {
 });
 
 
-// API PARA DADOS DO GRÁFICO DE MOVIMENTAÇÃO 
+// API PARA DADOS DO GRÁFICO DE MOVIMENTAÇÃO - CORRIGIDA
 router.get('/api/relatorios/movimentacao-mensal', requireAuth, (req, res) => {
     const query = `
         SELECT 
@@ -1304,7 +1739,7 @@ router.get('/api/relatorios/movimentacao-mensal', requireAuth, (req, res) => {
 
         // Preencher os arrays com os dados do banco
         results.forEach(item => {
-            const mesIndex = item.mes - 1; 
+            const mesIndex = item.mes - 1; // Janeiro = 0, Dezembro = 11
             if (item.tipo === 'entrada') {
                 inputs[mesIndex] = item.quantidade;
             } else if (item.tipo === 'saida') {
@@ -1352,61 +1787,6 @@ router.get('/api/relatorios/distribuicao-categorias', requireAuth, (req, res) =>
             labels: labels,
             values: values,
             colors: colors
-        });
-    });
-});
-
-
-
-
-
-
-//////////////// MOVIMENTAÇAO //////////////////////////
-
-// ROTA PARA PÁGINA DE MOVIMENTAÇÕES
-router.get('/movimentacoes', requireAuth, (req, res) => {
-    res.render('movimentacoes', { 
-        user: req.session.user
-    });
-});
-
-// API PARA ÚLTIMAS MOVIMENTAÇÕES (TODOS OS TIPOS)
-router.get('/api/recent-movements', requireAuth, (req, res) => {
-    // Verificar se a tabela existe
-    const checkTableQuery = `
-        SELECT COUNT(*) as table_exists 
-        FROM information_schema.tables 
-        WHERE table_schema = 'sistema_estoque' 
-        AND table_name = 'movimentacoes'
-    `;
-
-    db.query(checkTableQuery, (err, result) => {
-        if (err || result[0].table_exists === 0) {
-        }
-
-        // Buscar dados - últimas 4 movimentações de qualquer tipo
-        const query = `
-            SELECT 
-                m.id_movimentacao as id,
-                p.nome as reagent,
-                m.tipo as type,
-                m.quantidade as quantity,
-                m.unidade_medida as unit,
-                m.responsavel as responsible,
-                m.projeto_experimento as project,
-                m.data_movimentacao as date
-            FROM movimentacoes m
-            JOIN produtos p ON m.id_produto = p.id_produto
-            ORDER BY m.data_movimentacao DESC
-            LIMIT 4
-        `;
-
-        db.query(query, (err, results) => {
-            if (err) {
-                console.error('Erro ao buscar movimentações recentes:', err);
-                return res.json([]);
-            }
-            res.json(results);
         });
     });
 });
@@ -1508,7 +1888,47 @@ router.get('/api/relatorios/movimentacao-detalhada', requireAuth, (req, res) => 
     });
 });
 
+// API PARA ÚLTIMAS MOVIMENTAÇÕES - CORRIGIDA
+router.get('/api/relatorios/ultimas-movimentacoes', requireAuth, (req, res) => {
+    const { year = new Date().getFullYear(), month, type } = req.query;
+    
+    let whereClause = 'WHERE YEAR(m.data_movimentacao) = ?';
+    let queryParams = [year];
 
+    if (month) {
+        whereClause += ' AND MONTH(m.data_movimentacao) = ?';
+        queryParams.push(month);
+    }
+
+    if (type) {
+        whereClause += ' AND m.tipo = ?';
+        queryParams.push(type);
+    }
+
+    const query = `
+        SELECT 
+            m.data_movimentacao,
+            p.nome,
+            m.tipo,
+            m.quantidade,
+            m.unidade_medida,
+            m.responsavel,
+            m.projeto_experimento
+        FROM movimentacoes m
+        JOIN produtos p ON m.id_produto = p.id_produto
+        ${whereClause}
+        ORDER BY m.data_movimentacao DESC
+        LIMIT 50
+    `;
+
+    db.query(query, queryParams, (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar últimas movimentações:', err);
+            return res.json([]);
+        }
+        res.json(results);
+    });
+});
 
 // API PARA ÚLTIMAS MOVIMENTAÇÕES
 router.get('/api/relatorios/ultimas-movimentacoes', requireAuth, (req, res) => {
@@ -1558,6 +1978,7 @@ router.get('/relatorios/movimentacao', requireAuth, (req, res) => {
         user: req.session.user
     });
 });
+
 
 
 // ROTA PARA BUSCAR DADOS DE UMA MOVIMENTAÇÃO ESPECÍFICA
@@ -1618,7 +2039,7 @@ router.get('/api/movimentacoes/:id', requireAuth, (req, res) => {
 
 
 
-// ROTA PARA EXCLUIR MOVIMENTAÇÃO 
+// ROTA PARA EXCLUIR MOVIMENTAÇÃO (CORRIGIDA PARA MYSQL2)
 router.delete('/api/movimentacoes/:id', requireAuth, (req, res) => {
     const movimentacaoId = req.params.id;
     
@@ -1962,6 +2383,11 @@ router.put('/api/movimentacoes/:id', requireAuth, (req, res) => {
     });
 });
 
+
+
+
+
+
 // API PARA MOVIMENTAÇÕES COM PAGINAÇÃO E FILTROS
 router.get('/api/relatorios/movimentacoes', requireAuth, (req, res) => {
     const { year = new Date().getFullYear(), month, type, reagent, page = 1, limit = 15 } = req.query;
@@ -2078,9 +2504,7 @@ router.get('/api/relatorios/estatisticas-reagente', requireAuth, (req, res) => {
 });
 
 
- 
 
-////////////// CATEGORIAS /////////////////////////////////////////
 
 // ROTA PARA PÁGINA DE CATEGORIAS
 router.get('/relatorios/categorias', requireAuth, (req, res) => {
@@ -2088,6 +2512,10 @@ router.get('/relatorios/categorias', requireAuth, (req, res) => {
         user: req.session.user
     });
 });
+
+
+
+
 
 
 // API PARA LISTA DE CATEGORIAS
@@ -2255,11 +2683,102 @@ router.get('/api/relatorios/dados-categorias', requireAuth, (req, res) => {
     });
 });
 
+// API PARA REAGENTES COM FILTROS
+router.get('/api/relatorios/reagentes', requireAuth, (req, res) => {
+    const { category, stockStatus, periculosidade, search, page = 1, limit = 15 } = req.query;
+    
+    let whereClause = 'WHERE 1=1';
+    let queryParams = [];
 
+    if (category) {
+        whereClause += ' AND tipo = ?';
+        queryParams.push(category);
+    }
 
-// ==========================
-// ROTAS PARA VIDRARIAS 
-// ========================
+    if (periculosidade) {
+        whereClause += ' AND grau_periculosidade = ?';
+        queryParams.push(periculosidade);
+    }
+
+    if (search) {
+        whereClause += ' AND nome LIKE ?';
+        queryParams.push(`%${search}%`);
+    }
+
+    // Filtro por status do estoque
+    if (stockStatus) {
+        switch (stockStatus) {
+            case 'normal':
+                whereClause += ' AND quantidade > estoque_minimo';
+                break;
+            case 'baixo':
+                whereClause += ' AND quantidade > 0 AND quantidade <= estoque_minimo';
+                break;
+            case 'critico':
+                whereClause += ' AND quantidade > 0 AND quantidade <= (estoque_minimo * 0.3)';
+                break;
+            case 'esgotado':
+                whereClause += ' AND quantidade = 0';
+                break;
+        }
+    }
+
+    const offset = (page - 1) * limit;
+
+    // Query para contar total
+    const countQuery = `
+        SELECT COUNT(*) as total
+        FROM produtos
+        ${whereClause}
+    `;
+
+    // Query para buscar dados
+    const dataQuery = `
+        SELECT 
+            nome,
+            tipo,
+            grau_periculosidade,
+            quantidade,
+            estoque_minimo,
+            unidade_medida,
+            localizacao,
+            descricao
+        FROM produtos
+        ${whereClause}
+        ORDER BY tipo, nome
+        LIMIT ? OFFSET ?
+    `;
+
+    db.query(countQuery, queryParams, (err, countResults) => {
+        if (err) {
+            console.error('Erro ao contar reagentes:', err);
+            return res.json({ data: [], total: 0, totalPages: 0 });
+        }
+
+        const total = countResults[0].total;
+        const totalPages = Math.ceil(total / limit);
+
+        const dataParams = [...queryParams, parseInt(limit), parseInt(offset)];
+
+        db.query(dataQuery, dataParams, (err, dataResults) => {
+            if (err) {
+                console.error('Erro ao buscar reagentes:', err);
+                return res.json({ data: [], total: 0, totalPages: 0 });
+            }
+
+            res.json({
+                data: dataResults,
+                total: total,
+                totalPages: totalPages,
+                currentPage: parseInt(page)
+            });
+        });
+    });
+});
+
+// =============================================
+// ROTAS PARA VIDRARIAS - ADICIONAR APÓS A ROTA DE RELATÓRIOS
+// =============================================
 
 // Rota para exibir vidrarias
 router.get('/vidracarias', requireAuth, (req, res) => {
