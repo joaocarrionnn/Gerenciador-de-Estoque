@@ -476,6 +476,146 @@
 .page-link:hover {
     color: #218838;
 }
+
+/* Estilos para upload de PDF */
+.pdf-upload-section {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px dashed #dee2e6;
+}
+
+.pdf-upload-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.pdf-upload-title {
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 1rem;
+}
+
+.pdf-upload-area {
+    border: 2px dashed #28a745;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    background-color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+.pdf-upload-area:hover {
+    background-color: #f0fff4;
+    border-color: #218838;
+}
+
+.pdf-upload-area.dragover {
+    background-color: #e3f2fd;
+    border-color: #1976d2;
+}
+
+.pdf-icon {
+    font-size: 3rem;
+    color: #e53e3e;
+    margin-bottom: 1rem;
+}
+
+.pdf-upload-text {
+    color: #4a5568;
+    margin-bottom: 0.5rem;
+}
+
+.pdf-upload-hint {
+    color: #718096;
+    font-size: 0.875rem;
+}
+
+.pdf-file-input {
+    display: none;
+}
+
+.pdf-preview {
+    margin-top: 1rem;
+    display: none;
+}
+
+.pdf-preview-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem;
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+}
+
+.pdf-preview-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.pdf-preview-icon {
+    color: #e53e3e;
+    font-size: 1.5rem;
+}
+
+.pdf-preview-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.pdf-preview-name {
+    font-weight: 500;
+    color: #2d3748;
+}
+
+.pdf-preview-size {
+    font-size: 0.875rem;
+    color: #718096;
+}
+
+.pdf-remove-btn {
+    background: none;
+    border: none;
+    color: #e53e3e;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.pdf-remove-btn:hover {
+    background-color: #fed7d7;
+}
+
+.btn-outline-primary {
+    background-color: transparent;
+    border: 2px solid #28a745;
+    color: #28a745;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-outline-primary:hover {
+    background-color: #28a745;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+}
     </style>
 </head>
 <body class="flex">
@@ -503,7 +643,7 @@
                             </h2>
                         </div>
                         <div class="p-6">
-                            <form id="input-form">
+                            <form id="input-form" enctype="multipart/form-data">
                                 <div class="mb-4">
                                     <label for="reagent" class="form-label required-field">Reagente</label>
                                     <input type="text" class="form-control" id="reagent" name="reagent" required 
@@ -553,11 +693,45 @@
                                     <label for="purchaseDate" class="form-label">Data da Compra</label>
                                     <input type="date" class="form-control" id="purchaseDate" name="purchaseDate">
                                 </div>
+                            
+                                <div class="mb-4">
+                                    <label for="expirationDate" class="form-label">Data de Vencimento</label>
+                                    <input type="date" class="form-control" id="expirationDate" name="expirationDate">
+                                </div>
                                 
                                 <div class="mb-4">
                                     <label for="notes" class="form-label">Observações</label>
                                     <textarea class="form-control" id="notes" name="notes" rows="3" 
                                               placeholder="Observações adicionais sobre a entrada..."></textarea>
+                                    
+                                    <!-- Seção de Upload de PDF -->
+                                    <div class="pdf-upload-section">
+                                        <div class="pdf-upload-header">
+                                            <i class="fas fa-file-pdf"></i>
+                                            <span class="pdf-upload-title">Documentos em PDF</span>
+                                        </div>
+                                        
+                                        <div class="pdf-upload-area" id="pdfUploadArea">
+                                            <div class="pdf-icon">
+                                                <i class="fas fa-file-pdf"></i>
+                                            </div>
+                                            <div class="pdf-upload-text">
+                                                Clique para adicionar ou arraste arquivos PDF aqui
+                                            </div>
+                                            <div class="pdf-upload-hint">
+                                                Tamanho máximo: 10MB por arquivo
+                                            </div>
+                                            <input type="file" class="pdf-file-input" id="pdfFiles" name="pdfFiles" accept=".pdf" multiple>
+                                        </div>
+                                        
+                                        <button type="button" class="btn-outline-primary" onclick="document.getElementById('pdfFiles').click()">
+                                            <i class="fas fa-plus"></i> Selecionar PDFs
+                                        </button>
+                                        
+                                        <div class="pdf-preview" id="pdfPreview">
+                                            <!-- Os arquivos PDF selecionados serão exibidos aqui -->
+                                        </div>
+                                    </div>
                                 </div>
                                 
                                 <div class="d-grid">
@@ -642,6 +816,7 @@
                                     <li>Verifique a qualidade do reagente recebido</li>
                                     <li>Confirme a identificação do produto</li>
                                     <li>Registre o fornecedor e data de compra</li>
+                                    <li>Anexe documentos importantes em PDF quando necessário</li>
                                 </ul>
                             </div>
                             
@@ -780,6 +955,112 @@ function showToast(message, type = 'success') {
     }, 4000);
 }
 
+// Funções para upload de PDF
+function configurarUploadPDF() {
+    const pdfUploadArea = document.getElementById('pdfUploadArea');
+    const pdfFileInput = document.getElementById('pdfFiles');
+    const pdfPreview = document.getElementById('pdfPreview');
+
+    // Clique na área de upload
+    pdfUploadArea.addEventListener('click', function() {
+        pdfFileInput.click();
+    });
+
+    // Arrastar e soltar
+    pdfUploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        pdfUploadArea.classList.add('dragover');
+    });
+
+    pdfUploadArea.addEventListener('dragleave', function() {
+        pdfUploadArea.classList.remove('dragover');
+    });
+
+    pdfUploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        pdfUploadArea.classList.remove('dragover');
+        
+        const files = e.dataTransfer.files;
+        handlePdfFiles(files);
+    });
+
+    // Seleção de arquivos via input
+    pdfFileInput.addEventListener('change', function() {
+        handlePdfFiles(this.files);
+    });
+
+    // Função para processar arquivos PDF
+    function handlePdfFiles(files) {
+        const maxSize = 10 * 1024 * 1024; // 10MB
+
+        for (let file of files) {
+            // Verificar se é PDF
+            if (file.type !== 'application/pdf') {
+                alert('❌ Apenas arquivos PDF são permitidos.');
+                continue;
+            }
+
+            // Verificar tamanho
+            if (file.size > maxSize) {
+                alert(`❌ O arquivo ${file.name} é muito grande. Tamanho máximo: 10MB.`);
+                continue;
+            }
+
+            // Adicionar à preview
+            addPdfPreview(file);
+        }
+
+        // Atualizar preview
+        updatePreviewVisibility();
+    }
+
+    // Adicionar preview do PDF
+    function addPdfPreview(file) {
+        const previewItem = document.createElement('div');
+        previewItem.className = 'pdf-preview-item';
+        
+        previewItem.innerHTML = `
+            <div class="pdf-preview-info">
+                <i class="fas fa-file-pdf pdf-preview-icon"></i>
+                <div class="pdf-preview-details">
+                    <span class="pdf-preview-name">${file.name}</span>
+                    <span class="pdf-preview-size">${formatFileSize(file.size)}</span>
+                </div>
+            </div>
+            <button type="button" class="pdf-remove-btn" onclick="removePdfPreview(this)">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+
+        pdfPreview.appendChild(previewItem);
+    }
+
+    // Remover preview do PDF
+    window.removePdfPreview = function(button) {
+        const previewItem = button.closest('.pdf-preview-item');
+        previewItem.remove();
+        updatePreviewVisibility();
+    };
+
+    // Atualizar visibilidade da área de preview
+    function updatePreviewVisibility() {
+        if (pdfPreview.children.length > 0) {
+            pdfPreview.style.display = 'block';
+        } else {
+            pdfPreview.style.display = 'none';
+        }
+    }
+
+    // Formatador de tamanho de arquivo
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+}
+
 // Atualizar informações quando o usuário digitar ou selecionar um reagente
 function atualizarInformacoesProduto() {
     const reagentInput = document.getElementById('reagent');
@@ -868,6 +1149,7 @@ function configurarEnvioFormularioEntrada() {
             responsible: formData.get('responsible'),
             supplier: formData.get('supplier'),
             purchaseDate: formData.get('purchaseDate'),
+            expirationDate: formData.get('expirationDate'),
             notes: formData.get('notes')
         };
         
@@ -876,10 +1158,7 @@ function configurarEnvioFormularioEntrada() {
         try {
             const response = await fetch('/api/input', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
+                body: formData // Usar FormData para enviar arquivos
             });
             
             const result = await response.json();
@@ -893,6 +1172,11 @@ function configurarEnvioFormularioEntrada() {
                 showToast(`Entrada de ${quantity} ${unit} de ${reagentName} registrada com sucesso! Estoque atualizado.`, 'success');
                 this.reset();
                 document.getElementById('reagent-id').value = '';
+                
+                // Limpar preview de PDFs
+                const pdfPreview = document.getElementById('pdfPreview');
+                pdfPreview.innerHTML = '';
+                pdfPreview.style.display = 'none';
                 
                 // Limpar validação visual do campo de reagente
                 reagentInput.classList.remove('is-valid', 'is-invalid');
@@ -1070,6 +1354,9 @@ document.addEventListener('DOMContentLoaded', function() {
         reagentInput.addEventListener('input', atualizarInformacoesProduto);
         reagentInput.addEventListener('change', atualizarInformacoesProduto);
     }
+    
+    // Configurar upload de PDF
+    configurarUploadPDF();
     
     // Configurar envio do formulário
     configurarEnvioFormularioEntrada();

@@ -422,6 +422,136 @@
 .btn:hover i {
     transform: rotate(90deg);
 }
+
+/* Estilos para upload de PDF */
+.pdf-upload-section {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px dashed #dee2e6;
+}
+
+.pdf-upload-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.pdf-upload-title {
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 1rem;
+}
+
+.pdf-upload-area {
+    border: 2px dashed #4361ee;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    background-color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+.pdf-upload-area:hover {
+    background-color: #f0f4ff;
+    border-color: #2c3e50;
+}
+
+.pdf-upload-area.dragover {
+    background-color: #e3f2fd;
+    border-color: #1976d2;
+}
+
+.pdf-icon {
+    font-size: 3rem;
+    color: #e53e3e;
+    margin-bottom: 1rem;
+}
+
+.pdf-upload-text {
+    color: #4a5568;
+    margin-bottom: 0.5rem;
+}
+
+.pdf-upload-hint {
+    color: #718096;
+    font-size: 0.875rem;
+}
+
+.pdf-file-input {
+    display: none;
+}
+
+.pdf-preview {
+    margin-top: 1rem;
+    display: none;
+}
+
+.pdf-preview-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem;
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+}
+
+.pdf-preview-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.pdf-preview-icon {
+    color: #e53e3e;
+    font-size: 1.5rem;
+}
+
+.pdf-preview-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.pdf-preview-name {
+    font-weight: 500;
+    color: #2d3748;
+}
+
+.pdf-preview-size {
+    font-size: 0.875rem;
+    color: #718096;
+}
+
+.pdf-remove-btn {
+    background: none;
+    border: none;
+    color: #e53e3e;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.pdf-remove-btn:hover {
+    background-color: #fed7d7;
+}
+
+.btn-outline-primary {
+    background-color: transparent;
+    border: 2px solid #4361ee;
+    color: #4361ee;
+}
+
+.btn-outline-primary:hover {
+    background-color: #4361ee;
+    color: white;
+}
     </style>
 </head>
 <body class="flex">
@@ -447,7 +577,7 @@
                     </h2>
                 </div>
                 <div class="form-card-body">
-                    <form id="productForm" action="/produtos/adicionar" method="POST">
+                    <form id="productForm" action="/produtos/adicionar" method="POST" enctype="multipart/form-data">
                         <!-- Mensagens de erro -->
                         <% if (error) { %>
                             <div class="alert alert-danger" style="margin: 15px; padding: 10px; background: #f8d7da; color: #721c24; border-radius: 5px;">
@@ -598,11 +728,49 @@
                                     <input type="date" class="form-control" id="purchaseDate" name="purchaseDate" 
                                            value="<%= formData ? formData.purchaseDate : '' %>">
                                 </div>
+
+                                <!-- Data de Validade -->
+                                <div class="col-md-6 mb-3" style="flex: 0 0 50%; max-width: 50%; padding: 0 0.75rem;">
+                                    <label for="expiryDate" class="form-label">Data de Validade</label>
+                                    <input type="date" class="form-control" id="expiryDate" name="expiryDate" 
+                                           value="<%= formData ? formData.expiryDate : '' %>">
+                                    <small class="form-text text-muted">Data em que o produto expira (opcional)</small>
+                                </div>
+
                             </div>
                             
                             <div class="mb-3">
                                 <label for="notes" class="form-label">Observações Adicionais</label>
                                 <textarea class="form-control" id="notes" name="notes" rows="2"><%= formData ? formData.notes : '' %></textarea>
+                            </div>
+
+                            <!-- Seção de Upload de PDF -->
+                            <div class="pdf-upload-section">
+                                <div class="pdf-upload-header">
+                                    <i class="fas fa-file-pdf"></i>
+                                    <span class="pdf-upload-title">Documentos em PDF</span>
+                                </div>
+                                
+                                <div class="pdf-upload-area" id="pdfUploadArea">
+                                    <div class="pdf-icon">
+                                        <i class="fas fa-file-pdf"></i>
+                                    </div>
+                                    <div class="pdf-upload-text">
+                                        Clique para adicionar ou arraste arquivos PDF aqui
+                                    </div>
+                                    <div class="pdf-upload-hint">
+                                        Tamanho máximo: 10MB por arquivo
+                                    </div>
+                                    <input type="file" class="pdf-file-input" id="pdfFiles" name="pdfFiles" accept=".pdf" multiple>
+                                </div>
+                                
+                                <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('pdfFiles').click()">
+                                    <i class="fas fa-plus"></i> Selecionar PDFs
+                                </button>
+                                
+                                <div class="pdf-preview" id="pdfPreview">
+                                    <!-- Os arquivos PDF selecionados serão exibidos aqui -->
+                                </div>
                             </div>
                         </div>
                         
@@ -678,6 +846,273 @@
             dangerZone.style.display = 'none';
         });
 
+        document.addEventListener('DOMContentLoaded', function() {
+    const pdfUploadArea = document.getElementById('pdfUploadArea');
+    const pdfFileInput = document.getElementById('pdfFiles');
+    const pdfPreview = document.getElementById('pdfPreview');
+    let selectedFiles = [];
+
+    // Clique na área de upload
+    pdfUploadArea.addEventListener('click', function(e) {
+        if (e.target === pdfUploadArea || e.target.closest('.pdf-upload-area')) {
+            pdfFileInput.click();
+        }
+    });
+
+    // Arrastar e soltar
+    pdfUploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        pdfUploadArea.classList.add('dragover');
+    });
+
+    pdfUploadArea.addEventListener('dragleave', function() {
+        pdfUploadArea.classList.remove('dragover');
+    });
+
+    pdfUploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        pdfUploadArea.classList.remove('dragover');
+        
+        const files = Array.from(e.dataTransfer.files);
+        handlePdfFiles(files);
+    });
+
+    // Seleção de arquivos via input
+    pdfFileInput.addEventListener('change', function(e) {
+        const files = Array.from(this.files);
+        handlePdfFiles(files);
+    });
+
+    // Função para processar arquivos PDF
+    function handlePdfFiles(files) {
+        const maxSize = 10 * 1024 * 1024; // 10MB
+        const maxFiles = 10;
+        let totalSize = selectedFiles.reduce((sum, f) => sum + f.size, 0);
+
+        for (let file of files) {
+            // Verificar limite de arquivos
+            if (selectedFiles.length >= maxFiles) {
+                alert(`❌ Limite de ${maxFiles} arquivos atingido.`);
+                break;
+            }
+
+            // Verificar se é PDF
+            if (file.type !== 'application/pdf') {
+                alert(`❌ ${file.name} não é um arquivo PDF.`);
+                continue;
+            }
+
+            // Verificar tamanho individual
+            if (file.size > maxSize) {
+                alert(`❌ ${file.name} excede o tamanho máximo de 10MB.`);
+                continue;
+            }
+
+            // Verificar tamanho total
+            if (totalSize + file.size > 150 * 1024 * 1024) {
+                alert('❌ Tamanho total dos arquivos excede 150MB.');
+                break;
+            }
+
+            // Verificar se já foi adicionado
+            const exists = selectedFiles.some(f => 
+                f.name === file.name && f.size === file.size
+            );
+
+            if (!exists) {
+                selectedFiles.push(file);
+                totalSize += file.size;
+                addPdfPreview(file, selectedFiles.length - 1);
+            }
+        }
+
+        // Atualizar o input com os arquivos selecionados
+        updateFileInput();
+        updatePreviewVisibility();
+    }
+
+    // Adicionar preview do PDF
+    function addPdfPreview(file, index) {
+        const previewItem = document.createElement('div');
+        previewItem.className = 'pdf-preview-item';
+        previewItem.dataset.index = index;
+        
+        previewItem.innerHTML = `
+            <div class="pdf-preview-info">
+                <i class="fas fa-file-pdf pdf-preview-icon"></i>
+                <div class="pdf-preview-details">
+                    <span class="pdf-preview-name">${escapeHtml(file.name)}</span>
+                    <span class="pdf-preview-size">${formatFileSize(file.size)}</span>
+                </div>
+            </div>
+            <button type="button" class="pdf-remove-btn" onclick="removePdfByIndex(${index})">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+
+        pdfPreview.appendChild(previewItem);
+    }
+
+    // Remover preview do PDF por índice
+    window.removePdfByIndex = function(index) {
+        selectedFiles.splice(index, 1);
+        
+        // Remover elemento visual
+        const item = pdfPreview.querySelector(`[data-index="${index}"]`);
+        if (item) {
+            item.remove();
+        }
+
+        // Reindexar os itens restantes
+        const items = pdfPreview.querySelectorAll('.pdf-preview-item');
+        items.forEach((item, newIndex) => {
+            item.dataset.index = newIndex;
+            const btn = item.querySelector('.pdf-remove-btn');
+            btn.onclick = () => removePdfByIndex(newIndex);
+        });
+
+        updateFileInput();
+        updatePreviewVisibility();
+    };
+
+    // Atualizar o input file com os arquivos selecionados
+    function updateFileInput() {
+        const dataTransfer = new DataTransfer();
+        selectedFiles.forEach(file => {
+            dataTransfer.items.add(file);
+        });
+        pdfFileInput.files = dataTransfer.files;
+    }
+
+    // Atualizar visibilidade da área de preview
+    function updatePreviewVisibility() {
+        if (selectedFiles.length > 0) {
+            pdfPreview.style.display = 'block';
+        } else {
+            pdfPreview.style.display = 'none';
+        }
+    }
+
+    // Formatador de tamanho de arquivo
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    // Escape HTML para prevenir XSS
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Mostrar loading ao submeter o formulário
+    const form = document.getElementById('productForm');
+    form.addEventListener('submit', function(e) {
+        if (selectedFiles.length > 0) {
+            // Adicionar indicador de loading
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando arquivos...';
+        }
+    });
+});
+
+// Função para carregar PDFs existentes (para página de edição)
+async function loadExistingPDFs(productId) {
+    try {
+        const response = await fetch(`/api/produtos/${productId}/pdfs`);
+        const pdfs = await response.json();
+        
+        const existingPdfsContainer = document.getElementById('existingPdfs');
+        if (!existingPdfsContainer) return;
+
+        if (pdfs.length === 0) {
+            existingPdfsContainer.innerHTML = '<p style="color: #718096;">Nenhum PDF anexado a este produto.</p>';
+            return;
+        }
+
+        existingPdfsContainer.innerHTML = pdfs.map(pdf => `
+            <div class="pdf-preview-item" data-pdf-id="${pdf.id}">
+                <div class="pdf-preview-info">
+                    <i class="fas fa-file-pdf pdf-preview-icon"></i>
+                    <div class="pdf-preview-details">
+                        <span class="pdf-preview-name">${escapeHtml(pdf.nome_original)}</span>
+                        <span class="pdf-preview-size">
+                            ${formatFileSize(pdf.tamanho_arquivo)} • 
+                            Enviado em ${new Date(pdf.data_upload).toLocaleDateString('pt-BR')}
+                            ${pdf.usuario_upload ? ` por ${pdf.usuario_upload}` : ''}
+                        </span>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <a href="/produtos/pdfs/download/${pdf.id}" 
+                       class="btn-icon" 
+                       title="Download"
+                       style="color: #3B82F6;">
+                        <i class="fas fa-download"></i>
+                    </a>
+                    <button type="button" 
+                            class="pdf-remove-btn" 
+                            onclick="deleteExistingPDF(${pdf.id}, '${escapeHtml(pdf.nome_original)}')"
+                            title="Excluir">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        `).join('');
+
+    } catch (error) {
+        console.error('Erro ao carregar PDFs:', error);
+    }
+}
+
+// Função para deletar PDF existente
+async function deleteExistingPDF(pdfId, fileName) {
+    if (!confirm(`Tem certeza que deseja excluir o PDF "${fileName}"?`)) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/produtos/pdfs/${pdfId}`, {
+            method: 'DELETE'
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            // Remover elemento da tela
+            const item = document.querySelector(`[data-pdf-id="${pdfId}"]`);
+            if (item) {
+                item.remove();
+            }
+
+            alert('✅ PDF excluído com sucesso!');
+        } else {
+            alert('❌ Erro ao excluir PDF: ' + result.error);
+        }
+    } catch (error) {
+        console.error('Erro ao excluir PDF:', error);
+        alert('❌ Erro ao excluir PDF');
+    }
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
 
         document.addEventListener('DOMContentLoaded', function() {
     // Mapeamento de campos para labels
@@ -936,8 +1371,7 @@ function configurarCampoComInput(select, inputId) {
     });
 }
 
-// Usar assim para o fornecedor:
-// configurarCampoComInput(document.getElementById('supplier'), 'supplierText');
+
     </script>
 </body>
 </html>

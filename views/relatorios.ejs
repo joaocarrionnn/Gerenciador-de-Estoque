@@ -458,22 +458,155 @@
         }
 
         .alert-success {
-    background-color: #d1fae5;
-    border: 1px solid #10b981;
-    color: #065f46;
-}
+            background-color: #d1fae5;
+            border: 1px solid #10b981;
+            color: #065f46;
+        }
 
-.alert-danger {
-    background-color: #fee2e2;
-    border: 1px solid #ef4444;
-    color: #7f1d1d;
-}
+        .alert-danger {
+            background-color: #fee2e2;
+            border: 1px solid #ef4444;
+            color: #7f1d1d;
+        }
 
-.alert {
-    padding: 1rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+         /* Estilos para o modal de estoque crítico */
+         .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 1200px;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #dc2626;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #e2e8f0;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6b7280;
+            padding: 0.5rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background-color: #e5e7eb;
+            color: #374151;
+        }
+
+        .critical-badge {
+            background-color: #dc2626;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .warning-badge {
+            background-color: #f59e0b;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .out-of-stock-badge {
+            background-color: #6b7280;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .stock-progress {
+            height: 8px;
+            background-color: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.25rem;
+        }
+
+        .stock-progress-bar {
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        .progress-critical {
+            background-color: #dc2626;
+        }
+
+        .progress-warning {
+            background-color: #f59e0b;
+        }
+
+        .progress-out {
+            background-color: #6b7280;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .stock-info {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
     </style>
 </head>
 <body class="flex">
@@ -587,15 +720,15 @@
             
             
             
-            <!-- Tabela de Itens com Baixo Estoque -->
+            <!-- Tabela de Itens com Baixo Estoque (LIMITADA A 5) -->
             <div class="card mt-6">
                 <div class="card-header">
                     <h2 class="card-title">
                         <i class="fas fa-exclamation-triangle text-danger"></i>
-                        Itens com Estoque Crítico
+                        Top 5 - Itens com Estoque Mais Baixo
                     </h2>
                     <button class="view-all-btn" id="view-all-low-stock">
-                        <i class="fas fa-list"></i> Ver todos
+                        <i class="fas fa-list"></i> Ver todos os críticos
                     </button>
                 </div>
                 <div class="card-body">
@@ -612,14 +745,33 @@
                             </thead>
                             <tbody id="low-stock-items">
                                 <% if (criticalItems && criticalItems.length > 0) { %>
-                                    <% criticalItems.forEach(item => { %>
-                                        <tr class="border-b">
-                                            <td class="px-6 py-4 whitespace-nowrap"><%= item.reagent %></td>
+                                    <% 
+                                    // Ordenar por quantidade (menor primeiro) e pegar apenas os 5 primeiros
+                                    const top5CriticalItems = criticalItems
+                                        .sort((a, b) => {
+                                            // Extrair apenas o número da quantidade para ordenação
+                                            const aQty = parseFloat(a.current.split(' ')[0]);
+                                            const bQty = parseFloat(b.current.split(' ')[0]);
+                                            return aQty - bQty;
+                                        })
+                                        .slice(0, 5);
+                                    %>
+                                    
+                                    <% top5CriticalItems.forEach(item => { %>
+                                        <tr class="border-b hover:bg-gray-50">
+                                            <td class="px-6 py-4 whitespace-nowrap font-medium"><%= item.reagent %></td>
                                             <td class="px-6 py-4 whitespace-nowrap"><%= item.category %></td>
-                                            <td class="px-6 py-4 whitespace-nowrap"><%= item.current %></td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="font-semibold <%= item.status === 'Esgotado' ? 'text-gray-500' : 'text-red-600' %>">
+                                                    <%= item.current %>
+                                                </div>
+                                            </td>
                                             <td class="px-6 py-4 whitespace-nowrap"><%= item.minimum %></td>
                                             <td class="px-6 py-4 whitespace-nowrap">
-                                                <span class="px-2 py-1 text-xs font-semibold rounded-full <%= item.status === 'Crítico' ? 'bg-danger' : 'bg-warning' %> text-white">
+                                                <span class="px-2 py-1 text-xs font-semibold rounded-full 
+                                                    <%= item.status === 'Crítico' ? 'bg-red-500' : 
+                                                       item.status === 'Esgotado' ? 'bg-gray-500' : 'bg-yellow-500' %> 
+                                                    text-white">
                                                     <%= item.status %>
                                                 </span>
                                             </td>
@@ -627,7 +779,8 @@
                                     <% }) %>
                                 <% } else { %>
                                     <tr>
-                                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
                                             Nenhum item com estoque crítico encontrado
                                         </td>
                                     </tr>
@@ -638,14 +791,85 @@
                 </div>
                 <div class="card-footer">
                     <span class="stats-info">
-                        <i class="fas fa-history"></i>
-                        <span id="last-update">Atualizado em <%= new Date().toLocaleString('pt-BR') %></span>
+                        <i class="fas fa-info-circle"></i>
+                        Mostrando os 5 itens com menor estoque. 
+                        <button class="text-blue-600 hover:text-blue-800 underline ml-1" id="view-all-summary">
+                            Ver todos os <%= criticalItems ? criticalItems.length : 0 %> itens críticos
+                        </button>
                     </span>
                 </div>
             </div>
         </div>
     </main>
     
+    <!-- Modal para Todos os Itens Críticos -->
+    <div id="criticalStockModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Todos os Itens com Estoque Crítico
+                    <span class="critical-badge ml-2" id="critical-count">
+                        <%= criticalItems ? criticalItems.length : 0 %> itens
+                    </span>
+                </h3>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr class="border-b">
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reagente</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoria</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estoque Atual</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estoque Mínimo</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modal-critical-items">
+                            <% if (criticalItems && criticalItems.length > 0) { %>
+                                <% criticalItems.forEach(item => { %>
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="px-6 py-4 whitespace-nowrap font-medium"><%= item.reagent %></td>
+                                        <td class="px-6 py-4 whitespace-nowrap"><%= item.category %></td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="font-semibold <%= item.status === 'Esgotado' ? 'text-gray-500' : 'text-red-600' %>">
+                                                <%= item.current %>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap"><%= item.minimum %></td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 py-1 text-xs font-semibold rounded-full 
+                                                <%= item.status === 'Crítico' ? 'bg-red-500' : 
+                                                   item.status === 'Esgotado' ? 'bg-gray-500' : 'bg-yellow-500' %> 
+                                                text-white">
+                                                <%= item.status %>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                                        <i class="fas fa-check-circle text-green-500 text-3xl mb-3"></i>
+                                        <div class="text-lg">Nenhum item com estoque crítico encontrado</div>
+                                        <div class="text-sm mt-2">Todos os itens estão com estoque adequado.</div>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="view-all-btn" id="closeModalBtn">
+                    <i class="fas fa-times"></i> Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Container para toasts (notificações) -->
     <div class="toast-container"></div>
 
@@ -822,17 +1046,40 @@ async function loadRealTimeStats() {
         const response = await fetch('/api/relatorios/stats');
         const data = await response.json();
         
-        // Atualizar os contadores
-        document.getElementById('total-reagents').textContent = data.totalReagents;
-        document.getElementById('month-inputs').textContent = data.monthInputs;
-        document.getElementById('month-outputs').textContent = data.monthOutputs;
-        document.getElementById('low-stock').textContent = data.lowStock;
+        console.log('📊 Dados recebidos da API:', data); // Debug
+        
+        // Atualizar os contadores apenas se os elementos existirem
+        const elementsToUpdate = {
+            'total-reagents': data.totalReagents,
+            'month-inputs': data.monthInputs,
+            'month-outputs': data.monthOutputs,
+            'low-stock': data.lowStock
+        };
+        
+        Object.entries(elementsToUpdate).forEach(([id, value]) => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = value;
+                console.log(`✅ Atualizado ${id}: ${value}`); // Debug
+            } else {
+                console.warn(`⚠️ Elemento não encontrado: ${id}`); // Debug
+            }
+        });
         
         // Atualizar a data da última atualização
-        document.getElementById('last-update').textContent = `Atualizado em ${new Date().toLocaleString('pt-BR')}`;
+        const lastUpdateElement = document.getElementById('last-update');
+        if (lastUpdateElement) {
+            lastUpdateElement.textContent = `Atualizado em ${new Date().toLocaleString('pt-BR')}`;
+        }
         
     } catch (error) {
         console.error('Erro ao carregar estatísticas em tempo real:', error);
+        
+        // Opcional: Mostrar mensagem de erro para o usuário
+        const toastContainer = document.querySelector('.toast-container');
+        if (toastContainer) {
+            showToast('Erro ao carregar estatísticas em tempo real', 'danger');
+        }
     }
 }
 
@@ -865,10 +1112,7 @@ document.getElementById('view-category-details').addEventListener('click', funct
     window.location.href = '/relatorios/categorias';
 });
 
-document.getElementById('view-all-low-stock').addEventListener('click', function() {
-    showToast('Redirecionando para todos os itens com baixo estoque...');
-    // window.location.href = '/relatorios/estoque-baixo';
-});
+
 
 // Função para debug - verificar dados recebidos
 function debugStats() {
@@ -889,6 +1133,42 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Atualizar a cada 30 segundos
     setInterval(loadRealTimeStats, 30000);
 });
+
+ // Funções para o modal de estoque crítico
+ function openCriticalStockModal() {
+            const modal = document.getElementById('criticalStockModal');
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCriticalStockModal() {
+            const modal = document.getElementById('criticalStockModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Event listeners para o modal
+        document.getElementById('view-all-low-stock').addEventListener('click', openCriticalStockModal);
+        document.getElementById('view-all-summary').addEventListener('click', openCriticalStockModal);
+        document.getElementById('closeModal').addEventListener('click', closeCriticalStockModal);
+        document.getElementById('closeModalBtn').addEventListener('click', closeCriticalStockModal);
+
+        // Fechar modal ao clicar fora dele
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('criticalStockModal');
+            if (event.target === modal) {
+                closeCriticalStockModal();
+            }
+        });
+
+        // Fechar modal com tecla ESC
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeCriticalStockModal();
+            }
+        });
+
+      
     </script>
 </body>
 </html>

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/database');
 const { requireAuth } = require('../middlewares/authMiddleware');
-
+const { uploadProductWithPDFs } = require('../config/upload');
 
 
 
@@ -319,8 +319,10 @@ router.get('/produtos/adicionar', (req, res) => {
     });
 });
 
-// Rota para processar adição de produto
-router.post('/produtos/adicionar', (req, res) => {
+
+
+// Rota para processar adição de produto COM UPLOAD DE PDFs
+router.post('/produtos/adicionar', uploadProductWithPDFs, (req, res) => {
     const {
         productName,
         productType,
@@ -335,25 +337,16 @@ router.post('/produtos/adicionar', (req, res) => {
         availability,
         supplier,
         purchaseDate,
+        expiryDate, 
         notes
     } = req.body;
-
-    // Lista de valores permitidos para cada campo (opcional - para validação)
-    const valoresPermitidos = {
-        productType: ['reagente', 'solvente', 'acido', 'base', 'explosivo', 'inflamavel', 'toxico', 'radioativo', 'outro'],
-        dangerLevel: ['baixo', 'moderado', 'alto', 'extremo'],
-        regulatoryOrg: ['policia-federal', 'exercito', 'anvisa', 'outro'],
-        unit: ['unidade', 'litro', 'ml', 'grama', 'kg', 'caixa']
-    };
-
-    // Se o valor não estiver na lista permitida, ele será aceito como um novo valor
-    // Isso permite flexibilidade para novos tipos
 
     const query = `
         INSERT INTO produtos 
         (nome, tipo, descricao, grau_periculosidade, orgao_regulador, instrucoes_seguranca, 
-         quantidade, estoque_minimo, unidade_medida, localizacao, disponivel, fornecedor, data_aquisicao, observacoes)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        quantidade, estoque_minimo, unidade_medida, localizacao, disponivel, fornecedor, 
+        data_aquisicao, data_validade, observacoes)  -- ADICIONADO data_validade
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)  -- ADICIONADO UM ?
     `;
 
     const values = [
@@ -370,12 +363,24 @@ router.post('/produtos/adicionar', (req, res) => {
         availability === 'available' ? 1 : 0,
         supplier,
         purchaseDate,
+        expiryDate || null, 
         notes
-    ];
+];
 
     db.query(query, values, (err, result) => {
         if (err) {
             console.error('Erro ao adicionar produto:', err);
+            
+            // Deletar arquivos enviados em caso de erro
+            if (req.files && req.files.length > 0) {
+                req.files.forEach(file => {
+                    const fs = require('fs');
+                    fs.unlink(file.path, (unlinkErr) => {
+                        if (unlinkErr) console.error('Erro ao deletar arquivo:', unlinkErr);
+                    });
+                });
+            }
+            
             return res.render('adicionar', {
                 user: req.session.user,
                 error: 'Erro ao adicionar produto',
@@ -384,63 +389,231 @@ router.post('/produtos/adicionar', (req, res) => {
             });
         }
 
-        res.redirect('/produtos?success=Produto adicionado com sucesso');
-    });
-});
+        const productId = result.insertId;
+        console.log('✅ Produto adicionado com ID:', productId);
 
-// Adicione estas rotas API para gerenciar opções dinâmicas
+        // Se houver PDFs, salvar no banco
+        if (req.files && req.files.length > 0) {
+            console.log(`📄 ${req.files.length} PDF(s) detectado(s)`);
+            
+            const pdfInsertQuery = `
+                INSERT INTO produto_pdfs 
+                (id_produto, nome_arquivo, nome_original, caminho_arquivo, tamanho_arquivo, usuario_upload)
+                VALUES (?, ?, ?, ?, ?, ?)
+            `;
 
-// API para buscar opções existentes
-router.get('/api/opcoes/:campo', requireAuth, (req, res) => {
-    const campo = req.params.campo;
-    let query = '';
-    
-    switch(campo) {
-        case 'productType':
-            query = 'SELECT DISTINCT tipo as valor FROM produtos WHERE tipo IS NOT NULL AND tipo != "" ORDER BY tipo';
-            break;
-        case 'dangerLevel':
-            query = 'SELECT DISTINCT grau_periculosidade as valor FROM produtos WHERE grau_periculosidade IS NOT NULL AND grau_periculosidade != "" ORDER BY grau_periculosidade';
-            break;
-        case 'regulatoryOrg':
-            query = 'SELECT DISTINCT orgao_regulador as valor FROM produtos WHERE orgao_regulador IS NOT NULL AND orgao_regulador != "" ORDER BY orgao_regulador';
-            break;
-        case 'unit':
-            query = 'SELECT DISTINCT unidade_medida as valor FROM produtos WHERE unidade_medida IS NOT NULL AND unidade_medida != "" ORDER BY unidade_medida';
-            break;
-        case 'supplier':
-            query = 'SELECT DISTINCT fornecedor as valor FROM produtos WHERE fornecedor IS NOT NULL AND fornecedor != "" ORDER BY fornecedor';
-            break;
-        default:
-            return res.json([]);
-    }
-    
-    db.query(query, (err, results) => {
-        if (err) {
-            console.error(`Erro ao buscar opções para ${campo}:`, err);
-            return res.json([]);
+            const username = req.session.user ? req.session.user.nome || req.session.user.usuario : 'Sistema';
+            let filesProcessed = 0;
+            let filesWithError = 0;
+
+            req.files.forEach((file, index) => {
+                const pdfValues = [
+                    productId,
+                    file.filename,
+                    file.originalname,
+                    file.path,
+                    file.size,
+                    username
+                ];
+
+                db.query(pdfInsertQuery, pdfValues, (pdfErr) => {
+                    filesProcessed++;
+                    
+                    if (pdfErr) {
+                        console.error(`❌ Erro ao salvar PDF ${index + 1}:`, pdfErr);
+                        filesWithError++;
+                    } else {
+                        console.log(`✅ PDF ${index + 1} salvo: ${file.originalname}`);
+                    }
+
+                    // Quando todos os arquivos forem processados
+                    if (filesProcessed === req.files.length) {
+                        let successMessage = 'Produto adicionado com sucesso!';
+                        
+                        if (filesWithError === 0) {
+                            successMessage += ` ${req.files.length} PDF(s) anexado(s).`;
+                        } else if (filesWithError < req.files.length) {
+                            successMessage += ` ${req.files.length - filesWithError} de ${req.files.length} PDF(s) anexado(s).`;
+                        } else {
+                            successMessage += ' Erro ao anexar PDFs.';
+                        }
+
+                        res.redirect(`/produtos?success=${encodeURIComponent(successMessage)}`);
+                    }
+                });
+            });
+        } else {
+            console.log('ℹ️ Nenhum PDF enviado');
+            res.redirect('/produtos?success=Produto adicionado com sucesso');
         }
-        res.json(results.map(item => item.valor));
     });
 });
 
-// API para adicionar nova opção
-router.post('/api/opcoes/:campo', requireAuth, (req, res) => {
-    const campo = req.params.campo;
-    const { novaOpcao } = req.body;
+// API PARA LISTAR PDFs DE UM PRODUTO
+router.get('/api/produtos/:id/pdfs', requireAuth, (req, res) => {
+    const productId = req.params.id;
     
-    if (!novaOpcao || novaOpcao.trim() === '') {
-        return res.status(400).json({ success: false, message: 'Opção não pode estar vazia' });
+    const query = `
+        SELECT 
+            id,
+            nome_original,
+            tamanho_arquivo,
+            tipo_documento,
+            descricao,
+            data_upload,
+            usuario_upload,
+            nome_arquivo
+        FROM produto_pdfs 
+        WHERE id_produto = ?
+        ORDER BY data_upload DESC
+    `;
+
+    db.query(query, [productId], (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar PDFs:', err);
+            return res.status(500).json({ error: 'Erro ao buscar PDFs' });
+        }
+
+        res.json(results);
+    });
+});
+
+
+// API PARA DELETAR UM PDF
+router.delete('/api/produtos/pdfs/:pdfId', requireAuth, (req, res) => {
+    const pdfId = req.params.pdfId;
+    
+    // Primeiro buscar o arquivo para deletá-lo do sistema
+    const selectQuery = 'SELECT caminho_arquivo FROM produto_pdfs WHERE id = ?';
+    
+    db.query(selectQuery, [pdfId], (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar PDF:', err);
+            return res.status(500).json({ success: false, error: 'Erro ao buscar PDF' });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ success: false, error: 'PDF não encontrado' });
+        }
+
+        const filePath = results[0].caminho_arquivo;
+
+        // Deletar do banco
+        const deleteQuery = 'DELETE FROM produto_pdfs WHERE id = ?';
+        
+        db.query(deleteQuery, [pdfId], (deleteErr) => {
+            if (deleteErr) {
+                console.error('Erro ao deletar PDF do banco:', deleteErr);
+                return res.status(500).json({ success: false, error: 'Erro ao deletar PDF' });
+            }
+
+            // Deletar arquivo físico
+            const fs = require('fs');
+            fs.unlink(filePath, (unlinkErr) => {
+                if (unlinkErr) {
+                    console.error('Erro ao deletar arquivo físico:', unlinkErr);
+                }
+            });
+
+            res.json({ success: true, message: 'PDF deletado com sucesso' });
+        });
+    });
+});
+
+// ROTA PARA DOWNLOAD DE PDF
+router.get('/produtos/pdfs/download/:pdfId', requireAuth, (req, res) => {
+    const pdfId = req.params.pdfId;
+    
+    const query = 'SELECT caminho_arquivo, nome_original FROM produto_pdfs WHERE id = ?';
+    
+    db.query(query, [pdfId], (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar PDF:', err);
+            return res.status(500).send('Erro ao buscar PDF');
+        }
+
+        if (results.length === 0) {
+            return res.status(404).send('PDF não encontrado');
+        }
+
+        const file = results[0];
+        res.download(file.caminho_arquivo, file.nome_original);
+    });
+});
+
+// Rota para upload de PDFs em produtos existentes (ADICIONE ESTA ROTA)
+router.post('/api/produtos/:id/pdfs/upload', requireAuth, uploadProductWithPDFs, (req, res) => {
+    const productId = req.params.id;
+    
+    if (!req.files || req.files.length === 0) {
+        return res.status(400).json({ 
+            success: false, 
+            error: 'Nenhum arquivo enviado' 
+        });
     }
+
+    console.log(`📄 Upload de ${req.files.length} PDF(s) para produto ID:`, productId);
     
-    // Aqui você pode salvar em uma tabela de opções personalizadas se quiser
-    // Por enquanto, apenas retornamos sucesso
-    console.log(`Nova opção adicionada para ${campo}:`, novaOpcao);
-    
-    res.json({ 
-        success: true, 
-        message: 'Opção adicionada com sucesso',
-        opcao: novaOpcao 
+    const pdfInsertQuery = `
+        INSERT INTO produto_pdfs 
+        (id_produto, nome_arquivo, nome_original, caminho_arquivo, tamanho_arquivo, usuario_upload)
+        VALUES (?, ?, ?, ?, ?, ?)
+    `;
+
+    const username = req.session.user ? req.session.user.nome || req.session.user.usuario : 'Sistema';
+    let filesProcessed = 0;
+    let filesWithError = 0;
+    let uploadedFiles = [];
+
+    req.files.forEach((file, index) => {
+        const pdfValues = [
+            productId,
+            file.filename,
+            file.originalname,
+            file.path,
+            file.size,
+            username
+        ];
+
+        db.query(pdfInsertQuery, pdfValues, (pdfErr) => {
+            filesProcessed++;
+            
+            if (pdfErr) {
+                console.error(`❌ Erro ao salvar PDF ${index + 1}:`, pdfErr);
+                filesWithError++;
+                
+                const fs = require('fs');
+                fs.unlink(file.path, (unlinkErr) => {
+                    if (unlinkErr) console.error('Erro ao deletar arquivo:', unlinkErr);
+                });
+            } else {
+                console.log(`✅ PDF ${index + 1} salvo: ${file.originalname}`);
+                uploadedFiles.push(file.originalname);
+            }
+
+            if (filesProcessed === req.files.length) {
+                let success = filesWithError === 0;
+                let message = '';
+                
+                if (success) {
+                    message = `${req.files.length} PDF(s) anexado(s) com sucesso!`;
+                } else if (filesWithError < req.files.length) {
+                    message = `${req.files.length - filesWithError} de ${req.files.length} PDF(s) anexado(s). ${filesWithError} arquivo(s) com erro.`;
+                    success = true;
+                } else {
+                    message = 'Erro ao anexar PDFs.';
+                }
+
+                res.json({ 
+                    success: success,
+                    message: message,
+                    uploadedFiles: uploadedFiles,
+                    totalFiles: req.files.length,
+                    successfulUploads: req.files.length - filesWithError,
+                    failedUploads: filesWithError
+                });
+            }
+        });
     });
 });
 
@@ -498,17 +671,16 @@ router.post('/produtos/editar/:id', (req, res) => {
         availability,
         supplier,
         purchaseDate,
+        expiryDate, // NOVO CAMPO
         notes
     } = req.body;
-
-    // Os valores dos selects dinâmicos serão aceitos automaticamente
-    // mesmo que não estejam na lista de valores permitidos
 
     const query = `
         UPDATE produtos 
         SET nome = ?, tipo = ?, descricao = ?, grau_periculosidade = ?, orgao_regulador = ?, 
             instrucoes_seguranca = ?, quantidade = ?, estoque_minimo = ?, unidade_medida = ?, 
-            localizacao = ?, disponivel = ?, fornecedor = ?, data_aquisicao = ?, observacoes = ?
+            localizacao = ?, disponivel = ?, fornecedor = ?, data_aquisicao = ?, 
+            data_validade = ?, observacoes = ?  -- ADICIONADO data_validade
         WHERE id_produto = ?
     `;
 
@@ -526,9 +698,11 @@ router.post('/produtos/editar/:id', (req, res) => {
         availability === 'available' ? 1 : 0,
         supplier,
         purchaseDate,
+        expiryDate || null, // NOVO CAMPO
         notes,
         productId
     ];
+
 
     db.query(query, values, (err, result) => {
         if (err) {
@@ -566,6 +740,62 @@ router.get('/produtos/editar/:id', (req, res) => {
         });
     });
 });
+ // ------------------//
+// API para buscar opções existentes
+router.get('/api/opcoes/:campo', requireAuth, (req, res) => {
+    const campo = req.params.campo;
+    let query = '';
+    
+    switch(campo) {
+        case 'productType':
+            query = 'SELECT DISTINCT tipo as valor FROM produtos WHERE tipo IS NOT NULL AND tipo != "" ORDER BY tipo';
+            break;
+        case 'dangerLevel':
+            query = 'SELECT DISTINCT grau_periculosidade as valor FROM produtos WHERE grau_periculosidade IS NOT NULL AND grau_periculosidade != "" ORDER BY grau_periculosidade';
+            break;
+        case 'regulatoryOrg':
+            query = 'SELECT DISTINCT orgao_regulador as valor FROM produtos WHERE orgao_regulador IS NOT NULL AND orgao_regulador != "" ORDER BY orgao_regulador';
+            break;
+        case 'unit':
+            query = 'SELECT DISTINCT unidade_medida as valor FROM produtos WHERE unidade_medida IS NOT NULL AND unidade_medida != "" ORDER BY unidade_medida';
+            break;
+        case 'supplier':
+            query = 'SELECT DISTINCT fornecedor as valor FROM produtos WHERE fornecedor IS NOT NULL AND fornecedor != "" ORDER BY fornecedor';
+            break;
+        default:
+            return res.json([]);
+    }
+    
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error(`Erro ao buscar opções para ${campo}:`, err);
+            return res.json([]);
+        }
+        res.json(results.map(item => item.valor));
+    });
+});
+
+// API para adicionar nova opção
+router.post('/api/opcoes/:campo', requireAuth, (req, res) => {
+    const campo = req.params.campo;
+    const { novaOpcao } = req.body;
+    
+    if (!novaOpcao || novaOpcao.trim() === '') {
+        return res.status(400).json({ success: false, message: 'Opção não pode estar vazia' });
+    }
+    
+    // Aqui você pode salvar em uma tabela de opções personalizadas se quiser
+    // Por enquanto, apenas retornamos sucesso
+    console.log(`Nova opção adicionada para ${campo}:`, novaOpcao);
+    
+    res.json({ 
+        success: true, 
+        message: 'Opção adicionada com sucesso',
+        opcao: novaOpcao 
+    });
+});
+
+
 
 
 
@@ -1537,6 +1767,7 @@ router.get('/logout', requireAuth, (req, res) => {
 });
 
 
+
 // ROTA PARA RELATÓRIOS
 router.get('/relatorios', requireAuth, (req, res) => {
     // Buscar estatísticas do banco - CORRIGIDAS
@@ -1560,12 +1791,22 @@ router.get('/relatorios', requireAuth, (req, res) => {
         AND MONTH(data_movimentacao) = MONTH(CURDATE())
     `;
     
-    // Buscar itens com estoque crítico - CORRIGIDO
+    // Buscar itens com estoque crítico - ORDENADO POR QUANTIDADE
     const criticalStockQuery = `
-        SELECT nome, tipo, quantidade, estoque_minimo, unidade_medida
+        SELECT 
+            nome as reagent,
+            tipo as category,
+            quantidade as current,
+            estoque_minimo as minimum,
+            unidade_medida as unit,
+            CASE 
+                WHEN quantidade = 0 THEN 'Esgotado'
+                WHEN quantidade <= (estoque_minimo * 0.3) THEN 'Crítico'
+                ELSE 'Atenção'
+            END as status
         FROM produtos 
         WHERE quantidade <= estoque_minimo
-        ORDER BY quantidade ASC
+        ORDER BY quantidade ASC, nome ASC
         LIMIT 10
     `;
 
@@ -1635,14 +1876,13 @@ router.get('/relatorios', requireAuth, (req, res) => {
                             lowStock: lowStockResults[0]?.total || 0
                         };
 
-                        // Preparar itens críticos
+                        // Formatar os dados
                         const criticalItems = criticalItemsResults.map(item => ({
-                            reagent: item.nome,
-                            category: item.tipo,
-                            current: `${item.quantidade} ${item.unidade_medida}`,
-                            minimum: `${item.estoque_minimo} ${item.unidade_medida}`,
-                            status: item.quantidade === 0 ? 'Esgotado' : 
-                                   item.quantidade <= (item.estoque_minimo * 0.5) ? 'Crítico' : 'Atenção'
+                            reagent: item.reagent,
+                            category: item.category,
+                            current: `${item.current} ${item.unit}`,
+                            minimum: `${item.minimum} ${item.unit}`,
+                            status: item.status
                         }));
 
                         res.render('relatorios', { 
@@ -2773,6 +3013,43 @@ router.get('/api/relatorios/reagentes', requireAuth, (req, res) => {
                 currentPage: parseInt(page)
             });
         });
+    });
+});
+
+
+// API PARA ITENS COM ESTOQUE CRÍTICO (ORDENADO POR QUANTIDADE)
+router.get('/api/relatorios/estoque-critico', requireAuth, (req, res) => {
+    const criticalStockQuery = `
+        SELECT 
+            nome as reagent,
+            tipo as category,
+            quantidade as current,
+            estoque_minimo as minimum,
+            unidade_medida as unit,
+            CASE 
+                WHEN quantidade = 0 THEN 'Esgotado'
+                WHEN quantidade <= (estoque_minimo * 0.3) THEN 'Crítico'
+                ELSE 'Atenção'
+            END as status
+        FROM produtos 
+        WHERE quantidade <= estoque_minimo
+        ORDER BY quantidade ASC, nome ASC
+    `;
+
+    db.query(criticalStockQuery, (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar itens críticos:', err);
+            return res.json([]);
+        }
+
+        // Formatar os dados
+        const formattedResults = results.map(item => ({
+            ...item,
+            current: `${item.current} ${item.unit}`,
+            minimum: `${item.minimum} ${item.unit}`
+        }));
+
+        res.json(formattedResults);
     });
 });
 

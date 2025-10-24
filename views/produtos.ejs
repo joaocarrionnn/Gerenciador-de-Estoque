@@ -720,6 +720,164 @@
                 justify-content: center;
             }
         }
+
+        /* Estilos para a seção de PDFs */
+.pdfs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.pdf-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--light);
+    transition: all 0.2s ease;
+}
+
+.pdf-item:hover {
+    background: #f8f9fa;
+    border-color: var(--primary);
+}
+
+.pdf-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+}
+
+.pdf-icon {
+    color: #dc3545;
+    font-size: 1.5rem;
+}
+
+.pdf-details {
+    flex: 1;
+}
+
+.pdf-name {
+    font-weight: 500;
+    color: var(--dark);
+    margin-bottom: 0.25rem;
+    word-break: break-word;
+}
+
+.pdf-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.8rem;
+    color: var(--gray);
+}
+
+.pdf-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.pdf-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.pdf-download-btn,
+.pdf-delete-btn {
+    padding: 0.5rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pdf-download-btn {
+    background: rgba(40, 167, 69, 0.1);
+    color: var(--success);
+}
+
+.pdf-download-btn:hover {
+    background: var(--success);
+    color: white;
+}
+
+.pdf-delete-btn {
+    background: rgba(220, 53, 69, 0.1);
+    color: var(--danger);
+}
+
+.pdf-delete-btn:hover {
+    background: var(--danger);
+    color: white;
+}
+
+.loading-pdfs,
+.no-pdfs,
+.error-pdfs {
+    text-align: center;
+    padding: 2rem;
+    color: var(--gray);
+}
+
+.loading-pdfs i,
+.no-pdfs i,
+.error-pdfs i {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+/* Responsividade para PDFs */
+@media (max-width: 768px) {
+    .pdf-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .pdf-actions {
+        align-self: flex-end;
+    }
+    
+    .pdf-meta {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+}
+
+/* Estilos para a data de validade no modal */
+.data-validade-expirada {
+    background: rgba(220, 53, 69, 0.15) !important;
+    color: #dc3545 !important;
+    font-weight: 600;
+}
+
+.data-validade-proxima {
+    background: rgba(255, 193, 7, 0.15) !important;
+    color: #ffc107 !important;
+    font-weight: 600;
+}
+
+.data-validade-ok {
+    background: rgba(40, 167, 69, 0.15) !important;
+    color: #28a745 !important;
+}
+
+/* Ajuste para o badge de data no modal */
+.modal-detail-value .status-badge {
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
     </style>
 </head>
 <body class="flex">
@@ -941,7 +1099,23 @@
                                 <div class="product-footer">
                                     <div class="action-buttons">
                                         <button class="btn-action btn-details" title="Ver Detalhes" 
-                                                onclick="abrirModal(<%= produto.id_produto %>, '<%= produto.nome.replace(/'/g, "\\'") %>', '<%= produto.tipo.replace(/'/g, "\\'") %>', '<%= produto.grau_periculosidade || '' %>', <%= produto.quantidade %>, '<%= produto.unidade_medida %>', '<%= produto.localizacao || '' %>', <%= produto.estoque_minimo || 0 %>, '<%= produto.fornecedor || '' %>', '<%= produto.orgao_regulador || '' %>', '<%= produto.data_aquisicao || '' %>', <%= produto.disponivel %>, '<%= produto.descricao || '' %>', '<%= produto.instrucoes_seguranca || '' %>')">
+                                            onclick="abrirModal(
+                                                <%= produto.id_produto %>, 
+                                                '<%= produto.nome.replace(/'/g, "\\'") %>', 
+                                                '<%= produto.tipo.replace(/'/g, "\\'") %>', 
+                                                '<%= produto.grau_periculosidade || '' %>', 
+                                                <%= produto.quantidade %>, 
+                                                '<%= produto.unidade_medida %>', 
+                                                '<%= produto.localizacao || '' %>', 
+                                                <%= produto.estoque_minimo || 0 %>, 
+                                                '<%= produto.fornecedor || '' %>', 
+                                                '<%= produto.orgao_regulador || '' %>', 
+                                                '<%= produto.data_aquisicao || '' %>', 
+                                                <%= produto.disponivel %>, 
+                                                '<%= produto.descricao || '' %>', 
+                                                '<%= produto.instrucoes_seguranca || '' %>',
+                                                '<%= produto.data_validade || '' %>'  <!-- NOVO PARÂMETRO -->
+                                            )">
                                             <i class="fas fa-ellipsis-v"></i>
                                         </button>
                                         <button class="btn-action btn-edit" title="Editar" onclick="editarProduto(<%= produto.id_produto %>)">
@@ -1004,148 +1178,378 @@
     </div>
 
     <script>
-        // Função para abrir o modal com os detalhes do produto
-        function abrirModal(id, nome, tipo, grauPericulosidade, quantidade, unidadeMedida, localizacao, estoqueMinimo, fornecedor, orgaoRegulador, dataAquisicao, disponivel, descricao, instrucoesSeguranca) {
-            const modal = document.getElementById('detailsModal');
-            const modalBody = document.getElementById('modalBody');
+    function abrirModal(id, nome, tipo, grauPericulosidade, quantidade, unidadeMedida, localizacao, estoqueMinimo, fornecedor, orgaoRegulador, dataAquisicao, disponivel, descricao, instrucoesSeguranca, dataValidade) {
+    const modal = document.getElementById('detailsModal');
+    const modalBody = document.getElementById('modalBody');
 
-            // Garantir que as quantidades sejam números
-            const quantidadeNum = parseFloat(quantidade);
-            const estoqueMinimoNum = parseFloat(estoqueMinimo);
-            
-            // Formatar dados do produto para exibição
-            const formatarData = (data) => {
-                if (!data) return 'Não informada';
-                try {
-                    return new Date(data).toLocaleDateString('pt-BR');
-                } catch (e) {
-                    return data;
-                }
-            };
-            
-            const formatarPericulosidade = (grau) => {
-                if (!grau) return 'Não informado';
-                const classes = {
-                    'baixo': 'danger-baixo',
-                    'moderado': 'danger-moderado',
-                    'alto': 'danger-alto',
-                    'extremo': 'danger-extremo'
-                };
-                return `<span class="danger-level ${classes[grau] || ''}">${grau}</span>`;
-            };
-            
-            const formatarStatus = (quantidade, estoqueMinimo) => {
-                if (quantidade === 0) return 'Esgotado';
-                if (quantidade <= estoqueMinimo) return 'Baixo Estoque';
-                return 'Disponível';
-            };
-
-            // Função para formatar números com ponto
-            function formatarNumero(num) {
-                if (num === null || num === undefined) return '0.0';
-                // Converte para número e formata com 1 casa decimal
-                return parseFloat(num).toFixed(1);
-            }
-
-            // Função para exibir números formatados no HTML
-            function exibirNumeroFormatado(num) {
-                return formatarNumero(num).replace('.', ','); // Para exibição visual
-            }
-            
-            // Construir o conteúdo do modal
-            modalBody.innerHTML = `
-                <div class="detail-section">
-                    <h3 class="detail-section-title">
-                        <i class="fas fa-info-circle"></i> Informações Básicas
-                    </h3>
-                    <div class="details-grid">
-                        <div class="detail-group">
-                            <span class="modal-detail-label">ID do Produto</span>
-                            <div class="modal-detail-value">#${id}</div>
-                        </div>
-                        <div class="detail-group">
-                            <span class="modal-detail-label">Nome</span>
-                            <div class="modal-detail-value">${nome}</div>
-                        </div>
-                        <div class="detail-group">
-                            <span class="modal-detail-label">Categoria</span>
-                            <div class="modal-detail-value">${tipo}</div>
-                        </div>
-                        <div class="detail-group">
-                            <span class="modal-detail-label">Grau de Periculosidade</span>
-                            <div class="modal-detail-value">${formatarPericulosidade(grauPericulosidade)}</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="detail-section">
-                    <h3 class="detail-section-title">
-                        <i class="fas fa-boxes"></i> Estoque e Localização
-                    </h3>
-                    <div class="details-grid">
-                        <div class="detail-group">
-                            <span class="modal-detail-label">Quantidade</span>
-                            <div class="modal-detail-value">${quantidade} ${unidadeMedida}</div>
-                        </div>
-                        <div class="detail-group">
-                            <span class="modal-detail-label">Estoque Mínimo</span>
-                            <div class="modal-detail-value">${estoqueMinimo} ${unidadeMedida}</div>
-                        </div>
-                        <div class="detail-group">
-                            <span class="modal-detail-label">Localização</span>
-                            <div class="modal-detail-value">${localizacao || 'Não informada'}</div>
-                        </div>
-                        <div class="detail-group">
-                            <span class="modal-detail-label">Status</span>
-                            <div class="modal-detail-value">${formatarStatus(quantidade, estoqueMinimo)}</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="detail-section">
-                    <h3 class="detail-section-title">
-                        <i class="fas fa-boxes"></i> Estoque e Localização
-                    </h3>
-                    <div class="details-grid">
-                        <div class="detail-group">
-                            <span class="modal-detail-label">Quantidade</span>
-                            <div class="modal-detail-value">${exibirNumeroFormatado(quantidadeNum)} ${unidadeMedida}</div>
-                        </div>
-                        <div class="detail-group">
-                            <span class="modal-detail-label">Estoque Mínimo</span>
-                            <div class="modal-detail-value">${exibirNumeroFormatado(estoqueMinimoNum)} ${unidadeMedida}</div>
-                        </div>
-                        <!-- resto do código -->
-                    </div>
-                </div>
-                
-                ${descricao || instrucoesSeguranca ? `
-                <div class="detail-section">
-                    <h3 class="detail-section-title">
-                        <i class="fas fa-file-alt"></i> Informações Adicionais
-                    </h3>
-                    <div class="details-grid">
-                        ${descricao ? `
-                        <div class="detail-group">
-                            <span class="modal-detail-label">Descrição</span>
-                            <div class="modal-detail-value">${descricao}</div>
-                        </div>
-                        ` : ''}
-                        ${instrucoesSeguranca ? `
-                        <div class="detail-group">
-                            <span class="modal-detail-label">Instruções de Segurança</span>
-                            <div class="modal-detail-value">${instrucoesSeguranca}</div>
-                        </div>
-                        ` : ''}
-                    </div>
-                </div>
-                ` : ''}
-            `;
-            
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
+    // Garantir que as quantidades sejam números
+    const quantidadeNum = parseFloat(quantidade);
+    const estoqueMinimoNum = parseFloat(estoqueMinimo);
+    
+    // Formatar dados do produto para exibição
+    const formatarData = (data) => {
+        if (!data) return 'Não informada';
+        try {
+            return new Date(data).toLocaleDateString('pt-BR');
+        } catch (e) {
+            return data;
         }
+    };
+    
+    const formatarPericulosidade = (grau) => {
+        if (!grau) return 'Não informado';
+        const classes = {
+            'baixo': 'danger-baixo',
+            'moderado': 'danger-moderado',
+            'alto': 'danger-alto',
+            'extremo': 'danger-extremo'
+        };
+        return `<span class="danger-level ${classes[grau] || ''}">${grau}</span>`;
+    };
+    
+    const formatarStatus = (quantidade, estoqueMinimo) => {
+        if (quantidade === 0) return 'Esgotado';
+        if (quantidade <= estoqueMinimo) return 'Baixo Estoque';
+        return 'Disponível';
+    };
 
+    // Função para formatar números com ponto
+    function formatarNumero(num) {
+        if (num === null || num === undefined) return '0.0';
+        // Converte para número e formata com 1 casa decimal
+        return parseFloat(num).toFixed(1);
+    }
+
+    // Função para exibir números formatados no HTML
+    function exibirNumeroFormatado(num) {
+        return formatarNumero(num).replace('.', ','); // Para exibição visual
+    }
+
+    //função de validade
+    const formatarDataValidade = (data) => {
+        if (!data) return { texto: 'Não informada', classe: '', icone: '' };
+        
+        try {
+            const dataValidade = new Date(data);
+            const hoje = new Date();
+            const diffTime = dataValidade - hoje;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            let classe = '';
+            let icone = '';
+            
+            if (diffDays < 0) {
+                // Expirado
+                classe = 'status-critical';
+                icone = 'fa-exclamation-triangle';
+                return { 
+                    texto: `${dataValidade.toLocaleDateString('pt-BR')} (Expirado)`,
+                    classe: classe,
+                    icone: icone
+                };
+            } else if (diffDays <= 30) {
+                // Expira em menos de 30 dias
+                classe = 'status-warning';
+                icone = 'fa-exclamation-circle';
+                return { 
+                    texto: `${dataValidade.toLocaleDateString('pt-BR')} (Expira em ${diffDays} dias)`,
+                    classe: classe,
+                    icone: icone
+                };
+            } else {
+                // Válido
+                classe = 'status-normal';
+                icone = 'fa-check-circle';
+                return { 
+                    texto: dataValidade.toLocaleDateString('pt-BR'),
+                    classe: classe,
+                    icone: icone
+                };
+            }
+        } catch (e) {
+            return { texto: data, classe: '', icone: '' };
+        }
+    };
+    
+    const dataValidadeFormatada = formatarDataValidade(dataValidade);
+    
+    // Construir o conteúdo do modal
+    let modalContent = `
+        <div class="detail-section">
+            <h3 class="detail-section-title">
+                <i class="fas fa-info-circle"></i> Informações Básicas
+            </h3>
+            <div class="details-grid">
+                <div class="detail-group">
+                    <span class="modal-detail-label">ID do Produto</span>
+                    <div class="modal-detail-value">#${id}</div>
+                </div>
+                <div class="detail-group">
+                    <span class="modal-detail-label">Nome</span>
+                    <div class="modal-detail-value">${nome}</div>
+                </div>
+                <div class="detail-group">
+                    <span class="modal-detail-label">Categoria</span>
+                    <div class="modal-detail-value">${tipo}</div>
+                </div>
+                <div class="detail-group">
+                    <span class="modal-detail-label">Grau de Periculosidade</span>
+                    <div class="modal-detail-value">${formatarPericulosidade(grauPericulosidade)}</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="detail-section">
+            <h3 class="detail-section-title">
+                <i class="fas fa-boxes"></i> Estoque e Localização
+            </h3>
+            <div class="details-grid">
+                <div class="detail-group">
+                    <span class="modal-detail-label">Quantidade</span>
+                    <div class="modal-detail-value">${exibirNumeroFormatado(quantidadeNum)} ${unidadeMedida}</div>
+                </div>
+                <div class="detail-group">
+                    <span class="modal-detail-label">Estoque Mínimo</span>
+                    <div class="modal-detail-value">${exibirNumeroFormatado(estoqueMinimoNum)} ${unidadeMedida}</div>
+                </div>
+                <div class="detail-group">
+                    <span class="modal-detail-label">Localização</span>
+                    <div class="modal-detail-value">${localizacao || 'Não informada'}</div>
+                </div>
+                <div class="detail-group">
+                    <span class="modal-detail-label">Status</span>
+                    <div class="modal-detail-value">${formatarStatus(quantidade, estoqueMinimo)}</div>
+                </div>
+            </div>
+        </div>
+        
+         <div class="detail-section">
+        <h3 class="detail-section-title">
+            <i class="fas fa-industry"></i> Fornecedor e Regulamentação
+        </h3>
+        <div class="details-grid">
+            <div class="detail-group">
+                <span class="modal-detail-label">Fornecedor</span>
+                <div class="modal-detail-value">${fornecedor || 'Não informado'}</div>
+            </div>
+            <div class="detail-group">
+                <span class="modal-detail-label">Órgão Regulador</span>
+                <div class="modal-detail-value">${orgaoRegulador || 'Não informado'}</div>
+            </div>
+            <div class="detail-group">
+                <span class="modal-detail-label">Data de Aquisição</span>
+                <div class="modal-detail-value">${formatarData(dataAquisicao)}</div>
+            </div>
+            <!-- NOVO CAMPO: Data de Validade -->
+            <div class="detail-group">
+                <span class="modal-detail-label">Data de Validade</span>
+                <div class="modal-detail-value">
+                    <span class="status-badge ${dataValidadeFormatada.classe}" style="display: inline-flex; align-items: center; gap: 0.25rem;">
+                        <i class="fas ${dataValidadeFormatada.icone}"></i>
+                        ${dataValidadeFormatada.texto}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    `;
+
+    // Adicionar informações adicionais se existirem
+    if (descricao || instrucoesSeguranca) {
+        modalContent += `
+            <div class="detail-section">
+                <h3 class="detail-section-title">
+                    <i class="fas fa-file-alt"></i> Informações Adicionais
+                </h3>
+                <div class="details-grid">
+        `;
+        
+        if (descricao) {
+            modalContent += `
+                    <div class="detail-group">
+                        <span class="modal-detail-label">Descrição</span>
+                        <div class="modal-detail-value">${descricao}</div>
+                    </div>
+            `;
+        }
+        
+        if (instrucoesSeguranca) {
+            modalContent += `
+                    <div class="detail-group">
+                        <span class="modal-detail-label">Instruções de Segurança</span>
+                        <div class="modal-detail-value">${instrucoesSeguranca}</div>
+                    </div>
+            `;
+        }
+        
+        modalContent += `
+                </div>
+            </div>
+        `;
+    }
+
+    // Adicionar seção para PDFs
+    modalContent += `
+        <div class="detail-section">
+            <h3 class="detail-section-title">
+                <i class="fas fa-file-pdf"></i> Documentos Anexados
+            </h3>
+            <div id="pdfsContainer">
+                <div class="loading-pdfs">
+                    <i class="fas fa-spinner fa-spin"></i> Carregando documentos...
+                </div>
+            </div>
+        </div>
+    `;
+
+    modalBody.innerHTML = modalContent;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    // Carregar PDFs do produto
+    carregarPDFsDoProduto(id);
+}
+// Função para carregar PDFs do produto
+function carregarPDFsDoProduto(productId) {
+    const pdfsContainer = document.getElementById('pdfsContainer');
+    
+    fetch(`/api/produtos/${productId}/pdfs`)
+        .then(response => response.json())
+        .then(pdfs => {
+            if (pdfs.length === 0) {
+                pdfsContainer.innerHTML = `
+                    <div class="no-pdfs">
+                        <i class="fas fa-file-pdf" style="color: #6c757d; font-size: 2rem; margin-bottom: 1rem;"></i>
+                        <p style="color: #6c757d; margin: 0;">Nenhum documento anexado</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let pdfsHTML = '<div class="pdfs-list">';
+            
+            pdfs.forEach(pdf => {
+                const fileSize = formatarTamanhoArquivo(pdf.tamanho_arquivo);
+                const uploadDate = new Date(pdf.data_upload).toLocaleDateString('pt-BR');
+                
+                pdfsHTML += `
+                    <div class="pdf-item">
+                        <div class="pdf-info">
+                            <div class="pdf-icon">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <div class="pdf-details">
+                                <div class="pdf-name">${pdf.nome_original}</div>
+                                <div class="pdf-meta">
+                                    <span class="pdf-size">${fileSize}</span>
+                                    <span class="pdf-date">${uploadDate}</span>
+                                    <span class="pdf-uploader">por ${pdf.usuario_upload}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pdf-actions">
+                            <a href="/produtos/pdfs/download/${pdf.id}" 
+                               class="pdf-download-btn" 
+                               title="Baixar PDF"
+                               download>
+                                <i class="fas fa-download"></i>
+                            </a>
+                            <button class="pdf-delete-btn" 
+                                    title="Excluir PDF"
+                                    onclick="excluirPDF(${pdf.id}, ${productId})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            pdfsHTML += '</div>';
+            pdfsContainer.innerHTML = pdfsHTML;
+        })
+        .catch(error => {
+            console.error('Erro ao carregar PDFs:', error);
+            pdfsContainer.innerHTML = `
+                <div class="error-pdfs">
+                    <i class="fas fa-exclamation-triangle" style="color: #dc3545; font-size: 2rem; margin-bottom: 1rem;"></i>
+                    <p style="color: #dc3545; margin: 0;">Erro ao carregar documentos</p>
+                </div>
+            `;
+        });
+}
+
+// Função para formatar tamanho do arquivo
+function formatarTamanhoArquivo(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// Função para excluir PDF
+function excluirPDF(pdfId, productId) {
+    if (!confirm('Tem certeza que deseja excluir este documento? Esta ação não pode ser desfeita.')) {
+        return;
+    }
+
+    fetch(`/api/produtos/pdfs/${pdfId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            // Recarregar a lista de PDFs
+            carregarPDFsDoProduto(productId);
+            
+            // Mostrar mensagem de sucesso
+            mostrarMensagem('Documento excluído com sucesso!', 'success');
+        } else {
+            throw new Error(result.error || 'Erro ao excluir documento');
+        }
+    })
+    .catch(error => {
+        console.error('Erro ao excluir PDF:', error);
+        mostrarMensagem('Erro ao excluir documento: ' + error.message, 'error');
+    });
+}
+
+// Função para mostrar mensagens temporárias
+function mostrarMensagem(mensagem, tipo) {
+    // Remove mensagens existentes
+    const mensagensExistentes = document.querySelectorAll('.mensagem-temporaria');
+    mensagensExistentes.forEach(msg => msg.remove());
+
+    const mensagemDiv = document.createElement('div');
+    mensagemDiv.className = `mensagem-temporaria mensagem-${tipo}`;
+    mensagemDiv.innerHTML = `
+        <div style="
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 10000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            ${tipo === 'success' ? 'background: #28a745;' : 'background: #dc3545;'}
+        ">
+            <i class="fas ${tipo === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i>
+            ${mensagem}
+        </div>
+    `;
+
+    document.body.appendChild(mensagemDiv);
+
+    // Remove a mensagem após 3 segundos
+    setTimeout(() => {
+        mensagemDiv.remove();
+    }, 3000);
+}
         function fecharModal() {
             const modal = document.getElementById('detailsModal');
             modal.style.display = 'none';

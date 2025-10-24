@@ -108,15 +108,15 @@ CREATE TABLE IF NOT EXISTS `produtos` (
   `data_criacao` timestamp NOT NULL DEFAULT current_timestamp(),
   `data_atualizacao` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id_produto`)
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Copiando dados para a tabela sistema_estoque.produtos: ~28 rows (aproximadamente)
+-- Copiando dados para a tabela sistema_estoque.produtos: ~29 rows (aproximadamente)
 INSERT INTO `produtos` (`id_produto`, `nome`, `tipo`, `descricao`, `grau_periculosidade`, `orgao_regulador`, `instrucoes_seguranca`, `quantidade`, `estoque_minimo`, `unidade_medida`, `localizacao`, `disponivel`, `fornecedor`, `data_aquisicao`, `observacoes`, `data_criacao`, `data_atualizacao`) VALUES
 	(2, 'Hidróxido de Sódio', 'base', 'NaOH - 1kg', '', 'policia-federal', '', 10.00, 0, 'unidade', 'Prateleira B2', 1, '', '0000-00-00', '', '2025-09-19 13:47:38', '2025-09-24 11:21:54'),
 	(6, 'Sulfato de Cobre II', 'Reagente Químico', 'Sulfato de cobre penta-hidratado', 'moderado', 'ANVISA', 'Tóxico se ingerido. Lavar as mãos após o uso.', 3.00, 2, 'kg', 'Armário 2 – Prateleira 3 – Posição 12', 1, 'Vetec', '2024-03-10', NULL, '2025-09-24 13:54:36', '2025-09-24 13:54:36'),
 	(7, 'Tampão Fosfato pH 7.4', 'Solução Tampão', 'Tampão fosfato salino 10x concentrado', 'baixo', 'ANVISA', 'Armazenar em temperatura ambiente.', 10.00, 10, 'L', 'Armário 1 – Prateleira 4 – Posição 5', 1, 'Invitrogen', '2024-01-30', NULL, '2025-09-24 13:54:36', '2025-10-08 11:38:34'),
 	(8, 'Solução de Lugol', 'Reagente Químico', 'Solução de iodo e iodeto de potássio', 'moderado', 'ANVISA', 'Evitar contato com metais. Manter em frasco âmbar.', 6.00, 4, 'L', 'Armário 4 – Prateleira 1 – Posição 3', 1, 'Dinâmica', '2024-02-14', NULL, '2025-09-24 13:54:36', '2025-09-24 13:54:36'),
-	(9, 'Azul de Metileno 1%', 'Corante', 'Solução de azul de metileno para histologia', 'baixo', 'ANVISA', 'Manter longe de luz direta.', 0.80, 6, 'L', 'Armário 5 – Prateleira 2 – Posição 7', 1, 'Synth', '2024-03-05', NULL, '2025-09-24 13:54:36', '2025-10-17 13:29:38'),
+	(9, 'Azul de Metileno 1%', 'Corante', 'Solução de azul de metileno para histologia', 'baixo', 'exercito', 'Manter longe de luz direta.', 6.00, 6, 'L', 'Armário 5 – Prateleira 2 – Posição 7', 1, 'Synth', '2024-03-05', '', '2025-09-24 13:54:36', '2025-10-24 16:01:35'),
 	(10, 'Tripsina 0.25%', 'Enzima', 'Tripsina para cultura celular', 'baixo', 'ANVISA', 'Armazenar a -20°C. Evitar ciclos de congelamento.', 25.00, 15, 'mL', 'Freezer 2 – Prateleira 1 – Posição 4', 1, 'Gibco', '2024-01-22', NULL, '2025-09-24 13:54:36', '2025-09-24 13:54:36'),
 	(11, 'DNA Polimerase Taq', 'Enzima', 'Enzima para PCR termoestável', 'baixo', 'ANVISA', 'Armazenar a -20°C. Manter em gelo durante o uso.', 18.00, 12, 'U', 'Freezer 1 – Prateleira 3 – Posição 9', 1, 'Thermo Fisher', '2024-02-28', NULL, '2025-09-24 13:54:36', '2025-09-24 13:54:36'),
 	(13, 'DMEM Alto Glucose', 'Meio de Cultura', 'Meio Dulbecco Modified Eagle Medium', 'baixo', 'ANVISA', 'Armazenar refrigerado. Proteger da luz.', 22.00, 15, 'L', 'Geladeira 1 – Prateleira 4 – Posição 11', 1, 'Cultilab', '2024-01-18', NULL, '2025-09-24 13:54:36', '2025-10-08 16:59:22'),
@@ -139,7 +139,31 @@ INSERT INTO `produtos` (`id_produto`, `nome`, `tipo`, `descricao`, `grau_pericul
 	(33, 'EDTA 0.5M pH 8.0', 'Quelante', 'Solução de EDTA para molecular', 'baixo', 'ANVISA', 'Armazenar em temperatura ambiente.', 3.00, 8, 'L', 'Armário 11 – Prateleira 3 – Posição 9', 1, 'Ambion', '2024-03-10', NULL, '2025-09-24 13:54:36', '2025-09-24 13:54:36'),
 	(34, 'Glicerol P.A.', 'Reagente Químico', 'Glicerol para molecular biology', 'baixo', 'ANVISA', 'Armazenar em temperatura ambiente.', 20.00, 15, 'L', 'Armário 12 – Prateleira 1 – Posição 5', 1, 'Sigma-Aldrich', '2024-01-17', NULL, '2025-09-24 13:54:36', '2025-09-24 13:54:36'),
 	(35, 'Tween 20', 'Detergente', 'Detergente não iônico para biologia', 'baixo', 'ANVISA', 'Armazenar em temperatura ambiente.', 12.00, 8, 'L', 'Armário 12 – Prateleira 2 – Posição 7', 1, 'Merck', '2024-02-24', NULL, '2025-09-24 13:54:36', '2025-09-24 13:54:36'),
-	(36, 'SDS 10%', 'Detergente', 'Dodecil sulfato de sódio para eletroforese', 'moderado', 'ANVISA', 'Irritante. Usar máscara ao manipular pó.', 8.00, 6, 'L', 'Armário 12 – Prateleira 3 – Posição 2', 1, 'Bio-Rad', '2024-03-19', NULL, '2025-09-24 13:54:36', '2025-09-24 13:54:36');
+	(36, 'SDS 10%', 'Detergente', 'Dodecil sulfato de sódio para eletroforese', 'moderado', 'ANVISA', 'Irritante. Usar máscara ao manipular pó.', 8.00, 6, 'L', 'Armário 12 – Prateleira 3 – Posição 2', 1, 'Bio-Rad', '2024-03-19', NULL, '2025-09-24 13:54:36', '2025-09-24 13:54:36'),
+	(39, 'aa', 'base', 'aa', 'alto', 'policia-federal', 'aa', 12.00, 10, 'kg', '12', 1, 'Vitrocell', '2025-10-24', '', '2025-10-24 13:18:52', '2025-10-24 13:18:52');
+
+-- Copiando estrutura para tabela sistema_estoque.produto_pdfs
+CREATE TABLE IF NOT EXISTS `produto_pdfs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_produto` int(11) NOT NULL,
+  `nome_arquivo` varchar(255) NOT NULL,
+  `nome_original` varchar(255) NOT NULL,
+  `caminho_arquivo` varchar(500) NOT NULL,
+  `tamanho_arquivo` int(11) NOT NULL COMMENT 'Tamanho em bytes',
+  `tipo_documento` varchar(100) DEFAULT NULL COMMENT 'Ex: FISPQ, Certificado, Manual, etc',
+  `descricao` text DEFAULT NULL,
+  `data_upload` timestamp NOT NULL DEFAULT current_timestamp(),
+  `usuario_upload` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id_produto` (`id_produto`),
+  KEY `idx_produto_id` (`id_produto`),
+  KEY `idx_data_upload` (`data_upload`),
+  CONSTRAINT `produto_pdfs_ibfk_1` FOREIGN KEY (`id_produto`) REFERENCES `produtos` (`id_produto`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Copiando dados para a tabela sistema_estoque.produto_pdfs: ~1 rows (aproximadamente)
+INSERT INTO `produto_pdfs` (`id`, `id_produto`, `nome_arquivo`, `nome_original`, `caminho_arquivo`, `tamanho_arquivo`, `tipo_documento`, `descricao`, `data_upload`, `usuario_upload`) VALUES
+	(3, 39, 'product-1761315371637-264408340-Boletim.pdf', 'Boletim.pdf', 'U:\\Users\\55926559839\\Desktop\\Gerenciador-de-Estoque\\public\\uploads\\product-pdfs\\product-1761315371637-264408340-Boletim.pdf', 91479, NULL, NULL, '2025-10-24 14:16:11', 'joao Carrion');
 
 -- Copiando estrutura para tabela sistema_estoque.usuarios
 CREATE TABLE IF NOT EXISTS `usuarios` (
@@ -169,7 +193,7 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
 -- Copiando dados para a tabela sistema_estoque.usuarios: ~7 rows (aproximadamente)
 INSERT INTO `usuarios` (`id_usuario`, `nome_completo`, `usuario`, `email`, `telefone`, `cpf`, `senha`, `palavra_chave`, `turma`, `foto_perfil`, `status`, `tipo`, `data_criacao`, `data_atualizacao`, `data_aprovacao`) VALUES
 	(1, 'Administrador', 'admin', 'admin@empresa.com', NULL, NULL, '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', NULL, NULL, NULL, 'aprovado', 'admin', '2025-09-10 22:30:33', NULL, NULL),
-	(3, 'joao Carrion', 'joao', 'joao@outlook.org.br', '18981121784', NULL, '$2b$10$ZYqEVnvQdTDnM8X36taqd.N7oZ/c8RChpVWYImD.jVMLuA8SjboyK', NULL, 'quimica1B', 'profile-1761150229350-921169363.jpg', 'aprovado', 'usuario', '2025-09-10 22:47:27', '2025-10-22 18:56:26', NULL),
+	(3, 'joao Carrion', 'joao', 'joao@outlook.org.br', '18981121784', NULL, '$2b$10$ZYqEVnvQdTDnM8X36taqd.N7oZ/c8RChpVWYImD.jVMLuA8SjboyK', NULL, 'quimica2B', 'profile-1761150229350-921169363.jpg', 'aprovado', 'usuario', '2025-09-10 22:47:27', '2025-10-24 11:29:43', NULL),
 	(4, 'joao', 'carrion', 'aluno@gmail.com', NULL, '222.222.222-22', '$2b$10$zPeUgETe/5PyB5B2OOoKp.4zjjSCsWztkIDzwT7VBY7V3haBQV.q2', '$2b$10$vjzCUdDCSLh1g5ZRg6YixuI6YGPqrBTQlYL2jdLo9c.UUwi2En3zO', 'quimica1A', NULL, 'aprovado', 'usuario', '2025-10-22 11:52:45', NULL, NULL),
 	(5, 'aaaaaaaaaaaaaaa', 'aaa', 'carrion@gmail.com', NULL, '333.333.333-33', '$2b$10$RkxKYzWdP8YhVre8buBkS.1e8otOVC6e6IdyASLBPh.vOwG4HKZW2', '$2b$10$anfHC/DqJ0Nf.lP4h6brvujajTWAioAR6IgMtQPHz.ubudBxsXKYu', 'quimica1B', NULL, 'aprovado', 'usuario', '2025-10-22 11:54:33', NULL, NULL),
 	(6, 'Carriao', 'aaaa', 'adadad@gmail.com', NULL, '33333333333', '$2b$10$OUi1UwurK./fU8cw1DEn/.J0DT6kUjHhds9LEZreTwZ8Z/uzUJZD.', '$2b$10$sXt4.szdVJ6mqSjS..TdreaDhrlqVA.wcW1y6gQbjHrQqc/5ZaFU2', 'quimica1A', NULL, 'aprovado', 'usuario', '2025-10-22 12:03:35', NULL, NULL),

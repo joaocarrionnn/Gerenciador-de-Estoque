@@ -436,6 +436,369 @@
             color: #b91c1c;
             border: 1px solid #fecaca;
         }
+
+        .alert-success {
+            background-color: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        /* Estilos para upload de PDF */
+        .pdf-upload-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .pdf-upload-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .pdf-upload-header i {
+            color: #dc3545;
+            font-size: 1.25rem;
+        }
+
+        .pdf-upload-title {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 1.1rem;
+        }
+
+        .pdf-upload-area {
+            border: 2px dashed #cbd5e0;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            position: relative;
+        }
+
+        .pdf-upload-area:hover {
+            border-color: #4361ee;
+            background: #f7faff;
+        }
+
+        .pdf-upload-area.dragover {
+            border-color: #4361ee;
+            background: #ebf4ff;
+            transform: scale(1.02);
+        }
+
+        .pdf-icon {
+            font-size: 3rem;
+            color: #dc3545;
+            margin-bottom: 1rem;
+        }
+
+        .pdf-upload-text {
+            font-weight: 500;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .pdf-upload-hint {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .pdf-file-input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .pdf-preview {
+            margin-top: 1.5rem;
+        }
+
+        .pdf-preview-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .pdf-preview-item:hover {
+            border-color: #4361ee;
+            background: #f8f9fa;
+        }
+
+        .pdf-preview-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex: 1;
+        }
+
+        .pdf-preview-icon {
+            color: #dc3545;
+            font-size: 1.25rem;
+        }
+
+        .pdf-preview-details {
+            flex: 1;
+        }
+
+        .pdf-preview-name {
+            font-weight: 500;
+            color: #2d3748;
+            margin-bottom: 0.25rem;
+        }
+
+        .pdf-preview-size {
+            color: #6c757d;
+            font-size: 0.8rem;
+        }
+
+        .pdf-preview-remove {
+            background: none;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .pdf-preview-remove:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-outline-primary {
+            background: transparent;
+            border: 2px solid #4361ee;
+            color: #4361ee;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-outline-primary:hover {
+            background: #4361ee;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+        }
+
+        /* Estilos para a lista de PDFs existentes */
+        .pdfs-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .pdf-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: white;
+            transition: all 0.2s ease;
+        }
+
+        .pdf-item:hover {
+            border-color: #4361ee;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .pdf-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .pdf-icon-small {
+            color: #dc3545;
+            font-size: 1.5rem;
+        }
+
+        .pdf-details {
+            flex: 1;
+        }
+
+        .pdf-name {
+            font-weight: 500;
+            color: #2d3748;
+            margin-bottom: 0.25rem;
+            word-break: break-word;
+        }
+
+        .pdf-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+
+        .pdf-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .pdf-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .pdf-download-btn,
+        .pdf-delete-btn {
+            padding: 0.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .pdf-download-btn {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+
+        .pdf-download-btn:hover {
+            background: #28a745;
+            color: white;
+        }
+
+        .pdf-delete-btn {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+
+        .pdf-delete-btn:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+        .loading-pdfs,
+        .no-pdfs,
+        .error-pdfs {
+            text-align: center;
+            padding: 2rem;
+            color: #6c757d;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .loading-pdfs i,
+        .no-pdfs i,
+        .error-pdfs i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        /* Estados de upload */
+        .upload-progress {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #4361ee;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-align: center;
+        }
+
+        /* Mensagem temporária */
+        .mensagem-temporaria {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .pdf-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .pdf-actions {
+                align-self: flex-end;
+            }
+            
+            .pdf-meta {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+            
+            .pdf-upload-area {
+                padding: 1.5rem;
+            }
+
+            .mensagem-temporaria {
+                left: 20px;
+                right: 20px;
+            }
+        }
     </style>
 </head>
 <body class="flex">
@@ -583,31 +946,86 @@
                         </div>
 
                         <!-- Informações Adicionais -->
+<div class="form-section">
+    <h5 class="section-heading">
+        <i class="fas fa-info-circle"></i>
+        Informações Adicionais
+    </h5>
+    
+    <div class="form-row">
+        <!-- Fornecedor -->
+        <div class="form-group">
+            <label for="supplier" class="form-label">Fornecedor</label>
+            <select class="form-select dynamic-select" id="supplier" name="supplier" data-campo="supplier">
+                <option value="">Selecione o fornecedor</option>
+            </select>
+        </div>
+        
+        <!-- Data de Aquisição -->
+        <div class="form-group">
+            <label for="purchaseDate" class="form-label">Data de Aquisição</label>
+            <input type="date" class="form-control" id="purchaseDate" name="purchaseDate" 
+                value="<%= produto.data_aquisicao ? produto.data_aquisicao.toISOString().split('T')[0] : '' %>">
+        </div>
+
+        <!-- Data de Validade -->
+        <div class="form-group">
+            <label for="expiryDate" class="form-label">Data de Validade</label>
+            <input type="date" class="form-control" id="expiryDate" name="expiryDate" 
+                   value="<%= produto.data_validade ? new Date(produto.data_validade).toISOString().split('T')[0] : '' %>">
+            <small class="form-text text-muted">Data em que o produto expira (opcional)</small>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label for="notes" class="form-label">Observações</label>
+        <textarea class="form-control" id="notes" name="notes" rows="3"><%= produto.observacoes || '' %></textarea>
+    </div>
+</div>
+
+                        <!-- Seção de Upload de PDF -->
                         <div class="form-section">
                             <h5 class="section-heading">
-                                <i class="fas fa-ellipsis-h"></i>
-                                Informações Adicionais
+                                <i class="fas fa-file-pdf"></i>
+                                Documentos em PDF
                             </h5>
                             
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="supplier" class="form-label">Fornecedor</label>
-                                    <select class="form-select dynamic-select" id="supplier" name="supplier" data-campo="supplier">
-                                        <option value="">Selecione o fornecedor</option>
-                                        <!-- Opções serão carregadas via JavaScript -->
-                                    </select>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="purchaseDate" class="form-label">Data de Aquisição</label>
-                                    <input type="date" class="form-control" id="purchaseDate" name="purchaseDate" 
-                                        value="<%= produto.data_aquisicao ? produto.data_aquisicao.toISOString().split('T')[0] : '' %>">
+                            <!-- Lista de PDFs existentes -->
+                            <div id="pdfsContainer">
+                                <div class="loading-pdfs">
+                                    <i class="fas fa-spinner fa-spin"></i> Carregando documentos...
                                 </div>
                             </div>
                             
-                            <div class="form-group">
-                                <label for="notes" class="form-label">Observações</label>
-                                <textarea class="form-control" id="notes" name="notes" rows="3"><%= produto.observacoes || '' %></textarea>
+                            <!-- Upload de novos PDFs -->
+                            <div class="pdf-upload-section" style="margin-top: 2rem;">
+                                <div class="pdf-upload-header">
+                                    <i class="fas fa-file-pdf"></i>
+                                    <span class="pdf-upload-title">Adicionar Novos Documentos</span>
+                                </div>
+                                
+                                <div class="pdf-upload-area" id="pdfUploadArea">
+                                    <div class="pdf-icon">
+                                        <i class="fas fa-file-pdf"></i>
+                                    </div>
+                                    <div class="pdf-upload-text">
+                                        Clique para adicionar ou arraste arquivos PDF aqui
+                                    </div>
+                                    <div class="pdf-upload-hint">
+                                        Tamanho máximo: 10MB por arquivo
+                                    </div>
+                                    <input type="file" class="pdf-file-input" id="pdfFiles" name="pdfFiles" accept=".pdf" multiple>
+                                </div>
+                                
+                                <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('pdfFiles').click()" style="margin-top: 1rem;">
+                                    <i class="fas fa-plus"></i> Selecionar PDFs
+                                </button>
+                                
+                                <div class="pdf-preview" id="pdfPreview"></div>
+
+                                <button type="button" id="uploadPdfsBtn" class="btn btn-primary" style="margin-top: 1rem; display: none;">
+                                    <i class="fas fa-upload"></i> Fazer Upload dos PDFs
+                                </button>
                             </div>
                         </div>
                         
@@ -626,141 +1044,109 @@
     </main>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Dados do produto atual para pré-seleção
-            const produtoAtual = {
-                productType: '<%= produto.tipo %>',
-                dangerLevel: '<%= produto.grau_periculosidade %>',
-                regulatoryOrg: '<%= produto.orgao_regulador %>',
-                unit: '<%= produto.unidade_medida %>',
-                supplier: '<%= produto.fornecedor %>'
-            };
+        // ===== CONFIGURAÇÃO INICIAL =====
+        const PRODUCT_ID = '<%= produto.id_produto %>';
         
-            // Mapeamento de campos para labels
-            const campoLabels = {
-                'productType': 'Categoria',
-                'dangerLevel': 'Grau de Periculosidade', 
-                'regulatoryOrg': 'Órgão Regulador',
-                'unit': 'Unidade de Medida',
-                'supplier': 'Fornecedor'
-            };
+        // Dados do produto atual para pré-seleção
+        const produtoAtual = {
+            productType: '<%= produto.tipo %>',
+            dangerLevel: '<%= produto.grau_periculosidade %>',
+            regulatoryOrg: '<%= produto.orgao_regulador %>',
+            unit: '<%= produto.unidade_medida %>',
+            supplier: '<%= produto.fornecedor %>'
+        };
         
-            // Opções padrão para cada campo
-            const opcoesPadrao = {
-                'productType': ['acido', 'base', 'solvente', 'indicador', 'sal', 'outro'],
-                'dangerLevel': ['baixo', 'medio', 'alto', 'muito_alto'],
-                'regulatoryOrg': ['policia-federal', 'exercito', 'anvisa', 'outro'],
-                'unit': ['ml', 'l', 'mg', 'g', 'kg', 'unidade'],
-                'supplier': []
-            };
+        // Mapeamento de campos para labels
+        const campoLabels = {
+            'productType': 'Categoria',
+            'dangerLevel': 'Grau de Periculosidade', 
+            'regulatoryOrg': 'Órgão Regulador',
+            'unit': 'Unidade de Medida',
+            'supplier': 'Fornecedor'
+        };
         
-            // Formatador de texto para exibição
-            function formatarTexto(texto) {
-                if (!texto) return '';
-                return texto
-                    .split('_')
-                    .map(palavra => palavra.charAt(0).toUpperCase() + palavra.slice(1))
-                    .join(' ')
-                    .replace(/\b\w/g, l => l.toUpperCase());
+        // Opções padrão para cada campo
+        const opcoesPadrao = {
+            'productType': ['acido', 'base', 'solvente', 'indicador', 'sal', 'outro'],
+            'dangerLevel': ['baixo', 'medio', 'alto', 'muito_alto'],
+            'regulatoryOrg': ['policia-federal', 'exercito', 'anvisa', 'outro'],
+            'unit': ['ml', 'l', 'mg', 'g', 'kg', 'unidade'],
+            'supplier': []
+        };
+        
+        // ===== FUNÇÕES AUXILIARES =====
+        function formatarTamanhoArquivo(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        function formatarTexto(texto) {
+            if (!texto) return '';
+            return texto
+                .split('_')
+                .map(palavra => palavra.charAt(0).toUpperCase() + palavra.slice(1))
+                .join(' ')
+                .replace(/\b\w/g, l => l.toUpperCase());
+        }
+        
+        function mostrarMensagem(mensagem, tipo) {
+            // Remover mensagens existentes
+            const mensagensExistentes = document.querySelectorAll('.mensagem-temporaria');
+            mensagensExistentes.forEach(msg => msg.remove());
+            
+            // Criar nova mensagem
+            const mensagemDiv = document.createElement('div');
+            mensagemDiv.className = `mensagem-temporaria alert alert-${tipo}`;
+            mensagemDiv.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas ${tipo === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i>
+                    ${mensagem}
+                </div>
+            `;
+            
+            document.body.appendChild(mensagemDiv);
+            
+            // Remover após 5 segundos
+            setTimeout(() => {
+                mensagemDiv.remove();
+            }, 5000);
+        }
+        
+        // ===== GERENCIAMENTO DE SELECTS DINÂMICOS =====
+        
+        // Carregar opções para todos os selects dinâmicos
+        async function carregarOpcoes() {
+            const selects = document.querySelectorAll('.dynamic-select');
+            
+            for (const select of selects) {
+                const campo = select.dataset.campo;
+                await carregarOpcoesCampo(select, campo);
             }
+        }
         
-            // Carregar opções para todos os selects dinâmicos
-            async function carregarOpcoes() {
-                const selects = document.querySelectorAll('.dynamic-select');
+        // Carregar opções para um campo específico
+        async function carregarOpcoesCampo(select, campo) {
+            try {
+                const response = await fetch(`/api/opcoes/${campo}`);
+                const opcoes = await response.json();
                 
-                for (const select of selects) {
-                    const campo = select.dataset.campo;
-                    await carregarOpcoesCampo(select, campo);
-                }
-            }
-        
-            // Carregar opções para um campo específico
-            async function carregarOpcoesCampo(select, campo) {
-                try {
-                    const response = await fetch(`/api/opcoes/${campo}`);
-                    const opcoes = await response.json();
-                    
-                    // Limpar opções existentes (exceto a primeira placeholder)
-                    while (select.options.length > 0) {
-                        select.remove(0);
-                    }
-                    
-                    // Adicionar placeholder
-                    const placeholder = document.createElement('option');
-                    placeholder.value = '';
-                    placeholder.textContent = `Selecione ${campoLabels[campo].toLowerCase()}...`;
-                    placeholder.disabled = true;
-                    placeholder.selected = true;
-                    select.appendChild(placeholder);
-                    
-                    // Adicionar opção "Adicionar nova..."
-                    const addOption = document.createElement('option');
-                    addOption.value = '_add_new_';
-                    addOption.textContent = '+ Adicionar nova opção...';
-                    addOption.style.color = '#4361ee';
-                    addOption.style.fontWeight = 'bold';
-                    select.appendChild(addOption);
-                    
-                    // Adicionar opções existentes do banco
-                    opcoes.forEach(opcao => {
-                        if (opcao && opcao.trim() !== '') {
-                            const option = document.createElement('option');
-                            option.value = opcao;
-                            option.textContent = formatarTexto(opcao);
-                            select.appendChild(option);
-                        }
-                    });
-                    
-                    // Adicionar opções padrão que não estão no banco
-                    if (opcoesPadrao[campo]) {
-                        opcoesPadrao[campo].forEach(opcao => {
-                            if (!opcoes.includes(opcao)) {
-                                const option = document.createElement('option');
-                                option.value = opcao;
-                                option.textContent = formatarTexto(opcao);
-                                select.appendChild(option);
-                            }
-                        });
-                    }
-                    
-                    // Selecionar o valor atual do produto
-                    const valorAtual = produtoAtual[campo];
-                    if (valorAtual && valorAtual !== 'null' && valorAtual !== 'undefined' && valorAtual.trim() !== '') {
-                        const optionParaSelecionar = select.querySelector(`option[value="${valorAtual}"]`);
-                        if (optionParaSelecionar) {
-                            optionParaSelecionar.selected = true;
-                            placeholder.selected = false;
-                        } else {
-                            // Se o valor atual não existe nas opções, adicionar como nova opção
-                            const novaOption = document.createElement('option');
-                            novaOption.value = valorAtual;
-                            novaOption.textContent = formatarTexto(valorAtual);
-                            select.insertBefore(novaOption, addOption);
-                            novaOption.selected = true;
-                            placeholder.selected = false;
-                        }
-                    }
-                    
-                } catch (error) {
-                    console.error(`Erro ao carregar opções para ${campo}:`, error);
-                    carregarOpcoesPadrao(select, campo);
-                }
-            }
-        
-            // Carregar opções padrão em caso de erro
-            function carregarOpcoesPadrao(select, campo) {
+                // Limpar opções existentes
                 while (select.options.length > 0) {
                     select.remove(0);
                 }
                 
-                // Placeholder
+                // Adicionar placeholder
                 const placeholder = document.createElement('option');
                 placeholder.value = '';
                 placeholder.textContent = `Selecione ${campoLabels[campo].toLowerCase()}...`;
                 placeholder.disabled = true;
+                placeholder.selected = true;
                 select.appendChild(placeholder);
                 
-                // Opção "Adicionar nova"
+                // Adicionar opção "Adicionar nova..."
                 const addOption = document.createElement('option');
                 addOption.value = '_add_new_';
                 addOption.textContent = '+ Adicionar nova opção...';
@@ -768,127 +1154,444 @@
                 addOption.style.fontWeight = 'bold';
                 select.appendChild(addOption);
                 
-                // Opções padrão
-                if (opcoesPadrao[campo]) {
-                    opcoesPadrao[campo].forEach(opcao => {
+                // Adicionar opções existentes do banco
+                opcoes.forEach(opcao => {
+                    if (opcao && opcao.trim() !== '') {
                         const option = document.createElement('option');
                         option.value = opcao;
                         option.textContent = formatarTexto(opcao);
                         select.appendChild(option);
+                    }
+                });
+                
+                // Adicionar opções padrão que não estão no banco
+                if (opcoesPadrao[campo]) {
+                    opcoesPadrao[campo].forEach(opcao => {
+                        if (!opcoes.includes(opcao)) {
+                            const option = document.createElement('option');
+                            option.value = opcao;
+                            option.textContent = formatarTexto(opcao);
+                            select.appendChild(option);
+                        }
                     });
                 }
                 
-                // Selecionar valor atual
+                // Selecionar o valor atual do produto
                 const valorAtual = produtoAtual[campo];
                 if (valorAtual && valorAtual !== 'null' && valorAtual !== 'undefined' && valorAtual.trim() !== '') {
                     const optionParaSelecionar = select.querySelector(`option[value="${valorAtual}"]`);
                     if (optionParaSelecionar) {
                         optionParaSelecionar.selected = true;
                         placeholder.selected = false;
+                    } else {
+                        // Se o valor atual não existe nas opções, adicionar como nova opção
+                        const novaOption = document.createElement('option');
+                        novaOption.value = valorAtual;
+                        novaOption.textContent = formatarTexto(valorAtual);
+                        select.insertBefore(novaOption, addOption);
+                        novaOption.selected = true;
+                        placeholder.selected = false;
                     }
                 }
+                
+            } catch (error) {
+                console.error(`Erro ao carregar opções para ${campo}:`, error);
+                carregarOpcoesPadrao(select, campo);
             }
+        }
         
-            // Adicionar nova opção
-            async function adicionarNovaOpcao(select, campo) {
-                const label = campoLabels[campo] || campo;
-                const novaOpcao = prompt(`Digite o novo valor para "${label}":`);
+        // Carregar opções padrão em caso de erro
+        function carregarOpcoesPadrao(select, campo) {
+            while (select.options.length > 0) {
+                select.remove(0);
+            }
+            
+            // Placeholder
+            const placeholder = document.createElement('option');
+            placeholder.value = '';
+            placeholder.textContent = `Selecione ${campoLabels[campo].toLowerCase()}...`;
+            placeholder.disabled = true;
+            select.appendChild(placeholder);
+            
+            // Opção "Adicionar nova"
+            const addOption = document.createElement('option');
+            addOption.value = '_add_new_';
+            addOption.textContent = '+ Adicionar nova opção...';
+            addOption.style.color = '#4361ee';
+            addOption.style.fontWeight = 'bold';
+            select.appendChild(addOption);
+            
+            // Opções padrão
+            if (opcoesPadrao[campo]) {
+                opcoesPadrao[campo].forEach(opcao => {
+                    const option = document.createElement('option');
+                    option.value = opcao;
+                    option.textContent = formatarTexto(opcao);
+                    select.appendChild(option);
+                });
+            }
+            
+            // Selecionar valor atual
+            const valorAtual = produtoAtual[campo];
+            if (valorAtual && valorAtual !== 'null' && valorAtual !== 'undefined' && valorAtual.trim() !== '') {
+                const optionParaSelecionar = select.querySelector(`option[value="${valorAtual}"]`);
+                if (optionParaSelecionar) {
+                    optionParaSelecionar.selected = true;
+                    placeholder.selected = false;
+                }
+            }
+        }
+        
+        // Adicionar nova opção
+        async function adicionarNovaOpcao(select, campo) {
+            const label = campoLabels[campo] || campo;
+            const novaOpcao = prompt(`Digite o novo valor para "${label}":`);
+            
+            if (!novaOpcao || novaOpcao.trim() === '') {
+                return;
+            }
+            
+            const opcaoFormatada = novaOpcao.trim().toLowerCase();
+            
+            // Verificar se já existe localmente
+            const opcoesExistentes = Array.from(select.options).map(opt => opt.value.toLowerCase());
+            if (opcoesExistentes.includes(opcaoFormatada)) {
+                alert('⚠️ Esta opção já existe!');
+                return;
+            }
+            
+            try {
+                // Salvar no backend
+                const response = await fetch(`/api/opcoes/${campo}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ novaOpcao: opcaoFormatada })
+                });
                 
-                if (!novaOpcao || novaOpcao.trim() === '') {
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Criar nova opção
+                    const novaOption = document.createElement('option');
+                    novaOption.value = opcaoFormatada;
+                    novaOption.textContent = formatarTexto(opcaoFormatada);
+                    
+                    // Inserir antes da opção "Adicionar nova"
+                    const addOption = select.querySelector('option[value="_add_new_"]');
+                    select.insertBefore(novaOption, addOption);
+                    
+                    // Selecionar a nova opção
+                    select.value = opcaoFormatada;
+                    
+                    // Disparar evento change
+                    select.dispatchEvent(new Event('change'));
+                    
+                    mostrarMensagem('✅ Opção adicionada com sucesso!', 'success');
+                } else {
+                    mostrarMensagem('❌ Erro ao adicionar opção: ' + result.message, 'error');
+                }
+                
+            } catch (error) {
+                console.error('Erro ao adicionar opção:', error);
+                
+                // Fallback: adicionar localmente mesmo com erro no backend
+                const novaOption = document.createElement('option');
+                novaOption.value = opcaoFormatada;
+                novaOption.textContent = formatarTexto(opcaoFormatada);
+                
+                const addOption = select.querySelector('option[value="_add_new_"]');
+                select.insertBefore(novaOption, addOption);
+                select.value = opcaoFormatada;
+                select.dispatchEvent(new Event('change'));
+                
+                mostrarMensagem('✅ Opção adicionada localmente!', 'success');
+            }
+        }
+        
+        // Configurar eventos dos selects
+        function configurarEventos() {
+            document.querySelectorAll('.dynamic-select').forEach(select => {
+                select.addEventListener('change', function() {
+                    if (this.value === '_add_new_') {
+                        const campo = this.dataset.campo;
+                        adicionarNovaOpcao(this, campo);
+                    }
+                });
+            });
+        }
+        
+        // ===== GERENCIAMENTO DE PDFs =====
+        
+        // Carregar PDFs do produto
+        async function carregarPDFsDoProduto() {
+            const pdfsContainer = document.getElementById('pdfsContainer');
+            
+            try {
+                const response = await fetch(`/api/produtos/${PRODUCT_ID}/pdfs`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const pdfs = await response.json();
+                
+                if (pdfs.length === 0) {
+                    pdfsContainer.innerHTML = `
+                        <div class="no-pdfs">
+                            <i class="fas fa-file-pdf"></i>
+                            <p>Nenhum documento anexado</p>
+                        </div>
+                    `;
                     return;
                 }
                 
-                const opcaoFormatada = novaOpcao.trim().toLowerCase();
+                let pdfsHTML = '<div class="pdfs-list">';
                 
-                // Verificar se já existe localmente
-                const opcoesExistentes = Array.from(select.options).map(opt => opt.value.toLowerCase());
-                if (opcoesExistentes.includes(opcaoFormatada)) {
-                    alert('⚠️ Esta opção já existe!');
+                pdfs.forEach(pdf => {
+                    const fileSize = formatarTamanhoArquivo(pdf.tamanho_arquivo);
+                    const uploadDate = new Date(pdf.data_upload).toLocaleDateString('pt-BR');
+                    
+                    pdfsHTML += `
+                        <div class="pdf-item" data-pdf-id="${pdf.id}">
+                            <div class="pdf-info">
+                                <div class="pdf-icon-small">
+                                    <i class="fas fa-file-pdf"></i>
+                                </div>
+                                <div class="pdf-details">
+                                    <div class="pdf-name">${pdf.nome_original}</div>
+                                    <div class="pdf-meta">
+                                        <span class="pdf-size"><i class="fas fa-hdd"></i> ${fileSize}</span>
+                                        <span class="pdf-date"><i class="fas fa-calendar"></i> ${uploadDate}</span>
+                                        <span class="pdf-uploader"><i class="fas fa-user"></i> ${pdf.usuario_upload || 'Sistema'}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pdf-actions">
+                                <a href="/produtos/pdfs/download/${pdf.id}" 
+                                   class="pdf-download-btn" 
+                                   title="Baixar PDF"
+                                   download>
+                                    <i class="fas fa-download"></i>
+                                </a>
+                                <button class="pdf-delete-btn" 
+                                        title="Excluir PDF"
+                                        onclick="excluirPDF(${pdf.id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                pdfsHTML += '</div>';
+                pdfsContainer.innerHTML = pdfsHTML;
+                
+            } catch (error) {
+                console.error('Erro ao carregar PDFs:', error);
+                pdfsContainer.innerHTML = `
+                    <div class="error-pdfs">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Erro ao carregar documentos: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Excluir PDF
+        window.excluirPDF = async function(pdfId) {
+            if (!confirm('Tem certeza que deseja excluir este documento? Esta ação não pode ser desfeita.')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/produtos/pdfs/${pdfId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    mostrarMensagem('✅ Documento excluído com sucesso!', 'success');
+                    carregarPDFsDoProduto();
+                } else {
+                    throw new Error(result.error || 'Erro ao excluir documento');
+                }
+            } catch (error) {
+                console.error('Erro ao excluir PDF:', error);
+                mostrarMensagem('❌ Erro ao excluir documento: ' + error.message, 'error');
+            }
+        };
+        
+        // Configurar upload de PDFs
+        function configurarUploadPDFs() {
+            const pdfUploadArea = document.getElementById('pdfUploadArea');
+            const pdfFilesInput = document.getElementById('pdfFiles');
+            const pdfPreview = document.getElementById('pdfPreview');
+            const uploadBtn = document.getElementById('uploadPdfsBtn');
+            
+            let selectedFiles = [];
+            
+            // Eventos de drag and drop
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                pdfUploadArea.addEventListener(eventName, e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }, false);
+            });
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                pdfUploadArea.addEventListener(eventName, () => {
+                    pdfUploadArea.classList.add('dragover');
+                }, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                pdfUploadArea.addEventListener(eventName, () => {
+                    pdfUploadArea.classList.remove('dragover');
+                }, false);
+            });
+            
+            pdfUploadArea.addEventListener('drop', e => {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                handleFiles(files);
+            }, false);
+            
+            pdfFilesInput.addEventListener('change', function() {
+                handleFiles(this.files);
+            });
+            
+            function handleFiles(files) {
+                selectedFiles = Array.from(files).filter(file => {
+                    if (file.type !== 'application/pdf') {
+                        mostrarMensagem(`Arquivo ${file.name} não é um PDF e foi ignorado`, 'error');
+                        return false;
+                    }
+                    if (file.size > 10 * 1024 * 1024) {
+                        mostrarMensagem(`Arquivo ${file.name} excede 10MB e foi ignorado`, 'error');
+                        return false;
+                    }
+                    return true;
+                });
+                
+                updatePreview();
+            }
+            
+            function updatePreview() {
+                pdfPreview.innerHTML = '';
+                uploadBtn.style.display = selectedFiles.length > 0 ? 'inline-flex' : 'none';
+                
+                if (selectedFiles.length === 0) return;
+                
+                selectedFiles.forEach((file, index) => {
+                    const previewItem = document.createElement('div');
+                    previewItem.className = 'pdf-preview-item';
+                    previewItem.innerHTML = `
+                        <div class="pdf-preview-info">
+                            <div class="pdf-preview-icon">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <div class="pdf-preview-details">
+                                <div class="pdf-preview-name">${file.name}</div>
+                                <div class="pdf-preview-size">${formatarTamanhoArquivo(file.size)}</div>
+                            </div>
+                        </div>
+                        <button type="button" class="pdf-preview-remove" onclick="removerArquivo(${index})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    pdfPreview.appendChild(previewItem);
+                });
+            }
+            
+            window.removerArquivo = function(index) {
+                selectedFiles.splice(index, 1);
+                updatePreview();
+            };
+            
+            uploadBtn.addEventListener('click', async function() {
+                if (selectedFiles.length === 0) {
+                    mostrarMensagem('Selecione pelo menos um arquivo PDF.', 'error');
                     return;
                 }
+                
+                const formData = new FormData();
+                selectedFiles.forEach(file => {
+                    formData.append('pdfFiles', file);
+                });
+                
+                uploadBtn.disabled = true;
+                uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+                
+                pdfPreview.innerHTML = `
+                    <div class="upload-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 50%"></div>
+                        </div>
+                        <div class="progress-text">Enviando arquivos... 50%</div>
+                    </div>
+                `;
                 
                 try {
-                    // Salvar no backend
-                    const response = await fetch(`/api/opcoes/${campo}`, {
+                    const response = await fetch(`/api/produtos/${PRODUCT_ID}/pdfs/upload`, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ novaOpcao: opcaoFormatada })
+                        body: formData
                     });
                     
                     const result = await response.json();
                     
                     if (result.success) {
-                        // Criar nova opção
-                        const novaOption = document.createElement('option');
-                        novaOption.value = opcaoFormatada;
-                        novaOption.textContent = formatarTexto(opcaoFormatada);
+                        mostrarMensagem(result.message || 'PDFs enviados com sucesso!', 'success');
                         
-                        // Inserir antes da opção "Adicionar nova"
-                        const addOption = select.querySelector('option[value="_add_new_"]');
-                        select.insertBefore(novaOption, addOption);
+                        // Limpar seleção
+                        pdfFilesInput.value = '';
+                        selectedFiles = [];
+                        pdfPreview.innerHTML = '';
+                        uploadBtn.style.display = 'none';
                         
-                        // Selecionar a nova opção
-                        select.value = opcaoFormatada;
-                        
-                        // Disparar evento change
-                        select.dispatchEvent(new Event('change'));
-                        
-                        alert('✅ Opção adicionada com sucesso!');
+                        // Recarregar lista de PDFs
+                        carregarPDFsDoProduto();
                     } else {
-                        alert('❌ Erro ao adicionar opção: ' + result.message);
+                        throw new Error(result.error || 'Erro ao fazer upload');
                     }
-                    
                 } catch (error) {
-                    console.error('Erro ao adicionar opção:', error);
-                    
-                    // Fallback: adicionar localmente mesmo com erro no backend
-                    const novaOption = document.createElement('option');
-                    novaOption.value = opcaoFormatada;
-                    novaOption.textContent = formatarTexto(opcaoFormatada);
-                    
-                    const addOption = select.querySelector('option[value="_add_new_"]');
-                    select.insertBefore(novaOption, addOption);
-                    select.value = opcaoFormatada;
-                    select.dispatchEvent(new Event('change'));
-                    
-                    alert('✅ Opção adicionada localmente!');
+                    console.error('Erro no upload:', error);
+                    mostrarMensagem('Erro ao fazer upload: ' + error.message, 'error');
+                    updatePreview();
+                } finally {
+                    uploadBtn.disabled = false;
+                    uploadBtn.innerHTML = '<i class="fas fa-upload"></i> Fazer Upload dos PDFs';
                 }
-            }
+            });
+        }
         
-            // Event listener para os selects
-            function configurarEventos() {
-                document.querySelectorAll('.dynamic-select').forEach(select => {
-                    select.addEventListener('change', function() {
-                        if (this.value === '_add_new_') {
-                            const campo = this.dataset.campo;
-                            adicionarNovaOpcao(this, campo);
-                        }
-                    });
-                });
-            }
-        
-            // Validação do formulário
+        // ===== VALIDAÇÃO DO FORMULÁRIO =====
+        function configurarValidacao() {
             const form = document.querySelector('.product-form');
+            
             form.addEventListener('submit', function(e) {
                 // Verificar se algum select tem a opção "Adicionar nova" selecionada
                 const invalidSelects = document.querySelectorAll('.dynamic-select[value="_add_new_"]');
                 
                 if (invalidSelects.length > 0) {
                     e.preventDefault();
-                    alert('❌ Por favor, selecione uma opção válida ou adicione uma nova opção.');
+                    alert('❌ Por favor, selecione uma opção válida.');
                     invalidSelects[0].focus();
                     return;
                 }
-        
+                
                 // Validação de quantidade vs estoque mínimo
                 const quantity = document.getElementById('stockQuantity').value;
                 const minStock = document.getElementById('minStock').value;
                 
                 if (minStock && parseInt(quantity) < parseInt(minStock)) {
                     e.preventDefault();
-                    alert('A quantidade em estoque não pode ser menor que o estoque mínimo!');
+                    alert('⚠️ A quantidade em estoque não pode ser menor que o estoque mínimo!');
                     return;
                 }
                 
@@ -907,43 +1610,74 @@
                 
                 if (!isValid) {
                     e.preventDefault();
-                    alert('Por favor, preencha todos os campos obrigatórios.');
+                    alert('❌ Por favor, preencha todos os campos obrigatórios.');
                 }
             });
+            
+            // Remover classe de erro quando o usuário digitar
+            const inputs = form.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    this.classList.remove('is-invalid');
+                });
+            });
+        }
         
-            // Inicializar
-            carregarOpcoes().then(() => {
+        // ===== INICIALIZAÇÃO =====
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('🚀 Inicializando sistema de edição para produto ID:', PRODUCT_ID);
+            
+            try {
+                // 1. Carregar opções dos selects
+                await carregarOpcoes();
                 configurarEventos();
-                console.log('Sistema de selects dinâmicos carregado para edição');
-            });
-        
-            // Adicionar estilos
-            const style = document.createElement('style');
-            style.textContent = `
-                .dynamic-select option[value="_add_new_"] {
-                    background-color: #f8f9fa;
-                    border-top: 1px solid #dee2e6;
-                    margin-top: 5px;
-                    padding-top: 5px;
-                    font-weight: bold;
-                }
+                console.log('✅ Selects dinâmicos carregados');
                 
-                .dynamic-select:focus {
-                    border-color: #4361ee;
-                    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
-                }
+                // 2. Carregar PDFs existentes
+                await carregarPDFsDoProduto();
+                console.log('✅ PDFs carregados');
                 
-                .form-select {
-                    cursor: pointer;
-                }
+                // 3. Configurar upload de PDFs
+                configurarUploadPDFs();
+                console.log('✅ Upload de PDFs configurado');
                 
-                .is-invalid {
-                    border-color: #e53e3e !important;
-                    box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.15) !important;
-                }
-            `;
-            document.head.appendChild(style);
+                // 4. Configurar validação do formulário
+                configurarValidacao();
+                console.log('✅ Validação configurada');
+                
+                console.log('✅ Sistema inicializado com sucesso!');
+            } catch (error) {
+                console.error('❌ Erro na inicialização:', error);
+                mostrarMensagem('Erro ao inicializar a página: ' + error.message, 'error');
+            }
         });
-    </script>
+        
+        // ===== ESTILOS ADICIONAIS =====
+        const style = document.createElement('style');
+        style.textContent = `
+            .dynamic-select option[value="_add_new_"] {
+                background-color: #f8f9fa;
+                border-top: 1px solid #dee2e6;
+                margin-top: 5px;
+                padding-top: 5px;
+                font-weight: bold;
+            }
+            
+            .dynamic-select:focus {
+                border-color: #4361ee;
+                box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+            }
+            
+            .form-select {
+                cursor: pointer;
+            }
+            
+            .is-invalid {
+                border-color: #e53e3e !important;
+                box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.15) !important;
+            }
+        `;
+        document.head.appendChild(style);
+        </script>
 </body>
 </html>

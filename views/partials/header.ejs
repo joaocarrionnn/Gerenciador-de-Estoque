@@ -295,13 +295,18 @@
       </nav>
     </div>
 
+    
     <!-- Perfil Usuário -->
     <div class="user-area-custom">
       <a href="/perfil" class="flex items-center hover:bg-[#34495e] p-2 rounded-lg transition-all">
           <i class="fas fa-user-circle text-blue-400 text-2xl" style="font-size: 40px; margin-right: 12px;"></i>
           <div class="user-info-text">
-              <p class="text-sm font-medium text-white" style="font-size: 16px; font-weight: 600;">João Silva</p>
-              <p class="text-xs text-gray-400" style="font-size: 13px;">Administrador</p>
+              <p class="text-sm font-medium text-white" style="font-size: 16px; font-weight: 600;">
+                  <%= user ? user.nome : 'Usuário' %>
+              </p>
+              <p class="text-xs text-gray-400" style="font-size: 13px;">
+                  <%= user ? (user.tipo === 'admin' ? 'Administrador' : 'Usuário') : 'Visitante' %>
+              </p>
           </div>
       </a>
       <a href="/auth/logout" class="logout-btn-custom">
@@ -335,8 +340,7 @@
     <a href="/vidracarias" class="mobile-nav-item" id="mobile-vidracarias">
       <i class="fas fa-glass-whiskey"></i>
       <span>Vidr.</span>
-  </a>
-    <!-- NOVO ITEM: Perfil do usuário para mobile -->
+    </a>
     <a href="/perfil" class="mobile-nav-item" id="mobile-perfil">
       <i class="fas fa-user-circle"></i>
       <span>Perfil</span>
