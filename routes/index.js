@@ -389,6 +389,8 @@ router.post('/produtos/adicionar', uploadProductWithPDFs, (req, res) => {
             });
         }
 
+        
+
         const productId = result.insertId;
         console.log('✅ Produto adicionado com ID:', productId);
 
@@ -1768,13 +1770,22 @@ router.get('/logout', requireAuth, (req, res) => {
 
 
 
-// ROTA PARA RELATÓRIOS
+// ROTA PARA RELATÓRIOS - ATUALIZADA E CORRIGIDA
 router.get('/relatorios', requireAuth, (req, res) => {
-    // Buscar estatísticas do banco - CORRIGIDAS
+    // Buscar estatísticas do banco
     const totalReagentsQuery = 'SELECT COUNT(*) as total FROM produtos';
     const lowStockQuery = 'SELECT COUNT(*) as total FROM produtos WHERE quantidade <= estoque_minimo AND quantidade > 0';
     
-    // Buscar movimentações do mês atual - CORRIGIDAS
+    // Buscar reagentes vencidos
+    const expiredReagentsQuery = `
+        SELECT COUNT(*) as total 
+        FROM produtos 
+        WHERE data_validade IS NOT NULL 
+        AND data_validade < CURDATE()
+        AND quantidade > 0
+    `;
+    
+    // Buscar movimentações do mês atual
     const monthInputsQuery = `
         SELECT COUNT(*) as total 
         FROM movimentacoes 
@@ -1791,7 +1802,7 @@ router.get('/relatorios', requireAuth, (req, res) => {
         AND MONTH(data_movimentacao) = MONTH(CURDATE())
     `;
     
-    // Buscar itens com estoque crítico - ORDENADO POR QUANTIDADE
+    // Buscar itens com estoque crítico
     const criticalStockQuery = `
         SELECT 
             nome as reagent,
@@ -1810,6 +1821,29 @@ router.get('/relatorios', requireAuth, (req, res) => {
         LIMIT 10
     `;
 
+    // Buscar alguns reagentes vencidos para exibir na página
+    const expiredReagentsListQuery = `
+        SELECT 
+            nome,
+            tipo,
+            fornecedor,
+            data_aquisicao,
+            data_validade,
+            quantidade,
+            unidade_medida,
+            CASE 
+                WHEN DATEDIFF(CURDATE(), data_validade) > 30 THEN 'Vencido há mais de 30 dias'
+                WHEN DATEDIFF(CURDATE(), data_validade) > 7 THEN 'Vencido há mais de 7 dias'
+                ELSE 'Recentemente vencido'
+            END as status_vencimento
+        FROM produtos 
+        WHERE data_validade IS NOT NULL 
+        AND data_validade < CURDATE()
+        AND quantidade > 0
+        ORDER BY data_validade ASC
+        LIMIT 5
+    `;
+
     // Executar todas as queries
     db.query(totalReagentsQuery, (err, totalResults) => {
         if (err) {
@@ -1817,7 +1851,8 @@ router.get('/relatorios', requireAuth, (req, res) => {
             return res.render('relatorios', { 
                 user: req.session.user,
                 stats: {},
-                criticalItems: []
+                criticalItems: [],
+                expiredReagents: []
             });
         }
 
@@ -1827,72 +1862,491 @@ router.get('/relatorios', requireAuth, (req, res) => {
                 return res.render('relatorios', { 
                     user: req.session.user,
                     stats: {},
-                    criticalItems: []
+                    criticalItems: [],
+                    expiredReagents: []
                 });
             }
 
-            db.query(monthInputsQuery, (err, monthInputsResults) => {
+            db.query(expiredReagentsQuery, (err, expiredResults) => {
                 if (err) {
-                    console.error('Erro ao buscar entradas do mês:', err);
+                    console.error('Erro ao buscar reagentes vencidos:', err);
                     return res.render('relatorios', { 
                         user: req.session.user,
                         stats: {},
-                        criticalItems: []
+                        criticalItems: [],
+                        expiredReagents: []
                     });
                 }
 
-                db.query(monthOutputsQuery, (err, monthOutputsResults) => {
+                db.query(monthInputsQuery, (err, monthInputsResults) => {
                     if (err) {
-                        console.error('Erro ao buscar saídas do mês:', err);
+                        console.error('Erro ao buscar entradas do mês:', err);
                         return res.render('relatorios', { 
                             user: req.session.user,
                             stats: {},
-                            criticalItems: []
+                            criticalItems: [],
+                            expiredReagents: []
                         });
                     }
 
-                    db.query(criticalStockQuery, (err, criticalItemsResults) => {
+                    db.query(monthOutputsQuery, (err, monthOutputsResults) => {
                         if (err) {
-                            console.error('Erro ao buscar itens críticos:', err);
+                            console.error('Erro ao buscar saídas do mês:', err);
                             return res.render('relatorios', { 
                                 user: req.session.user,
                                 stats: {},
-                                criticalItems: []
+                                criticalItems: [],
+                                expiredReagents: []
                             });
                         }
 
-                        console.log('Estatísticas encontradas:', {
-                            totalReagents: totalResults[0]?.total,
-                            monthInputs: monthInputsResults[0]?.total,
-                            monthOutputs: monthOutputsResults[0]?.total,
-                            lowStock: lowStockResults[0]?.total
-                        });
+                        db.query(criticalStockQuery, (err, criticalItemsResults) => {
+                            if (err) {
+                                console.error('Erro ao buscar itens críticos:', err);
+                                return res.render('relatorios', { 
+                                    user: req.session.user,
+                                    stats: {},
+                                    criticalItems: [],
+                                    expiredReagents: []
+                                });
+                            }
 
-                        // Preparar estatísticas
-                        const stats = {
-                            totalReagents: totalResults[0]?.total || 0,
-                            monthInputs: monthInputsResults[0]?.total || 0,
-                            monthOutputs: monthOutputsResults[0]?.total || 0,
-                            lowStock: lowStockResults[0]?.total || 0
-                        };
+                            db.query(expiredReagentsListQuery, (err, expiredReagentsResults) => {
+                                if (err) {
+                                    console.error('Erro ao buscar reagentes vencidos:', err);
+                                    return res.render('relatorios', { 
+                                        user: req.session.user,
+                                        stats: {},
+                                        criticalItems: [],
+                                        expiredReagents: []
+                                    });
+                                }
 
-                        // Formatar os dados
-                        const criticalItems = criticalItemsResults.map(item => ({
-                            reagent: item.reagent,
-                            category: item.category,
-                            current: `${item.current} ${item.unit}`,
-                            minimum: `${item.minimum} ${item.unit}`,
-                            status: item.status
-                        }));
+                                // Preparar estatísticas
+                                const stats = {
+                                    totalReagents: totalResults[0]?.total || 0,
+                                    monthInputs: monthInputsResults[0]?.total || 0,
+                                    monthOutputs: monthOutputsResults[0]?.total || 0,
+                                    lowStock: lowStockResults[0]?.total || 0,
+                                    expiredReagents: expiredResults[0]?.total || 0
+                                };
 
-                        res.render('relatorios', { 
-                            user: req.session.user,
-                            stats: stats,
-                            criticalItems: criticalItems
+                                // Formatar os dados
+                                const criticalItems = criticalItemsResults.map(item => ({
+                                    reagent: item.reagent,
+                                    category: item.category,
+                                    current: `${item.current} ${item.unit}`,
+                                    minimum: `${item.minimum} ${item.unit}`,
+                                    status: item.status
+                                }));
+
+                                const expiredReagents = expiredReagentsResults.map(item => ({
+                                    nome: item.nome,
+                                    tipo: item.tipo,
+                                    fornecedor: item.fornecedor,
+                                    data_aquisicao: item.data_aquisicao,
+                                    data_validade: item.data_validade,
+                                    quantidade: `${item.quantidade} ${item.unidade_medida}`,
+                                    status_vencimento: item.status_vencimento
+                                }));
+
+                                console.log('Estatísticas carregadas:', {
+                                    totalReagents: stats.totalReagents,
+                                    expiredReagents: stats.expiredReagents,
+                                    criticalItems: criticalItems.length,
+                                    expiredReagentsList: expiredReagents.length
+                                });
+
+                                res.render('relatorios', { 
+                                    user: req.session.user,
+                                    stats: stats,
+                                    criticalItems: criticalItems,
+                                    expiredReagents: expiredReagents
+                                });
+                            });
                         });
                     });
                 });
             });
+        });
+    });
+});
+
+// API PARA BUSCAR REAGENTES VENCIDOS COM FILTROS
+router.get('/api/relatorios/reagentes-vencidos', requireAuth, (req, res) => {
+    const {
+        startDate,
+        endDate,
+        supplier,
+        category,
+        page = 1,
+        limit = 15
+    } = req.query;
+
+    let whereClause = `
+        WHERE data_validade IS NOT NULL 
+        AND data_validade < CURDATE()
+        AND quantidade > 0
+    `;
+    let queryParams = [];
+
+    // Filtro por data de vencimento
+    if (startDate) {
+        whereClause += ' AND data_validade >= ?';
+        queryParams.push(startDate);
+    }
+
+    if (endDate) {
+        whereClause += ' AND data_validade <= ?';
+        queryParams.push(endDate);
+    }
+
+    // Filtro por fornecedor
+    if (supplier) {
+        whereClause += ' AND fornecedor = ?';
+        queryParams.push(supplier);
+    }
+
+    // Filtro por categoria
+    if (category) {
+        whereClause += ' AND tipo = ?';
+        queryParams.push(category);
+    }
+
+    const offset = (page - 1) * limit;
+
+    // Query para contar total
+    const countQuery = `
+        SELECT COUNT(*) as total
+        FROM produtos
+        ${whereClause}
+    `;
+
+    // Query para buscar dados
+    const dataQuery = `
+        SELECT 
+            id_produto,
+            nome,
+            tipo,
+            fornecedor,
+            data_aquisicao,
+            data_validade,
+            quantidade,
+            unidade_medida,
+            localizacao,
+            DATEDIFF(CURDATE(), data_validade) as dias_vencido,
+            CASE 
+                WHEN DATEDIFF(CURDATE(), data_validade) > 30 THEN 'Vencido há mais de 30 dias'
+                WHEN DATEDIFF(CURDATE(), data_validade) > 7 THEN 'Vencido há mais de 7 dias'
+                ELSE 'Recentemente vencido'
+            END as status
+        FROM produtos
+        ${whereClause}
+        ORDER BY data_validade ASC, dias_vencido DESC
+        LIMIT ? OFFSET ?
+    `;
+
+    // Primeiro contar o total
+    db.query(countQuery, queryParams, (countErr, countResults) => {
+        if (countErr) {
+            console.error('Erro ao contar reagentes vencidos:', countErr);
+            return res.status(500).json({ 
+                success: false, 
+                error: 'Erro ao buscar reagentes vencidos',
+                data: [], 
+                total: 0, 
+                totalPages: 0 
+            });
+        }
+
+        const total = countResults[0]?.total || 0;
+        const totalPages = Math.ceil(total / limit);
+
+        const dataParams = [...queryParams, parseInt(limit), parseInt(offset)];
+
+        // Buscar os dados
+        db.query(dataQuery, dataParams, (dataErr, dataResults) => {
+            if (dataErr) {
+                console.error('Erro ao buscar reagentes vencidos:', dataErr);
+                return res.status(500).json({ 
+                    success: false, 
+                    error: 'Erro ao buscar reagentes vencidos',
+                    data: [], 
+                    total: 0, 
+                    totalPages: 0 
+                });
+            }
+
+            res.json({
+                success: true,
+                data: dataResults,
+                total: total,
+                totalPages: totalPages,
+                currentPage: parseInt(page)
+            });
+        });
+    });
+});
+
+// API PARA ESTATÍSTICAS DE REAGENTES VENCIDOS
+router.get('/api/relatorios/estatisticas-vencidos', requireAuth, (req, res) => {
+    const query = `
+        SELECT 
+            COUNT(*) as total_vencidos,
+            SUM(quantidade) as quantidade_total_vencida,
+            COUNT(CASE WHEN DATEDIFF(CURDATE(), data_validade) > 30 THEN 1 END) as vencidos_30_dias,
+            COUNT(CASE WHEN DATEDIFF(CURDATE(), data_validade) BETWEEN 8 AND 30 THEN 1 END) as vencidos_8_30_dias,
+            COUNT(CASE WHEN DATEDIFF(CURDATE(), data_validade) <= 7 THEN 1 END) as vencidos_7_dias,
+            COUNT(DISTINCT fornecedor) as fornecedores_afetados,
+            COUNT(DISTINCT tipo) as categorias_afetadas
+        FROM produtos 
+        WHERE data_validade IS NOT NULL 
+        AND data_validade < CURDATE()
+        AND quantidade > 0
+    `;
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar estatísticas de vencidos:', err);
+            return res.status(500).json({
+                success: false,
+                error: 'Erro ao buscar estatísticas',
+                total_vencidos: 0,
+                quantidade_total_vencida: 0,
+                vencidos_30_dias: 0,
+                vencidos_8_30_dias: 0,
+                vencidos_7_dias: 0,
+                fornecedores_afetados: 0,
+                categorias_afetadas: 0
+            });
+        }
+
+        res.json({
+            success: true,
+            ...results[0]
+        });
+    });
+});
+
+// API PARA EXPORTAR REAGENTES VENCIDOS EM EXCEL
+router.get('/api/relatorios/exportar-vencidos-excel', requireAuth, (req, res) => {
+    const {
+        startDate,
+        endDate,
+        supplier,
+        category
+    } = req.query;
+
+    let whereClause = `
+        WHERE data_validade IS NOT NULL 
+        AND data_validade < CURDATE()
+        AND quantidade > 0
+    `;
+    let queryParams = [];
+
+    // Aplicar os mesmos filtros
+    if (startDate) {
+        whereClause += ' AND data_validade >= ?';
+        queryParams.push(startDate);
+    }
+
+    if (endDate) {
+        whereClause += ' AND data_validade <= ?';
+        queryParams.push(endDate);
+    }
+
+    if (supplier) {
+        whereClause += ' AND fornecedor = ?';
+        queryParams.push(supplier);
+    }
+
+    if (category) {
+        whereClause += ' AND tipo = ?';
+        queryParams.push(category);
+    }
+
+    const query = `
+        SELECT 
+            nome as "Reagente",
+            tipo as "Categoria",
+            fornecedor as "Fornecedor",
+            data_aquisicao as "Data de Aquisição",
+            data_validade as "Data de Vencimento",
+            CONCAT(quantidade, ' ', unidade_medida) as "Quantidade",
+            localizacao as "Localização",
+            DATEDIFF(CURDATE(), data_validade) as "Dias Vencido",
+            CASE 
+                WHEN DATEDIFF(CURDATE(), data_validade) > 30 THEN 'Vencido há mais de 30 dias'
+                WHEN DATEDIFF(CURDATE(), data_validade) > 7 THEN 'Vencido há mais de 7 dias'
+                ELSE 'Recentemente vencido'
+            END as "Status"
+        FROM produtos
+        ${whereClause}
+        ORDER BY data_validade ASC, "Dias Vencido" DESC
+    `;
+
+    db.query(query, queryParams, (err, results) => {
+        if (err) {
+            console.error('Erro ao exportar reagentes vencidos:', err);
+            return res.status(500).json({ 
+                success: false, 
+                error: 'Erro ao exportar dados' 
+            });
+        }
+
+        // Aqui você implementaria a geração do Excel
+        // Por enquanto, retornamos JSON para o frontend processar
+        res.json({
+            success: true,
+            data: results,
+            filename: `reagentes_vencidos_${new Date().toISOString().split('T')[0]}.xlsx`,
+            total: results.length
+        });
+    });
+});
+
+// API PARA GERAR PDF DE REAGENTES VENCIDOS
+router.get('/api/relatorios/gerar-pdf-vencidos', requireAuth, (req, res) => {
+    const {
+        startDate,
+        endDate,
+        supplier,
+        category
+    } = req.query;
+
+    let whereClause = `
+        WHERE data_validade IS NOT NULL 
+        AND data_validade < CURDATE()
+        AND quantidade > 0
+    `;
+    let queryParams = [];
+
+    // Aplicar os mesmos filtros
+    if (startDate) {
+        whereClause += ' AND data_validade >= ?';
+        queryParams.push(startDate);
+    }
+
+    if (endDate) {
+        whereClause += ' AND data_validade <= ?';
+        queryParams.push(endDate);
+    }
+
+    if (supplier) {
+        whereClause += ' AND fornecedor = ?';
+        queryParams.push(supplier);
+    }
+
+    if (category) {
+        whereClause += ' AND tipo = ?';
+        queryParams.push(category);
+    }
+
+    const query = `
+        SELECT 
+            nome,
+            tipo,
+            fornecedor,
+            data_aquisicao,
+            data_validade,
+            quantidade,
+            unidade_medida,
+            localizacao,
+            DATEDIFF(CURDATE(), data_validade) as dias_vencido,
+            CASE 
+                WHEN DATEDIFF(CURDATE(), data_validade) > 30 THEN 'Vencido há mais de 30 dias'
+                WHEN DATEDIFF(CURDATE(), data_validade) > 7 THEN 'Vencido há mais de 7 dias'
+                ELSE 'Recentemente vencido'
+            END as status
+        FROM produtos
+        ${whereClause}
+        ORDER BY data_validade ASC, dias_vencido DESC
+    `;
+
+    db.query(query, queryParams, (err, results) => {
+        if (err) {
+            console.error('Erro ao gerar PDF de vencidos:', err);
+            return res.status(500).json({ 
+                success: false, 
+                error: 'Erro ao gerar PDF' 
+            });
+        }
+
+        // Aqui você implementaria a geração do PDF
+        // Por enquanto, retornamos JSON para o frontend processar
+        res.json({
+            success: true,
+            data: results,
+            filename: `relatorio_vencidos_${new Date().toISOString().split('T')[0]}.pdf`,
+            total: results.length,
+            filters: {
+                startDate,
+                endDate,
+                supplier,
+                category
+            }
+        });
+    });
+});
+
+// API PARA REAGENTES QUE VENCERÃO EM BREVE (ALERTA)
+router.get('/api/relatorios/reagentes-proximo-vencimento', requireAuth, (req, res) => {
+    const days = parseInt(req.query.days) || 30;
+    
+    const query = `
+        SELECT 
+            nome,
+            tipo,
+            fornecedor,
+            data_validade,
+            quantidade,
+            unidade_medida,
+            DATEDIFF(data_validade, CURDATE()) as dias_para_vencer
+        FROM produtos 
+        WHERE data_validade IS NOT NULL 
+        AND data_validade >= CURDATE()
+        AND data_validade <= DATE_ADD(CURDATE(), INTERVAL ? DAY)
+        AND quantidade > 0
+        ORDER BY data_validade ASC
+        LIMIT 20
+    `;
+
+    db.query(query, [days], (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar reagentes próximos do vencimento:', err);
+            return res.json([]);
+        }
+
+        res.json(results);
+    });
+});
+
+// API PARA ATUALIZAR DATA DE VALIDADE
+router.put('/api/produtos/:id/data-validade', requireAuth, (req, res) => {
+    const productId = req.params.id;
+    const { data_validade } = req.body;
+
+    const query = 'UPDATE produtos SET data_validade = ? WHERE id_produto = ?';
+    
+    db.query(query, [data_validade, productId], (err, result) => {
+        if (err) {
+            console.error('Erro ao atualizar data de validade:', err);
+            return res.status(500).json({
+                success: false,
+                message: 'Erro ao atualizar data de validade'
+            });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Produto não encontrado'
+            });
+        }
+
+        res.json({
+            success: true,
+            message: 'Data de validade atualizada com sucesso'
         });
     });
 });

@@ -607,6 +607,97 @@
             font-size: 0.875rem;
             color: #6b7280;
         }
+
+        /* Estilos específicos para o gerador de relatórios de vencidos */
+        .filter-panel {
+            background-color: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1.5rem;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .filter-select, .filter-input {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            min-width: 180px;
+        }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+
+        .btn-secondary {
+            background-color: #f3f4f6;
+            color: #4b5563;
+            border: 1px solid #d1d5db;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e5e7eb;
+        }
+
+        .btn-success {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #059669;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body class="flex">
@@ -680,6 +771,97 @@
                 </div>
             </div>
             
+            <!-- GERADOR DE RELATÓRIOS DE REAGENTES VENCIDOS -->
+            <div class="card mt-6">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-exclamation-triangle text-red-500"></i>
+                        Gerador de Relatórios - Reagentes Vencidos
+                    </h2>
+                    <div class="flex gap-2">
+                        <button class="view-all-btn" id="generate-pdf">
+                            <i class="fas fa-file-pdf"></i> Gerar PDF
+                        </button>
+                       
+                    </div>
+                </div>
+                
+                <!-- Filtros do Relatório de Vencidos -->
+                <div class="filter-panel">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Filtrar Relatório de Vencidos</h3>
+                    <div class="filter-group">
+                        <div class="filter-item">
+                            <label class="filter-label">Data Inicial Vencimento</label>
+                            <input type="date" class="filter-input" id="vencimento-start-date">
+                        </div>
+                        
+                        <div class="filter-item">
+                            <label class="filter-label">Data Final Vencimento</label>
+                            <input type="date" class="filter-input" id="vencimento-end-date">
+                        </div>
+                        
+                        <div class="filter-item">
+                            <label class="filter-label">Fornecedor</label>
+                            <select class="filter-select" id="vencimento-supplier-filter">
+                                <option value="">Todos os fornecedores</option>
+                                <option value="Sigma-Aldrich">Sigma-Aldrich</option>
+                                <option value="Merck">Merck</option>
+                                <option value="Vetec">Vetec</option>
+                                <option value="Synth">Synth</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-item">
+                            <label class="filter-label">Categoria</label>
+                            <select class="filter-select" id="vencimento-category-filter">
+                                <option value="">Todas as categorias</option>
+                                <option value="Ácidos">Ácidos</option>
+                                <option value="Bases">Bases</option>
+                                <option value="Sais">Sais</option>
+                                <option value="Solventes">Solventes</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-2 mt-4">
+                        <button class="action-btn btn-primary" id="apply-vencimento-filters">
+                            <i class="fas fa-filter"></i> Aplicar Filtros
+                        </button>
+                        <button class="action-btn btn-secondary" id="clear-vencimento-filters">
+                            <i class="fas fa-times"></i> Limpar Filtros
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead>
+                                <tr class="border-b">
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reagente</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoria</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fornecedor</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data de Aquisição</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data de Vencimento</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantidade</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="expired-reagents-table">
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <span class="stats-info">
+                        <i class="fas fa-info-circle"></i>
+                        Mostrando <span id="showing-count">0</span> de <span id="total-count">0</span> reagentes vencidos
+                    </span>
+                </div>
+            </div>
+            <!-- FIM DO GERADOR DE RELATÓRIOS DE VENCIDOS -->
+            
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <!-- Gráfico de Movimentação -->
                 <div class="card">
@@ -717,8 +899,6 @@
                     </div>
                 </div>
             </div>
-            
-            
             
             <!-- Tabela de Itens com Baixo Estoque (LIMITADA A 5) -->
             <div class="card mt-6">
@@ -875,20 +1055,346 @@
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Incluindo jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <script>
-       // Variáveis globais para os gráficos
+    // Inicializar jsPDF
+const { jsPDF } = window.jspdf;
+
+// Variáveis globais para os gráficos
 let movementChart = null;
 let categoryChart = null;
+let currentExpiredReagentsData = [];
+
+// Função para formatar data
+function formatDate(dateString) {
+    if (!dateString) return 'N/A';
+    try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('pt-BR');
+    } catch (error) {
+        return 'Data inválida';
+    }
+}
+
+// Função para escapar HTML (prevenção XSS)
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Função para mostrar notificações
+function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `alert alert-${type === 'success' ? 'success' : 'danger'} mb-3`;
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 300px;
+        animation: slideIn 0.3s ease;
+    `;
+    toast.innerHTML = `
+        <div class="d-flex align-items-center">
+            <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'} me-2"></i>
+            <span>${message}</span>
+            <button type="button" class="btn-close ms-auto" onclick="this.parentElement.parentElement.remove()"></button>
+        </div>
+    `;
+    
+    document.querySelector('.toast-container').appendChild(toast);
+    
+    // Remover automaticamente após 5 segundos
+    setTimeout(() => {
+        if (toast.parentElement) {
+            toast.remove();
+        }
+    }, 5000);
+}
+
+// =============================================
+// GERADOR DE RELATÓRIOS DE REAGENTES VENCIDOS
+// =============================================
+
+// Função para carregar reagentes vencidos
+async function loadExpiredReagents(page = 1) {
+    const filters = getFilters();
+    const expiredReagentsTable = document.getElementById('expired-reagents-table');
+    
+    const queryParams = new URLSearchParams({
+        page: page,
+        limit: 15,
+        ...filters
+    });
+
+    // Mostrar loading
+    if (expiredReagentsTable) {
+        expiredReagentsTable.innerHTML = `
+            <tr>
+                <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                    <div class="loading mx-auto" style="width: 30px; height: 30px;"></div>
+                    <div class="mt-3 text-sm">Carregando reagentes vencidos...</div>
+                </td>
+            </tr>
+        `;
+    }
+
+    try {
+        const response = await fetch(`/api/relatorios/reagentes-vencidos?${queryParams}`);
+        
+        if (!response.ok) {
+            throw new Error('Erro na resposta da API');
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            currentExpiredReagentsData = data.data;
+            renderExpiredReagents(data.data);
+            updateExpiredCounts(data.data.length, data.total);
+        } else {
+            throw new Error(data.error || 'Erro desconhecido');
+        }
+    } catch (error) {
+        console.error('Erro ao carregar reagentes vencidos:', error);
+        showToast('Erro ao carregar reagentes vencidos', 'danger');
+        
+        if (expiredReagentsTable) {
+            expiredReagentsTable.innerHTML = `
+                <tr>
+                    <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                        <i class="fas fa-exclamation-triangle text-red-500 text-2xl mb-3"></i>
+                        <div>Erro ao carregar dados</div>
+                        <div class="text-sm mt-1">Tente recarregar a página</div>
+                    </td>
+                </tr>
+            `;
+        }
+    }
+}
+
+// Função para renderizar tabela de reagentes vencidos
+function renderExpiredReagents(reagents) {
+    const expiredReagentsTable = document.getElementById('expired-reagents-table');
+    if (!expiredReagentsTable) return;
+    
+    if (reagents.length === 0) {
+        expiredReagentsTable.innerHTML = `
+            <tr>
+                <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                    <i class="fas fa-check-circle text-green-500 text-2xl mb-3"></i>
+                    <div>Nenhum reagente vencido encontrado</div>
+                    <div class="text-sm mt-1">Tente ajustar os filtros</div>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    expiredReagentsTable.innerHTML = reagents.map(reagent => `
+        <tr class="border-b hover:bg-gray-50 transition-colors duration-200">
+            <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm font-medium text-gray-900">${escapeHtml(reagent.nome || 'N/A')}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-500">${escapeHtml(reagent.tipo || 'N/A')}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-500">${escapeHtml(reagent.fornecedor || 'N/A')}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-500">${formatDate(reagent.data_aquisicao)}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm font-medium text-red-600">${formatDate(reagent.data_validade)}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-500">${reagent.quantidade || 0} ${reagent.unidade_medida || ''}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                    ${reagent.dias_vencido > 30 ? 'bg-red-100 text-red-800' : 
+                      reagent.dias_vencido > 7 ? 'bg-orange-100 text-orange-800' : 
+                      'bg-yellow-100 text-yellow-800'}">
+                    ${escapeHtml(reagent.status || 'Vencido')}
+                </span>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// Função para obter filtros
+function getFilters() {
+    return {
+        startDate: document.getElementById('vencimento-start-date')?.value || '',
+        endDate: document.getElementById('vencimento-end-date')?.value || '',
+        supplier: document.getElementById('vencimento-supplier-filter')?.value || '',
+        category: document.getElementById('vencimento-category-filter')?.value || ''
+    };
+}
+
+// Função para atualizar contadores
+function updateExpiredCounts(showing, total) {
+    const showingCount = document.getElementById('showing-count');
+    const totalCount = document.getElementById('total-count');
+    
+    if (showingCount) showingCount.textContent = showing;
+    if (totalCount) totalCount.textContent = total;
+}
+
+// Função para gerar PDF de reagentes vencidos
+async function generateExpiredPDF() {
+    if (currentExpiredReagentsData.length === 0) {
+        showToast('Não há reagentes vencidos para gerar o relatório PDF.', 'warning');
+        return;
+    }
+
+    const generatePdfBtn = document.getElementById('generate-pdf');
+    const originalText = generatePdfBtn.innerHTML;
+    
+    // Mostrar loading
+    generatePdfBtn.innerHTML = '<div class="loading"></div> Gerando PDF...';
+    generatePdfBtn.disabled = true;
+
+    try {
+        const filters = getFilters();
+        const queryParams = new URLSearchParams(filters);
+        
+        const response = await fetch(`/api/relatorios/gerar-pdf-vencidos?${queryParams}`);
+        const data = await response.json();
+        
+        if (data.success) {
+            // Criar PDF localmente como fallback
+            const doc = new jsPDF();
+            
+            // Cabeçalho
+            doc.setFontSize(20);
+            doc.setTextColor(40, 40, 40);
+            doc.text('RELATÓRIO DE REAGENTES VENCIDOS', 105, 20, { align: 'center' });
+
+            // Informações
+            doc.setFontSize(10);
+            doc.setTextColor(100, 100, 100);
+            doc.text(`Data de geração: ${new Date().toLocaleDateString('pt-BR')}`, 14, 35);
+            doc.text(`Total de reagentes vencidos: ${currentExpiredReagentsData.length}`, 14, 42);
+
+            // Preparar dados da tabela
+            const tableData = currentExpiredReagentsData.map(reagent => [
+                reagent.nome || 'N/A',
+                reagent.tipo || 'N/A',
+                reagent.fornecedor || 'N/A',
+                formatDate(reagent.data_aquisicao),
+                formatDate(reagent.data_validade),
+                `${reagent.quantidade || 0} ${reagent.unidade_medida || ''}`,
+                reagent.status || 'Vencido'
+            ]);
+
+            // Adicionar tabela
+            doc.autoTable({
+                startY: 55,
+                head: [['Reagente', 'Categoria', 'Fornecedor', 'Aquisição', 'Vencimento', 'Quantidade', 'Status']],
+                body: tableData,
+                theme: 'grid',
+                styles: { fontSize: 8 },
+                headStyles: { fillColor: [220, 53, 69] },
+                columnStyles: {
+                    0: { cellWidth: 35 },
+                    1: { cellWidth: 25 },
+                    2: { cellWidth: 25 },
+                    3: { cellWidth: 20 },
+                    4: { cellWidth: 20 },
+                    5: { cellWidth: 20 },
+                    6: { cellWidth: 25 }
+                }
+            });
+
+            // Salvar PDF
+            doc.save(`relatorio_reagentes_vencidos_${new Date().toISOString().split('T')[0]}.pdf`);
+            showToast('PDF gerado com sucesso!', 'success');
+            
+        } else {
+            throw new Error(data.error || 'Erro ao gerar PDF');
+        }
+    } catch (error) {
+        console.error('Erro ao gerar PDF:', error);
+        showToast('Erro ao gerar PDF. Tente novamente.', 'danger');
+    } finally {
+        // Restaurar botão
+        generatePdfBtn.innerHTML = originalText;
+        generatePdfBtn.disabled = false;
+    }
+}
+
+// Função para exportar Excel
+async function exportExpiredExcel() {
+    if (currentExpiredReagentsData.length === 0) {
+        showToast('Não há reagentes vencidos para exportar.', 'warning');
+        return;
+    }
+
+    try {
+        const filters = getFilters();
+        const queryParams = new URLSearchParams(filters);
+        
+        const response = await fetch(`/api/relatorios/exportar-vencidos-excel?${queryParams}`);
+        const data = await response.json();
+        
+        if (data.success) {
+            // Criar CSV como fallback
+            const headers = ['Reagente', 'Categoria', 'Fornecedor', 'Data de Aquisição', 'Data de Vencimento', 'Quantidade', 'Status', 'Dias Vencido'];
+            const csvContent = [
+                headers.join(','),
+                ...currentExpiredReagentsData.map(reagent => [
+                    `"${reagent.nome || ''}"`,
+                    `"${reagent.tipo || ''}"`,
+                    `"${reagent.fornecedor || ''}"`,
+                    `"${formatDate(reagent.data_aquisicao)}"`,
+                    `"${formatDate(reagent.data_validade)}"`,
+                    `"${reagent.quantidade || 0} ${reagent.unidade_medida || ''}"`,
+                    `"${reagent.status || 'Vencido'}"`,
+                    `"${reagent.dias_vencido || 0}"`
+                ].join(','))
+            ].join('\n');
+
+            // Baixar arquivo
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `reagentes_vencidos_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showToast('Arquivo exportado com sucesso!', 'success');
+        } else {
+            throw new Error(data.error || 'Erro ao exportar');
+        }
+    } catch (error) {
+        console.error('Erro ao exportar Excel:', error);
+        showToast('Erro ao exportar arquivo. Tente novamente.', 'danger');
+    }
+}
+
+// =============================================
+// GRÁFICOS E ESTATÍSTICAS
+// =============================================
 
 // Função para carregar dados dos gráficos
 async function loadChartData() {
     try {
-        // Carregar dados de movimentação
-        const movementResponse = await fetch('/api/relatorios/movimentacao-mensal');
-        const movementData = await movementResponse.json();
+        const [movementResponse, categoryResponse] = await Promise.all([
+            fetch('/api/relatorios/movimentacao-mensal'),
+            fetch('/api/relatorios/distribuicao-categorias')
+        ]);
 
-        // Carregar dados de categorias
-        const categoryResponse = await fetch('/api/relatorios/distribuicao-categorias');
+        const movementData = await movementResponse.json();
         const categoryData = await categoryResponse.json();
 
         return {
@@ -917,127 +1423,97 @@ async function initCharts() {
     const chartData = await loadChartData();
 
     // Destruir gráficos existentes
-    if (movementChart) {
-        movementChart.destroy();
-    }
-    if (categoryChart) {
-        categoryChart.destroy();
-    }
+    if (movementChart) movementChart.destroy();
+    if (categoryChart) categoryChart.destroy();
 
     // Gráfico de Movimentação
-    const movementCtx = document.getElementById('movementChart').getContext('2d');
-    movementChart = new Chart(movementCtx, {
-        type: 'line',
-        data: {
-            labels: chartData.movementData.labels,
-            datasets: [
-                {
-                    label: 'Entradas',
-                    data: chartData.movementData.inputs,
-                    borderColor: '#10B981',
-                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                    tension: 0.3,
-                    fill: true,
-                    borderWidth: 2
-                },
-                {
-                    label: 'Saídas',
-                    data: chartData.movementData.outputs,
-                    borderColor: '#EF4444',
-                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                    tension: 0.3,
-                    fill: true,
-                    borderWidth: 2
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
-                title: {
-                    display: true,
-                    text: 'Movimentação Mensal - ' + new Date().getFullYear()
-                }
+    const movementCtx = document.getElementById('movementChart')?.getContext('2d');
+    if (movementCtx) {
+        movementChart = new Chart(movementCtx, {
+            type: 'line',
+            data: {
+                labels: chartData.movementData.labels,
+                datasets: [
+                    {
+                        label: 'Entradas',
+                        data: chartData.movementData.inputs,
+                        borderColor: '#10B981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.3,
+                        fill: true,
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'Saídas',
+                        data: chartData.movementData.outputs,
+                        borderColor: '#EF4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        tension: 0.3,
+                        fill: true,
+                        borderWidth: 2
+                    }
+                ]
             },
-            scales: {
-                y: {
-                    beginAtZero: true,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
                     title: {
                         display: true,
-                        text: 'Quantidade de Movimentações'
+                        text: 'Movimentação Mensal - ' + new Date().getFullYear()
                     }
                 },
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Meses'
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Quantidade de Movimentações'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Meses'
+                        }
                     }
                 }
             }
-        }
-    });
-    
-    // Gráfico de Categorias
-    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
-    categoryChart = new Chart(categoryCtx, {
-        type: 'doughnut',
-        data: {
-            labels: chartData.categoryData.labels,
-            datasets: [{
-                data: chartData.categoryData.values,
-                backgroundColor: chartData.categoryData.colors,
-                borderWidth: 2,
-                borderColor: '#ffffff'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'right',
-                },
-                title: {
-                    display: true,
-                    text: 'Distribuição por Categoria'
-                }
-            }
-        }
-    });
-}
+        });
+    }
 
-// Função para exibir notificações
-function showToast(message, type = 'success') {
-    // Criar elemento de toast simples
-    const toast = document.createElement('div');
-    toast.className = `alert alert-${type === 'success' ? 'success' : 'danger'} mb-3`;
-    toast.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 9999;
-        min-width: 300px;
-    `;
-    toast.innerHTML = `
-        <div class="d-flex align-items-center">
-            <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'} me-2"></i>
-            <span>${message}</span>
-            <button type="button" class="btn-close ms-auto" onclick="this.parentElement.parentElement.remove()"></button>
-        </div>
-    `;
-    
-    document.querySelector('.toast-container').appendChild(toast);
-    
-    // Remover automaticamente após 5 segundos
-    setTimeout(() => {
-        if (toast.parentElement) {
-            toast.remove();
-        }
-    }, 5000);
+    // Gráfico de Categorias
+    const categoryCtx = document.getElementById('categoryChart')?.getContext('2d');
+    if (categoryCtx) {
+        categoryChart = new Chart(categoryCtx, {
+            type: 'doughnut',
+            data: {
+                labels: chartData.categoryData.labels,
+                datasets: [{
+                    data: chartData.categoryData.values,
+                    backgroundColor: chartData.categoryData.colors,
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Distribuição por Categoria'
+                    }
+                }
+            }
+        });
+    }
 }
 
 // Função para carregar estatísticas em tempo real
@@ -1046,9 +1522,7 @@ async function loadRealTimeStats() {
         const response = await fetch('/api/relatorios/stats');
         const data = await response.json();
         
-        console.log('📊 Dados recebidos da API:', data); // Debug
-        
-        // Atualizar os contadores apenas se os elementos existirem
+        // Atualizar os contadores
         const elementsToUpdate = {
             'total-reagents': data.totalReagents,
             'month-inputs': data.monthInputs,
@@ -1060,115 +1534,163 @@ async function loadRealTimeStats() {
             const element = document.getElementById(id);
             if (element) {
                 element.textContent = value;
-                console.log(`✅ Atualizado ${id}: ${value}`); // Debug
-            } else {
-                console.warn(`⚠️ Elemento não encontrado: ${id}`); // Debug
             }
         });
-        
-        // Atualizar a data da última atualização
-        const lastUpdateElement = document.getElementById('last-update');
-        if (lastUpdateElement) {
-            lastUpdateElement.textContent = `Atualizado em ${new Date().toLocaleString('pt-BR')}`;
-        }
         
     } catch (error) {
         console.error('Erro ao carregar estatísticas em tempo real:', error);
-        
-        // Opcional: Mostrar mensagem de erro para o usuário
-        const toastContainer = document.querySelector('.toast-container');
-        if (toastContainer) {
-            showToast('Erro ao carregar estatísticas em tempo real', 'danger');
-        }
     }
 }
 
-// Envio do formulário de filtros
-document.getElementById('report-filter-form').addEventListener('submit', async function(event) {
-    event.preventDefault();
-    
-    const formData = new FormData(this);
-    const data = Object.fromEntries(formData.entries());
-    
-    try {
-        showToast('Filtros aplicados com sucesso!');
-        
-        // Recarregar os gráficos com os filtros (implementar filtros depois)
-        await initCharts();
-    } catch (error) {
-        console.error('Erro ao aplicar filtros:', error);
-        showToast('Erro ao aplicar filtros. Tente novamente.', 'danger');
+// =============================================
+// MODAL DE ESTOQUE CRÍTICO
+// =============================================
+
+function openCriticalStockModal() {
+    const modal = document.getElementById('criticalStockModal');
+    if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
     }
-});
+}
 
+function closeCriticalStockModal() {
+    const modal = document.getElementById('criticalStockModal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+}
 
+// =============================================
+// EVENT LISTENERS E INICIALIZAÇÃO
+// =============================================
 
-// Botões de detalhes
-document.getElementById('view-movement-details').addEventListener('click', function() {
-    window.location.href = '/movimentacoes';
-});
+// Inicializar quando o DOM estiver carregado
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Inicializando página de relatórios...');
 
-document.getElementById('view-category-details').addEventListener('click', function() {
-    window.location.href = '/relatorios/categorias';
-});
+    // Event listeners para reagentes vencidos
+    const applyFiltersBtn = document.getElementById('apply-vencimento-filters');
+    const clearFiltersBtn = document.getElementById('clear-vencimento-filters');
+    const generatePdfBtn = document.getElementById('generate-pdf');
+    const exportExcelBtn = document.getElementById('export-excel');
 
+    if (applyFiltersBtn) {
+        applyFiltersBtn.addEventListener('click', () => loadExpiredReagents(1));
+    }
 
+    if (clearFiltersBtn) {
+        clearFiltersBtn.addEventListener('click', () => {
+            document.getElementById('vencimento-start-date').value = '';
+            document.getElementById('vencimento-end-date').value = '';
+            document.getElementById('vencimento-supplier-filter').value = '';
+            document.getElementById('vencimento-category-filter').value = '';
+            loadExpiredReagents(1);
+        });
+    }
 
-// Função para debug - verificar dados recebidos
-function debugStats() {
-    console.log('Dados das estatísticas:', {
-        totalReagents: <%= stats.totalReagents || 0 %>,
-        monthInputs: <%= stats.monthInputs || 0 %>,
-        monthOutputs: <%= stats.monthOutputs || 0 %>,
-        lowStock: <%= stats.lowStock || 0 %>
+    if (generatePdfBtn) {
+        generatePdfBtn.addEventListener('click', generateExpiredPDF);
+    }
+
+    if (exportExcelBtn) {
+        exportExcelBtn.addEventListener('click', exportExpiredExcel);
+    }
+
+    // Event listeners para gráficos
+    const viewMovementBtn = document.getElementById('view-movement-details');
+    const viewCategoryBtn = document.getElementById('view-category-details');
+
+    if (viewMovementBtn) {
+        viewMovementBtn.addEventListener('click', () => {
+            window.location.href = '/movimentacoes';
+        });
+    }
+
+    if (viewCategoryBtn) {
+        viewCategoryBtn.addEventListener('click', () => {
+            window.location.href = '/relatorios/categorias';
+        });
+    }
+
+    // Event listeners para modal
+    const viewAllLowStockBtn = document.getElementById('view-all-low-stock');
+    const viewAllSummaryBtn = document.getElementById('view-all-summary');
+    const closeModalBtn = document.getElementById('closeModal');
+    const closeModalBtn2 = document.getElementById('closeModalBtn');
+
+    if (viewAllLowStockBtn) viewAllLowStockBtn.addEventListener('click', openCriticalStockModal);
+    if (viewAllSummaryBtn) viewAllSummaryBtn.addEventListener('click', openCriticalStockModal);
+    if (closeModalBtn) closeModalBtn.addEventListener('click', closeCriticalStockModal);
+    if (closeModalBtn2) closeModalBtn2.addEventListener('click', closeCriticalStockModal);
+
+    // Fechar modal ao clicar fora
+    window.addEventListener('click', function(event) {
+        const modal = document.getElementById('criticalStockModal');
+        if (event.target === modal) {
+            closeCriticalStockModal();
+        }
     });
-}
 
-// Carregar dados iniciais quando a página carregar
-document.addEventListener('DOMContentLoaded', async function() {
-    debugStats();
-    await loadRealTimeStats();
-    await initCharts();
-    
-    // Atualizar a cada 30 segundos
+    // Fechar modal com ESC
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeCriticalStockModal();
+        }
+    });
+
+    // Formulário de filtros
+    const filterForm = document.getElementById('report-filter-form');
+    if (filterForm) {
+        filterForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            showToast('Filtros aplicados com sucesso!');
+            await initCharts();
+        });
+    }
+
+    // Carregar dados iniciais
+    loadExpiredReagents(1);
+    loadRealTimeStats();
+    initCharts();
+
+    // Atualizar estatísticas a cada 30 segundos
     setInterval(loadRealTimeStats, 30000);
+
+    console.log('✅ Página de relatórios inicializada com sucesso!');
 });
 
- // Funções para o modal de estoque crítico
- function openCriticalStockModal() {
-            const modal = document.getElementById('criticalStockModal');
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
+// Adicionar estilo CSS para animação
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
         }
-
-        function closeCriticalStockModal() {
-            const modal = document.getElementById('criticalStockModal');
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
+        to {
+            transform: translateX(0);
+            opacity: 1;
         }
-
-        // Event listeners para o modal
-        document.getElementById('view-all-low-stock').addEventListener('click', openCriticalStockModal);
-        document.getElementById('view-all-summary').addEventListener('click', openCriticalStockModal);
-        document.getElementById('closeModal').addEventListener('click', closeCriticalStockModal);
-        document.getElementById('closeModalBtn').addEventListener('click', closeCriticalStockModal);
-
-        // Fechar modal ao clicar fora dele
-        window.addEventListener('click', function(event) {
-            const modal = document.getElementById('criticalStockModal');
-            if (event.target === modal) {
-                closeCriticalStockModal();
-            }
-        });
-
-        // Fechar modal com tecla ESC
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                closeCriticalStockModal();
-            }
-        });
-
-      
+    }
+    
+    .loading {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+`;
+document.head.appendChild(style);
     </script>
 </body>
 </html>
