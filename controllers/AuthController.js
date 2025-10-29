@@ -198,15 +198,19 @@ class AuthController {
 
                         console.log('Login bem-sucedido para:', user.usuario);
                         
+                        // DADOS ATUALIZADOS - INCLUINDO FOTO DO PERFIL
                         req.session.user = {
                             id: user.id_usuario,
                             usuario: user.usuario,
                             nome: user.nome_completo,
                             email: user.email,
                             tipo: user.tipo,
-                            turma: user.turma
+                            turma: user.turma,
+                            foto_perfil: user.foto_perfil // ← LINHA ADICIONADA
                         };
 
+                        console.log('📸 Foto do perfil carregada na sessão:', user.foto_perfil);
+                        
                         res.redirect("/");
                     })
                     .catch(err => {

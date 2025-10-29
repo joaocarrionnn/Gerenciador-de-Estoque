@@ -4,7 +4,8 @@ class AuthModel {
     static verificarUsuario(username) {
         return new Promise((resolve, reject) => {
             console.log('🔍 Buscando usuário:', username);
-            const query = "SELECT * FROM usuarios WHERE (usuario = ? OR email = ?) AND status = 'aprovado'";
+            // ADICIONE foto_perfil NA QUERY
+            const query = "SELECT id_usuario, usuario, nome_completo, email, senha, tipo, turma, foto_perfil, status FROM usuarios WHERE (usuario = ? OR email = ?) AND status = 'aprovado'";
             
             db.query(query, [username, username], (err, results) => {
                 if (err) {
@@ -13,6 +14,9 @@ class AuthModel {
                     return reject(err);
                 }
                 console.log('📋 Resultados encontrados:', results.length);
+                if (results.length > 0) {
+                    console.log('📸 Foto do perfil encontrada:', results[0].foto_perfil);
+                }
                 resolve(results.length > 0 ? results[0] : null);
             });
         });

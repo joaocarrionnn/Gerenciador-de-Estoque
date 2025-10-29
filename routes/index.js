@@ -619,6 +619,51 @@ router.post('/api/produtos/:id/pdfs/upload', requireAuth, uploadProductWithPDFs,
     });
 });
 
+
+// ROTA PARA VISUALIZAR PDF (CORRIGIDA)
+router.get('/produtos/pdfs/visualizar/:pdfId', requireAuth, (req, res) => {
+    const pdfId = req.params.pdfId;
+    
+    const query = 'SELECT caminho_arquivo, nome_original FROM produto_pdfs WHERE id = ?';
+    
+    db.query(query, [pdfId], (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar PDF:', err);
+            return res.status(500).send('Erro ao buscar PDF');
+        }
+
+        if (results.length === 0) {
+            return res.status(404).send('PDF não encontrado');
+        }
+
+        const file = results[0];
+        const filePath = file.caminho_arquivo;
+        
+        console.log('📁 Tentando acessar arquivo:', filePath); // Debug
+        
+        // Verificar se o arquivo existe
+        const fs = require('fs');
+        if (!fs.existsSync(filePath)) {
+            console.error('❌ Arquivo não existe:', filePath);
+            return res.status(404).send('Arquivo PDF não encontrado no servidor');
+        }
+
+        // Configurar headers para visualização no navegador
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `inline; filename="${file.nome_original}"`);
+        
+        // Enviar o arquivo - SEM root: '.' pois o caminho já é absoluto
+        res.sendFile(filePath, (err) => {
+            if (err) {
+                console.error('❌ Erro ao enviar PDF:', err);
+                res.status(500).send('Erro ao carregar PDF');
+            } else {
+                console.log('✅ PDF enviado com sucesso:', file.nome_original);
+            }
+        });
+    });
+});
+
 // Rota para deletar produto (versão simplificada)
 router.post('/produtos/deletar/:id', (req, res) => {
     const productId = req.params.id;
@@ -742,6 +787,283 @@ router.get('/produtos/editar/:id', (req, res) => {
         });
     });
 });
+
+
+// API PARA VERIFICAR PRODUTOS VENCIDOS
+router.get('/api/produtos/vencidos', requireAuth, (req, res) => {
+    const query = `
+        SELECT 
+            id_produto,
+            nome,
+            tipo,
+            quantidade,
+            unidade_medida,
+            data_validade,
+            data_validade_nova,
+            produto_renovado,
+            localizacao,
+            fornecedor,
+            DATEDIFF(CURDATE(), data_validade) as dias_vencido
+        FROM produtos 
+        WHERE data_validade IS NOT NULL 
+        AND data_validade < CURDATE()
+        AND quantidade > 0
+        AND (produto_renovado = 0 OR data_validade_nova IS NULL OR data_validade_nova < CURDATE())
+        ORDER BY data_validade ASC
+    `;
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar produtos vencidos:', err);
+            return res.status(500).json({ error: 'Erro ao buscar produtos vencidos' });
+        }
+        res.json(results);
+    });
+});
+
+// API PARA RENOVAR PRODUTO VENCIDO
+router.post('/api/produtos/:id/renovar', requireAuth, (req, res) => {
+    const productId = req.params.id;
+    const { 
+        nova_data_validade, 
+        nova_quantidade, 
+        observacoes,
+        criar_novo_produto = false 
+    } = req.body;
+
+    const usuario = req.session.user.nome || req.session.user.usuario;
+
+    if (!nova_data_validade) {
+        return res.status(400).json({
+            success: false,
+            message: 'Nova data de validade é obrigatória'
+        });
+    }
+
+    // Função para executar queries com Promise
+    const query = (sql, params = []) => {
+        return new Promise((resolve, reject) => {
+            db.query(sql, params, (err, results) => {
+                if (err) reject(err);
+                else resolve(results);
+            });
+        });
+    };
+
+    (async () => {
+        try {
+            await db.query('START TRANSACTION');
+
+            // 1. Buscar dados do produto original
+            const produto = await query(
+                'SELECT * FROM produtos WHERE id_produto = ?',
+                [productId]
+            );
+
+            if (produto.length === 0) {
+                await db.query('ROLLBACK');
+                return res.status(404).json({
+                    success: false,
+                    message: 'Produto não encontrado'
+                });
+            }
+
+            const produtoData = produto[0];
+
+            if (criar_novo_produto) {
+                // 2a. Criar um novo produto com os dados atualizados
+                const novoProdutoQuery = `
+                    INSERT INTO produtos 
+                    (nome, tipo, descricao, grau_periculosidade, orgao_regulador, 
+                     instrucoes_seguranca, quantidade, estoque_minimo, unidade_medida, 
+                     localizacao, disponivel, fornecedor, data_aquisicao, data_validade, 
+                     observacoes, produto_renovado, id_produto_original)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURDATE(), ?, ?, 1, ?)
+                `;
+
+                const valoresNovoProduto = [
+                    produtoData.nome,
+                    produtoData.tipo,
+                    produtoData.descricao,
+                    produtoData.grau_periculosidade,
+                    produtoData.orgao_regulador,
+                    produtoData.instrucoes_seguranca,
+                    nova_quantidade || produtoData.quantidade,
+                    produtoData.estoque_minimo,
+                    produtoData.unidade_medida,
+                    produtoData.localizacao,
+                    1,
+                    produtoData.fornecedor,
+                    nova_data_validade,
+                    observacoes || `Produto renovado de ${produtoData.id_produto}`,
+                    productId
+                ];
+
+                const resultadoNovo = await query(novoProdutoQuery, valoresNovoProduto);
+                const novoProdutoId = resultadoNovo.insertId;
+
+                // 3. Registrar no histórico
+                await query(
+                    `INSERT INTO historico_renovacoes 
+                    (id_produto_original, id_produto_novo, quantidade_anterior, quantidade_nova, usuario_renovacao, observacoes)
+                    VALUES (?, ?, ?, ?, ?, ?)`,
+                    [
+                        productId,
+                        novoProdutoId,
+                        produtoData.quantidade,
+                        nova_quantidade || produtoData.quantidade,
+                        usuario,
+                        observacoes || 'Renovação com novo produto'
+                    ]
+                );
+
+                // 4. Atualizar produto original para indicar que foi renovado
+                await query(
+                    'UPDATE produtos SET produto_renovado = 1, data_validade_nova = ? WHERE id_produto = ?',
+                    [nova_data_validade, productId]
+                );
+
+                await db.query('COMMIT');
+
+                res.json({
+                    success: true,
+                    message: 'Produto renovado com sucesso! Novo produto criado.',
+                    data: {
+                        produto_original: productId,
+                        novo_produto: novoProdutoId,
+                        data_validade_nova: nova_data_validade
+                    }
+                });
+
+            } else {
+                // 2b. Atualizar o produto existente com nova data de validade
+                await query(
+                    'UPDATE produtos SET data_validade = ?, data_validade_nova = ?, produto_renovado = 1 WHERE id_produto = ?',
+                    [nova_data_validade, nova_data_validade, productId]
+                );
+
+                // 3. Registrar no histórico
+                await query(
+                    `INSERT INTO historico_renovacoes 
+                    (id_produto_original, id_produto_novo, quantidade_anterior, quantidade_nova, usuario_renovacao, observacoes)
+                    VALUES (?, ?, ?, ?, ?, ?)`,
+                    [
+                        productId,
+                        productId,
+                        produtoData.quantidade,
+                        nova_quantidade || produtoData.quantidade,
+                        usuario,
+                        observacoes || 'Renovação do produto existente'
+                    ]
+                );
+
+                await db.query('COMMIT');
+
+                res.json({
+                    success: true,
+                    message: 'Data de validade atualizada com sucesso!',
+                    data: {
+                        produto_id: productId,
+                        data_validade_nova: nova_data_validade
+                    }
+                });
+            }
+
+        } catch (error) {
+            await db.query('ROLLBACK');
+            console.error('Erro ao renovar produto:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Erro interno do servidor: ' + error.message
+            });
+        }
+    })();
+});
+
+// API PARA OBTER HISTÓRICO DE RENOVAÇÕES
+router.get('/api/produtos/:id/historico-renovacoes', requireAuth, (req, res) => {
+    const productId = req.params.id;
+    
+    const query = `
+        SELECT 
+            hr.*,
+            p_original.nome as nome_original,
+            p_novo.nome as nome_novo,
+            hr.data_renovacao
+        FROM historico_renovacoes hr
+        LEFT JOIN produtos p_original ON hr.id_produto_original = p_original.id_produto
+        LEFT JOIN produtos p_novo ON hr.id_produto_novo = p_novo.id_produto
+        WHERE hr.id_produto_original = ? OR hr.id_produto_novo = ?
+        ORDER BY hr.data_renovacao DESC
+    `;
+
+    db.query(query, [productId, productId], (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar histórico de renovações:', err);
+            return res.status(500).json({ error: 'Erro ao buscar histórico' });
+        }
+        res.json(results);
+    });
+});
+
+// MIDDLEWARE PARA VERIFICAR VALIDADE AO REGISTRAR ENTRADA
+/*
+const verificarValidadeProduto = (req, res, next) => {
+    const { reagent, expirationDate } = req.body;
+    
+    if (expirationDate) {
+        const hoje = new Date();
+        const dataValidade = new Date(expirationDate);
+        
+        if (dataValidade < hoje) {
+            return res.json({
+                success: false,
+                message: '⚠️ Atenção: A data de validade informada já está vencida. Considere renovar o produto.',
+                data_vencida: true
+            });
+        }
+    }
+    
+    next();
+};
+*/
+
+
+
+
+// API PARA ESTATÍSTICAS DE VALIDADE
+router.get('/api/produtos/estatisticas-validade', requireAuth, (req, res) => {
+    const query = `
+        SELECT 
+            COUNT(*) as total_produtos,
+            COUNT(CASE WHEN data_validade IS NOT NULL THEN 1 END) as com_validade,
+            COUNT(CASE WHEN data_validade IS NULL THEN 1 END) as sem_validade,
+            COUNT(CASE WHEN data_validade < CURDATE() AND quantidade > 0 THEN 1 END) as vencidos,
+            COUNT(CASE WHEN data_validade BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY) THEN 1 END) as vencem_30_dias,
+            COUNT(CASE WHEN data_validade BETWEEN DATE_ADD(CURDATE(), INTERVAL 31 DAY) AND DATE_ADD(CURDATE(), INTERVAL 90 DAY) THEN 1 END) as vencem_90_dias
+        FROM produtos
+        WHERE quantidade > 0
+    `;
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar estatísticas de validade:', err);
+            return res.status(500).json({ error: 'Erro ao buscar estatísticas' });
+        }
+        res.json(results[0]);
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
  // ------------------//
 // API para buscar opções existentes
 router.get('/api/opcoes/:campo', requireAuth, (req, res) => {
@@ -1220,14 +1542,21 @@ router.get('/entrada-reagentes', requireAuth, (req, res) => {
     });
 });
 
-// API PARA REGISTRAR ENTRADA DE REAGENTE
-router.post('/api/input', requireAuth, (req, res) => {
-    const { reagent, quantity, responsible, supplier, purchaseDate, notes } = req.body;
+// API PARA REGISTRAR ENTRADA DE REAGENTE (VERSÃO FINAL CORRIGIDA)
+router.post('/api/input', requireAuth, uploadProductWithPDFs, (req, res) => {
+    console.log('=== INICIANDO REGISTRO DE ENTRADA ===');
+    console.log('Body recebido:', req.body);
+    console.log('Tipo do reagent:', typeof req.body.reagent);
+    console.log('Valor do reagent:', req.body.reagent);
     
-    console.log('📥 Registrando entrada:', { reagent, quantity, responsible, supplier });
+    // Extrair dados do body - AGORA DEPOIS do middleware de upload
+    const { reagent, quantity, responsible, supplier, purchaseDate, expirationDate, notes } = req.body;
+    
+    console.log('📥 Dados processados:', { reagent, quantity, responsible, supplier, expirationDate });
 
-    // Validações
+    // Validações básicas
     if (!reagent || !quantity || !responsible) {
+        console.log('❌ Dados obrigatórios faltando');
         return res.json({
             success: false,
             message: '❌ Reagente, quantidade e responsável são obrigatórios'
@@ -1236,72 +1565,161 @@ router.post('/api/input', requireAuth, (req, res) => {
 
     const quantidadeEntrada = parseFloat(quantity);
     if (isNaN(quantidadeEntrada) || quantidadeEntrada <= 0) {
+        console.log('❌ Quantidade inválida:', quantity);
         return res.json({
             success: false,
             message: '❌ Quantidade deve ser um número positivo'
         });
     }
 
+    // VERIFICAÇÃO DE DATA DE VALIDADE - AGORA DENTRO DA ROTA
+    if (expirationDate) {
+        const hoje = new Date();
+        const dataValidade = new Date(expirationDate);
+        
+        if (dataValidade < hoje) {
+            console.log('⚠️ Data de validade vencida:', expirationDate);
+            return res.json({
+                success: false,
+                message: '⚠️ Atenção: A data de validade informada já está vencida. Considere renovar o produto.',
+                data_vencida: true
+            });
+        }
+    }
+
     // Função para executar queries com Promise
     const query = (sql, params = []) => {
         return new Promise((resolve, reject) => {
             db.query(sql, params, (err, results) => {
-                if (err) reject(err);
-                else resolve(results);
+                if (err) {
+                    console.error('❌ Erro na query:', err);
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
             });
         });
     };
 
     // Executar o processo
     (async () => {
+        let connection;
         try {
+            console.log('🔄 Iniciando processo de entrada...');
+
             // 1. Buscar produto
-            const produtoResults = await query(
-                'SELECT id_produto, nome, quantidade, unidade_medida FROM produtos WHERE id_produto = ?',
-                [reagent]
-            );
+            // Verificar se é um ID numérico ou um nome
+            let produtoResults;
+            if (!isNaN(reagent)) {
+                // Se é um número, busca por ID
+                console.log('🔍 Buscando por ID:', reagent);
+                produtoResults = await query(
+                    'SELECT id_produto, nome, quantidade, unidade_medida FROM produtos WHERE id_produto = ?',
+                    [reagent]
+                );
+            } else {
+                // Se não é número, busca por nome
+                console.log('🔍 Buscando por nome:', reagent);
+                produtoResults = await query(
+                    'SELECT id_produto, nome, quantidade, unidade_medida FROM produtos WHERE nome = ?',
+                    [reagent]
+                );
+            }
 
             if (produtoResults.length === 0) {
+                console.log('❌ Produto não encontrado:', reagent);
                 return res.json({
                     success: false,
-                    message: '❌ Produto não encontrado'
+                    message: `❌ Produto "${reagent}" não encontrado no banco de dados`
                 });
             }
 
             const produto = produtoResults[0];
-            const quantidadeAtual = parseFloat(produto.quantidade);
-            const novaQuantidade = quantidadeAtual + quantidadeEntrada;
+            console.log('✅ Produto encontrado:', produto);
 
-            // 2. Atualizar estoque
-            await query(
-                'UPDATE produtos SET quantidade = ?, data_atualizacao = CURRENT_TIMESTAMP WHERE id_produto = ?',
-                [novaQuantidade, reagent]
-            );
+            // 2. Calcular nova quantidade do estoque
+            const estoqueAtual = parseFloat(produto.quantidade) || 0;
+            const novaQuantidade = estoqueAtual + quantidadeEntrada;
+            
+            console.log(`📊 Estoque atual: ${estoqueAtual}, Entrada: ${quantidadeEntrada}, Novo estoque: ${novaQuantidade}`);
 
-            console.log('✅ Estoque atualizado com sucesso');
+            // 3. Atualizar estoque E data de validade se fornecida
+            let updateQuery = 'UPDATE produtos SET quantidade = ?, data_atualizacao = CURRENT_TIMESTAMP';
+            let updateParams = [novaQuantidade];
+            
+            if (expirationDate) {
+                updateQuery += ', data_validade = ?';
+                updateParams.push(expirationDate);
+                console.log('📅 Atualizando data de validade:', expirationDate);
+            }
+            
+            updateQuery += ' WHERE id_produto = ?';
+            updateParams.push(produto.id_produto);
+            
+            console.log('🔄 Executando query:', updateQuery);
+            console.log('📋 Parâmetros:', updateParams);
+            
+            const updateResult = await query(updateQuery, updateParams);
+            console.log('✅ Estoque atualizado. Linhas afetadas:', updateResult.affectedRows);
 
-            // 3. Tentar registrar movimentação de entrada
+            // 4. Registrar movimentação de entrada
             try {
+                const observacoesMovimentacao = 
+                    `Entrada registrada por ${responsible}. ` +
+                    (purchaseDate ? `Data de compra: ${purchaseDate}. ` : '') +
+                    (expirationDate ? `Validade: ${expirationDate}. ` : '') +
+                    (notes ? `Obs: ${notes}` : '');
+
                 await query(
                     `INSERT INTO movimentacoes 
                     (id_produto, tipo, quantidade, unidade_medida, responsavel, projeto_experimento, observacoes)
                     VALUES (?, 'entrada', ?, ?, ?, ?, ?)`,
                     [
-                        reagent,
+                        produto.id_produto,
                         quantidadeEntrada,
                         produto.unidade_medida,
                         responsible,
                         supplier ? `Fornecedor: ${supplier}` : null,
-                        notes || `Entrada registrada por ${responsible}. ${purchaseDate ? `Data de compra: ${purchaseDate}` : ''}`
+                        observacoesMovimentacao
                     ]
                 );
-                console.log('✅ Movimentação de entrada registrada com sucesso');
+                console.log('✅ Movimentação registrada com sucesso');
             } catch (movimentacaoError) {
                 console.log('ℹ️ Tabela movimentacoes não existe ou erro ao inserir:', movimentacaoError.message);
                 // Continua mesmo sem a tabela de movimentações
             }
 
-            console.log('✅ Entrada registrada com sucesso para o produto:', produto.nome);
+            // 5. Processar PDFs se houver
+            if (req.files && req.files.length > 0) {
+                console.log(`📄 Processando ${req.files.length} PDF(s)`);
+                
+                const pdfInsertQuery = `
+                    INSERT INTO produto_pdfs 
+                    (id_produto, nome_arquivo, nome_original, caminho_arquivo, tamanho_arquivo, usuario_upload)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                `;
+
+                const username = req.session.user ? req.session.user.nome || req.session.user.usuario : 'Sistema';
+                
+                for (let file of req.files) {
+                    try {
+                        await query(pdfInsertQuery, [
+                            produto.id_produto,
+                            file.filename,
+                            file.originalname,
+                            file.path,
+                            file.size,
+                            username
+                        ]);
+                        console.log(`✅ PDF salvo: ${file.originalname}`);
+                    } catch (pdfError) {
+                        console.error(`❌ Erro ao salvar PDF ${file.originalname}:`, pdfError);
+                        // Continua mesmo com erro em PDF
+                    }
+                }
+            }
+
+            console.log('🎉 Entrada registrada com sucesso!');
             
             res.json({
                 success: true,
@@ -1312,12 +1730,13 @@ router.post('/api/input', requireAuth, (req, res) => {
                     unidade: produto.unidade_medida,
                     estoque_atual: novaQuantidade,
                     responsavel: responsible,
-                    fornecedor: supplier
+                    fornecedor: supplier,
+                    data_validade: expirationDate
                 }
             });
 
         } catch (error) {
-            console.error('Erro no processo de entrada:', error);
+            console.error('💥 Erro no processo de entrada:', error);
             res.json({
                 success: false,
                 message: '❌ Erro interno do servidor: ' + error.message
@@ -1325,6 +1744,8 @@ router.post('/api/input', requireAuth, (req, res) => {
         }
     })();
 });
+
+
 
 // API PARA MOVIMENTAÇÕES DE ENTRADA
 router.get('/api/input-movements', requireAuth, (req, res) => {

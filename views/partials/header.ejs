@@ -250,6 +250,37 @@
         margin-bottom: 70px;
       }
     }
+
+    .user-photo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .mobile-user-photo {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 4px;
+  }
+
+  /* Ajuste responsivo */
+  @media (max-width: 992px) {
+    .user-photo {
+      width: 35px;
+      height: 35px;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .user-photo {
+      width: 30px;
+      height: 30px;
+    }
+  }
   </style>
 </head>
 <body class="flex h-screen bg-gray-100">
@@ -296,21 +327,35 @@
     </div>
 
     
+    
+    
+
     <!-- Perfil Usuário -->
     <div class="user-area-custom">
       <a href="/perfil" class="flex items-center hover:bg-[#34495e] p-2 rounded-lg transition-all">
-          <i class="fas fa-user-circle text-blue-400 text-2xl" style="font-size: 40px; margin-right: 12px;"></i>
-          <div class="user-info-text">
-              <p class="text-sm font-medium text-white" style="font-size: 16px; font-weight: 600;">
-                  <%= user ? user.nome : 'Usuário' %>
-              </p>
-              <p class="text-xs text-gray-400" style="font-size: 13px;">
-                  <%= user ? (user.tipo === 'admin' ? 'Administrador' : 'Usuário') : 'Visitante' %>
-              </p>
+        <% if (user && user.foto_perfil) { %>
+          <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0" style="margin-right: 12px;">
+            <img 
+              src="/uploads/profile-photos/<%= user.foto_perfil %>?t=<%= new Date().getTime() %>" 
+              alt="Foto de perfil" 
+              class="w-full h-full object-cover"
+              onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=<%= encodeURIComponent(user.nome || 'Usuário') %>&background=2c3e50&color=fff&size=128'"
+            >
           </div>
+        <% } else { %>
+          <i class="fas fa-user-circle text-blue-400 text-2xl" style="font-size: 40px; margin-right: 12px;"></i>
+        <% } %>
+        <div class="user-info-text">
+          <p class="text-sm font-medium text-white" style="font-size: 16px; font-weight: 600;">
+            <%= user ? user.nome : 'Usuário' %>
+          </p>
+          <p class="text-xs text-gray-400" style="font-size: 13px;">
+            <%= user ? (user.tipo === 'admin' ? 'Administrador' : 'Usuário') : 'Visitante' %>
+          </p>
+        </div>
       </a>
       <a href="/auth/logout" class="logout-btn-custom">
-          <i class="fas fa-sign-out-alt"></i>
+        <i class="fas fa-sign-out-alt"></i>
       </a>
     </div>
   </aside>
@@ -342,7 +387,19 @@
       <span>Vidr.</span>
     </a>
     <a href="/perfil" class="mobile-nav-item" id="mobile-perfil">
-      <i class="fas fa-user-circle"></i>
+      <% if (user && user.foto_perfil) { %>
+        <div class="w-6 h-6 rounded-full overflow-hidden mb-1">
+          <img 
+            src="/uploads/profile-photos/<%= user.foto_perfil %>" 
+            alt="Perfil" 
+            class="w-full h-full object-cover"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"
+          >
+          <i class="fas fa-user-circle" style="display: none;"></i>
+        </div>
+      <% } else { %>
+        <i class="fas fa-user-circle"></i>
+      <% } %>
       <span>Perfil</span>
     </a>
   </nav>

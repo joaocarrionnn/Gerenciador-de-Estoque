@@ -192,6 +192,7 @@ class PerfilController {
                     
                     // Atualizar a sessão do usuário
                     req.session.user.foto_perfil = nomeArquivo;
+                    console.log('🔄 Sessão atualizada com nova foto:', nomeArquivo);
                     
                     res.json({ 
                         success: true, 

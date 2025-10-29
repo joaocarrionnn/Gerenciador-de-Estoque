@@ -616,6 +616,38 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
 }
+
+/* Estilos para produtos vencidos */
+.produto-vencido {
+    border-left: 4px solid #dc3545 !important;
+    background-color: #fff5f5 !important;
+}
+
+.produto-proximo-vencer {
+    border-left: 4px solid #ffc107 !important;
+    background-color: #fffbf0 !important;
+}
+
+.badge-vencido {
+    background-color: #dc3545;
+}
+
+.badge-proximo-vencer {
+    background-color: #ffc107;
+    color: #000;
+}
+
+/* Estilos para o modal de renovação */
+.modal-renovacao .modal-header {
+    background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+    border-bottom: 1px solid #ffd351;
+}
+
+/* Destaque para campos com data vencida */
+.input-data-vencida {
+    border-color: #dc3545 !important;
+    background-color: #fff5f5 !important;
+}
     </style>
 </head>
 <body class="flex">
@@ -1380,6 +1412,202 @@ document.addEventListener('DOMContentLoaded', function() {
         loadInputMovements();
         loadInputStatistics();
     }, 30000);
+});
+
+// Envio do formulário de entrada (VERSÃO CORRIGIDA)
+function configurarEnvioFormularioEntrada() {
+    const form = document.getElementById('input-form');
+    if (!form) {
+        console.log('Formulário de entrada não encontrado');
+        return;
+    }
+
+    form.addEventListener('submit', async function(event) {
+        event.preventDefault();
+        
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        const reagentInput = document.getElementById('reagent');
+        const reagentIdInput = document.getElementById('reagent-id');
+        
+        // Validar se o reagente foi encontrado
+        if (!reagentIdInput.value) {
+            showToast('❌ Por favor, selecione um reagente válido da lista', 'danger');
+            reagentInput.focus();
+            return;
+        }
+        
+        // Validar quantidade
+        const quantityInput = document.getElementById('quantity');
+        const quantity = parseFloat(quantityInput.value);
+        if (!quantity || quantity <= 0) {
+            showToast('❌ Por favor, informe uma quantidade válida', 'danger');
+            quantityInput.focus();
+            return;
+        }
+        
+        // Verificar data de validade antes de enviar
+        const expirationDateInput = document.getElementById('expirationDate');
+        if (expirationDateInput && expirationDateInput.value) {
+            const hoje = new Date();
+            const dataValidade = new Date(expirationDateInput.value);
+            
+            if (dataValidade < hoje) {
+                const confirmar = confirm('⚠️ A data de validade informada está vencida. Deseja continuar mesmo assim?');
+                if (!confirmar) {
+                    expirationDateInput.focus();
+                    return;
+                }
+            }
+        }
+        
+        // Mostrar loading
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Registrando...';
+        submitBtn.disabled = true;
+        
+        const formData = new FormData(this);
+        
+        console.log('📤 Enviando dados para o servidor...');
+        
+        try {
+            const response = await fetch('/api/input', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            console.log('📨 Resposta do servidor:', result);
+            
+            if (result.success) {
+                const reagentName = document.getElementById('reagent').value;
+                const quantity = document.getElementById('quantity').value;
+                const unit = document.getElementById('unit-measure').textContent;
+                
+                showToast(result.message, 'success');
+                this.reset();
+                document.getElementById('reagent-id').value = '';
+                
+                // Limpar preview de PDFs
+                const pdfPreview = document.getElementById('pdfPreview');
+                if (pdfPreview) {
+                    pdfPreview.innerHTML = '';
+                    pdfPreview.style.display = 'none';
+                }
+                
+                // Limpar validação visual do campo de reagente
+                reagentInput.classList.remove('is-valid', 'is-invalid');
+                
+                // Recarregar as movimentações e estatísticas
+                await loadInputMovements();
+                await loadInputStatistics();
+                
+            } else if (result.data_vencida) {
+                // Data vencida - mostrar opção para continuar
+                const continuar = confirm(result.message + '\n\nDeseja continuar mesmo assim?');
+                if (continuar) {
+                    // Reenviar ignorando a validação de data
+                    formData.append('ignorar_validade', 'true');
+                    const response2 = await fetch('/api/input', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const result2 = await response2.json();
+                    
+                    if (result2.success) {
+                        showToast(result2.message, 'success');
+                        this.reset();
+                        // ... resto do código de sucesso
+                    } else {
+                        showToast(result2.message, 'danger');
+                    }
+                }
+            } else {
+                showToast(result.message, 'danger');
+            }
+        } catch (error) {
+            console.error('🌐 Erro de conexão:', error);
+            showToast('❌ Erro de conexão. Verifique sua internet e tente novamente.', 'danger');
+        } finally {
+            // Restaurar botão
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    });
+}
+
+// Atualizar informações quando o usuário digitar ou selecionar um reagente
+function atualizarInformacoesProduto() {
+    const reagentInput = document.getElementById('reagent');
+    const unitMeasure = document.getElementById('unit-measure');
+    const reagentInfo = document.getElementById('reagent-info');
+    const quantityInput = document.getElementById('quantity');
+    const reagentIdInput = document.getElementById('reagent-id');
+    
+    console.log('🔄 Atualizando informações do produto...');
+    console.log('Valor do input:', reagentInput.value);
+    
+    const produto = buscarProdutoPorNome(reagentInput.value);
+    
+    if (produto) {
+        // Produto encontrado
+        console.log('✅ Produto encontrado:', produto);
+        unitMeasure.textContent = produto.unidade;
+        reagentInfo.innerHTML = `
+            <strong>Estoque atual:</strong> ${formatarNumeroJS(produto.estoque)} ${produto.unidade}
+            ${produto.estoque <= 5 ? '<span class="text-danger font-bold"> ⚠️ BAIXO ESTOQUE - REPOSIÇÃO NECESSÁRIA</span>' : ''}
+        `;
+        
+        // Atualizar o placeholder do input de quantidade
+        quantityInput.placeholder = `Ex: 5.0`;
+        
+        // DEFINIR O ID DO PRODUTO NO CAMPO HIDDEN
+        reagentIdInput.value = produto.id;
+        console.log('✅ ID do produto definido:', produto.id);
+        
+        // Adicionar classe de validação visual
+        reagentInput.classList.add('is-valid');
+        reagentInput.classList.remove('is-invalid');
+    } else {
+        // Produto não encontrado ou campo vazio
+        console.log('❌ Produto não encontrado');
+        unitMeasure.textContent = 'unidade';
+        reagentInfo.textContent = reagentInput.value ? 'Reagente não encontrado' : 'Digite o nome do reagente';
+        reagentInfo.className = 'form-text ' + (reagentInput.value ? 'text-danger' : 'text-muted');
+        quantityInput.placeholder = 'Ex: 5.0';
+        
+        // LIMPAR O ID DO PRODUTO
+        reagentIdInput.value = '';
+        console.log('❌ ID do produto limpo');
+        
+        // Adicionar classe de erro visual se houver texto mas não encontrado
+        if (reagentInput.value) {
+            reagentInput.classList.add('is-invalid');
+            reagentInput.classList.remove('is-valid');
+        } else {
+            reagentInput.classList.remove('is-valid', 'is-invalid');
+        }
+    }
+}
+
+// Função para debug dos produtos
+function debugProdutos() {
+    console.log('📦 Produtos carregados:', produtosData);
+    console.log('📦 Total de produtos:', produtosData.length);
+    
+    // Mostrar os primeiros 5 produtos
+    produtosData.slice(0, 5).forEach((produto, index) => {
+        console.log(`Produto ${index + 1}:`, produto);
+    });
+}
+
+// Chame esta função no carregamento da página para verificar
+document.addEventListener('DOMContentLoaded', function() {
+    // ... código existente ...
+    
+    // Debug dos produtos
+    setTimeout(() => {
+        debugProdutos();
+    }, 1000);
 });
     </script>
 </body>

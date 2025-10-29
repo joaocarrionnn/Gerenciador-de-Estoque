@@ -878,6 +878,29 @@
     align-items: center;
     gap: 0.4rem;
 }
+
+.pdf-view-btn {
+        background: rgba(23, 162, 184, 0.1);
+        color: var(--info);
+        padding: 0.5rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .pdf-view-btn:hover {
+        background: var(--info);
+        color: white;
+    }
+
+    .pdf-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
     </style>
 </head>
 <body class="flex">
@@ -1409,7 +1432,7 @@
     // Carregar PDFs do produto
     carregarPDFsDoProduto(id);
 }
-// Função para carregar PDFs do produto
+// Função para carregar PDFs do produto (ATUALIZADA)
 function carregarPDFsDoProduto(productId) {
     const pdfsContainer = document.getElementById('pdfsContainer');
     
@@ -1448,6 +1471,12 @@ function carregarPDFsDoProduto(productId) {
                             </div>
                         </div>
                         <div class="pdf-actions">
+                            <!-- NOVO BOTÃO DE VISUALIZAR -->
+                            <button class="pdf-view-btn" 
+                                    title="Visualizar PDF"
+                                    onclick="visualizarPDF(${pdf.id})">
+                                <i class="fas fa-eye"></i>
+                            </button>
                             <a href="/produtos/pdfs/download/${pdf.id}" 
                                class="pdf-download-btn" 
                                title="Baixar PDF"
@@ -1477,6 +1506,14 @@ function carregarPDFsDoProduto(productId) {
             `;
         });
 }
+
+// NOVA FUNÇÃO: Visualizar PDF
+function visualizarPDF(pdfId) {
+    // Abre o PDF em uma nova aba/guia
+    const url = `/produtos/pdfs/visualizar/${pdfId}`;
+    window.open(url, '_blank');
+}
+
 
 // Função para formatar tamanho do arquivo
 function formatarTamanhoArquivo(bytes) {

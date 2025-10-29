@@ -714,35 +714,6 @@
                 </h1>
             </div>
             
-            <!-- Filtros -->
-            <div class="card mb-6">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <i class="fas fa-filter text-primary"></i>
-                        Filtrar Relatórios
-                    </h2>
-                </div>
-                <div class="card-body">
-                    <form id="report-filter-form">
-                        <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
-                            <div>
-                                <label for="start-date" class="form-label">Data Inicial</label>
-                                <input type="date" class="form-control" id="start-date" name="start-date">
-                            </div>
-                            <div>
-                                <label for="end-date" class="form-label">Data Final</label>
-                                <input type="date" class="form-control" id="end-date" name="end-date">
-                            </div>
-                        </div>
-                        <div class="d-grid mt-4">
-                            <button type="submit" class="success-btn py-3">
-                                <i class="fas fa-check-circle me-2"></i>Aplicar Filtros
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            
             <!-- Estatísticas Rápidas -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
                 <div class="card stats-card">
@@ -776,7 +747,7 @@
                 <div class="card-header">
                     <h2 class="card-title">
                         <i class="fas fa-exclamation-triangle text-red-500"></i>
-                        Gerador de Relatórios - Reagentes Vencidos
+                         Reagentes Vencidos
                     </h2>
                     <div class="flex gap-2">
                         <button class="view-all-btn" id="generate-pdf">
@@ -798,28 +769,6 @@
                         <div class="filter-item">
                             <label class="filter-label">Data Final Vencimento</label>
                             <input type="date" class="filter-input" id="vencimento-end-date">
-                        </div>
-                        
-                        <div class="filter-item">
-                            <label class="filter-label">Fornecedor</label>
-                            <select class="filter-select" id="vencimento-supplier-filter">
-                                <option value="">Todos os fornecedores</option>
-                                <option value="Sigma-Aldrich">Sigma-Aldrich</option>
-                                <option value="Merck">Merck</option>
-                                <option value="Vetec">Vetec</option>
-                                <option value="Synth">Synth</option>
-                            </select>
-                        </div>
-                        
-                        <div class="filter-item">
-                            <label class="filter-label">Categoria</label>
-                            <select class="filter-select" id="vencimento-category-filter">
-                                <option value="">Todas as categorias</option>
-                                <option value="Ácidos">Ácidos</option>
-                                <option value="Bases">Bases</option>
-                                <option value="Sais">Sais</option>
-                                <option value="Solventes">Solventes</option>
-                            </select>
                         </div>
                     </div>
                     
