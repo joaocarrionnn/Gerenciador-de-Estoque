@@ -809,11 +809,13 @@
                     <i class="fas fa-flask"></i>
                     Vidrarias de Laboratório
                 </h1>
+                <% if (user && user.tipo === 'admin') { %>
                 <div class="button-container">
                     <a href="/vidracarias/adicionar" class="primary-btn-adicionar">
                         <i class="fas fa-plus-circle"></i> Adicionar Vidraria
                     </a>
                 </div>
+                <% } %>
             </div>
 
             <!-- Alertas -->
@@ -1053,19 +1055,22 @@
                                     <span class="glassware-status <%= statusClass %>"><%= statusText %></span>
                                     
                                     <!-- Botões de Movimentação -->
-                                    <div class="movement-buttons">
-                                        <button type="button" class="btn-action btn-take" 
-                                                onclick="openTakeModal(<%= vidraria.id %>, '<%= vidraria.nome.replace(/'/g, "\\'") %>', <%= vidraria.quantidade %>)"
-                                                <%= vidraria.quantidade === 0 ? 'disabled' : '' %>>
-                                            <i class="fas fa-sign-out-alt"></i> Retirar
-                                        </button>
-                                        <button type="button" class="btn-action btn-add" 
-                                                onclick="openAddModal(<%= vidraria.id %>, '<%= vidraria.nome.replace(/'/g, "\\'") %>')">
-                                            <i class="fas fa-sign-in-alt"></i> Adicionar
-                                        </button>
-                                    </div>
+                                    <% if (user && user.tipo === 'admin') { %>
+                                        <div class="movement-buttons">
+                                            <button type="button" class="btn-action btn-take" 
+                                                    onclick="openTakeModal(...)"
+                                                    <%= vidraria.quantidade === 0 ? 'disabled' : '' %>>
+                                                <i class="fas fa-sign-out-alt"></i> Retirar
+                                            </button>
+                                            <button type="button" class="btn-action btn-add" 
+                                                    onclick="openAddModal(...)">
+                                                <i class="fas fa-sign-in-alt"></i> Adicionar
+                                            </button>
+                                        </div>
+                                        <% } %>
                                     
                                     <div class="action-buttons">
+                                        <% if (user && user.tipo === 'admin') { %>
                                         <a href="/vidracarias/editar/<%= vidraria.id %>" class="btn-action btn-edit" title="Editar">
                                             <i class="fas fa-edit"></i> Editar
                                         </a>
@@ -1075,6 +1080,7 @@
                                                 <i class="fas fa-trash-alt"></i> Excluir
                                             </button>
                                         </form>
+                                        <% } %>
                                     </div>
                                 </div>
                             </div>

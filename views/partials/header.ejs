@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
 
-    .sidebar-custom {
+.sidebar-custom {
       background: #2c3e50;
       transition: all 0.3s ease;
       box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
@@ -23,6 +23,7 @@
       flex-direction: column;
       justify-content: space-between;
     }
+
 
     /* Ajustes para o conteúdo principal */
     main {
@@ -289,46 +290,55 @@
   <aside class="desktop-sidebar hidden md:flex sidebar-custom">
     <!-- Logo -->
     <div>
-      <div class="logo-custom" >
-      <a href="/">
-        <i class="fas fa-flask text-blue-400 text-2xl mr-3" style="font-size: 32px; margin-right: 15px;"></i>
-        <span class="logo-text-custom text-white font-bold text-xl" style="font-size: 24px; font-weight: 800; letter-spacing: 0.5px;">Sistema Lab+</span>
-      </a>
+      <div class="logo-custom">
+        <a href="/">
+          <i class="fas fa-flask text-blue-400 text-2xl mr-3" style="font-size: 32px; margin-right: 15px;"></i>
+          <span class="logo-text-custom text-white font-bold text-xl" style="font-size: 24px; font-weight: 800; letter-spacing: 0.5px;">Sistema Lab+</span>
+        </a>
       </div>
 
       <!-- Menu -->
       <nav class="mt-6 menu-custom">
+        <!-- Dashboard - Disponível para todos -->
         <a href="/" class="menu-item-custom" id="dashboard-menu">
-            <i class="fas fa-home"></i>
-            <span>Dashboard</span>
+          <i class="fas fa-home"></i>
+          <span>Dashboard</span>
         </a>
+
+        <!-- Reagentes - Disponível para todos -->
         <a href="/produtos" class="menu-item-custom" id="produtos-menu">
           <i class="fas fa-flask"></i>
           <span>Reagentes</span>
         </a>
-        <a href="/entrada-reagentes" class="menu-item-custom" id="entradas-menu">
-          <i class="fas fa-sign-in-alt"></i>
-          <span>Entradas</span>
-        </a>
-        <a href="/saida-reagentes" class="menu-item-custom" id="saidas-menu">
-          <i class="fas fa-sign-out-alt"></i>
-          <span>Saídas</span>
-        </a>
-        <a href="/relatorios" class="menu-item-custom" id="relatorios-menu">
-          <i class="fas fa-chart-line"></i>
-          <span>Relatórios</span>
-        </a>
-        <!-- LINHO CORRIGIDO -->
-          <a href="/vidracarias" class="menu-item-custom" id="vidracarias-menu">
+
+        <!-- Vidrarias - Disponível para todos -->
+        <a href="/vidracarias" class="menu-item-custom" id="vidracarias-menu">
           <i class="fas fa-flask"></i>
           <span>Vidrarias</span>
         </a>
+
+        <!-- MENU APENAS PARA PROFESSORES (ADMIN) -->
+        <% if (user && user.tipo === 'admin') { %>
+          <!-- Entradas - Apenas professores -->
+          <a href="/entrada-reagentes" class="menu-item-custom" id="entradas-menu">
+            <i class="fas fa-sign-in-alt"></i>
+            <span>Entradas</span>
+          </a>
+
+          <!-- Saídas - Apenas professores -->
+          <a href="/saida-reagentes" class="menu-item-custom" id="saidas-menu">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Saídas</span>
+          </a>
+
+          <!-- Relatórios - Apenas professores -->
+          <a href="/relatorios" class="menu-item-custom" id="relatorios-menu">
+            <i class="fas fa-chart-line"></i>
+            <span>Relatórios</span>
+          </a>
+        <% } %>
       </nav>
     </div>
-
-    
-    
-    
 
     <!-- Perfil Usuário -->
     <div class="user-area-custom">
@@ -350,7 +360,11 @@
             <%= user ? user.nome : 'Usuário' %>
           </p>
           <p class="text-xs text-gray-400" style="font-size: 13px;">
-            <%= user ? (user.tipo === 'admin' ? 'Administrador' : 'Usuário') : 'Visitante' %>
+            <% if (user && user.tipo === 'admin') { %>
+              <i class="fas fa-user-shield mr-1"></i> Professor
+            <% } else { %>
+              <i class="fas fa-user-graduate mr-1"></i> Aluno
+            <% } %>
           </p>
         </div>
       </a>
@@ -362,30 +376,46 @@
 
   <!-- MENU MOBILE (BOTTOM NAVBAR) -->
   <nav class="mobile-nav">
+    <!-- Home - Disponível para todos -->
     <a href="/" class="mobile-nav-item" id="mobile-dashboard">
       <i class="fas fa-home"></i>
       <span>Home</span>
     </a>
+
+    <!-- Reagentes - Disponível para todos -->
     <a href="/produtos" class="mobile-nav-item" id="mobile-produtos">
       <i class="fas fa-flask"></i>
       <span>Reag.</span>
     </a>
-    <a href="/entrada-reagentes" class="mobile-nav-item" id="mobile-entradas">
-      <i class="fas fa-sign-in-alt"></i>
-      <span>Entr.</span>
-    </a>
-    <a href="/saida-reagentes" class="mobile-nav-item" id="mobile-saidas">
-      <i class="fas fa-sign-out-alt"></i>
-      <span>Saíd.</span>
-    </a>
-    <a href="/relatorios" class="mobile-nav-item" id="mobile-relatorios">
-      <i class="fas fa-chart-line"></i>
-      <span>Relat.</span>
-    </a>
+
+    <!-- Vidrarias - Disponível para todos -->
     <a href="/vidracarias" class="mobile-nav-item" id="mobile-vidracarias">
       <i class="fas fa-glass-whiskey"></i>
       <span>Vidr.</span>
     </a>
+
+    <!-- MENU APENAS PARA PROFESSORES NO MOBILE -->
+    <% if (user && user.tipo === 'admin') { %>
+      <!-- Entradas - Apenas professores -->
+      <a href="/entrada-reagentes" class="mobile-nav-item" id="mobile-entradas">
+        <i class="fas fa-sign-in-alt"></i>
+        <span>Entr.</span>
+      </a>
+
+      <!-- Saídas - Apenas professores -->
+      <a href="/saida-reagentes" class="mobile-nav-item" id="mobile-saidas">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Saíd.</span>
+      </a>
+
+      <!-- Relatórios - Apenas professores -->
+      <a href="/relatorios" class="mobile-nav-item" id="mobile-relatorios">
+        <i class="fas fa-chart-line"></i>
+        <span>Relat.</span>
+      </a>
+    <% } %>
+
+    <!-- Perfil - Disponível para todos -->
     <a href="/perfil" class="mobile-nav-item" id="mobile-perfil">
       <% if (user && user.foto_perfil) { %>
         <div class="w-6 h-6 rounded-full overflow-hidden mb-1">
@@ -405,49 +435,48 @@
   </nav>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Função para determinar a página atual e destacar o menu correspondente
-      // Função para determinar a página atual e destacar o menu correspondente
-function setActiveMenu() {
-    const path = window.location.pathname;
-    let activeMenuId = '';
-    
-    // Determinar qual menu deve estar ativo baseado na URL
-    if (path.includes('/produtos') || path === '/produtos') {
-        activeMenuId = 'produtos-menu';
-    } else if (path.includes('/entrada-reagentes') || path === '/entrada-reagentes') {
-        activeMenuId = 'entradas-menu';
-    } else if (path.includes('/saida-reagentes') || path === '/saida-reagentes') {
-        activeMenuId = 'saidas-menu';
-    } else if (path.includes('/relatorios') || path === '/relatorios') {
-        activeMenuId = 'relatorios-menu';
-    } else if (path.includes('/vidracarias') || path === '/vidracarias') { // LINHA ADICIONADA
-        activeMenuId = 'vidracarias-menu'; // LINHA ADICIONADA
-    } else if (path === '/' || path.includes('/dashboard')) {
-        activeMenuId = 'dashboard-menu'; // Página inicial ou dashboard
-    } else if (path.includes('/perfil') || path === '/perfil') {
-        activeMenuId = 'perfil-menu'; // Página de perfil
-    }
-    
-    // Remover a classe 'active' de todos os menus
-    const allMenuItems = document.querySelectorAll('.menu-item-custom, .mobile-nav-item');
-    allMenuItems.forEach(item => {
-        item.classList.remove('active');
-    });
-    
-    // Adicionar a classe 'active' ao menu correspondente
-    const activeMenuItem = document.getElementById(activeMenuId);
-    if (activeMenuItem) {
-        activeMenuItem.classList.add('active');
-    }
-    
-    // Atualizar também o menu mobile
-    const mobileMenuId = 'mobile-' + activeMenuId.split('-')[0];
-    const activeMobileMenuItem = document.getElementById(mobileMenuId);
-    if (activeMobileMenuItem) {
-        activeMobileMenuItem.classList.add('active');
-    }
-}
+   document.addEventListener('DOMContentLoaded', function() {
+      // SUA FUNÇÃO ORIGINAL setActiveMenu() AQUI
+      function setActiveMenu() {
+        const path = window.location.pathname;
+        let activeMenuId = '';
+        
+        // Determinar qual menu deve estar ativo baseado na URL
+        if (path.includes('/produtos') || path === '/produtos') {
+            activeMenuId = 'produtos-menu';
+        } else if (path.includes('/entrada-reagentes') || path === '/entrada-reagentes') {
+            activeMenuId = 'entradas-menu';
+        } else if (path.includes('/saida-reagentes') || path === '/saida-reagentes') {
+            activeMenuId = 'saidas-menu';
+        } else if (path.includes('/relatorios') || path === '/relatorios') {
+            activeMenuId = 'relatorios-menu';
+        } else if (path.includes('/vidracarias') || path === '/vidracarias') {
+            activeMenuId = 'vidracarias-menu';
+        } else if (path === '/' || path.includes('/dashboard')) {
+            activeMenuId = 'dashboard-menu';
+        } else if (path.includes('/perfil') || path === '/perfil') {
+            activeMenuId = 'perfil-menu';
+        }
+        
+        // Remover a classe 'active' de todos os menus
+        const allMenuItems = document.querySelectorAll('.menu-item-custom, .mobile-nav-item');
+        allMenuItems.forEach(item => {
+            item.classList.remove('active');
+        });
+        
+        // Adicionar a classe 'active' ao menu correspondente
+        const activeMenuItem = document.getElementById(activeMenuId);
+        if (activeMenuItem) {
+            activeMenuItem.classList.add('active');
+        }
+        
+        // Atualizar também o menu mobile
+        const mobileMenuId = 'mobile-' + activeMenuId.split('-')[0];
+        const activeMobileMenuItem = document.getElementById(mobileMenuId);
+        if (activeMobileMenuItem) {
+            activeMobileMenuItem.classList.add('active');
+        }
+      }
       
       // Chamar a função ao carregar a página
       setActiveMenu();

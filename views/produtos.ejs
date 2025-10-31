@@ -912,11 +912,13 @@
             <!-- Header da Página -->
             <div class="section-header">
                 <h1 class="section-title">Gerenciamento de Produtos</h1>
+                <% if (user && user.tipo === 'admin') { %>
                 <div class="button-container">
                     <a href="/produtos/adicionar" class="primary-btn">
                         <i class="fas fa-plus-circle"></i> Adicionar Produto
                     </a>
                 </div>
+                <% } %>
             </div>
             
             <!-- Barra de Pesquisa Melhorada -->
@@ -1141,17 +1143,19 @@
                                             )">
                                             <i class="fas fa-ellipsis-v"></i>
                                         </button>
-                                        <button class="btn-action btn-edit" title="Editar" onclick="editarProduto(<%= produto.id_produto %>)">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <form action="/produtos/deletar/<%= produto.id_produto %>" method="POST" style="display: inline;" 
-                                              onsubmit="return confirm('Tem certeza que deseja excluir este produto? Esta ação não pode ser desfeita.');">
-                                            <button type="submit" class="btn-action btn-delete" title="Excluir">
-                                                <i class="fas fa-trash-alt"></i>
+                                        <% if (user && user.tipo === 'admin') { %>
+                                            <button class="btn-action btn-edit" title="Editar" onclick="editarProduto(<%= produto.id_produto %>)">
+                                                <i class="fas fa-edit"></i>
                                             </button>
-                                        </form>
+                                            <form action="/produtos/deletar/<%= produto.id_produto %>" method="POST" style="display: inline;" 
+                                                  onsubmit="return confirm('Tem certeza que deseja excluir este produto? Esta ação não pode ser desfeita.');">
+                                                <button type="submit" class="btn-action btn-delete" title="Excluir">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </form>
+                                            <% } %>
+                                        </div>
                                     </div>
-                                </div>
                             </div>
                         <% }) %>
                     <% } else { %>

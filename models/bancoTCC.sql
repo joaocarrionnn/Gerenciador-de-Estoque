@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `movimentacoes` (
   CONSTRAINT `movimentacoes_ibfk_1` FOREIGN KEY (`id_produto`) REFERENCES `produtos` (`id_produto`)
 ) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Copiando dados para a tabela sistema_estoque.movimentacoes: ~16 rows (aproximadamente)
+-- Copiando dados para a tabela sistema_estoque.movimentacoes: ~17 rows (aproximadamente)
 INSERT INTO `movimentacoes` (`id_movimentacao`, `id_produto`, `tipo`, `quantidade`, `unidade_medida`, `responsavel`, `projeto_experimento`, `observacoes`, `data_movimentacao`) VALUES
 	(22, 17, 'saida', 2.00, 'g', 'aa', 'aa', 'aa', '2025-10-08 13:30:04'),
 	(26, 13, 'saida', 2.00, 'L', 'Carrion', 'Faze Agua', 'Saída registrada por Carrion', '2025-10-08 16:58:22'),
@@ -153,7 +153,7 @@ CREATE TABLE IF NOT EXISTS `produto_pdfs` (
   CONSTRAINT `produto_pdfs_ibfk_1` FOREIGN KEY (`id_produto`) REFERENCES `produtos` (`id_produto`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Copiando dados para a tabela sistema_estoque.produto_pdfs: ~5 rows (aproximadamente)
+-- Copiando dados para a tabela sistema_estoque.produto_pdfs: ~4 rows (aproximadamente)
 INSERT INTO `produto_pdfs` (`id`, `id_produto`, `nome_arquivo`, `nome_original`, `caminho_arquivo`, `tamanho_arquivo`, `tipo_documento`, `descricao`, `data_upload`, `usuario_upload`) VALUES
 	(7, 39, 'product-1761326638367-279339331-relatorio_reagentes_vencidos_2025-10-24.pdf', 'relatorio_reagentes_vencidos_2025-10-24.pdf', 'U:\\Users\\55926559839\\Desktop\\Gerenciador-de-Estoque\\public\\uploads\\product-pdfs\\product-1761326638367-279339331-relatorio_reagentes_vencidos_2025-10-24.pdf', 16434, NULL, NULL, '2025-10-24 17:23:58', 'joao Carrion'),
 	(8, 41, 'product-1761326650464-552974647-Boletim__1_.pdf', 'Boletim (1).pdf', 'U:\\Users\\55926559839\\Desktop\\Gerenciador-de-Estoque\\public\\uploads\\product-pdfs\\product-1761326650464-552974647-Boletim__1_.pdf', 91479, NULL, NULL, '2025-10-24 17:24:10', 'joao Carrion'),
@@ -183,18 +183,19 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   UNIQUE KEY `unique_usuario` (`usuario`),
   UNIQUE KEY `unique_email` (`email`),
   UNIQUE KEY `unique_cpf` (`cpf`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Copiando dados para a tabela sistema_estoque.usuarios: ~8 rows (aproximadamente)
 INSERT INTO `usuarios` (`id_usuario`, `nome_completo`, `usuario`, `email`, `telefone`, `cpf`, `senha`, `palavra_chave`, `turma`, `foto_perfil`, `status`, `tipo`, `data_criacao`, `data_atualizacao`, `data_aprovacao`) VALUES
 	(1, 'Administrador', 'admin', 'admin@empresa.com', NULL, NULL, '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', NULL, NULL, NULL, 'aprovado', 'admin', '2025-09-10 22:30:33', NULL, NULL),
-	(3, 'joao Carrion', 'joao', 'joao@outlook.org.br', '18981121784', NULL, '$2b$10$ZYqEVnvQdTDnM8X36taqd.N7oZ/c8RChpVWYImD.jVMLuA8SjboyK', NULL, 'quimica2B', 'profile-1761744251743-9066394.jpg', 'aprovado', 'usuario', '2025-09-10 22:47:27', '2025-10-29 13:24:11', NULL),
+	(3, 'joao Carrion', 'joao', 'joao@outlook.org.br', '18981121784', NULL, '$2b$10$ZYqEVnvQdTDnM8X36taqd.N7oZ/c8RChpVWYImD.jVMLuA8SjboyK', NULL, 'quimica2B', 'profile-1761744251743-9066394.jpg', 'aprovado', 'admin', '2025-09-10 22:47:27', '2025-10-29 13:24:11', NULL),
 	(4, 'joao', 'carrion', 'aluno@gmail.com', NULL, '222.222.222-22', '$2b$10$zPeUgETe/5PyB5B2OOoKp.4zjjSCsWztkIDzwT7VBY7V3haBQV.q2', '$2b$10$vjzCUdDCSLh1g5ZRg6YixuI6YGPqrBTQlYL2jdLo9c.UUwi2En3zO', 'quimica1A', NULL, 'aprovado', 'usuario', '2025-10-22 11:52:45', NULL, NULL),
 	(5, 'aaaaaaaaaaaaaaa', 'aaa', 'carrion@gmail.com', NULL, '333.333.333-33', '$2b$10$RkxKYzWdP8YhVre8buBkS.1e8otOVC6e6IdyASLBPh.vOwG4HKZW2', '$2b$10$anfHC/DqJ0Nf.lP4h6brvujajTWAioAR6IgMtQPHz.ubudBxsXKYu', 'quimica1B', NULL, 'aprovado', 'usuario', '2025-10-22 11:54:33', NULL, NULL),
 	(6, 'Carriao', 'aaaa', 'adadad@gmail.com', NULL, '33333333333', '$2b$10$OUi1UwurK./fU8cw1DEn/.J0DT6kUjHhds9LEZreTwZ8Z/uzUJZD.', '$2b$10$sXt4.szdVJ6mqSjS..TdreaDhrlqVA.wcW1y6gQbjHrQqc/5ZaFU2', 'quimica1A', NULL, 'aprovado', 'usuario', '2025-10-22 12:03:35', NULL, NULL),
 	(7, 'carrionnn', 'miguelll', 'miguel@gmail.com', NULL, '44444444444', '$2b$10$c49NayWOK.yqqpbldspOAe7dnqy5TwSZgy6VIOAE59pJLhpDdiG/6', '$2b$10$APm6AmrLlKHIvH0jayoLOeVG7fUAHpXoio8uZR5qo/thbytdXNut2', 'quimica1A', NULL, 'aprovado', 'usuario', '2025-10-22 12:05:27', NULL, NULL),
 	(8, 'joao1', 'joao1', 'joao1@gmail.com', NULL, '88888888888', '$2b$10$XcVhaz9wxQYDK48gUn9QseyDhL6/0SQQnlFgFJIS3NlGnqRnBr.PS', '$2b$10$A1U8ZwgvliEoEUje/gr8Iepbx2nPkF5qi/iI1bLPahGTL2KIRyLn2', 'quimica1A', NULL, 'aprovado', 'usuario', '2025-10-22 17:07:09', NULL, NULL),
-	(9, 'João Miguel', 'joao miguel', 'joaomiguelcg54@gmail.com', NULL, '55926559839', '$2b$10$JbnSDzS8oKWmW2uo.R2UVON4WURDx06DOzp3uZWrbAfoHVVHvpEJ6', '$2b$10$a36R3KhfRX8/eOociNyrvOitfgObJwL96I3zh/H0TIZXd/S5kh92i', 'quimica2A', NULL, 'aprovado', 'usuario', '2025-10-29 12:59:39', NULL, NULL);
+	(9, 'João Miguel', 'joao miguel', 'joaomiguelcg54@gmail.com', '', '55926559839', '$2b$10$JbnSDzS8oKWmW2uo.R2UVON4WURDx06DOzp3uZWrbAfoHVVHvpEJ6', '$2b$10$a36R3KhfRX8/eOociNyrvOitfgObJwL96I3zh/H0TIZXd/S5kh92i', 'quimica2A', NULL, 'aprovado', 'usuario', '2025-10-29 12:59:39', '2025-10-31 19:55:32', NULL),
+	(10, 'Carrion rei das curvas', 'carriola', 'carrionzinxl@gmail.com', NULL, '41251543154', '$2b$10$/Bb5dOwNPAO.P4sYqg3l3OaltcCGRdIKmB1gJfeo6kINQkM9Zby2e', '$2b$10$AJw.jV4c9GD91Wd/wfFUJuvFLcFjwOLTVbMEEEptxBTs5o046IHmK', 'quimica1A', NULL, 'aprovado', 'usuario', '2025-10-31 19:22:29', NULL, NULL);
 
 -- Copiando estrutura para tabela sistema_estoque.vidracarias
 CREATE TABLE IF NOT EXISTS `vidracarias` (

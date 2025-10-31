@@ -834,7 +834,7 @@
                 });
             }
             
-            // Upload da foto
+            // No perfil.ejs, substitua a função de upload por esta:
             if (uploadPhotoBtn) {
                 uploadPhotoBtn.addEventListener('click', function() {
                     const fileInput = document.getElementById('photoFile');
@@ -846,28 +846,110 @@
                     const formData = new FormData();
                     formData.append('profilePhoto', fileInput.files[0]);
                     
+                    // Mostrar loading
+                    uploadPhotoBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+                    uploadPhotoBtn.disabled = true;
+                    
                     fetch('/perfil/upload-foto', {
                         method: 'POST',
                         body: formData
                     })
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) {
+                            // Se a resposta não for OK, tentar ler como texto primeiro
+                            return response.text().then(text => {
+                                throw new Error(text || 'Erro no servidor');
+                            });
+                        }
+                        return response.json();
+                    })
                     .then(data => {
                         if (data.success) {
-                            // Atualizar a imagem do perfil
+                            // Atualizar a imagem do perfil com timestamp para evitar cache
                             if (profileImage) {
-                                profileImage.src = data.fotoUrl + '?t=' + new Date().getTime();
+                                profileImage.src = data.fotoUrl + '&t=' + new Date().getTime();
                             }
                             photoUploadContainer.style.display = 'none';
-                            alert(data.message);
+                            showToast(data.message, 'success');
+                            
+                            // Recarregar a página após 1 segundo para atualizar tudo
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1000);
                         } else {
-                            alert('Erro: ' + data.message);
+                            throw new Error(data.error || 'Erro desconhecido');
                         }
                     })
                     .catch(error => {
-                        console.error('Erro:', error);
-                        alert('Erro ao fazer upload da foto');
+                        console.error('Erro no upload:', error);
+                        let errorMessage = 'Erro ao fazer upload da foto';
+                        
+                        try {
+                            const errorData = JSON.parse(error.message);
+                            errorMessage = errorData.error || errorMessage;
+                        } catch (e) {
+                            if (error.message.includes('Unexpected token')) {
+                                errorMessage = 'Erro no servidor. Tente novamente.';
+                            } else {
+                                errorMessage = error.message || errorMessage;
+                            }
+                        }
+                        
+                        showToast(errorMessage, 'danger');
+                    })
+                    .finally(() => {
+                        // Restaurar botão
+                        uploadPhotoBtn.innerHTML = '<i class="fas fa-check"></i> Salvar Foto';
+                        uploadPhotoBtn.disabled = false;
                     });
                 });
+            }
+
+            // Adicione esta função de toast no perfil.ejs
+            function showToast(message, type = 'success') {
+                // Criar container se não existir
+                let toastContainer = document.getElementById('toast-container');
+                if (!toastContainer) {
+                    toastContainer = document.createElement('div');
+                    toastContainer.id = 'toast-container';
+                    toastContainer.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 10000; max-width: 300px;';
+                    document.body.appendChild(toastContainer);
+                }
+                
+                const toast = document.createElement('div');
+                const bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500';
+                
+                toast.className = `${bgColor} text-white px-4 py-3 rounded-lg shadow-lg mb-2 transition-all duration-300 transform translate-x-full`;
+                toast.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'} mr-2"></i>
+                            <span>${message}</span>
+                        </div>
+                        <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-200">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                
+                toastContainer.appendChild(toast);
+                
+                // Animar entrada
+                setTimeout(() => {
+                    toast.classList.remove('translate-x-full');
+                }, 10);
+                
+                // Auto-remover após 4 segundos
+                setTimeout(() => {
+                    if (toast.parentElement) {
+                        toast.classList.add('translate-x-full');
+                        setTimeout(() => {
+                            if (toast.parentElement) {
+                                toast.remove();
+                            }
+                        }, 300);
+                    }
+                }, 4000);
             }
             
             // Navegação entre abas

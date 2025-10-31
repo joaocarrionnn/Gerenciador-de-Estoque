@@ -4,7 +4,7 @@ const path = require('path');
 const multer = require('multer');
 
 const app = express();
-app.use(express.urlencoded({ extended: true })); // Para pegar dados do form
+app.use(express.urlencoded({ extended: true }));
 
 // Configuração de sessão
 app.use(session({
@@ -13,7 +13,7 @@ app.use(session({
     saveUninitialized: false,
     cookie: { 
         secure: false,
-        maxAge: 24 * 60 * 60 * 1000 // 24 horas
+        maxAge: 24 * 60 * 60 * 1000
     }
 }));
 
@@ -24,10 +24,26 @@ app.locals.formatarNumero = function(num) {
     return numero.toFixed(1).replace('.', ',');
 };
 
-// Middleware para disponibilizar usuário nas views
+// Middleware de permissão para usuários comuns (APENAS para rotas específicas)
 app.use((req, res, next) => {
-    res.locals.user = req.session.user || null;
-    next();
+    // Lista de rotas que usuários comuns podem acessar livremente
+    const allowedRoutes = [
+        '/auth/logout',
+        '/perfil',
+        '/perfil/atualizar',
+        '/perfil/upload-foto'
+    ];
+    
+    // Se for uma rota permitida ou se não for usuário comum, passa direto
+    if (allowedRoutes.includes(req.path) || 
+        !req.session.user || 
+        req.session.user.tipo !== 'usuario') {
+        return next();
+    }
+    
+    // Para outras rotas, aplica as restrições
+    const { requireUserViewOnly } = require('./middlewares/permissionMiddleware');
+    requireUserViewOnly(req, res, next);
 });
 
 // Configuração do Multer para upload de arquivos
@@ -44,7 +60,7 @@ const storage = multer.diskStorage({
 const upload = multer({ 
     storage: storage,
     limits: {
-        fileSize: 5 * 1024 * 1024 // 5MB limit
+        fileSize: 5 * 1024 * 1024
     },
     fileFilter: function (req, file, cb) {
         if (file.mimetype.startsWith('image/')) {
@@ -55,7 +71,7 @@ const upload = multer({
     }
 });
 
-// Adicione isso antes das rotas no app.js
+// Debug da sessão
 app.use((req, res, next) => {
     console.log('Sessão atual:', req.session);
     console.log('Usuário na sessão:', req.session.user);
@@ -77,35 +93,46 @@ app.use(express.json());
 // Importar middleware de autenticação
 const { requireAuth } = require('./middlewares/authMiddleware');
 
+// Middleware de permissão para usuários comuns
+app.use((req, res, next) => {
+    const { requireUserViewOnly } = require('./middlewares/permissionMiddleware');
+    
+    if (req.session.user && req.session.user.tipo === 'usuario') {
+        requireUserViewOnly(req, res, next);
+    } else {
+        next();
+    }
+});
+
 // Rotas de autenticação (não protegidas)
 const authRoutes = require('./routes/auth');
-app.use('/auth', authRoutes)
+app.use('/auth', authRoutes);
 
 app.post('/criar_conta', (req, res) => {
     const AuthController = require('./controllers/AuthController');
     AuthController.processarCriarConta(req, res);
 });
 
-// Rotas principais (protegidas)
+// ⚠️ REMOVA ESTA ROTA DAQUI - ELA ESTÁ CONFLITANDO
+// Rota raiz redireciona para home
+// app.get('/', requireAuth, (req, res) => {
+//     res.render('home/index', { 
+//         user: req.session.user 
+//     });
+// });
+
+// Rotas principais (protegidas) - ESTA É A ROTA CORRETA QUE USA O HomeController
 const indexRoutes = require('./routes/index');
 app.use('/', requireAuth, indexRoutes);
 
-// Rotas de perfil (protegidas) - Agora usando o upload configurado
+// Rotas de perfil (protegidas)
 const perfilRoutes = require('./routes/perfil');
 app.use('/perfil', requireAuth, perfilRoutes);
-
-// Rota raiz redireciona para home
-app.get('/', requireAuth, (req, res) => {
-    res.render('home/index', { 
-        user: req.session.user 
-    });
-});
 
 // Middleware de erro
 app.use((err, req, res, next) => {
     console.error(err.stack);
     
-    // Se for erro de upload do Multer
     if (err instanceof multer.MulterError) {
         if (err.code === 'LIMIT_FILE_SIZE') {
             return res.status(400).json({ 
@@ -120,7 +147,7 @@ app.use((err, req, res, next) => {
 
 // Rota para arquivos não encontrados (404)
 app.use((req, res) => {
-    res.status(404).render('error', {  // ← AQUI ESTÁ O PROBLEMA
+    res.status(404).render('error', {
         message: 'Página não encontrada',
         user: req.session.user 
     });

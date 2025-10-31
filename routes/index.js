@@ -3,11 +3,15 @@ const router = express.Router();
 const db = require('../config/database');
 const { requireAuth } = require('../middlewares/authMiddleware');
 const { uploadProductWithPDFs } = require('../config/upload');
+const { requireAdmin, requireUser, checkPermission } = require('../middlewares/permissionMiddleware');
+const HomeController = require('../controllers/HomeController');
 
 
 
-// Rota para a dashboard principal (VERSÃO ATUALIZADA - 4 MAIS USADOS)
-router.get('/', requireAuth, (req, res) => {
+
+
+// Rotas públicas (acessíveis a todos)
+router.get('/', requireAuth, HomeController.index, (req, res) => {
     // Buscar últimos produtos
     const productsQuery = 'SELECT * FROM produtos ORDER BY data_criacao DESC LIMIT 5';
     
@@ -127,7 +131,9 @@ router.get('/criar_conta', (req, res) => {
 });
 
 // Rota para exibir produtos (com suporte a pesquisa avançada)
-router.get('/produtos', (req, res) => {
+router.get('/produtos', requireAuth, (req, res) => {
+
+    
     const {
         search,
         searchType = 'name',
@@ -306,12 +312,14 @@ router.get('/produtos', (req, res) => {
             regulatoryOrg: regulatoryOrg || '',
             orderBy: orderBy || 'nome'
         });
+
+        
     });
 });
 
 
-// Rota para exibir formulário de adição
-router.get('/produtos/adicionar', (req, res) => {
+// Rotas para produtos - ADMIN apenas
+router.get('/produtos/adicionar', requireAuth, requireAdmin, (req, res) => {
     res.render('adicionar', {
         user: req.session.user,
         formData: null, 
@@ -322,7 +330,7 @@ router.get('/produtos/adicionar', (req, res) => {
 
 
 // Rota para processar adição de produto COM UPLOAD DE PDFs
-router.post('/produtos/adicionar', uploadProductWithPDFs, (req, res) => {
+router.post('/produtos/adicionar', requireAuth, requireAdmin, uploadProductWithPDFs, (req, res) => {
     const {
         productName,
         productType,
@@ -665,7 +673,7 @@ router.get('/produtos/pdfs/visualizar/:pdfId', requireAuth, (req, res) => {
 });
 
 // Rota para deletar produto (versão simplificada)
-router.post('/produtos/deletar/:id', (req, res) => {
+router.post('/produtos/deletar/:id', requireAuth, requireAdmin, (req, res) => {
     const productId = req.params.id;
     
     console.log('Tentando deletar produto ID:', productId);
@@ -702,7 +710,7 @@ router.post('/produtos/deletar/:id', (req, res) => {
 });
 
 // Rota para processar edição de produto
-router.post('/produtos/editar/:id', (req, res) => {
+router.post('/produtos/editar/:id', requireAuth, requireAdmin, (req, res) => {
     const productId = req.params.id;
     const {
         productName,
@@ -761,8 +769,8 @@ router.post('/produtos/editar/:id', (req, res) => {
     });
 }); 
 
-// Rota para exibir formulário de edição - VERIFIQUE SE ESTÁ CORRETA
-router.get('/produtos/editar/:id', (req, res) => {
+// Rota para exibir formulário de edição 
+router.get('/produtos/editar/:id', requireAuth, requireAdmin, (req, res) => {
     const productId = req.params.id;
     console.log('🔍 Buscando produto para edição ID:', productId); // Debug
     
@@ -979,6 +987,8 @@ router.post('/api/produtos/:id/renovar', requireAuth, (req, res) => {
         }
     })();
 });
+
+
 
 // API PARA OBTER HISTÓRICO DE RENOVAÇÕES
 router.get('/api/produtos/:id/historico-renovacoes', requireAuth, (req, res) => {
@@ -4001,8 +4011,8 @@ router.get('/vidracarias', requireAuth, (req, res) => {
     });
 });
 
-// Rota para exibir formulário de adição de vidraria
-router.get('/vidracarias/adicionar', requireAuth, (req, res) => {
+// Rotas para vidrarias - ADMIN apenas
+router.get('/vidracarias/adicionar', requireAuth, requireAdmin, (req, res) => {
     res.render('adicionar-vidracaria', {
         user: req.session.user,
         formData: null,
@@ -4012,7 +4022,7 @@ router.get('/vidracarias/adicionar', requireAuth, (req, res) => {
 });
 
 // Rota para processar adição de vidraria
-router.post('/vidracarias/adicionar', requireAuth, (req, res) => {
+router.post('/vidracarias/adicionar', requireAuth, requireAdmin, (req, res) => {
     const {
         nome,
         categoria,
@@ -4064,7 +4074,7 @@ router.post('/vidracarias/adicionar', requireAuth, (req, res) => {
 });
 
 // Rota para exibir formulário de edição de vidraria
-router.get('/vidracarias/editar/:id', requireAuth, (req, res) => {
+router.get('/vidracarias/editar/:id', requireAuth, requireAdmin, (req, res) => {
     const vidracariaId = req.params.id;
     const query = 'SELECT * FROM vidracarias WHERE id = ?';
     
@@ -4087,7 +4097,7 @@ router.get('/vidracarias/editar/:id', requireAuth, (req, res) => {
 });
 
 // Rota para processar edição de vidraria
-router.post('/vidracarias/editar/:id', requireAuth, (req, res) => {
+router.post('/vidracarias/editar/:id', requireAuth, requireAdmin, (req, res) => {
     const vidracariaId = req.params.id;
     const {
         nome,
@@ -4137,7 +4147,7 @@ router.post('/vidracarias/editar/:id', requireAuth, (req, res) => {
 });
 
 // Rota para deletar vidraria
-router.post('/vidracarias/deletar/:id', requireAuth, (req, res) => {
+router.post('/vidracarias/deletar/:id', requireAuth, requireAdmin, (req, res) => {
     const vidracariaId = req.params.id;
     
     console.log('Tentando deletar vidraria ID:', vidracariaId);
@@ -4369,7 +4379,7 @@ router.post('/vidracarias/movimentar/:id', requireAuth, (req, res) => {
 });
 
 // API para movimentação rápida (AJAX)
-router.post('/api/vidracarias/movimentacao-rapida', requireAuth, (req, res) => {
+router.post('/api/vidracarias/movimentacao-rapida', requireAuth, requireAdmin, (req, res) => {
     const { vidraria_id, tipo, quantidade, responsavel, projeto, fornecedor, observacoes } = req.body;
     const usuario = req.session.user.nome || req.session.user.username;
 
@@ -4463,25 +4473,47 @@ router.post('/api/vidracarias/movimentacao-rapida', requireAuth, (req, res) => {
     }
 });
 
-// API para buscar dados completos de uma vidraria
+// API para buscar dados completos de uma vidraria - CORRIGIDA
 router.get('/api/vidracarias/:id', requireAuth, (req, res) => {
     const vidracariaId = req.params.id;
+    
+    console.log('🔍 Buscando detalhes da vidraria ID:', vidracariaId);
+    
+    // Verificar se o ID é válido
+    if (!vidracariaId || isNaN(vidracariaId)) {
+        console.log('❌ ID inválido:', vidracariaId);
+        return res.status(400).json({ 
+            success: false,
+            error: 'ID da vidraria inválido' 
+        });
+    }
+
     const query = 'SELECT * FROM vidracarias WHERE id = ?';
     
     db.query(query, [vidracariaId], (err, results) => {
         if (err) {
-            console.error('Erro ao buscar vidraria:', err);
-            return res.status(500).json({ error: 'Erro ao carregar dados da vidraria' });
+            console.error('❌ Erro ao buscar vidraria:', err);
+            return res.status(500).json({ 
+                success: false,
+                error: 'Erro interno ao carregar dados da vidraria' 
+            });
         }
         
         if (results.length === 0) {
-            return res.status(404).json({ error: 'Vidraria não encontrada' });
+            console.log('❌ Vidraria não encontrada ID:', vidracariaId);
+            return res.status(404).json({ 
+                success: false,
+                error: 'Vidraria não encontrada' 
+            });
         }
         
-        res.json(results[0]);
+        console.log('✅ Vidraria encontrada:', results[0].nome);
+        res.json({
+            success: true,
+            data: results[0]
+        });
     });
 });
-
 // =============================================
 // FIM DAS ROTAS PARA VIDRARIAS
 // =============================================
