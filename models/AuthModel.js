@@ -86,6 +86,59 @@ class AuthModel {
             });
         });
     }
+
+    static verificarDadosRecuperacao(usuario, cpf, palavraChave) {
+        return new Promise((resolve, reject) => {
+            console.log('🔍 Verificando dados para recuperação:', { usuario, cpf });
+            
+            // Limpar formatação do CPF
+            const cpfLimpo = cpf.replace(/\D/g, '');
+            
+            const query = `
+                SELECT id_usuario, usuario, nome_completo, email, palavra_chave 
+                FROM usuarios 
+                WHERE usuario = ? AND cpf = ? AND status = 'aprovado'
+            `;
+            
+            db.query(query, [usuario, cpfLimpo], (err, results) => {
+                if (err) {
+                    console.error('❌ Erro ao verificar dados recuperação:', err);
+                    return reject(err);
+                }
+                
+                if (results.length === 0) {
+                    console.log('❌ Usuário não encontrado ou CPF incorreto');
+                    return resolve(null);
+                }
+                
+                const usuarioEncontrado = results[0];
+                console.log('✅ Usuário encontrado para recuperação:', usuarioEncontrado.usuario);
+                resolve(usuarioEncontrado);
+            });
+        });
+    }
+    
+    static atualizarSenha(idUsuario, novaSenhaHash) {
+        return new Promise((resolve, reject) => {
+            console.log('🔐 Atualizando senha para usuário:', idUsuario);
+            
+            const query = `
+                UPDATE usuarios 
+                SET senha = ?, data_atualizacao = NOW() 
+                WHERE id_usuario = ?
+            `;
+            
+            db.query(query, [novaSenhaHash, idUsuario], (err, results) => {
+                if (err) {
+                    console.error('❌ Erro ao atualizar senha:', err);
+                    return reject(err);
+                }
+                
+                console.log('✅ Senha atualizada com sucesso');
+                resolve(results);
+            });
+        });
+    }
 }
 
 module.exports = AuthModel;

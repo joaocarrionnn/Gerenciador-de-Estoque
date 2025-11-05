@@ -247,6 +247,144 @@ class AuthController {
             res.redirect("/auth/login");
         });
     }
+
+    // Processar verificação de identidade para recuperação de senha
+    static async processarVerificacaoIdentidade(req, res) {
+        try {
+            const { usuario, cpf, palavraChave } = req.body;
+            
+            console.log('🔍 Processando verificação de identidade:', { usuario, cpf });
+            
+            // Validações básicas
+            if (!usuario || !cpf || !palavraChave) {
+                return res.render("auth/recuperar_senha", { 
+                    error: "Todos os campos são obrigatórios!",
+                    success: null
+                });
+            }
+
+            // Verificar se CPF tem formato válido
+            const cpfLimpo = cpf.replace(/\D/g, '');
+            if (cpfLimpo.length !== 11) {
+                return res.render("auth/recuperar_senha", { 
+                    error: "CPF inválido! Digite um CPF com 11 dígitos.",
+                    success: null
+                });
+            }
+
+            // Buscar usuário no banco
+            const usuarioEncontrado = await AuthModel.verificarDadosRecuperacao(usuario, cpf, palavraChave);
+            
+            if (!usuarioEncontrado) {
+                return res.render("auth/recuperar_senha", { 
+                    error: "Dados incorretos! Verifique o usuário, CPF e palavra-chave.",
+                    success: null
+                });
+            }
+
+            // Verificar palavra-chave
+            const palavraChaveCorreta = await bcrypt.compare(palavraChave, usuarioEncontrado.palavra_chave);
+            
+            if (!palavraChaveCorreta) {
+                return res.render("auth/recuperar_senha", { 
+                    error: "Palavra-chave incorreta!",
+                    success: null
+                });
+            }
+
+            // Se chegou aqui, a verificação foi bem-sucedida
+            // Armazenar o ID do usuário na sessão para a próxima etapa
+            req.session.recuperacaoUsuarioId = usuarioEncontrado.id_usuario;
+            req.session.recuperacaoUsuario = usuarioEncontrado.usuario;
+
+            console.log('✅ Identidade verificada com sucesso para:', usuarioEncontrado.usuario);
+
+            res.render("auth/recuperar_senha", { 
+                error: null, 
+                success: null,
+                etapa: 'redefinir', // Indica que deve mostrar o formulário de nova senha
+                usuario: usuarioEncontrado.usuario
+            });
+
+        } catch (error) {
+            console.error('💥 Erro ao verificar identidade:', error);
+            res.render("auth/recuperar_senha", { 
+                error: "Erro ao processar verificação. Tente novamente.",
+                success: null
+            });
+        }
+    }
+
+    // Processar redefinição de senha
+    static async processarRedefinicaoSenha(req, res) {
+        try {
+            const { novaSenha, confirmarSenha } = req.body;
+            
+            console.log('🔐 Processando redefinição de senha');
+
+            // Verificar se há sessão de recuperação ativa
+            if (!req.session.recuperacaoUsuarioId) {
+                console.log('❌ Sessão de recuperação não encontrada');
+                return res.redirect('/auth/recuperar-senha');
+            }
+
+            // Validações
+            if (!novaSenha || !confirmarSenha) {
+                return res.render("auth/recuperar_senha", { 
+                    error: "Preencha ambos os campos de senha!",
+                    success: null,
+                    etapa: 'redefinir',
+                    usuario: req.session.recuperacaoUsuario
+                });
+            }
+
+            if (novaSenha !== confirmarSenha) {
+                return res.render("auth/recuperar_senha", { 
+                    error: "As senhas não coincidem!",
+                    success: null,
+                    etapa: 'redefinir',
+                    usuario: req.session.recuperacaoUsuario
+                });
+            }
+
+            if (novaSenha.length < 6) {
+                return res.render("auth/recuperar_senha", { 
+                    error: "A senha deve ter pelo menos 6 caracteres!",
+                    success: null,
+                    etapa: 'redefinir',
+                    usuario: req.session.recuperacaoUsuario
+                });
+            }
+
+            // Criar hash da nova senha
+            const saltRounds = 10;
+            const novaSenhaHash = await bcrypt.hash(novaSenha, saltRounds);
+
+            // Atualizar senha no banco
+            await AuthModel.atualizarSenha(req.session.recuperacaoUsuarioId, novaSenhaHash);
+
+            console.log('✅ Senha redefinida com sucesso para:', req.session.recuperacaoUsuario);
+
+            // Limpar sessão de recuperação
+            delete req.session.recuperacaoUsuarioId;
+            delete req.session.recuperacaoUsuario;
+
+            res.render("auth/recuperar_senha", { 
+                error: null, 
+                success: "Senha redefinida com sucesso! Agora você pode fazer login com sua nova senha.",
+                etapa: 'concluido'
+            });
+
+        } catch (error) {
+            console.error('💥 Erro ao redefinir senha:', error);
+            res.render("auth/recuperar_senha", { 
+                error: "Erro ao redefinir senha. Tente novamente.",
+                success: null,
+                etapa: 'redefinir',
+                usuario: req.session.recuperacaoUsuario
+            });
+        }
+    }
 }
 
 module.exports = AuthController;

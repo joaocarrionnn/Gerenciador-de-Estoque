@@ -193,10 +193,11 @@
         
         .btn-view:hover {
             background: var(--primary);
-            color: white;
+            color: rgb(255, 255, 255);
             border-color: var(--primary);
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(67, 97, 238, 0.2);
+            background-color: #2d3748;
         }
         
         .card-body {
@@ -236,7 +237,7 @@
         
         .item-badge {
             background: var(--primary);
-            color: white;
+            color: #2c3e50;
             padding: 0.3rem 0.6rem;
             border-radius: 12px;
             font-size: 0.8rem;
@@ -547,9 +548,7 @@
             <!-- Card de Boas-vindas -->
             <div class="welcome-card">
                 <div class="welcome-content">
-                    <h2 class="mb-2">
-                        <i class="fas fa-user-circle"></i> Olá, <%= user.nome || user.usuario %>!
-                    </h2>
+                    <h2 class="mb-2">Olá, <%= user.nome || user.usuario %>!</h2>
                     <p class="mb-1">Bem-vindo ao sistema de visualização de estoque do laboratório</p>
                 </div>
                 <div class="welcome-icon">
@@ -566,12 +565,6 @@
                     <div class="card-content">
                         <div class="card-title">Reagentes Disponíveis</div>
                         <div class="card-value"><%= stats.total_reagentes || 0 %></div>
-                        <% if (stats.reagentes_baixo_estoque > 0) { %>
-                            <div class="warning-badge">
-                                <i class="fas fa-exclamation-triangle"></i> 
-                                <%= stats.reagentes_baixo_estoque %> com estoque baixo
-                            </div>
-                        <% } %>
                     </div>
                 </div>
                 
@@ -582,12 +575,6 @@
                     <div class="card-content">
                         <div class="card-title">Vidrarias Disponíveis</div>
                         <div class="card-value"><%= stats.total_vidrarias || 0 %></div>
-                        <% if (stats.vidrarias_baixo_estoque > 0) { %>
-                            <div class="warning-badge">
-                                <i class="fas fa-exclamation-triangle"></i> 
-                                <%= stats.vidrarias_baixo_estoque %> com estoque baixo
-                            </div>
-                        <% } %>
                     </div>
                 </div>
                 

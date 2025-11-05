@@ -30,22 +30,23 @@ app.use((req, res, next) => {
     console.log('👤 Usuário na sessão:', req.session.user ? req.session.user.usuario : 'Nenhum');
     console.log('🎯 Tipo de usuário:', req.session.user ? req.session.user.tipo : 'Nenhum');
 
-    // Rotas públicas que não precisam de autenticação
+    // ✅ ROTAS PÚBLICAS CORRIGIDAS - apenas as que existem
     const publicRoutes = [
-        '/login',
-        '/criar_conta',
         '/auth/login',
-        '/auth/criar_conta',
+        '/auth/criar-conta',
         '/auth/recuperar-senha',
+        '/auth/verificar-identidade',  
+        '/auth/redefinir-senha',       
         '/auth/logout'
     ];
 
     // Se é uma rota pública, passa direto
     if (publicRoutes.includes(req.path)) {
+        console.log('🌐 Rota pública - acesso permitido');
         return next();
     }
 
-    //  SE NÃO ESTÁ AUTENTICADO, REDIRECIONA PARA LOGIN 
+    // SE NÃO ESTÁ AUTENTICADO, REDIRECIONA PARA LOGIN 
     if (!req.session.user) {
         console.log('🚫 Usuário não autenticado - redirecionando para login');
         return res.redirect('/auth/login');
@@ -55,6 +56,7 @@ app.use((req, res, next) => {
     console.log('✅ Usuário autenticado - acesso permitido');
     next();
 });
+
 
 // Configuração do Multer para upload de arquivos
 const storage = multer.diskStorage({
@@ -108,10 +110,6 @@ const { requireAuth } = require('./middlewares/authMiddleware');
 const authRoutes = require('./routes/auth');
 app.use('/auth', authRoutes);
 
-app.post('/criar_conta', (req, res) => {
-    const AuthController = require('./controllers/AuthController');
-    AuthController.processarCriarConta(req, res);
-});
 
 // Rotas principais (protegidas)
 const indexRoutes = require('./routes/index');

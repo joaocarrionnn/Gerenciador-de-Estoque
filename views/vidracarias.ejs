@@ -7,7 +7,6 @@
     <%- include('./partials/head'); %>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root {
             --primary: #2c3e50;
@@ -93,7 +92,6 @@
             box-shadow: 0 4px 8px rgba(67, 97, 238, 0.2);
         }
 
-        /* Container para botões - Versão melhorada */
         .button-container {
             display: flex;
             justify-content: flex-end;
@@ -153,8 +151,6 @@
         .primary-btn-adicionar:hover i {
             transform: scale(1.1);
         }
-
-    
         
         .glassware-grid {
             display: grid;
@@ -377,7 +373,6 @@
             }
         }
 
-        /* Estilos para a lista de movimentações */
         .movement-list {
             list-style: none;
             padding: 0;
@@ -464,7 +459,6 @@
             opacity: 0.3;
         }
 
-        /* Estilos para botões de movimentação */
         .movement-buttons {
             display: flex;
             gap: 0.5rem;
@@ -515,7 +509,6 @@
             color: #e74c3c;
         }
 
-        /* Estilos para os modais */
         .modal-header {
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             border-bottom: 1px solid #e2e8f0;
@@ -547,7 +540,6 @@
             margin-top: 0.25rem;
         }
 
-        /* Estilos para os botões de movimentação */
         .movement-buttons {
             display: flex;
             gap: 0.5rem;
@@ -598,18 +590,15 @@
             color: #dc2626;
         }
 
-        /* Estilos para a tabela no modal */
         .table-responsive {
             max-height: 400px;
             overflow-y: auto;
         }
 
-        /* Melhorar aparência dos filtros */
         .filter-group {
             margin-bottom: 1rem;
         }
 
-        /* Estilos para paginação */
         .pagination {
             display: flex;
             gap: 0.5rem;
@@ -622,149 +611,141 @@
             border-color: #3b82f6;
         }
 
-        /* Ajustes para o modal grande */
         .modal-xl {
             max-width: 1200px;
         }
 
-        /* Estilos para o botão de menu de três pontos */
-/* Estilos para o botão de menu de três pontos */
-.glassware-menu {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-}
+        .glassware-menu {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+        }
 
-.menu-btn {
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    color: #6b7280;
-}
+        .menu-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #6b7280;
+        }
 
-.menu-btn:hover {
-    background: #f8f9fa;
-    border-color: #d1d5db;
-    color: #374151;
-    transform: scale(1.05);
-}
+        .menu-btn:hover {
+            background: #f8f9fa;
+            border-color: #d1d5db;
+            color: #374151;
+            transform: scale(1.05);
+        }
 
-.menu-btn i {
-    font-size: 0.875rem;
-}
+        .menu-btn i {
+            font-size: 0.875rem;
+        }
 
-/* Estilos para o modal de detalhes no estilo da imagem */
-.detail-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
-}
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
 
+        .detail-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
+        .detail-value {
+            font-size: 1rem;
+            color: #1f2937;
+            font-weight: 500;
+        }
 
-.detail-label {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #6b7280;
-    margin-bottom: 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
+        .detail-value.empty {
+            color: #9ca3af;
+            font-style: italic;
+        }
 
-.detail-value {
-    font-size: 1rem;
-    color: #1f2937;
-    font-weight: 500;
-}
+        .info-section {
+            margin-bottom: 2.5rem;
+        }
 
-.detail-value.empty {
-    color: #9ca3af;
-    font-style: italic;
-}
+        .info-section:last-child {
+            margin-bottom: 0;
+        }
 
-.info-section {
-    margin-bottom: 2.5rem;
-}
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
 
-.info-section:last-child {
-    margin-bottom: 0;
-}
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
 
-.section-title {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: #374151;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid #e5e7eb;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
+        .status-available-badge {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
 
-.status-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.5rem 1rem;
-    border-radius: 9999px;
-    font-size: 0.875rem;
-    font-weight: 600;
-}
+        .status-low-badge {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
 
-.status-available-badge {
-    background-color: #d1fae5;
-    color: #065f46;
-}
+        .status-unavailable-badge {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
 
-.status-low-badge {
-    background-color: #fef3c7;
-    color: #92400e;
-}
+        .hazard-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
 
-.status-unavailable-badge {
-    background-color: #fee2e2;
-    color: #991b1b;
-}
+        .hazard-high {
+            background-color: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
 
-/* Estilo específico para o grau de periculosidade como na imagem */
-.hazard-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    font-size: 0.875rem;
-    font-weight: 600;
-    text-transform: uppercase;
-}
+        .hazard-medium {
+            background-color: #fef3c7;
+            color: #d97706;
+            border: 1px solid #fde68a;
+        }
 
-.hazard-high {
-    background-color: #fee2e2;
-    color: #dc2626;
-    border: 1px solid #fecaca;
-}
+        .hazard-low {
+            background-color: #d1fae5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+        }
 
-.hazard-medium {
-    background-color: #fef3c7;
-    color: #d97706;
-    border: 1px solid #fde68a;
-}
-
-.hazard-low {
-    background-color: #d1fae5;
-    color: #059669;
-    border: 1px solid #a7f3d0;
-}
-
-/* Estilos para os modais */
-.modal-header {
+        .modal-header {
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             border-bottom: 1px solid #e2e8f0;
         }
@@ -776,21 +757,18 @@
             align-items: center;
         }
 
-        /* Corrigir z-index e overflow dos modais */
         .fixed.inset-0 {
             z-index: 9999 !important;
             overflow-y: auto;
             padding: 1rem;
         }
 
-        /* Container do modal centralizado */
         .fixed.inset-0.flex {
             align-items: flex-start;
             padding-top: 3rem;
             padding-bottom: 3rem;
         }
 
-        /* Prevenir que o modal saia da tela */
         .fixed.inset-0 > div {
             max-height: calc(100vh - 6rem);
             overflow-y: auto;
@@ -860,7 +838,8 @@
                 </div>
             </div>
 
-            <!-- Card de Movimentações -->
+            <!-- Card de Movimentações - APENAS PARA ADMINISTRADORES -->
+            <% if (user && user.tipo === 'admin') { %>
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-title">
@@ -990,7 +969,7 @@
                     </div>
                 </div>
             </div>
-
+            <% } %>
 
             <!-- Lista de Vidrarias -->
             <div class="card">
@@ -1054,23 +1033,24 @@
                                     %>
                                     <span class="glassware-status <%= statusClass %>"><%= statusText %></span>
                                     
-                                    <!-- Botões de Movimentação -->
+                                    <!-- Botões de Movimentação - APENAS PARA ADMINISTRADORES -->
                                     <% if (user && user.tipo === 'admin') { %>
-                                        <div class="movement-buttons">
-                                            <button type="button" class="btn-action btn-take" 
-                                                    onclick="openTakeModal(...)"
-                                                    <%= vidraria.quantidade === 0 ? 'disabled' : '' %>>
-                                                <i class="fas fa-sign-out-alt"></i> Retirar
-                                            </button>
-                                            <button type="button" class="btn-action btn-add" 
-                                                    onclick="openAddModal(...)">
-                                                <i class="fas fa-sign-in-alt"></i> Adicionar
-                                            </button>
-                                        </div>
-                                        <% } %>
+                                    <div class="movement-buttons">
+                                        <button type="button" class="btn-action btn-take" 
+                                                onclick="openTakeModal(<%= vidraria.id %>, '<%= vidraria.nome.replace(/'/g, "\\'") %>', <%= vidraria.quantidade %>)"
+                                                <%= vidraria.quantidade === 0 ? 'disabled' : '' %>>
+                                            <i class="fas fa-sign-out-alt"></i> Retirar
+                                        </button>
+                                        <button type="button" class="btn-action btn-add" 
+                                                onclick="openAddModal(<%= vidraria.id %>, '<%= vidraria.nome.replace(/'/g, "\\'") %>')">
+                                            <i class="fas fa-sign-in-alt"></i> Adicionar
+                                        </button>
+                                    </div>
+                                    <% } %>
                                     
+                                    <!-- Botões de Ação - APENAS PARA ADMINISTRADORES -->
+                                    <% if (user && user.tipo === 'admin') { %>
                                     <div class="action-buttons">
-                                        <% if (user && user.tipo === 'admin') { %>
                                         <a href="/vidracarias/editar/<%= vidraria.id %>" class="btn-action btn-edit" title="Editar">
                                             <i class="fas fa-edit"></i> Editar
                                         </a>
@@ -1080,8 +1060,8 @@
                                                 <i class="fas fa-trash-alt"></i> Excluir
                                             </button>
                                         </form>
-                                        <% } %>
                                     </div>
+                                    <% } %>
                                 </div>
                             </div>
                         <% }) %>
@@ -1089,9 +1069,11 @@
                         <div class="empty-state" style="grid-column: 1/-1;">
                             <i class="fas fa-flask"></i>
                             <p>Nenhuma vidraria cadastrada ainda.</p>
+                            <% if (user && user.tipo === 'admin') { %>
                             <a href="/vidracarias/adicionar" class="primary-btn" style="margin-top: 1rem;">
                                 <i class="fas fa-plus"></i> Adicionar Primeira Vidraria
                             </a>
+                            <% } %>
                         </div>
                     <% } %>
                 </div>
@@ -1259,143 +1241,142 @@
                     </div>
                 </div>
             </div>
+
             <!-- Modal de Detalhes da Vidraria -->
-<!-- Modal de Detalhes da Vidraria -->
-<div id="detailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl mx-4 max-h-[90vh] flex flex-col">
-        <div class="flex items-center justify-between p-6 border-b border-gray-200">
-            <h3 class="text-xl font-semibold text-gray-900 flex items-center">
-                <i class="fas fa-info-circle text-blue-500 mr-2"></i>
-                Detalhes da Vidraria
-            </h3>
-            <button type="button" onclick="closeDetailsModal()" class="text-gray-400 hover:text-gray-600">
-                <i class="fas fa-times text-lg"></i>
-            </button>
-        </div>
-        
-        <div class="p-6 flex-1 overflow-auto">
-            <!-- Informações Básicas -->
-            <div class="info-section">
-                <h4 class="section-title">
-                    <i class="fas fa-tag"></i>
-                    Informações Básicas
-                </h4>
-                <div class="detail-grid">
-                    <div class="detail-group">
-                        <div class="detail-label">ID do Produto</div>
-                        <div class="detail-value" id="detailId">-</div>
+            <div id="detailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl mx-4 max-h-[90vh] flex flex-col">
+                    <div class="flex items-center justify-between p-6 border-b border-gray-200">
+                        <h3 class="text-xl font-semibold text-gray-900 flex items-center">
+                            <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                            Detalhes da Vidraria
+                        </h3>
+                        <button type="button" onclick="closeDetailsModal()" class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times text-lg"></i>
+                        </button>
                     </div>
-                    <div class="detail-group">
-                        <div class="detail-label">Categoria</div>
-                        <div class="detail-value" id="detailCategoria">-</div>
-                    </div>
-                    <div class="detail-group">
-                        <div class="detail-label">Nome</div>
-                        <div class="detail-value" id="detailNome">-</div>
-                    </div>
-                    <div class="detail-group">
-                        <div class="detail-label">Grau de Periculosidade</div>
-                        <div id="detailPericulosidade">-</div>
-                    </div>
-                </div>
-            </div>
+                    
+                    <div class="p-6 flex-1 overflow-auto">
+                        <!-- Informações Básicas -->
+                        <div class="info-section">
+                            <h4 class="section-title">
+                                <i class="fas fa-tag"></i>
+                                Informações Básicas
+                            </h4>
+                            <div class="detail-grid">
+                                <div class="detail-group">
+                                    <div class="detail-label">ID do Produto</div>
+                                    <div class="detail-value" id="detailId">-</div>
+                                </div>
+                                <div class="detail-group">
+                                    <div class="detail-label">Categoria</div>
+                                    <div class="detail-value" id="detailCategoria">-</div>
+                                </div>
+                                <div class="detail-group">
+                                    <div class="detail-label">Nome</div>
+                                    <div class="detail-value" id="detailNome">-</div>
+                                </div>
+                                <div class="detail-group">
+                                    <div class="detail-label">Grau de Periculosidade</div>
+                                    <div id="detailPericulosidade">-</div>
+                                </div>
+                            </div>
+                        </div>
 
-            <!-- Estoque e Localização -->
-            <div class="info-section">
-                <h4 class="section-title">
-                    <i class="fas fa-boxes"></i>
-                    Estoque e Localização
-                </h4>
-                <div class="detail-grid">
-                    <div class="detail-group">
-                        <div class="detail-label">Quantidade</div>
-                        <div class="detail-value" id="detailQuantidade">-</div>
-                    </div>
-                    <div class="detail-group">
-                        <div class="detail-label">Localização</div>
-                        <div class="detail-value" id="detailLocalizacao">-</div>
-                    </div>
-                    <div class="detail-group">
-                        <div class="detail-label">Estoque Mínimo</div>
-                        <div class="detail-value" id="detailEstoqueMinimo">-</div>
-                    </div>
-                    <div class="detail-group">
-                        <div class="detail-label">Status</div>
-                        <div id="detailStatus">-</div>
-                    </div>
-                </div>
-            </div>
+                        <!-- Estoque e Localização -->
+                        <div class="info-section">
+                            <h4 class="section-title">
+                                <i class="fas fa-boxes"></i>
+                                Estoque e Localização
+                            </h4>
+                            <div class="detail-grid">
+                                <div class="detail-group">
+                                    <div class="detail-label">Quantidade</div>
+                                    <div class="detail-value" id="detailQuantidade">-</div>
+                                </div>
+                                <div class="detail-group">
+                                    <div class="detail-label">Localização</div>
+                                    <div class="detail-value" id="detailLocalizacao">-</div>
+                                </div>
+                                <div class="detail-group">
+                                    <div class="detail-label">Estoque Mínimo</div>
+                                    <div class="detail-value" id="detailEstoqueMinimo">-</div>
+                                </div>
+                                <div class="detail-group">
+                                    <div class="detail-label">Status</div>
+                                    <div id="detailStatus">-</div>
+                                </div>
+                            </div>
+                        </div>
 
-            <!-- Fornecedor e Regulamentação -->
-            <div class="info-section">
-                <h4 class="section-title">
-                    <i class="fas fa-truck"></i>
-                    Fornecedor e Regulamentação
-                </h4>
-                <div class="detail-grid">
-                    <div class="detail-group">
-                        <div class="detail-label">Fornecedor</div>
-                        <div class="detail-value" id="detailFornecedor">-</div>
-                    </div>
-                    <div class="detail-group">
-                        <div class="detail-label">Data de Aquisição</div>
-                        <div class="detail-value" id="detailDataAquisicao">-</div>
-                    </div>
-                    <div class="detail-group">
-                        <div class="detail-label">Órgão Regulador</div>
-                        <div class="detail-value" id="detailOrgaoRegulador">-</div>
-                    </div>
-                    <div class="detail-group">
-                        <div class="detail-label">Disponível</div>
-                        <div class="detail-value" id="detailDisponivel">-</div>
-                    </div>
-                </div>
-            </div>
+                        <!-- Fornecedor e Regulamentação -->
+                        <div class="info-section">
+                            <h4 class="section-title">
+                                <i class="fas fa-truck"></i>
+                                Fornecedor e Regulamentação
+                            </h4>
+                            <div class="detail-grid">
+                                <div class="detail-group">
+                                    <div class="detail-label">Fornecedor</div>
+                                    <div class="detail-value" id="detailFornecedor">-</div>
+                                </div>
+                                <div class="detail-group">
+                                    <div class="detail-label">Data de Aquisição</div>
+                                    <div class="detail-value" id="detailDataAquisicao">-</div>
+                                </div>
+                                <div class="detail-group">
+                                    <div class="detail-label">Órgão Regulador</div>
+                                    <div class="detail-value" id="detailOrgaoRegulador">-</div>
+                                </div>
+                                <div class="detail-group">
+                                    <div class="detail-label">Disponível</div>
+                                    <div class="detail-value" id="detailDisponivel">-</div>
+                                </div>
+                            </div>
+                        </div>
 
-            <!-- Informações Adicionais -->
-            <div class="info-section">
-                <h4 class="section-title">
-                    <i class="fas fa-file-alt"></i>
-                    Informações Adicionais
-                </h4>
-                <div class="detail-grid">
-                    <div class="detail-group" style="grid-column: 1 / -1;">
-                        <div class="detail-label">Descrição</div>
-                        <div class="detail-value" id="detailDescricao">-</div>
+                        <!-- Informações Adicionais -->
+                        <div class="info-section">
+                            <h4 class="section-title">
+                                <i class="fas fa-file-alt"></i>
+                                Informações Adicionais
+                            </h4>
+                            <div class="detail-grid">
+                                <div class="detail-group" style="grid-column: 1 / -1;">
+                                    <div class="detail-label">Descrição</div>
+                                    <div class="detail-value" id="detailDescricao">-</div>
+                                </div>
+                                <div class="detail-group" style="grid-column: 1 / -1;">
+                                    <div class="detail-label">Instruções de Segurança</div>
+                                    <div class="detail-value" id="detailInstrucoesSeguranca">-</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="detail-group" style="grid-column: 1 / -1;">
-                        <div class="detail-label">Instruções de Segurança</div>
-                        <div class="detail-value" id="detailInstrucoesSeguranca">-</div>
+                    
+                    <div class="flex justify-end gap-3 p-6 border-t border-gray-200 bg-gray-50 rounded-b-lg">
+                        <button type="button" onclick="closeDetailsModal()" 
+                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Fechar
+                        </button>
+                        <% if (user && user.tipo === 'admin') { %>
+                        <button type="button" id="editDetailsBtn"
+                                class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 flex items-center">
+                            <i class="fas fa-edit mr-2"></i>
+                            Editar Vidraria
+                        </button>
+                        <% } %>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="flex justify-end gap-3 p-6 border-t border-gray-200 bg-gray-50 rounded-b-lg">
-            <button type="button" onclick="closeDetailsModal()" 
-                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                Fechar
-            </button>
-            <button type="button" id="editDetailsBtn"
-                    class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 flex items-center">
-                <i class="fas fa-edit mr-2"></i>
-                Editar Vidraria
-            </button>
-        </div>
-    </div>
-</div>
         </div>
     </main>
-
 
     <!-- Container para Notificações -->
     <div id="toast-container" class="fixed top-4 right-4 z-50 max-w-sm"></div>
 
-
     <script>
         // Carregar estatísticas
         document.addEventListener('DOMContentLoaded', function() {
-            // Simulação de dados - substitua pela sua API real
             const statistics = {
                 total: <%= typeof vidracarias !== 'undefined' ? vidracarias.length : 0 %>,
                 disponiveis: <%= typeof vidracarias !== 'undefined' ? vidracarias.filter(v => v.quantidade > v.estoque_minimo).length : 0 %>,
@@ -1449,6 +1430,12 @@
                 animateCounter(document.getElementById('estoque-baixo'), statistics.estoqueBaixo);
                 animateCounter(document.getElementById('esgotados'), statistics.esgotados);
             }, 500);
+
+            // Carregar movimentações apenas se for admin
+            <% if (user && user.tipo === 'admin') { %>
+            carregarMovimentacoes();
+            setInterval(carregarMovimentacoes, 30000);
+            <% } %>
         });
 
         // Função para confirmar exclusão
@@ -1466,13 +1453,15 @@
             });
         });
 
-
-        // Carregar movimentações
+        // Carregar movimentações - APENAS PARA ADMIN
         function carregarMovimentacoes() {
+            // Verificar se o elemento existe antes de tentar carregar
+            const movementsList = document.getElementById('movementsList');
+            if (!movementsList) return;
+
             fetch('/api/vidracarias/movimentacoes?limit=8')
                 .then(response => response.json())
                 .then(movimentacoes => {
-                    const movementsList = document.getElementById('movementsList');
                     const lastUpdate = document.getElementById('lastUpdate');
                     
                     if (movimentacoes.length === 0) {
@@ -1506,109 +1495,28 @@
                         </li>
                     `).join('');
                     
-                    lastUpdate.textContent = `Atualizado ${new Date().toLocaleTimeString('pt-BR')}`;
+                    if (lastUpdate) {
+                        lastUpdate.textContent = `Atualizado ${new Date().toLocaleTimeString('pt-BR')}`;
+                    }
                 })
                 .catch(error => {
                     console.error('Erro ao carregar movimentações:', error);
-                    document.getElementById('movementsList').innerHTML = `
-                        <div class="empty-movements">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <p>Erro ao carregar movimentações</p>
-                        </div>
-                    `;
+                    const movementsList = document.getElementById('movementsList');
+                    if (movementsList) {
+                        movementsList.innerHTML = `
+                            <div class="empty-movements">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <p>Erro ao carregar movimentações</p>
+                            </div>
+                        `;
+                    }
                 });
         }
 
-        // Carregar vidrarias no modal
-        function carregarVidrariasParaMovimentacao() {
-            fetch('/api/vidracarias/list')
-                .then(response => response.json())
-                .then(vidracarias => {
-                    const select = document.getElementById('vidrariaSelect');
-                    select.innerHTML = '<option value="">Selecione uma vidraria...</option>' +
-                        vidracarias.map(v => `
-                            <option value="${v.id}" data-stock="${v.quantidade}">
-                                ${v.nome} (Estoque: ${v.quantidade})
-                            </option>
-                        `).join('');
-                });
-        }
-
-        // Registrar nova movimentação
-        function registrarMovimentacao() {
-            const form = document.getElementById('movimentacaoForm');
-            const vidrariaId = document.getElementById('vidrariaSelect').value;
-            const tipo = document.getElementById('tipoMovimentacao').value;
-            const quantidade = document.getElementById('quantidadeMovimentacao').value;
-            const observacao = document.getElementById('observacaoMovimentacao').value;
-            
-            if (!vidrariaId || !tipo || !quantidade) {
-                alert('Por favor, preencha todos os campos obrigatórios.');
-                return;
-            }
-            
-            const selectedOption = document.getElementById('vidrariaSelect').selectedOptions[0];
-            const estoqueAtual = parseInt(selectedOption.getAttribute('data-stock'));
-            
-            if (tipo === 'retirada' && parseInt(quantidade) > estoqueAtual) {
-                alert('Quantidade de retirada não pode ser maior que o estoque atual.');
-                return;
-            }
-            
-            fetch('/api/vidracarias/movimentacao', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    vidraria_id: vidrariaId,
-                    tipo: tipo,
-                    quantidade: quantidade,
-                    observacao: observacao
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Fechar modal e limpar formulário
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('movimentacaoModal'));
-                    modal.hide();
-                    form.reset();
-                    
-                    // Recarregar movimentações e estatísticas
-                    carregarMovimentacoes();
-                    location.reload(); // Recarrega a página para atualizar estatísticas
-                } else {
-                    alert(data.error || 'Erro ao registrar movimentação');
-                }
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-                alert('Erro ao registrar movimentação');
-            });
-        }
-
-        // Inicializar quando a página carregar
-        document.addEventListener('DOMContentLoaded', function() {
-            carregarMovimentacoes();
-            
-            // Configurar modal
-            const movimentacaoModal = document.getElementById('movimentacaoModal');
-            if (movimentacaoModal) {
-                movimentacaoModal.addEventListener('show.bs.modal', function() {
-                    carregarVidrariasParaMovimentacao();
-                });
-            }
-            
-            // Atualizar movimentações a cada 30 segundos
-            setInterval(carregarMovimentacoes, 30000);
-        });
-
-        // Funções para os modais - Tailwind Version
+        // Funções para os modais
         function openTakeModal(vidrariaId, vidrariaNome, estoqueAtual) {
             console.log('Abrindo modal de retirada:', { vidrariaId, vidrariaNome, estoqueAtual });
             
-            // Preencher os campos do modal
             document.getElementById('takeVidrariaId').value = vidrariaId;
             document.getElementById('takeVidrariaName').value = vidrariaNome;
             document.getElementById('takeStock').textContent = estoqueAtual;
@@ -1618,15 +1526,13 @@
             document.getElementById('takeProject').value = '';
             document.getElementById('takeNotes').value = '';
             
-            // Mostrar o modal
             document.getElementById('takeModal').classList.remove('hidden');
-            document.body.style.overflow = 'hidden'; // Prevenir scroll
+            document.body.style.overflow = 'hidden';
         }
 
         function openAddModal(vidrariaId, vidrariaNome) {
             console.log('Abrindo modal de adição:', { vidrariaId, vidrariaNome });
             
-            // Preencher os campos do modal
             document.getElementById('addVidrariaId').value = vidrariaId;
             document.getElementById('addVidrariaName').value = vidrariaNome;
             document.getElementById('addQuantity').value = '1';
@@ -1635,42 +1541,36 @@
             document.getElementById('addPurchaseDate').value = '';
             document.getElementById('addNotes').value = '';
             
-            // Mostrar o modal
             document.getElementById('addModal').classList.remove('hidden');
-            document.body.style.overflow = 'hidden'; // Prevenir scroll
+            document.body.style.overflow = 'hidden';
         }
 
         function closeTakeModal() {
             document.getElementById('takeModal').classList.add('hidden');
-            document.body.style.overflow = ''; // Restaurar scroll
+            document.body.style.overflow = '';
         }
 
         function closeAddModal() {
             document.getElementById('addModal').classList.add('hidden');
-            document.body.style.overflow = ''; // Restaurar scroll
+            document.body.style.overflow = '';
         }
 
         // Fechar modais clicando fora
         document.addEventListener('DOMContentLoaded', function() {
-            // Fechar modal de retirada clicando fora
-            document.getElementById('takeModal').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeTakeModal();
-                }
+            document.getElementById('takeModal')?.addEventListener('click', function(e) {
+                if (e.target === this) closeTakeModal();
             });
             
-            // Fechar modal de adição clicando fora
-            document.getElementById('addModal').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeAddModal();
-                }
+            document.getElementById('addModal')?.addEventListener('click', function(e) {
+                if (e.target === this) closeAddModal();
             });
             
-            // Fechar com ESC key
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
                     closeTakeModal();
                     closeAddModal();
+                    closeAllMovementsModal();
+                    closeDetailsModal();
                 }
             });
         });
@@ -1746,7 +1646,9 @@
                     
                     // Recarregar dados após um breve delay
                     setTimeout(() => {
+                        <% if (user && user.tipo === 'admin') { %>
                         carregarMovimentacoes();
+                        <% } %>
                         location.reload();
                     }, 1500);
                     
@@ -1769,7 +1671,6 @@
         function showToast(message, type = 'success') {
             const toastContainer = document.getElementById('toast-container') || createToastContainer();
             
-            const toastId = 'toast-' + Date.now();
             const toast = document.createElement('div');
             
             const bgColor = type === 'success' ? 'bg-green-500' : 
@@ -1818,26 +1719,6 @@
             return container;
         }
 
-        // Validação em tempo real para quantidade de retirada
-        document.addEventListener('DOMContentLoaded', function() {
-            const takeQuantity = document.getElementById('takeQuantity');
-            if (takeQuantity) {
-                takeQuantity.addEventListener('input', function() {
-                    const max = parseInt(this.max);
-                    const value = parseInt(this.value) || 0;
-                    const stockInfo = document.getElementById('takeStockInfo');
-                    
-                    if (value > max) {
-                        this.classList.add('border-red-500', 'ring-2', 'ring-red-200');
-                        stockInfo.innerHTML = `<span class="text-red-600 font-medium">Quantidade excede o estoque disponível (${max} unidades)</span>`;
-                    } else {
-                        this.classList.remove('border-red-500', 'ring-2', 'ring-red-200');
-                        stockInfo.innerHTML = `Estoque disponível: <span id="takeStock">${max}</span> unidades`;
-                    }
-                });
-            }
-        });
-
         // Variáveis para paginação
         let currentPage = 1;
         const movementsPerPage = 10;
@@ -1846,6 +1727,12 @@
 
         // Funções para o modal de todas as movimentações
         function openAllMovementsModal() {
+            // Verificar se é admin antes de abrir
+            <% if (!(user && user.tipo === 'admin')) { %>
+            showToast('Acesso restrito a administradores', 'warning');
+            return;
+            <% } %>
+            
             console.log('Abrindo modal de todas as movimentações');
             document.getElementById('allMovementsModal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
@@ -1859,63 +1746,9 @@
             document.body.style.overflow = '';
         }
 
-        // Carregar movimentações (apenas 4 últimas para o card)
-        function carregarMovimentacoes() {
-            fetch('/api/vidracarias/movimentacoes?limit=4')
-                .then(response => response.json())
-                .then(movimentacoes => {
-                    const movementsList = document.getElementById('movementsList');
-                    const lastUpdate = document.getElementById('lastUpdate');
-                    
-                    if (movimentacoes.length === 0) {
-                        movementsList.innerHTML = `
-                            <div class="empty-movements">
-                                <i class="fas fa-exchange-alt"></i>
-                                <p>Nenhuma movimentação registrada</p>
-                            </div>
-                        `;
-                        return;
-                    }
-                    
-                    movementsList.innerHTML = movimentacoes.map(mov => `
-                        <li class="movement-item">
-                            <div class="movement-icon ${mov.tipo}">
-                                <i class="fas ${mov.tipo === 'retirada' ? 'fa-arrow-up' : 'fa-arrow-down'}"></i>
-                            </div>
-                            <div class="movement-content">
-                                <div class="movement-title">${mov.vidraria_nome}</div>
-                                <div class="movement-details">
-                                    ${mov.tipo === 'retirada' ? 'Retirada' : 'Reposição'} por ${mov.usuario}
-                                    ${mov.observacao ? ` • ${mov.observacao}` : ''}
-                                </div>
-                            </div>
-                            <div class="movement-quantity ${mov.tipo}">
-                                ${mov.tipo === 'retirada' ? '-' : '+'}${mov.quantidade}
-                            </div>
-                            <div class="movement-time">
-                                ${new Date(mov.data_movimentacao).toLocaleDateString('pt-BR')}
-                                <br>
-                                <small>${new Date(mov.data_movimentacao).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}</small>
-                            </div>
-                        </li>
-                    `).join('');
-                    
-                    lastUpdate.textContent = `Atualizado ${new Date().toLocaleTimeString('pt-BR')}`;
-                })
-                .catch(error => {
-                    console.error('Erro ao carregar movimentações:', error);
-                    document.getElementById('movementsList').innerHTML = `
-                        <div class="empty-movements">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <p>Erro ao carregar movimentações</p>
-                        </div>
-                    `;
-                });
-        }
-
         // Carregar todas as movimentações para o modal
         function loadAllMovements(page = 1) {
-            fetch('/api/vidracarias/movimentacoes?limit=1000') // Buscar muitas movimentações
+            fetch('/api/vidracarias/movimentacoes?limit=1000')
                 .then(response => response.json())
                 .then(movimentacoes => {
                     allMovementsData = movimentacoes;
@@ -1947,16 +1780,13 @@
             const endDate = document.getElementById('filterEndDate').value;
             
             filteredMovements = allMovementsData.filter(mov => {
-                // Filtro de busca
                 const matchesSearch = !searchTerm || 
                     mov.vidraria_nome.toLowerCase().includes(searchTerm) ||
                     mov.usuario.toLowerCase().includes(searchTerm) ||
                     (mov.observacao && mov.observacao.toLowerCase().includes(searchTerm));
                 
-                // Filtro de tipo
                 const matchesType = !typeFilter || mov.tipo === typeFilter;
                 
-                // Filtro de data
                 const movDate = new Date(mov.data_movimentacao).toISOString().split('T')[0];
                 const matchesStartDate = !startDate || movDate >= startDate;
                 const matchesEndDate = !endDate || movDate <= endDate;
@@ -2036,7 +1866,6 @@
             const paginationContainer = document.getElementById('movementsPagination');
             const paginationInfo = document.getElementById('movementsPaginationInfo');
             
-            // Informações da paginação
             const startItem = (currentPage - 1) * movementsPerPage + 1;
             const endItem = Math.min(currentPage * movementsPerPage, filteredMovements.length);
             paginationInfo.textContent = `Mostrando ${startItem}-${endItem} de ${filteredMovements.length} registros`;
@@ -2093,7 +1922,6 @@
             updateMovementsTable();
             updatePagination();
             
-            // Scroll para o topo da tabela
             document.getElementById('allMovementsTable').scrollIntoView({ behavior: 'smooth' });
         }
 
@@ -2112,219 +1940,150 @@
             
             // Fechar modal clicando fora
             document.getElementById('allMovementsModal')?.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeAllMovementsModal();
-                }
-            });
-            
-            // Fechar com ESC
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && !document.getElementById('allMovementsModal').classList.contains('hidden')) {
-                    closeAllMovementsModal();
-                }
+                if (e.target === this) closeAllMovementsModal();
             });
         });
 
-        // Atualizar movimentações a cada 30 segundos
-        setInterval(carregarMovimentacoes, 30000);
+        // Funções para o modal de detalhes
+        function openDetailsModal(vidrariaId, vidrariaNome) {
+            console.log('Abrindo modal de detalhes para:', { vidrariaId, vidrariaNome });
+            
+            const modal = document.getElementById('detailsModal');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            
+            // Buscar dados completos da vidraria
+            fetch(`/api/vidracarias/${vidrariaId}`)
+                .then(response => {
+                    const contentType = response.headers.get('content-type');
+                    if (!contentType || !contentType.includes('application/json')) {
+                        throw new Error('Resposta não é JSON');
+                    }
+                    return response.json();
+                })
+                .then(vidraria => {
+                    if (vidraria.success) {
+                        preencherModalDetalhes(vidraria.data);
+                    } else {
+                        throw new Error(vidraria.error || 'Erro ao carregar dados');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar detalhes da vidraria:', error);
+                    preencherModalBasico(vidrariaId, vidrariaNome);
+                    showToast('Algumas informações podem estar incompletas', 'warning');
+                });
+        }
 
-// Funções para o modal de detalhes - VERSÃO CORRIGIDA
-function openDetailsModal(vidrariaId, vidrariaNome) {
-    console.log('Abrindo modal de detalhes para:', { vidrariaId, vidrariaNome });
-    
-    // Mostrar loading
-    const modal = document.getElementById('detailsModal');
-    modal.classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
-    
-    // Buscar dados completos da vidraria
-    fetch(`/api/vidracarias/${vidrariaId}`)
-        .then(response => {
-            // Verificar se a resposta é JSON
-            const contentType = response.headers.get('content-type');
-            if (!contentType || !contentType.includes('application/json')) {
-                throw new Error('Resposta não é JSON');
+        function closeDetailsModal() {
+            document.getElementById('detailsModal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function preencherModalBasico(vidrariaId, vidrariaNome) {
+            document.getElementById('detailId').textContent = vidrariaId ? `#${vidrariaId}` : '-';
+            document.getElementById('detailNome').textContent = vidrariaNome || '-';
+            document.getElementById('detailQuantidade').textContent = 'Informação não disponível';
+            document.getElementById('detailLocalizacao').textContent = 'Informação não disponível';
+            document.getElementById('detailEstoqueMinimo').textContent = 'Informação não disponível';
+            
+            const statusElement = document.getElementById('detailStatus');
+            statusElement.innerHTML = `<span class="status-badge status-available-badge">Carregando...</span>`;
+
+            document.getElementById('detailCategoria').textContent = 'Informação não disponível';
+            document.getElementById('detailPericulosidade').innerHTML = '<span class="detail-value">Informação não disponível</span>';
+            document.getElementById('detailFornecedor').textContent = 'Informação não disponível';
+            document.getElementById('detailDataAquisicao').textContent = 'Informação não disponível';
+            document.getElementById('detailOrgaoRegulador').textContent = 'ANVISA';
+            document.getElementById('detailDisponivel').textContent = 'Informação não disponível';
+            document.getElementById('detailDescricao').textContent = 'Descrição não disponível no momento.';
+            document.getElementById('detailInstrucoesSeguranca').textContent = 'Instruções de segurança não disponíveis.';
+
+            const editBtn = document.getElementById('editDetailsBtn');
+            if (editBtn) {
+                editBtn.style.display = 'none';
             }
-            return response.json();
-        })
-        .then(vidraria => {
-            if (vidraria.success) {
-                preencherModalDetalhes(vidraria.data);
+        }
+
+        function preencherModalDetalhes(vidraria) {
+            document.getElementById('detailId').textContent = vidraria.id ? `#${vidraria.id}` : '-';
+            document.getElementById('detailCategoria').textContent = formatCategoria(vidraria.categoria) || '-';
+            document.getElementById('detailNome').textContent = vidraria.nome || '-';
+            
+            const periculosidadeElement = document.getElementById('detailPericulosidade');
+            const periculosidade = vidraria.grau_periculosidade || vidraria.periculosidade || 'Não informado';
+            let periculosidadeClass = 'hazard-badge ';
+            
+            if (periculosidade.toLowerCase().includes('alto') || periculosidade.toLowerCase().includes('high')) {
+                periculosidadeClass += 'hazard-high';
+            } else if (periculosidade.toLowerCase().includes('médio') || periculosidade.toLowerCase().includes('medium')) {
+                periculosidadeClass += 'hazard-medium';
+            } else if (periculosidade.toLowerCase().includes('baixo') || periculosidade.toLowerCase().includes('low')) {
+                periculosidadeClass += 'hazard-low';
             } else {
-                throw new Error(vidraria.error || 'Erro ao carregar dados');
+                periculosidadeClass = 'detail-value';
             }
-        })
-        .catch(error => {
-            console.error('Erro ao carregar detalhes da vidraria:', error);
             
-            // Preencher com dados básicos (fallback)
-            preencherModalBasico(vidrariaId, vidrariaNome);
+            periculosidadeElement.innerHTML = periculosidadeClass.includes('hazard-badge') ? 
+                `<span class="${periculosidadeClass}">${periculosidade}</span>` : 
+                `<span class="detail-value">${periculosidade}</span>`;
+
+            document.getElementById('detailQuantidade').textContent = vidraria.quantidade ? `${vidraria.quantidade} ${vidraria.unidade_medida || 'unidades'}` : '0 unidades';
+            document.getElementById('detailLocalizacao').textContent = vidraria.localizacao || 'Não informada';
+            document.getElementById('detailEstoqueMinimo').textContent = vidraria.estoque_minimo ? `${vidraria.estoque_minimo} ${vidraria.unidade_medida || 'unidades'}` : 'Não definido';
             
-            showToast('Algumas informações podem estar incompletas', 'warning');
+            const statusElement = document.getElementById('detailStatus');
+            let statusClass, statusText;
+            
+            if (vidraria.quantidade === 0) {
+                statusClass = 'status-unavailable-badge';
+                statusText = 'Indisponível';
+            } else if (vidraria.quantidade <= vidraria.estoque_minimo) {
+                statusClass = 'status-low-badge';
+                statusText = 'Estoque Baixo';
+            } else {
+                statusClass = 'status-available-badge';
+                statusText = 'Disponível';
+            }
+            
+            statusElement.innerHTML = `<span class="status-badge ${statusClass}">${statusText}</span>`;
+
+            document.getElementById('detailFornecedor').textContent = vidraria.fornecedor || 'Não informado';
+            document.getElementById('detailDataAquisicao').textContent = vidraria.data_aquisicao ? 
+                new Date(vidraria.data_aquisicao).toLocaleDateString('pt-BR') : 'Não informada';
+            document.getElementById('detailOrgaoRegulador').textContent = vidraria.orgao_regulador || 'ANVISA';
+            document.getElementById('detailDisponivel').textContent = vidraria.quantidade > 0 ? 'Sim' : 'Não';
+
+            document.getElementById('detailDescricao').textContent = vidraria.descricao || 'Nenhuma descrição fornecida';
+            document.getElementById('detailInstrucoesSeguranca').textContent = vidraria.instrucoes_seguranca || 'Nenhuma instrução de segurança específica';
+
+            const editBtn = document.getElementById('editDetailsBtn');
+            if (editBtn) {
+                editBtn.onclick = function() {
+                    window.location.href = `/vidracarias/editar/${vidraria.id}`;
+                };
+            }
+        }
+
+        // Funções auxiliares para formatação
+        function formatCategoria(categoria) {
+            const categorias = {
+                'volumetrico': 'Volumétrico',
+                'transferencia': 'Transferência',
+                'aquecimento': 'Aquecimento',
+                'separacao': 'Separação',
+                'suporte': 'Suporte',
+                'medicao': 'Medição'
+            };
+            return categorias[categoria] || categoria;
+        }
+
+        // Adicionar event listeners para o modal de detalhes
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('detailsModal')?.addEventListener('click', function(e) {
+                if (e.target === this) closeDetailsModal();
+            });
         });
-}
-
-// Função fallback para quando a API falha
-function preencherModalBasico(vidrariaId, vidrariaNome) {
-    // Informações Básicas
-    document.getElementById('detailId').textContent = vidrariaId ? `#${vidrariaId}` : '-';
-    document.getElementById('detailNome').textContent = vidrariaNome || '-';
-    
-    // Estoque e Localização (valores padrão)
-    document.getElementById('detailQuantidade').textContent = 'Informação não disponível';
-    document.getElementById('detailLocalizacao').textContent = 'Informação não disponível';
-    document.getElementById('detailEstoqueMinimo').textContent = 'Informação não disponível';
-    
-    // Status padrão
-    const statusElement = document.getElementById('detailStatus');
-    statusElement.innerHTML = `<span class="status-badge status-available-badge">Carregando...</span>`;
-
-    // Outras informações
-    document.getElementById('detailCategoria').textContent = 'Informação não disponível';
-    document.getElementById('detailPericulosidade').innerHTML = '<span class="detail-value">Informação não disponível</span>';
-    document.getElementById('detailFornecedor').textContent = 'Informação não disponível';
-    document.getElementById('detailDataAquisicao').textContent = 'Informação não disponível';
-    document.getElementById('detailOrgaoRegulador').textContent = 'ANVISA';
-    document.getElementById('detailDisponivel').textContent = 'Informação não disponível';
-    document.getElementById('detailDescricao').textContent = 'Descrição não disponível no momento.';
-    document.getElementById('detailInstrucoesSeguranca').textContent = 'Instruções de segurança não disponíveis.';
-
-    // Esconder botão de editar para alunos
-    const editBtn = document.getElementById('editDetailsBtn');
-    if (editBtn) {
-        editBtn.style.display = 'none';
-    }
-}
-
-function closeDetailsModal() {
-    document.getElementById('detailsModal').classList.add('hidden');
-    document.body.style.overflow = '';
-}
-
-function preencherModalDetalhes(vidraria) {
-    // Informações Básicas
-    document.getElementById('detailId').textContent = vidraria.id ? `#${vidraria.id}` : '-';
-    document.getElementById('detailCategoria').textContent = formatCategoria(vidraria.categoria) || '-';
-    document.getElementById('detailNome').textContent = vidraria.nome || '-';
-    
-    // Grau de Periculosidade (estilo similar à imagem)
-    const periculosidadeElement = document.getElementById('detailPericulosidade');
-    const periculosidade = vidraria.grau_periculosidade || vidraria.periculosidade || 'Não informado';
-    let periculosidadeClass = 'hazard-badge ';
-    
-    if (periculosidade.toLowerCase().includes('alto') || periculosidade.toLowerCase().includes('high')) {
-        periculosidadeClass += 'hazard-high';
-    } else if (periculosidade.toLowerCase().includes('médio') || periculosidade.toLowerCase().includes('medium')) {
-        periculosidadeClass += 'hazard-medium';
-    } else if (periculosidade.toLowerCase().includes('baixo') || periculosidade.toLowerCase().includes('low')) {
-        periculosidadeClass += 'hazard-low';
-    } else {
-        periculosidadeClass = 'detail-value';
-    }
-    
-    periculosidadeElement.innerHTML = periculosidadeClass.includes('hazard-badge') ? 
-        `<span class="${periculosidadeClass}">${periculosidade}</span>` : 
-        `<span class="detail-value">${periculosidade}</span>`;
-
-    // Estoque e Localização
-    document.getElementById('detailQuantidade').textContent = vidraria.quantidade ? `${vidraria.quantidade} ${vidraria.unidade_medida || 'unidades'}` : '0 unidades';
-    document.getElementById('detailLocalizacao').textContent = vidraria.localizacao || 'Não informada';
-    document.getElementById('detailEstoqueMinimo').textContent = vidraria.estoque_minimo ? `${vidraria.estoque_minimo} ${vidraria.unidade_medida || 'unidades'}` : 'Não definido';
-    
-    // Status
-    const statusElement = document.getElementById('detailStatus');
-    let statusClass, statusText;
-    
-    if (vidraria.quantidade === 0) {
-        statusClass = 'status-unavailable-badge';
-        statusText = 'Indisponível';
-    } else if (vidraria.quantidade <= vidraria.estoque_minimo) {
-        statusClass = 'status-low-badge';
-        statusText = 'Estoque Baixo';
-    } else {
-        statusClass = 'status-available-badge';
-        statusText = 'Disponível';
-    }
-    
-    statusElement.innerHTML = `<span class="status-badge ${statusClass}">${statusText}</span>`;
-
-    // Fornecedor e Regulamentação
-    document.getElementById('detailFornecedor').textContent = vidraria.fornecedor || 'Não informado';
-    document.getElementById('detailDataAquisicao').textContent = vidraria.data_aquisicao ? 
-        new Date(vidraria.data_aquisicao).toLocaleDateString('pt-BR') : 'Não informada';
-    document.getElementById('detailOrgaoRegulador').textContent = vidraria.orgao_regulador || 'ANVISA';
-    document.getElementById('detailDisponivel').textContent = vidraria.quantidade > 0 ? 'Sim' : 'Não';
-
-    // Informações Adicionais
-    document.getElementById('detailDescricao').textContent = vidraria.descricao || 'Nenhuma descrição fornecida';
-    document.getElementById('detailInstrucoesSeguranca').textContent = vidraria.instrucoes_seguranca || 'Nenhuma instrução de segurança específica';
-
-    // Configurar botão de editar
-    const editBtn = document.getElementById('editDetailsBtn');
-    editBtn.onclick = function() {
-        window.location.href = `/vidracarias/editar/${vidraria.id}`;
-    };
-
-    // Adicionar classes para campos vazios
-    const emptyFields = [
-        'detailCategoria', 'detailLocalizacao', 'detailFornecedor', 
-        'detailDataAquisicao', 'detailDescricao', 'detailInstrucoesSeguranca'
-    ];
-    
-    emptyFields.forEach(fieldId => {
-        const element = document.getElementById(fieldId);
-        if (element.textContent === '-' || 
-            element.textContent === 'Não informado' || 
-            element.textContent === 'Não informada' || 
-            element.textContent === 'Nenhuma descrição fornecida' ||
-            element.textContent === 'Nenhuma instrução de segurança específica') {
-            element.classList.add('empty');
-        } else {
-            element.classList.remove('empty');
-        }
-    });
-}
-
-// Funções auxiliares para formatação
-function formatCategoria(categoria) {
-    const categorias = {
-        'volumetrico': 'Volumétrico',
-        'transferencia': 'Transferência',
-        'aquecimento': 'Aquecimento',
-        'separacao': 'Separação',
-        'suporte': 'Suporte',
-        'medicao': 'Medição'
-    };
-    return categorias[categoria] || categoria;
-}
-
-function formatMaterial(material) {
-    const materiais = {
-        'vidro borossilicato': 'Vidro Borossilicato',
-        'vidro': 'Vidro Comum',
-        'plastico': 'Plástico',
-        'quartzo': 'Quartzo',
-        'porcelana': 'Porcelana'
-    };
-    return materiais[material] || material;
-}
-
-// Adicionar event listeners para o modal de detalhes
-document.addEventListener('DOMContentLoaded', function() {
-    // Fechar modal clicando fora
-    document.getElementById('detailsModal')?.addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeDetailsModal();
-        }
-    });
-    
-    // Fechar com ESC
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && !document.getElementById('detailsModal').classList.contains('hidden')) {
-            closeDetailsModal();
-        }
-    });
-});
     </script>
 </body>
 </html>
