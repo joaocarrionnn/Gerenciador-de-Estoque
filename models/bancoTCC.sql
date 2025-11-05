@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `movimentacoes` (
   CONSTRAINT `movimentacoes_ibfk_1` FOREIGN KEY (`id_produto`) REFERENCES `produtos` (`id_produto`)
 ) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Copiando dados para a tabela sistema_estoque.movimentacoes: ~17 rows (aproximadamente)
+-- Copiando dados para a tabela sistema_estoque.movimentacoes: ~13 rows (aproximadamente)
 INSERT INTO `movimentacoes` (`id_movimentacao`, `id_produto`, `tipo`, `quantidade`, `unidade_medida`, `responsavel`, `projeto_experimento`, `observacoes`, `data_movimentacao`) VALUES
 	(22, 17, 'saida', 2.00, 'g', 'aa', 'aa', 'aa', '2025-10-08 13:30:04'),
 	(26, 13, 'saida', 2.00, 'L', 'Carrion', 'Faze Agua', 'Saída registrada por Carrion', '2025-10-08 16:58:22'),
@@ -183,19 +183,22 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   UNIQUE KEY `unique_usuario` (`usuario`),
   UNIQUE KEY `unique_email` (`email`),
   UNIQUE KEY `unique_cpf` (`cpf`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Copiando dados para a tabela sistema_estoque.usuarios: ~8 rows (aproximadamente)
+-- Copiando dados para a tabela sistema_estoque.usuarios: ~12 rows (aproximadamente)
 INSERT INTO `usuarios` (`id_usuario`, `nome_completo`, `usuario`, `email`, `telefone`, `cpf`, `senha`, `palavra_chave`, `turma`, `foto_perfil`, `status`, `tipo`, `data_criacao`, `data_atualizacao`, `data_aprovacao`) VALUES
 	(1, 'Administrador', 'admin', 'admin@empresa.com', NULL, NULL, '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', NULL, NULL, NULL, 'aprovado', 'admin', '2025-09-10 22:30:33', NULL, NULL),
-	(3, 'joao Carrion', 'joao', 'joao@outlook.org.br', '18981121784', NULL, '$2b$10$ZYqEVnvQdTDnM8X36taqd.N7oZ/c8RChpVWYImD.jVMLuA8SjboyK', NULL, 'quimica2B', 'profile-1761744251743-9066394.jpg', 'aprovado', 'admin', '2025-09-10 22:47:27', '2025-10-29 13:24:11', NULL),
+	(3, 'joao Carrion', 'joao', 'joao@outlook.org.br', '18981121784', NULL, '$2b$10$ZYqEVnvQdTDnM8X36taqd.N7oZ/c8RChpVWYImD.jVMLuA8SjboyK', NULL, 'quimica2B', 'profile-1762342984731-771921612.jpg', 'aprovado', 'admin', '2025-09-10 22:47:27', '2025-11-05 11:59:45', NULL),
 	(4, 'joao', 'carrion', 'aluno@gmail.com', NULL, '222.222.222-22', '$2b$10$zPeUgETe/5PyB5B2OOoKp.4zjjSCsWztkIDzwT7VBY7V3haBQV.q2', '$2b$10$vjzCUdDCSLh1g5ZRg6YixuI6YGPqrBTQlYL2jdLo9c.UUwi2En3zO', 'quimica1A', NULL, 'aprovado', 'usuario', '2025-10-22 11:52:45', NULL, NULL),
 	(5, 'aaaaaaaaaaaaaaa', 'aaa', 'carrion@gmail.com', NULL, '333.333.333-33', '$2b$10$RkxKYzWdP8YhVre8buBkS.1e8otOVC6e6IdyASLBPh.vOwG4HKZW2', '$2b$10$anfHC/DqJ0Nf.lP4h6brvujajTWAioAR6IgMtQPHz.ubudBxsXKYu', 'quimica1B', NULL, 'aprovado', 'usuario', '2025-10-22 11:54:33', NULL, NULL),
 	(6, 'Carriao', 'aaaa', 'adadad@gmail.com', NULL, '33333333333', '$2b$10$OUi1UwurK./fU8cw1DEn/.J0DT6kUjHhds9LEZreTwZ8Z/uzUJZD.', '$2b$10$sXt4.szdVJ6mqSjS..TdreaDhrlqVA.wcW1y6gQbjHrQqc/5ZaFU2', 'quimica1A', NULL, 'aprovado', 'usuario', '2025-10-22 12:03:35', NULL, NULL),
 	(7, 'carrionnn', 'miguelll', 'miguel@gmail.com', NULL, '44444444444', '$2b$10$c49NayWOK.yqqpbldspOAe7dnqy5TwSZgy6VIOAE59pJLhpDdiG/6', '$2b$10$APm6AmrLlKHIvH0jayoLOeVG7fUAHpXoio8uZR5qo/thbytdXNut2', 'quimica1A', NULL, 'aprovado', 'usuario', '2025-10-22 12:05:27', NULL, NULL),
 	(8, 'joao1', 'joao1', 'joao1@gmail.com', NULL, '88888888888', '$2b$10$XcVhaz9wxQYDK48gUn9QseyDhL6/0SQQnlFgFJIS3NlGnqRnBr.PS', '$2b$10$A1U8ZwgvliEoEUje/gr8Iepbx2nPkF5qi/iI1bLPahGTL2KIRyLn2', 'quimica1A', NULL, 'aprovado', 'usuario', '2025-10-22 17:07:09', NULL, NULL),
-	(9, 'João Miguel', 'joao miguel', 'joaomiguelcg54@gmail.com', '', '55926559839', '$2b$10$JbnSDzS8oKWmW2uo.R2UVON4WURDx06DOzp3uZWrbAfoHVVHvpEJ6', '$2b$10$a36R3KhfRX8/eOociNyrvOitfgObJwL96I3zh/H0TIZXd/S5kh92i', 'quimica2A', NULL, 'aprovado', 'usuario', '2025-10-29 12:59:39', '2025-10-31 19:55:32', NULL),
-	(10, 'Carrion rei das curvas', 'carriola', 'carrionzinxl@gmail.com', NULL, '41251543154', '$2b$10$/Bb5dOwNPAO.P4sYqg3l3OaltcCGRdIKmB1gJfeo6kINQkM9Zby2e', '$2b$10$AJw.jV4c9GD91Wd/wfFUJuvFLcFjwOLTVbMEEEptxBTs5o046IHmK', 'quimica1A', NULL, 'aprovado', 'usuario', '2025-10-31 19:22:29', NULL, NULL);
+	(9, 'João Miguel', 'joao miguel', 'joaomiguelcg54@gmail.com', '', '55926559839', '$2b$10$pMmcU6BIws99CHRDwH2IVeyL9IBj.HOKEUkG6wFWa/dwC76bhmN5.', '$2b$10$a36R3KhfRX8/eOociNyrvOitfgObJwL96I3zh/H0TIZXd/S5kh92i', 'quimica2A', 'profile-1762344701717-957083961.jpg', 'aprovado', 'usuario', '2025-10-29 12:59:39', '2025-11-05 14:01:29', NULL),
+	(10, 'Carrion rei das curvas', 'carriola', 'carrionzinxl@gmail.com', NULL, '41251543154', '$2b$10$/Bb5dOwNPAO.P4sYqg3l3OaltcCGRdIKmB1gJfeo6kINQkM9Zby2e', '$2b$10$AJw.jV4c9GD91Wd/wfFUJuvFLcFjwOLTVbMEEEptxBTs5o046IHmK', 'quimica1A', NULL, 'aprovado', 'usuario', '2025-10-31 19:22:29', NULL, NULL),
+	(11, 'João Vitor', 'jaovls', 'jaovls@gmail.com', NULL, '21212121221', '$2b$10$FDfb.UNEQHr.A2Mm4/K9yeGU4FWd/Gqg95ULwyQHBBizh5fu2kZfW', '$2b$10$htWUmo7ET4gI60BmzvYtGePBgFKqgRGPWVY/i5g/YvJawF2vRE6.y', 'quimica1B', 'profile-1762343543296-33584110.webp', 'aprovado', 'usuario', '2025-11-05 11:50:57', '2025-11-05 16:52:44', NULL),
+	(12, 'João Gabriel Policate', 'Policate', 'joao.policate@aluno.senai.br', NULL, '47803167829', '$2b$10$DV65DhGERsuyBH./fXyM.eOw4fdlO8E.Kq4AsHUeJ67GrZVpgtaSC', '$2b$10$mbjDdgzZ6uxQh2XUhl7CBO1xnIIPkImAU9MRJQhBmMSqIWF8j2.Ve', 'quimica2B', 'profile-1762343553768-496471807.jfif', 'aprovado', 'usuario', '2025-11-05 11:52:08', '2025-11-05 11:52:33', NULL),
+	(13, 'adan', 'car', 'mail@gmail.com', NULL, '63636215621', '$2b$10$oCy1iIxWss3xfjr5Fs76jOeDW/mPYnmXqP32kxf3KkAeLi2M4MrDu', '$2b$10$r5Dxp57N4lLM5pnWOItP9.DKaHCbYlSJqFHL0KZ1tcoiN6UAHdYXi', 'quimica1B', NULL, 'aprovado', 'usuario', '2025-11-05 13:46:22', NULL, NULL);
 
 -- Copiando estrutura para tabela sistema_estoque.vidracarias
 CREATE TABLE IF NOT EXISTS `vidracarias` (
@@ -216,7 +219,7 @@ CREATE TABLE IF NOT EXISTS `vidracarias` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Copiando dados para a tabela sistema_estoque.vidracarias: ~6 rows (aproximadamente)
+-- Copiando dados para a tabela sistema_estoque.vidracarias: ~0 rows (aproximadamente)
 INSERT INTO `vidracarias` (`id`, `nome`, `categoria`, `capacidade`, `material`, `descricao`, `quantidade`, `estoque_minimo`, `localizacao`, `fornecedor`, `data_aquisicao`, `observacoes`, `data_criacao`, `data_atualizacao`) VALUES
 	(2, 'Béquer', 'volumetrico', '250 mL', 'vidro borossilicato', '', 12, 5, 'Prateleira A1, Armário B2  ', 'Senai', '2025-10-15', '', '2025-10-15 16:39:42', '2025-10-15 18:55:13'),
 	(3, 'Erlenmeyer 500ml', 'Frasco de Reação', '500ml', 'Vidro Borossilicato', 'Frasco cônico para titulações', 25, 5, 'Prateleira B2', 'LabSupply', '2024-02-10', NULL, '2025-10-15 17:04:42', '2025-10-15 17:04:42'),
