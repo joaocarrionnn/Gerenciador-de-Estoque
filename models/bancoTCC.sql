@@ -35,25 +35,7 @@ CREATE TABLE IF NOT EXISTS `movimentacoes` (
   CONSTRAINT `movimentacoes_ibfk_1` FOREIGN KEY (`id_produto`) REFERENCES `produtos` (`id_produto`)
 ) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Copiando dados para a tabela sistema_estoque.movimentacoes: ~13 rows (aproximadamente)
-INSERT INTO `movimentacoes` (`id_movimentacao`, `id_produto`, `tipo`, `quantidade`, `unidade_medida`, `responsavel`, `projeto_experimento`, `observacoes`, `data_movimentacao`) VALUES
-	(22, 17, 'saida', 2.00, 'g', 'aa', 'aa', 'aa', '2025-10-08 13:30:04'),
-	(26, 13, 'saida', 2.00, 'L', 'Carrion', 'Faze Agua', 'Saída registrada por Carrion', '2025-10-08 16:58:22'),
-	(27, 13, 'entrada', 2.00, 'L', 'Carrion', 'Fornecedor: SEnai', 'Entrada registrada por Carrion. Data de compra: 2025-10-08', '2025-10-08 16:59:22'),
-	(29, 28, 'entrada', 1.00, 'kg', 'carriao', 'Fornecedor: senai', 'Entrada registrada por carriao. ', '2025-10-10 12:10:49'),
-	(30, 28, 'entrada', 5.00, 'kg', 'car', 'Fornecedor: car', 'Entrada registrada por car. Data de compra: 2025-10-10', '2025-10-10 12:11:20'),
-	(31, 17, 'entrada', 11.00, 'g', 'car', 'Fornecedor: car', 'Entrada registrada por car. ', '2025-10-10 12:11:58'),
-	(33, 29, 'entrada', 3.00, 'mL', 'a', 'Fornecedor: aa', 'Entrada registrada por a. ', '2025-10-10 14:08:34'),
-	(34, 9, 'saida', 8.00, 'L', 'aaaaaaaaaaaaaa', 'aa', 'Saída registrada por aa', '2025-10-10 17:09:00'),
-	(59, 9, 'saida', 0.20, 'L', 'aa', 'aa', 'Saída registrada por aa', '2025-10-17 13:29:38'),
-	(62, 25, 'saida', 0.10, 'g', 'a', 'aa', 'Saída registrada por a', '2025-10-22 11:32:22'),
-	(63, 25, 'entrada', 0.20, 'g', 'a', 'Fornecedor: a', 'Entrada registrada por a. ', '2025-10-22 11:32:40'),
-	(64, 25, 'saida', 0.20, 'g', 'a', 'aa', 'Saída registrada por a', '2025-10-22 11:35:10'),
-	(67, 39, 'entrada', 1.00, 'kg', 'aa', 'Fornecedor: a', 'Entrada registrada por aa. Data de compra: 2025-10-29. Validade: 2025-12-28. ', '2025-10-29 11:59:54'),
-	(68, 39, 'entrada', 0.30, 'kg', 'a', 'Fornecedor: a', 'Entrada registrada por a. Data de compra: 2025-10-29. Validade: 2025-12-29. Obs: a', '2025-10-29 12:00:36'),
-	(69, 41, 'entrada', 1.00, 'ml', 'a', 'Fornecedor: a', 'Entrada registrada por a. Data de compra: 2025-10-29. Validade: 2025-12-30. Obs: a', '2025-10-29 12:01:52'),
-	(70, 39, 'entrada', 0.10, 'kg', '1', 'Fornecedor: 1', 'Entrada registrada por 1. Data de compra: 2025-10-29. Validade: 2025-12-31. ', '2025-10-29 12:03:18'),
-	(71, 39, 'entrada', 0.40, 'kg', 'a', 'Fornecedor: a', 'Entrada registrada por a. Data de compra: 2025-10-29. Validade: 2025-11-28. ', '2025-10-29 12:04:03');
+-- Copiando dados para a tabela sistema_estoque.movimentacoes: ~0 rows (aproximadamente)
 
 -- Copiando estrutura para tabela sistema_estoque.movimentacoes_vidracarias
 CREATE TABLE IF NOT EXISTS `movimentacoes_vidracarias` (
@@ -69,13 +51,7 @@ CREATE TABLE IF NOT EXISTS `movimentacoes_vidracarias` (
   CONSTRAINT `movimentacoes_vidracarias_ibfk_1` FOREIGN KEY (`vidraria_id`) REFERENCES `vidracarias` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Copiando dados para a tabela sistema_estoque.movimentacoes_vidracarias: ~5 rows (aproximadamente)
-INSERT INTO `movimentacoes_vidracarias` (`id`, `vidraria_id`, `tipo`, `quantidade`, `usuario`, `observacao`, `data_movimentacao`) VALUES
-	(1, 5, 'retirada', 1, 'joao', 'Projeto: senai', '2025-10-15 18:52:30'),
-	(2, 5, 'reposicao', 1, 'joao', 'Fornecedor: 123', '2025-10-15 18:53:06'),
-	(3, 2, 'retirada', 1, 'joao', 'Projeto: Senai', '2025-10-15 18:54:45'),
-	(4, 2, 'reposicao', 1, 'joao', 'Fornecedor: senai', '2025-10-15 18:55:13'),
-	(5, 5, 'retirada', 1, 'joao', 'Projeto: aa | Obs: a', '2025-10-15 19:00:58');
+-- Copiando dados para a tabela sistema_estoque.movimentacoes_vidracarias: ~0 rows (aproximadamente)
 
 -- Copiando estrutura para tabela sistema_estoque.produtos
 CREATE TABLE IF NOT EXISTS `produtos` (
@@ -103,36 +79,13 @@ CREATE TABLE IF NOT EXISTS `produtos` (
   PRIMARY KEY (`id_produto`)
 ) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Copiando dados para a tabela sistema_estoque.produtos: ~28 rows (aproximadamente)
+-- Copiando dados para a tabela sistema_estoque.produtos: ~6 rows (aproximadamente)
 INSERT INTO `produtos` (`id_produto`, `nome`, `tipo`, `descricao`, `grau_periculosidade`, `orgao_regulador`, `instrucoes_seguranca`, `quantidade`, `estoque_minimo`, `unidade_medida`, `localizacao`, `disponivel`, `fornecedor`, `data_aquisicao`, `data_validade`, `data_validade_nova`, `produto_renovado`, `id_produto_original`, `observacoes`, `data_criacao`, `data_atualizacao`) VALUES
-	(2, 'Hidróxido de Sódio', 'base', 'NaOH - 1kg', '', 'policia-federal', '', 10.00, 0, 'unidade', 'Prateleira B2', 1, '', '0000-00-00', NULL, NULL, 0, NULL, '', '2025-09-19 13:47:38', '2025-09-24 11:21:54'),
-	(6, 'Sulfato de Cobre II', 'Reagente Químico', 'Sulfato de cobre penta-hidratado', 'moderado', 'ANVISA', 'Tóxico se ingerido. Lavar as mãos após o uso.', 3.00, 2, 'kg', 'Armário 2 – Prateleira 3 – Posição 12', 1, 'Vetec', '2024-03-10', NULL, NULL, 0, NULL, NULL, '2025-09-24 13:54:36', '2025-09-24 13:54:36'),
-	(7, 'Tampão Fosfato pH 7.4', 'Solução Tampão', 'Tampão fosfato salino 10x concentrado', 'baixo', 'ANVISA', 'Armazenar em temperatura ambiente.', 10.00, 10, 'L', 'Armário 1 – Prateleira 4 – Posição 5', 1, 'Invitrogen', '2024-01-30', NULL, NULL, 0, NULL, NULL, '2025-09-24 13:54:36', '2025-10-08 11:38:34'),
-	(8, 'Solução de Lugol', 'Reagente Químico', 'Solução de iodo e iodeto de potássio', 'moderado', 'ANVISA', 'Evitar contato com metais. Manter em frasco âmbar.', 6.00, 4, 'L', 'Armário 4 – Prateleira 1 – Posição 3', 1, 'Dinâmica', '2024-02-14', NULL, NULL, 0, NULL, NULL, '2025-09-24 13:54:36', '2025-09-24 13:54:36'),
-	(9, 'Azul de Metileno 1%', 'Corante', 'Solução de azul de metileno para histologia', 'baixo', 'exercito', 'Manter longe de luz direta.', 6.00, 6, 'L', 'Armário 5 – Prateleira 2 – Posição 7', 1, 'Synth', '2024-03-05', NULL, NULL, 0, NULL, '', '2025-09-24 13:54:36', '2025-10-24 16:01:35'),
-	(10, 'Tripsina 0.25%', 'Enzima', 'Tripsina para cultura celular', 'baixo', 'ANVISA', 'Armazenar a -20°C. Evitar ciclos de congelamento.', 25.00, 15, 'mL', 'Freezer 2 – Prateleira 1 – Posição 4', 1, 'Gibco', '2024-01-22', NULL, NULL, 0, NULL, NULL, '2025-09-24 13:54:36', '2025-09-24 13:54:36'),
-	(11, 'DNA Polimerase Taq', 'Enzima', 'Enzima para PCR termoestável', 'baixo', 'ANVISA', 'Armazenar a -20°C. Manter em gelo durante o uso.', 18.00, 12, 'U', 'Freezer 1 – Prateleira 3 – Posição 9', 1, 'Thermo Fisher', '2024-02-28', NULL, NULL, 0, NULL, NULL, '2025-09-24 13:54:36', '2025-09-24 13:54:36'),
-	(13, 'DMEM Alto Glucose', 'Meio de Cultura', 'Meio Dulbecco Modified Eagle Medium', 'baixo', 'ANVISA', 'Armazenar refrigerado. Proteger da luz.', 22.00, 15, 'L', 'Geladeira 1 – Prateleira 4 – Posição 11', 1, 'Cultilab', '2024-01-18', NULL, NULL, 0, NULL, NULL, '2025-09-24 13:54:36', '2025-10-08 16:59:22'),
-	(15, 'RPMI 1640', 'Meio de Cultura', 'Meio para cultivo de células hematopoiéticas', 'baixo', 'ANVISA', 'Armazenar a 4°C. Completar com soro.', 17.00, 12, 'L', 'Geladeira 2 – Prateleira 1 – Posição 3', 1, 'Vitrocell', '2024-03-08', NULL, NULL, 0, NULL, NULL, '2025-09-24 13:54:36', '2025-09-24 13:54:36'),
-	(17, 'Cloreto de Mercúrio II', 'Reagente Químico', 'Composto de mercúrio altamente tóxico', 'extremo', 'ANVISA', 'Manipular em capela química. Descarte específico obrigatório.', 11.00, 1, 'g', 'Armário Blindado – Prateleira 1 – Posição 2', 1, 'Merck', '2024-02-12', NULL, NULL, 0, NULL, NULL, '2025-09-24 13:54:36', '2025-10-10 12:11:58'),
-	(18, 'Benzopireno', 'Composto Orgânico', 'Hidrocarboneto policíclico cancerígeno', 'extremo', 'ANVISA', 'Uso com equipamento de proteção respiratória. Capela obrigatória.', 1.00, 1, 'g', 'Armário Blindado – Prateleira 2 – Posição 1', 1, 'Sigma-Aldrich', '2024-03-01', NULL, NULL, 0, NULL, NULL, '2025-09-24 13:54:36', '2025-09-24 13:54:36'),
-	(20, 'Clorofórmio P.A.', 'Solvente', 'Clorofórmio estabilizado com etanol', 'alto', 'ANVISA', 'Cancerígeno suspeito. Usar em capela com exaustor.', 7.00, 5, 'L', 'Armário 7 – Prateleira 2 – Posição 6', 1, 'Cromato', '2024-02-16', NULL, NULL, 0, NULL, NULL, '2025-09-24 13:54:36', '2025-09-24 13:54:36'),
-	(21, 'Metanol HPLC', 'Solvente', 'Metanol grau cromatografia líquida', 'alto', 'ANVISA', 'Tóxico e inflamável. Armazenar em local ventilado.', 9.00, 6, 'L', 'Armário 7 – Prateleira 3 – Posição 2', 1, 'J.T. Baker', '2024-03-14', NULL, NULL, 0, NULL, NULL, '2025-09-24 13:54:36', '2025-09-24 13:54:36'),
-	(22, 'Fenolftaleína 1%', 'Indicador', 'Solução alcoólica de fenolftaleína', 'moderado', 'ANVISA', 'Tóxico. Evitar contato com pele.', 13.00, 10, 'mL', 'Armário 8 – Prateleira 1 – Posição 7', 1, 'Synth', '2024-01-08', NULL, NULL, 0, NULL, NULL, '2025-09-24 13:54:36', '2025-09-24 13:54:36'),
-	(24, 'Verde de Bromocresol', 'Indicador', 'Indicador de pH para titulações', 'baixo', 'ANVISA', 'Armazenar em temperatura ambiente.', 5.00, 3, 'g', 'Armário 8 – Prateleira 2 – Posição 9', 1, 'Vetec', '2024-03-18', NULL, NULL, 0, NULL, NULL, '2025-09-24 13:54:36', '2025-09-24 13:54:36'),
-	(25, 'Azida Sódica', 'Conservante', 'Conservante para soluções biológicas', 'alto', 'ANVISA', 'Altamente tóxico. Manipular com extremo cuidado.', 3.90, 2, 'g', 'Armário 9 – Prateleira 1 – Posição 1', 1, 'Sigma-Aldrich', '2024-01-12', NULL, NULL, 0, NULL, NULL, '2025-09-24 13:54:36', '2025-10-22 11:35:10'),
-	(26, 'DMSO Grau Analítico', 'Solvente', 'Dimetilsulfóxido grau espectroscopia', 'moderado', 'ANVISA', 'Penetra na pele rapidamente. Usar luvas adequadas.', 15.00, 10, 'L', 'Armário 9 – Prateleira 2 – Posição 4', 1, 'Merck', '2024-02-09', NULL, NULL, 0, NULL, NULL, '2025-09-24 13:54:36', '2025-09-24 13:54:36'),
-	(27, 'Formaldeído 37%', 'Fixador', 'Solução de formaldeído para histologia', 'alto', 'ANVISA', 'Cancerígeno conhecido. Uso exclusivo em capela.', 6.00, 4, 'L', 'Armário 9 – Prateleira 3 – Posição 7', 1, 'Dinâmica', '2024-03-22', NULL, NULL, 0, NULL, NULL, '2025-09-24 13:54:36', '2025-09-24 13:54:36'),
-	(28, 'Permanganato de Potássio', 'Reagente Químico', 'Sal inorgânico oxidante forte', 'alto', 'ANVISA', 'Manter longe de materiais orgânicos. Oxidante forte.', 6.00, 3, 'kg', 'Armário 10 – Prateleira 1 – Posição 2', 0, 'Synth', '2024-01-25', NULL, NULL, 0, NULL, NULL, '2025-09-24 13:54:36', '2025-10-10 12:11:20'),
-	(29, 'Brometo de Etídio', 'Corante', 'Corante para visualização de DNA', 'extremo', 'ANVISA', 'Mutagênico. Uso com equipamento de proteção completo.', 3.00, 2, 'mL', 'Armário Blindado – Prateleira 3 – Posição 5', 0, 'Invitrogen', '2024-02-28', NULL, NULL, 0, NULL, NULL, '2025-09-24 13:54:36', '2025-10-10 14:08:34'),
-	(31, 'Nitrato de Prata', 'Reagente Químico', 'Sal inorgânico para análises', 'alto', 'ANVISA', 'Corrosivo e tóxico. Manter em frasco âmbar.', 2.00, 5, 'g', 'Armário 11 – Prateleira 1 – Posição 3', 1, 'Sigma-Aldrich', '2024-01-30', NULL, NULL, 0, NULL, NULL, '2025-09-24 13:54:36', '2025-09-24 13:54:36'),
-	(32, 'Sulfato de Amônio', 'Reagente Químico', 'Sal para precipitação de proteínas', 'baixo', 'ANVISA', 'Armazenar em local seco.', 4.00, 10, 'kg', 'Armário 11 – Prateleira 2 – Posição 6', 1, 'Merck', '2024-02-14', NULL, NULL, 0, NULL, NULL, '2025-09-24 13:54:36', '2025-09-24 13:54:36'),
-	(33, 'EDTA 0.5M pH 8.0', 'Quelante', 'Solução de EDTA para molecular', 'baixo', 'ANVISA', 'Armazenar em temperatura ambiente.', 3.00, 8, 'L', 'Armário 11 – Prateleira 3 – Posição 9', 1, 'Ambion', '2024-03-10', NULL, NULL, 0, NULL, NULL, '2025-09-24 13:54:36', '2025-09-24 13:54:36'),
-	(34, 'Glicerol P.A.', 'Reagente Químico', 'Glicerol para molecular biology', 'baixo', 'ANVISA', 'Armazenar em temperatura ambiente.', 20.00, 15, 'L', 'Armário 12 – Prateleira 1 – Posição 5', 1, 'Sigma-Aldrich', '2024-01-17', NULL, NULL, 0, NULL, NULL, '2025-09-24 13:54:36', '2025-09-24 13:54:36'),
-	(35, 'Tween 20', 'Detergente', 'Detergente não iônico para biologia', 'baixo', 'ANVISA', 'Armazenar em temperatura ambiente.', 12.00, 8, 'L', 'Armário 12 – Prateleira 2 – Posição 7', 1, 'Merck', '2024-02-24', NULL, NULL, 0, NULL, NULL, '2025-09-24 13:54:36', '2025-09-24 13:54:36'),
-	(36, 'SDS 10%', 'Detergente', 'Dodecil sulfato de sódio para eletroforese', 'moderado', 'ANVISA', 'Irritante. Usar máscara ao manipular pó.', 8.00, 6, 'L', 'Armário 12 – Prateleira 3 – Posição 2', 1, 'Bio-Rad', '2024-03-19', NULL, NULL, 0, NULL, NULL, '2025-09-24 13:54:36', '2025-09-24 13:54:36'),
-	(39, 'aa', 'base', 'aa', 'alto', 'policia-federal', 'aa', 13.80, 10, 'kg', '12', 1, 'Vitrocell', '2025-10-24', '2025-11-28', NULL, 0, NULL, '', '2025-10-24 13:18:52', '2025-10-29 12:04:03'),
-	(41, 'abc', 'base', '', 'baixo', 'ANVISA', '', 12.00, 8, 'ml', '', 1, 'Bio-Rad', '2025-10-24', '2025-12-30', NULL, 0, NULL, '', '2025-10-24 17:02:50', '2025-10-29 12:01:52');
+	(47, 'Acetato de Etila', 'solvente', 'CH₃COOCH₂CH₃ - Pureza: 99,5% - Densidade: 0,897 g/cm³ - MM: 88,11 g/mol', 'alto', 'policia-federal', 'Inflamável e irritante. Armazenar em local ventilado, longe de fontes de ignição.', 1.00, 1, 'L', 'Armário 1 – Prateleira 1 – Posição 1', 1, 'Synth', NULL, '2020-07-06', NULL, 0, NULL, 'Classificação GHS: Inflamável, irritante. Volume do frasco: 1000 ml', '2025-11-05 18:33:45', '2025-11-05 18:33:45'),
+	(48, 'Bicarbonato de Sódio', 'reagente_quimico', 'NaHCO₃ - Pureza: 99,7-100,3% - MM: 84,01 g/mol', 'baixo', 'policia-federal', 'Armazenar em local seco e arejado.', 1.00, 1, 'kg', 'Armário 6 - Prateleira 2 - Posição 2', 1, 'Dinâmica', NULL, '2028-08-08', NULL, 0, NULL, 'Volume do frasco: 1000g. Quantidade mínima: 0,5Kg. Quantidade máxima: 1Kg', '2025-11-05 18:33:45', '2025-11-05 18:33:45'),
+	(49, 'Hidróxido de Sódio', 'base', 'NaOH - Pureza: 49% - Densidade: 1,5-1,54 g/cm³ - MM: 40,00 g/mol', 'alto', 'policia-civil', 'Corrosivo. Usar equipamento de proteção individual. Manipular em capela.', 1.00, 2, 'L', 'Armário 2 – Prateleira 2 – Posição 1', 1, 'Êxodo científica', NULL, '2027-09-25', NULL, 0, NULL, 'Classificação GHS: corrosivo para metais. Volume do frasco: 1000ml. Quantidade mínima: 2Kg. Quantidade máxima: 5Kg', '2025-11-05 18:33:45', '2025-11-05 18:33:45'),
+	(50, 'Ácido Clorídrico', 'acido', 'HCl - Pureza: 37,1% - Densidade: 1,188 g/cm³ - MM: 36,46 g/mol', 'alto', 'policia-federal', 'Corrosivo. Manipular em capela com exaustor. Usar luvas e óculos de proteção.', 1.00, 1, 'L', 'Armário 3 – Prateleira 2 – Posição 1', 1, 'Reatec', NULL, '2026-03-31', NULL, 0, NULL, 'Volume do frasco: 1000ml. Quantidade mínima: 1L. Quantidade máxima: 4L', '2025-11-05 18:33:45', '2025-11-05 18:33:45'),
+	(51, 'Ácido Sulfúrico', 'acido', 'H₂SO₄ - Pureza: 90,0-91,0% - Densidade: 1,815-1,821 g/ml - MM: 98,08 g/mol', 'extremo', 'policia-federal', 'Altamente corrosivo. Manipular exclusivamente em capela. Usar equipamento de proteção completo.', 1.00, 1, 'L', 'Armário 3 – Prateleira 3 – Posição 2', 1, 'Química Moderna', NULL, NULL, NULL, 0, NULL, 'Classificação GHS: corrosivo, tóxico, irritante. Volume do frasco: 1000ml. Quantidade mínima: 1L. Quantidade máxima: 4L', '2025-11-05 18:33:45', '2025-11-05 18:33:45');
 
 -- Copiando estrutura para tabela sistema_estoque.produto_pdfs
 CREATE TABLE IF NOT EXISTS `produto_pdfs` (
@@ -153,12 +106,7 @@ CREATE TABLE IF NOT EXISTS `produto_pdfs` (
   CONSTRAINT `produto_pdfs_ibfk_1` FOREIGN KEY (`id_produto`) REFERENCES `produtos` (`id_produto`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Copiando dados para a tabela sistema_estoque.produto_pdfs: ~4 rows (aproximadamente)
-INSERT INTO `produto_pdfs` (`id`, `id_produto`, `nome_arquivo`, `nome_original`, `caminho_arquivo`, `tamanho_arquivo`, `tipo_documento`, `descricao`, `data_upload`, `usuario_upload`) VALUES
-	(7, 39, 'product-1761326638367-279339331-relatorio_reagentes_vencidos_2025-10-24.pdf', 'relatorio_reagentes_vencidos_2025-10-24.pdf', 'U:\\Users\\55926559839\\Desktop\\Gerenciador-de-Estoque\\public\\uploads\\product-pdfs\\product-1761326638367-279339331-relatorio_reagentes_vencidos_2025-10-24.pdf', 16434, NULL, NULL, '2025-10-24 17:23:58', 'joao Carrion'),
-	(8, 41, 'product-1761326650464-552974647-Boletim__1_.pdf', 'Boletim (1).pdf', 'U:\\Users\\55926559839\\Desktop\\Gerenciador-de-Estoque\\public\\uploads\\product-pdfs\\product-1761326650464-552974647-Boletim__1_.pdf', 91479, NULL, NULL, '2025-10-24 17:24:10', 'joao Carrion'),
-	(9, 39, 'product-1761737101228-947678219-relatorio_reagentes_vencidos_2025-10-29.pdf', 'relatorio_reagentes_vencidos_2025-10-29.pdf', 'U:\\Users\\55926559839\\Desktop\\Gerenciador-de-Estoque\\public\\uploads\\product-pdfs\\product-1761737101228-947678219-relatorio_reagentes_vencidos_2025-10-29.pdf', 8360, NULL, NULL, '2025-10-29 11:25:01', 'joao Carrion'),
-	(10, 39, 'product-1761739236098-299004213-relatorio_reagentes_vencidos_2025-10-29.pdf', 'relatorio_reagentes_vencidos_2025-10-29.pdf', 'U:\\Users\\55926559839\\Desktop\\Gerenciador-de-Estoque\\public\\uploads\\product-pdfs\\product-1761739236098-299004213-relatorio_reagentes_vencidos_2025-10-29.pdf', 8360, NULL, NULL, '2025-10-29 12:00:36', 'joao Carrion');
+-- Copiando dados para a tabela sistema_estoque.produto_pdfs: ~0 rows (aproximadamente)
 
 -- Copiando estrutura para tabela sistema_estoque.usuarios
 CREATE TABLE IF NOT EXISTS `usuarios` (
@@ -188,7 +136,7 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
 -- Copiando dados para a tabela sistema_estoque.usuarios: ~12 rows (aproximadamente)
 INSERT INTO `usuarios` (`id_usuario`, `nome_completo`, `usuario`, `email`, `telefone`, `cpf`, `senha`, `palavra_chave`, `turma`, `foto_perfil`, `status`, `tipo`, `data_criacao`, `data_atualizacao`, `data_aprovacao`) VALUES
 	(1, 'Administrador', 'admin', 'admin@empresa.com', NULL, NULL, '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', NULL, NULL, NULL, 'aprovado', 'admin', '2025-09-10 22:30:33', NULL, NULL),
-	(3, 'joao Carrion', 'joao', 'joao@outlook.org.br', '18981121784', NULL, '$2b$10$ZYqEVnvQdTDnM8X36taqd.N7oZ/c8RChpVWYImD.jVMLuA8SjboyK', NULL, 'quimica2B', 'profile-1762342984731-771921612.jpg', 'aprovado', 'admin', '2025-09-10 22:47:27', '2025-11-05 11:59:45', NULL),
+	(3, 'joao Carrion', 'joao', 'joao@outlook.org.br', '18981121784', NULL, '$2b$10$ZYqEVnvQdTDnM8X36taqd.N7oZ/c8RChpVWYImD.jVMLuA8SjboyK', NULL, 'quimica2B', 'profile-1762342984731-771921612.jpg', 'aprovado', 'admin', '2025-09-10 22:47:27', '2025-11-05 19:39:15', NULL),
 	(4, 'joao', 'carrion', 'aluno@gmail.com', NULL, '222.222.222-22', '$2b$10$zPeUgETe/5PyB5B2OOoKp.4zjjSCsWztkIDzwT7VBY7V3haBQV.q2', '$2b$10$vjzCUdDCSLh1g5ZRg6YixuI6YGPqrBTQlYL2jdLo9c.UUwi2En3zO', 'quimica1A', NULL, 'aprovado', 'usuario', '2025-10-22 11:52:45', NULL, NULL),
 	(5, 'aaaaaaaaaaaaaaa', 'aaa', 'carrion@gmail.com', NULL, '333.333.333-33', '$2b$10$RkxKYzWdP8YhVre8buBkS.1e8otOVC6e6IdyASLBPh.vOwG4HKZW2', '$2b$10$anfHC/DqJ0Nf.lP4h6brvujajTWAioAR6IgMtQPHz.ubudBxsXKYu', 'quimica1B', NULL, 'aprovado', 'usuario', '2025-10-22 11:54:33', NULL, NULL),
 	(6, 'Carriao', 'aaaa', 'adadad@gmail.com', NULL, '33333333333', '$2b$10$OUi1UwurK./fU8cw1DEn/.J0DT6kUjHhds9LEZreTwZ8Z/uzUJZD.', '$2b$10$sXt4.szdVJ6mqSjS..TdreaDhrlqVA.wcW1y6gQbjHrQqc/5ZaFU2', 'quimica1A', NULL, 'aprovado', 'usuario', '2025-10-22 12:03:35', NULL, NULL),
@@ -196,8 +144,8 @@ INSERT INTO `usuarios` (`id_usuario`, `nome_completo`, `usuario`, `email`, `tele
 	(8, 'joao1', 'joao1', 'joao1@gmail.com', NULL, '88888888888', '$2b$10$XcVhaz9wxQYDK48gUn9QseyDhL6/0SQQnlFgFJIS3NlGnqRnBr.PS', '$2b$10$A1U8ZwgvliEoEUje/gr8Iepbx2nPkF5qi/iI1bLPahGTL2KIRyLn2', 'quimica1A', NULL, 'aprovado', 'usuario', '2025-10-22 17:07:09', NULL, NULL),
 	(9, 'João Miguel', 'joao miguel', 'joaomiguelcg54@gmail.com', '', '55926559839', '$2b$10$pMmcU6BIws99CHRDwH2IVeyL9IBj.HOKEUkG6wFWa/dwC76bhmN5.', '$2b$10$a36R3KhfRX8/eOociNyrvOitfgObJwL96I3zh/H0TIZXd/S5kh92i', 'quimica2A', 'profile-1762344701717-957083961.jpg', 'aprovado', 'usuario', '2025-10-29 12:59:39', '2025-11-05 14:01:29', NULL),
 	(10, 'Carrion rei das curvas', 'carriola', 'carrionzinxl@gmail.com', NULL, '41251543154', '$2b$10$/Bb5dOwNPAO.P4sYqg3l3OaltcCGRdIKmB1gJfeo6kINQkM9Zby2e', '$2b$10$AJw.jV4c9GD91Wd/wfFUJuvFLcFjwOLTVbMEEEptxBTs5o046IHmK', 'quimica1A', NULL, 'aprovado', 'usuario', '2025-10-31 19:22:29', NULL, NULL),
-	(11, 'João Vitor', 'jaovls', 'jaovls@gmail.com', NULL, '21212121221', '$2b$10$FDfb.UNEQHr.A2Mm4/K9yeGU4FWd/Gqg95ULwyQHBBizh5fu2kZfW', '$2b$10$htWUmo7ET4gI60BmzvYtGePBgFKqgRGPWVY/i5g/YvJawF2vRE6.y', 'quimica1B', 'profile-1762343543296-33584110.webp', 'aprovado', 'usuario', '2025-11-05 11:50:57', '2025-11-05 16:52:44', NULL),
-	(12, 'João Gabriel Policate', 'Policate', 'joao.policate@aluno.senai.br', NULL, '47803167829', '$2b$10$DV65DhGERsuyBH./fXyM.eOw4fdlO8E.Kq4AsHUeJ67GrZVpgtaSC', '$2b$10$mbjDdgzZ6uxQh2XUhl7CBO1xnIIPkImAU9MRJQhBmMSqIWF8j2.Ve', 'quimica2B', 'profile-1762343553768-496471807.jfif', 'aprovado', 'usuario', '2025-11-05 11:52:08', '2025-11-05 11:52:33', NULL),
+	(11, 'João Vitor', 'jaovls', 'jaovls@gmail.com', NULL, '21212121221', '$2b$10$FqORegC7zVvAKq/6IWtIT.CPUuN8QwMXwUBf.3V1ly8Yl2G0x2Uiu', '$2b$10$htWUmo7ET4gI60BmzvYtGePBgFKqgRGPWVY/i5g/YvJawF2vRE6.y', 'quimica1B', 'profile-1762343543296-33584110.webp', 'aprovado', 'usuario', '2025-11-05 11:50:57', '2025-11-05 18:38:12', NULL),
+	(12, 'João Gabriel Policate', 'Policate', 'joao.policate@aluno.senai.br', NULL, '47803167829', '$2b$10$DV65DhGERsuyBH./fXyM.eOw4fdlO8E.Kq4AsHUeJ67GrZVpgtaSC', '$2b$10$mbjDdgzZ6uxQh2XUhl7CBO1xnIIPkImAU9MRJQhBmMSqIWF8j2.Ve', 'quimica2B', 'profile-1762365432376-374099110.jpg', 'aprovado', 'usuario', '2025-11-05 11:52:08', '2025-11-05 18:38:40', NULL),
 	(13, 'adan', 'car', 'mail@gmail.com', NULL, '63636215621', '$2b$10$oCy1iIxWss3xfjr5Fs76jOeDW/mPYnmXqP32kxf3KkAeLi2M4MrDu', '$2b$10$r5Dxp57N4lLM5pnWOItP9.DKaHCbYlSJqFHL0KZ1tcoiN6UAHdYXi', 'quimica1B', NULL, 'aprovado', 'usuario', '2025-11-05 13:46:22', NULL, NULL);
 
 -- Copiando estrutura para tabela sistema_estoque.vidracarias
@@ -220,13 +168,6 @@ CREATE TABLE IF NOT EXISTS `vidracarias` (
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Copiando dados para a tabela sistema_estoque.vidracarias: ~0 rows (aproximadamente)
-INSERT INTO `vidracarias` (`id`, `nome`, `categoria`, `capacidade`, `material`, `descricao`, `quantidade`, `estoque_minimo`, `localizacao`, `fornecedor`, `data_aquisicao`, `observacoes`, `data_criacao`, `data_atualizacao`) VALUES
-	(2, 'Béquer', 'volumetrico', '250 mL', 'vidro borossilicato', '', 12, 5, 'Prateleira A1, Armário B2  ', 'Senai', '2025-10-15', '', '2025-10-15 16:39:42', '2025-10-15 18:55:13'),
-	(3, 'Erlenmeyer 500ml', 'Frasco de Reação', '500ml', 'Vidro Borossilicato', 'Frasco cônico para titulações', 25, 5, 'Prateleira B2', 'LabSupply', '2024-02-10', NULL, '2025-10-15 17:04:42', '2025-10-15 17:04:42'),
-	(4, 'Pipeta Graduada 10ml', 'Pipetas', '10ml', 'Vidro Sodocalcico', 'Pipeta graduada classe A', 40, 10, 'Gaveta P1', 'Precision Glass', '2024-01-20', NULL, '2025-10-15 17:04:42', '2025-10-15 17:04:42'),
-	(5, 'Bureta 50ml', 'Buretas', '50ml', 'Vidro Borossilicato', 'Bureta para titulações com torneira', 7, 2, 'Prateleira C1', 'Analytical Instruments', '2024-03-05', NULL, '2025-10-15 17:04:42', '2025-10-15 19:00:58'),
-	(6, 'Proveta 100ml', 'volumetrico', '100ml', 'vidro borossilicato', 'Proveta com base estável', 18, 4, 'Prateleira A1', 'LabWare Solutionss', '2024-02-28', '', '2025-10-15 17:04:42', '2025-10-15 19:16:15'),
-	(7, 'Kitassato 1000ml', 'Filtração', '1000ml', 'Vidro Borossilicato', 'Frasco kitassato para filtração a vácuo', 2, 5, 'Prateleira D4', 'VacuumTech', '2024-03-15', 'ESTOQUE BAIXO - Solicitar reposição urgente', '2025-10-15 17:05:11', '2025-10-15 17:05:11');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

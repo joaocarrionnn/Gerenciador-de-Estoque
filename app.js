@@ -2,6 +2,7 @@ const express = require('express');
 const session = require('express-session');
 const path = require('path');
 const multer = require('multer');
+const adminRoutes = require('./routes/admin');
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -56,6 +57,8 @@ app.use((req, res, next) => {
     console.log('✅ Usuário autenticado - acesso permitido');
     next();
 });
+
+app.use('/admin', adminRoutes);
 
 
 // Configuração do Multer para upload de arquivos

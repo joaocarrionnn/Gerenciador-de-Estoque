@@ -946,42 +946,42 @@
                         </div>
 
                         <!-- Informações Adicionais -->
-<div class="form-section">
-    <h5 class="section-heading">
-        <i class="fas fa-info-circle"></i>
-        Informações Adicionais
-    </h5>
-    
-    <div class="form-row">
-        <!-- Fornecedor -->
-        <div class="form-group">
-            <label for="supplier" class="form-label">Fornecedor</label>
-            <select class="form-select dynamic-select" id="supplier" name="supplier" data-campo="supplier">
-                <option value="">Selecione o fornecedor</option>
-            </select>
-        </div>
-        
-        <!-- Data de Aquisição -->
-        <div class="form-group">
-            <label for="purchaseDate" class="form-label">Data de Aquisição</label>
-            <input type="date" class="form-control" id="purchaseDate" name="purchaseDate" 
-                value="<%= produto.data_aquisicao ? produto.data_aquisicao.toISOString().split('T')[0] : '' %>">
-        </div>
+                        <div class="form-section">
+                            <h5 class="section-heading">
+                                <i class="fas fa-info-circle"></i>
+                                Informações Adicionais
+                            </h5>
+                            
+                            <div class="form-row">
+                                <!-- Fornecedor -->
+                                <div class="form-group">
+                                    <label for="supplier" class="form-label">Fornecedor</label>
+                                    <select class="form-select dynamic-select" id="supplier" name="supplier" data-campo="supplier">
+                                        <option value="">Selecione o fornecedor</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Data de Aquisição -->
+                                <div class="form-group">
+                                    <label for="purchaseDate" class="form-label">Data de Aquisição</label>
+                                    <input type="date" class="form-control" id="purchaseDate" name="purchaseDate" 
+                                        value="<%= produto.data_aquisicao ? produto.data_aquisicao.toISOString().split('T')[0] : '' %>">
+                                </div>
 
-        <!-- Data de Validade -->
-        <div class="form-group">
-            <label for="expiryDate" class="form-label">Data de Validade</label>
-            <input type="date" class="form-control" id="expiryDate" name="expiryDate" 
-                   value="<%= produto.data_validade ? new Date(produto.data_validade).toISOString().split('T')[0] : '' %>">
-            <small class="form-text text-muted">Data em que o produto expira (opcional)</small>
-        </div>
-    </div>
-    
-    <div class="form-group">
-        <label for="notes" class="form-label">Observações</label>
-        <textarea class="form-control" id="notes" name="notes" rows="3"><%= produto.observacoes || '' %></textarea>
-    </div>
-</div>
+                                <!-- Data de Validade -->
+                                <div class="form-group">
+                                    <label for="expiryDate" class="form-label">Data de Validade</label>
+                                    <input type="date" class="form-control" id="expiryDate" name="expiryDate" 
+                                        value="<%= produto.data_validade ? new Date(produto.data_validade).toISOString().split('T')[0] : '' %>">
+                                    <small class="form-text text-muted">Data em que o produto expira (opcional)</small>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="notes" class="form-label">Observações</label>
+                                <textarea class="form-control" id="notes" name="notes" rows="3"><%= produto.observacoes || '' %></textarea>
+                            </div>
+                        </div>
 
                         <!-- Seção de Upload de PDF -->
                         <div class="form-section">
@@ -1067,10 +1067,10 @@
         
         // Opções padrão para cada campo
         const opcoesPadrao = {
-            'productType': ['acido', 'base', 'solvente', 'indicador', 'sal', 'outro'],
-            'dangerLevel': ['baixo', 'medio', 'alto', 'muito_alto'],
-            'regulatoryOrg': ['policia-federal', 'exercito', 'anvisa', 'outro'],
-            'unit': ['ml', 'l', 'mg', 'g', 'kg', 'unidade'],
+            'productType': [''],
+            'dangerLevel': [''],
+            'regulatoryOrg': [''],
+            'unit': [''],
             'supplier': []
         };
         

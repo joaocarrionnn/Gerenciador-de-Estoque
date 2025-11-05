@@ -722,166 +722,71 @@
         }
 
         /* Estilos para a seção de PDFs */
-.pdfs-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
+    .pdfs-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
 
-.pdf-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: var(--light);
-    transition: all 0.2s ease;
-}
-
-.pdf-item:hover {
-    background: #f8f9fa;
-    border-color: var(--primary);
-}
-
-.pdf-info {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    flex: 1;
-}
-
-.pdf-icon {
-    color: #dc3545;
-    font-size: 1.5rem;
-}
-
-.pdf-details {
-    flex: 1;
-}
-
-.pdf-name {
-    font-weight: 500;
-    color: var(--dark);
-    margin-bottom: 0.25rem;
-    word-break: break-word;
-}
-
-.pdf-meta {
-    display: flex;
-    gap: 1rem;
-    font-size: 0.8rem;
-    color: var(--gray);
-}
-
-.pdf-meta span {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-}
-
-.pdf-actions {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.pdf-download-btn,
-.pdf-delete-btn {
-    padding: 0.5rem;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.pdf-download-btn {
-    background: rgba(40, 167, 69, 0.1);
-    color: var(--success);
-}
-
-.pdf-download-btn:hover {
-    background: var(--success);
-    color: white;
-}
-
-.pdf-delete-btn {
-    background: rgba(220, 53, 69, 0.1);
-    color: var(--danger);
-}
-
-.pdf-delete-btn:hover {
-    background: var(--danger);
-    color: white;
-}
-
-.loading-pdfs,
-.no-pdfs,
-.error-pdfs {
-    text-align: center;
-    padding: 2rem;
-    color: var(--gray);
-}
-
-.loading-pdfs i,
-.no-pdfs i,
-.error-pdfs i {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    display: block;
-}
-
-/* Responsividade para PDFs */
-@media (max-width: 768px) {
     .pdf-item {
-        flex-direction: column;
-        align-items: flex-start;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--light);
+        transition: all 0.2s ease;
+    }
+
+    .pdf-item:hover {
+        background: #f8f9fa;
+        border-color: var(--primary);
+    }
+
+    .pdf-info {
+        display: flex;
+        align-items: center;
         gap: 1rem;
+        flex: 1;
     }
-    
-    .pdf-actions {
-        align-self: flex-end;
+
+    .pdf-icon {
+        color: #dc3545;
+        font-size: 1.5rem;
     }
-    
+
+    .pdf-details {
+        flex: 1;
+    }
+
+    .pdf-name {
+        font-weight: 500;
+        color: var(--dark);
+        margin-bottom: 0.25rem;
+        word-break: break-word;
+    }
+
     .pdf-meta {
-        flex-direction: column;
+        display: flex;
+        gap: 1rem;
+        font-size: 0.8rem;
+        color: var(--gray);
+    }
+
+    .pdf-meta span {
+        display: flex;
+        align-items: center;
         gap: 0.25rem;
     }
-}
 
-/* Estilos para a data de validade no modal */
-.data-validade-expirada {
-    background: rgba(220, 53, 69, 0.15) !important;
-    color: #dc3545 !important;
-    font-weight: 600;
-}
+    .pdf-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
 
-.data-validade-proxima {
-    background: rgba(255, 193, 7, 0.15) !important;
-    color: #ffc107 !important;
-    font-weight: 600;
-}
-
-.data-validade-ok {
-    background: rgba(40, 167, 69, 0.15) !important;
-    color: #28a745 !important;
-}
-
-/* Ajuste para o badge de data no modal */
-.modal-detail-value .status-badge {
-    padding: 0.4rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-}
-
-.pdf-view-btn {
-        background: rgba(23, 162, 184, 0.1);
-        color: var(--info);
+    .pdf-download-btn,
+    .pdf-delete-btn {
         padding: 0.5rem;
         border: none;
         border-radius: 6px;
@@ -892,15 +797,110 @@
         justify-content: center;
     }
 
-    .pdf-view-btn:hover {
-        background: var(--info);
+    .pdf-download-btn {
+        background: rgba(40, 167, 69, 0.1);
+        color: var(--success);
+    }
+
+    .pdf-download-btn:hover {
+        background: var(--success);
         color: white;
     }
 
-    .pdf-actions {
-        display: flex;
-        gap: 0.5rem;
+    .pdf-delete-btn {
+        background: rgba(220, 53, 69, 0.1);
+        color: var(--danger);
     }
+
+    .pdf-delete-btn:hover {
+        background: var(--danger);
+        color: white;
+    }
+
+    .loading-pdfs,
+    .no-pdfs,
+    .error-pdfs {
+        text-align: center;
+        padding: 2rem;
+        color: var(--gray);
+    }
+
+    .loading-pdfs i,
+    .no-pdfs i,
+    .error-pdfs i {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    /* Responsividade para PDFs */
+    @media (max-width: 768px) {
+        .pdf-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .pdf-actions {
+            align-self: flex-end;
+        }
+        
+        .pdf-meta {
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+    }
+
+    /* Estilos para a data de validade no modal */
+    .data-validade-expirada {
+        background: rgba(220, 53, 69, 0.15) !important;
+        color: #dc3545 !important;
+        font-weight: 600;
+    }
+
+    .data-validade-proxima {
+        background: rgba(255, 193, 7, 0.15) !important;
+        color: #ffc107 !important;
+        font-weight: 600;
+    }
+
+    .data-validade-ok {
+        background: rgba(40, 167, 69, 0.15) !important;
+        color: #28a745 !important;
+    }
+
+    /* Ajuste para o badge de data no modal */
+    .modal-detail-value .status-badge {
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .pdf-view-btn {
+            background: rgba(23, 162, 184, 0.1);
+            color: var(--info);
+            padding: 0.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pdf-view-btn:hover {
+            background: var(--info);
+            color: white;
+        }
+
+        .pdf-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
     </style>
 </head>
 <body class="flex">

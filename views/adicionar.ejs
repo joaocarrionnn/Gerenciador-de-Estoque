@@ -285,273 +285,273 @@
         }
 
         /* Estilos para formulário responsivo */
-.form-row {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 0 -0.75rem;
-}
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -0.75rem;
+        }
 
-.form-group {
-    flex: 1 0 100%;
-    padding: 0 0.75rem;
-    margin-bottom: 1rem;
-}
+        .form-group {
+            flex: 1 0 100%;
+            padding: 0 0.75rem;
+            margin-bottom: 1rem;
+        }
 
-.radio-group {
-    margin-top: 0.5rem;
-}
+        .radio-group {
+            margin-top: 0.5rem;
+        }
 
-.form-check {
-    margin-bottom: 0.5rem;
-}
+        .form-check {
+            margin-bottom: 0.5rem;
+        }
 
-/* Para tablets */
-@media (min-width: 576px) {
-    .form-row .form-group {
-        flex: 0 0 50%;
-        max-width: 50%;
-    }
-    
-    .form-row-3 .form-group {
-        flex: 0 0 33.333333%;
-        max-width: 33.333333%;
-    }
-}
+        /* Para tablets */
+        @media (min-width: 576px) {
+            .form-row .form-group {
+                flex: 0 0 50%;
+                max-width: 50%;
+            }
+            
+            .form-row-3 .form-group {
+                flex: 0 0 33.333333%;
+                max-width: 33.333333%;
+            }
+        }
 
-/* Para desktop */
-@media (min-width: 992px) {
-    .form-row .form-group {
-        flex: 0 0 50%;
-        max-width: 50%;
-    }
-    
-    .form-row-3 .form-group {
-        flex: 0 0 33.333333%;
-        max-width: 33.333333%;
-    }
-}
+        /* Para desktop */
+        @media (min-width: 992px) {
+            .form-row .form-group {
+                flex: 0 0 50%;
+                max-width: 50%;
+            }
+            
+            .form-row-3 .form-group {
+                flex: 0 0 33.333333%;
+                max-width: 33.333333%;
+            }
+        }
 
-/* Ajustes para telas muito pequenas (menos de 400px) */
-@media (max-width: 400px) {
-    .form-group {
-        flex: 1 0 100%;
-        max-width: 100%;
-    }
-    
-    .radio-group {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-}
-.form-actions {
-    display: flex;
-    gap: 15px;
-    padding: 20px;
-    justify-content: center;
-    align-items: center;
-    background-color: #f8f9fa;
-    border-radius: 10px;
-    margin: 20px 0;
-}
+        /* Ajustes para telas muito pequenas (menos de 400px) */
+        @media (max-width: 400px) {
+            .form-group {
+                flex: 1 0 100%;
+                max-width: 100%;
+            }
+            
+            .radio-group {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            padding: 20px;
+            justify-content: center;
+            align-items: center;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
 
-.btn {
-    border: none;
-    border-radius: 8px;
-    padding: 14px 26px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    text-decoration: none;
-    position: relative;
-    overflow: hidden;
-}
+        .btn {
+            border: none;
+            border-radius: 8px;
+            padding: 14px 26px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
 
-.btn-primary {
-    background-color: #2c3e50;
-    color: #ffffff;
-}
+        .btn-primary {
+            background-color: #2c3e50;
+            color: #ffffff;
+        }
 
-.btn-primary:hover {
-    background-color: rgb(62, 75, 87);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
+        .btn-primary:hover {
+            background-color: rgb(62, 75, 87);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
 
-.btn-secondary {
-    background-color: #95a5a6;
-    color: #ffffff;
-}
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: #ffffff;
+        }
 
-.btn-secondary:hover {
-    background-color: #7f8c8d;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
 
-.btn:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
-.btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.7s ease;
-}
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.7s ease;
+        }
 
-.btn:hover::before {
-    left: 100%;
-}
+        .btn:hover::before {
+            left: 100%;
+        }
 
-.btn i {
-    font-size: 18px;
-    transition: transform 0.3s ease;
-}
+        .btn i {
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
 
-.btn:hover i {
-    transform: rotate(90deg);
-}
+        .btn:hover i {
+            transform: rotate(90deg);
+        }
 
-/* Estilos para upload de PDF */
-.pdf-upload-section {
-    margin-top: 1rem;
-    padding: 1rem;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    border: 1px dashed #dee2e6;
-}
+        /* Estilos para upload de PDF */
+        .pdf-upload-section {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px dashed #dee2e6;
+        }
 
-.pdf-upload-header {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-}
+        .pdf-upload-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
 
-.pdf-upload-title {
-    font-weight: 600;
-    color: #2d3748;
-    font-size: 1rem;
-}
+        .pdf-upload-title {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 1rem;
+        }
 
-.pdf-upload-area {
-    border: 2px dashed #4361ee;
-    border-radius: 8px;
-    padding: 2rem;
-    text-align: center;
-    background-color: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-bottom: 1rem;
-}
+        .pdf-upload-area {
+            border: 2px dashed #4361ee;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            background-color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
 
-.pdf-upload-area:hover {
-    background-color: #f0f4ff;
-    border-color: #2c3e50;
-}
+        .pdf-upload-area:hover {
+            background-color: #f0f4ff;
+            border-color: #2c3e50;
+        }
 
-.pdf-upload-area.dragover {
-    background-color: #e3f2fd;
-    border-color: #1976d2;
-}
+        .pdf-upload-area.dragover {
+            background-color: #e3f2fd;
+            border-color: #1976d2;
+        }
 
-.pdf-icon {
-    font-size: 3rem;
-    color: #e53e3e;
-    margin-bottom: 1rem;
-}
+        .pdf-icon {
+            font-size: 3rem;
+            color: #e53e3e;
+            margin-bottom: 1rem;
+        }
 
-.pdf-upload-text {
-    color: #4a5568;
-    margin-bottom: 0.5rem;
-}
+        .pdf-upload-text {
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+        }
 
-.pdf-upload-hint {
-    color: #718096;
-    font-size: 0.875rem;
-}
+        .pdf-upload-hint {
+            color: #718096;
+            font-size: 0.875rem;
+        }
 
-.pdf-file-input {
-    display: none;
-}
+        .pdf-file-input {
+            display: none;
+        }
 
-.pdf-preview {
-    margin-top: 1rem;
-    display: none;
-}
+        .pdf-preview {
+            margin-top: 1rem;
+            display: none;
+        }
 
-.pdf-preview-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.75rem;
-    background-color: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
-    margin-bottom: 0.5rem;
-}
+        .pdf-preview-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem;
+            background-color: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+        }
 
-.pdf-preview-info {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
+        .pdf-preview-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
 
-.pdf-preview-icon {
-    color: #e53e3e;
-    font-size: 1.5rem;
-}
+        .pdf-preview-icon {
+            color: #e53e3e;
+            font-size: 1.5rem;
+        }
 
-.pdf-preview-details {
-    display: flex;
-    flex-direction: column;
-}
+        .pdf-preview-details {
+            display: flex;
+            flex-direction: column;
+        }
 
-.pdf-preview-name {
-    font-weight: 500;
-    color: #2d3748;
-}
+        .pdf-preview-name {
+            font-weight: 500;
+            color: #2d3748;
+        }
 
-.pdf-preview-size {
-    font-size: 0.875rem;
-    color: #718096;
-}
+        .pdf-preview-size {
+            font-size: 0.875rem;
+            color: #718096;
+        }
 
-.pdf-remove-btn {
-    background: none;
-    border: none;
-    color: #e53e3e;
-    cursor: pointer;
-    padding: 0.25rem;
-    border-radius: 4px;
-    transition: background-color 0.2s;
-}
+        .pdf-remove-btn {
+            background: none;
+            border: none;
+            color: #e53e3e;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
 
-.pdf-remove-btn:hover {
-    background-color: #fed7d7;
-}
+        .pdf-remove-btn:hover {
+            background-color: #fed7d7;
+        }
 
-.btn-outline-primary {
-    background-color: transparent;
-    border: 2px solid #4361ee;
-    color: #4361ee;
-}
+        .btn-outline-primary {
+            background-color: transparent;
+            border: 2px solid #4361ee;
+            color: #4361ee;
+        }
 
-.btn-outline-primary:hover {
-    background-color: #4361ee;
-    color: white;
-}
+        .btn-outline-primary:hover {
+            background-color: #4361ee;
+            color: white;
+        }
     </style>
 </head>
 <body class="flex">
@@ -748,7 +748,7 @@
                             <div class="pdf-upload-section">
                                 <div class="pdf-upload-header">
                                     <i class="fas fa-file-pdf"></i>
-                                    <span class="pdf-upload-title">Documentos em PDF</span>
+                                    <span class="pdf-upload-title">Documentos em PDF (Ficha de Segurança)</span>
                                 </div>
                                 
                                 <div class="pdf-upload-area" id="pdfUploadArea">
@@ -1126,13 +1126,10 @@ function formatFileSize(bytes) {
 
     // Opções padrão para cada campo
     const opcoesPadrao = {
-        'productType': [
-            'reagente', 'solvente', 'acido', 'base', 'explosivo', 
-            'inflamavel', 'toxico', 'radioativo', 'outro'
-        ],
-        'dangerLevel': ['baixo', 'moderado', 'alto', 'extremo'],
-        'regulatoryOrg': ['policia-federal', 'exercito', 'anvisa', 'outro'],
-        'unit': ['unidade', 'litro', 'ml', 'grama', 'kg', 'caixa']
+        'productType': [''],
+        'dangerLevel': [''],
+        'regulatoryOrg': [''],
+        'unit': ['',]
     };
 
     // Carregar opções para todos os selects dinâmicos
@@ -1223,6 +1220,18 @@ function formatFileSize(bytes) {
 
     // Formatador de texto para exibição
     function formatarTexto(texto) {
+        // Se o texto estiver vazio ou for nulo, retorna vazio
+        if (!texto || texto.trim() === '') return texto;
+        
+        // Para campos específicos como unidade de medida, preserva o caso original
+        const campo = document.activeElement ? document.activeElement.dataset.campo : '';
+        
+        // Se for unidade de medida, retorna o texto como está (preserva maiúsculas/minúsculas)
+        if (campo === 'unit') {
+            return texto;
+        }
+        
+        // Para outros campos, aplica a formatação normal (primeira letra maiúscula)
         return texto
             .split('-')
             .map(palavra => palavra.charAt(0).toUpperCase() + palavra.slice(1))
