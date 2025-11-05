@@ -2128,22 +2128,72 @@
         // Atualizar movimentações a cada 30 segundos
         setInterval(carregarMovimentacoes, 30000);
 
-// Funções para o modal de detalhes
+// Funções para o modal de detalhes - VERSÃO CORRIGIDA
 function openDetailsModal(vidrariaId, vidrariaNome) {
     console.log('Abrindo modal de detalhes para:', { vidrariaId, vidrariaNome });
     
+    // Mostrar loading
+    const modal = document.getElementById('detailsModal');
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    
     // Buscar dados completos da vidraria
     fetch(`/api/vidracarias/${vidrariaId}`)
-        .then(response => response.json())
+        .then(response => {
+            // Verificar se a resposta é JSON
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                throw new Error('Resposta não é JSON');
+            }
+            return response.json();
+        })
         .then(vidraria => {
-            preencherModalDetalhes(vidraria);
-            document.getElementById('detailsModal').classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
+            if (vidraria.success) {
+                preencherModalDetalhes(vidraria.data);
+            } else {
+                throw new Error(vidraria.error || 'Erro ao carregar dados');
+            }
         })
         .catch(error => {
             console.error('Erro ao carregar detalhes da vidraria:', error);
-            showToast('Erro ao carregar detalhes da vidraria', 'danger');
+            
+            // Preencher com dados básicos (fallback)
+            preencherModalBasico(vidrariaId, vidrariaNome);
+            
+            showToast('Algumas informações podem estar incompletas', 'warning');
         });
+}
+
+// Função fallback para quando a API falha
+function preencherModalBasico(vidrariaId, vidrariaNome) {
+    // Informações Básicas
+    document.getElementById('detailId').textContent = vidrariaId ? `#${vidrariaId}` : '-';
+    document.getElementById('detailNome').textContent = vidrariaNome || '-';
+    
+    // Estoque e Localização (valores padrão)
+    document.getElementById('detailQuantidade').textContent = 'Informação não disponível';
+    document.getElementById('detailLocalizacao').textContent = 'Informação não disponível';
+    document.getElementById('detailEstoqueMinimo').textContent = 'Informação não disponível';
+    
+    // Status padrão
+    const statusElement = document.getElementById('detailStatus');
+    statusElement.innerHTML = `<span class="status-badge status-available-badge">Carregando...</span>`;
+
+    // Outras informações
+    document.getElementById('detailCategoria').textContent = 'Informação não disponível';
+    document.getElementById('detailPericulosidade').innerHTML = '<span class="detail-value">Informação não disponível</span>';
+    document.getElementById('detailFornecedor').textContent = 'Informação não disponível';
+    document.getElementById('detailDataAquisicao').textContent = 'Informação não disponível';
+    document.getElementById('detailOrgaoRegulador').textContent = 'ANVISA';
+    document.getElementById('detailDisponivel').textContent = 'Informação não disponível';
+    document.getElementById('detailDescricao').textContent = 'Descrição não disponível no momento.';
+    document.getElementById('detailInstrucoesSeguranca').textContent = 'Instruções de segurança não disponíveis.';
+
+    // Esconder botão de editar para alunos
+    const editBtn = document.getElementById('editDetailsBtn');
+    if (editBtn) {
+        editBtn.style.display = 'none';
+    }
 }
 
 function closeDetailsModal() {

@@ -7,16 +7,16 @@ const profileStorage = multer.diskStorage({
     destination: function (req, file, cb) {
         const uploadDir = path.join(__dirname, '../public/uploads/profile-photos/');
         
-        // Criar diretório se não existir
-        if (!fs.existsSync(uploadDir)) {
-            fs.mkdirSync(uploadDir, { recursive: true });
-        }
+        //  GARANTIR que o diretório existe 
+        ensureDirectoryExists(uploadDir);
         
         cb(null, uploadDir);
     },
     filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, 'profile-' + uniqueSuffix + path.extname(file.originalname));
+        //  MANTER extensão original 
+        const ext = path.extname(file.originalname);
+        cb(null, 'profile-' + uniqueSuffix + ext);
     }
 });
 
@@ -81,6 +81,13 @@ const uploadPDF = multer({
     },
     fileFilter: pdfFilter
 });
+
+const ensureDirectoryExists = (dirPath) => {
+    if (!fs.existsSync(dirPath)) {
+        fs.mkdirSync(dirPath, { recursive: true });
+        console.log(`✅ Diretório criado: ${dirPath}`);
+    }
+};
 
 // Exportar as instâncias diretamente
 module.exports = {

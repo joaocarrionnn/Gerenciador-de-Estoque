@@ -4473,7 +4473,7 @@ router.post('/api/vidracarias/movimentacao-rapida', requireAuth, requireAdmin, (
     }
 });
 
-// API para buscar dados completos de uma vidraria - CORRIGIDA
+// API para buscar dados completos de uma vidraria - CORRIGIDA E MELHORADA
 router.get('/api/vidracarias/:id', requireAuth, (req, res) => {
     const vidracariaId = req.params.id;
     
@@ -4508,6 +4508,9 @@ router.get('/api/vidracarias/:id', requireAuth, (req, res) => {
         }
         
         console.log('✅ Vidraria encontrada:', results[0].nome);
+        
+        // Garantir que estamos enviando JSON
+        res.setHeader('Content-Type', 'application/json; charset=utf-8');
         res.json({
             success: true,
             data: results[0]

@@ -171,34 +171,35 @@ class AuthController {
     static processarLogin(req, res) {
         const { username, password } = req.body;
         
-        console.log('Tentativa de login com usuário:', username);
+        console.log('🔐 Tentativa de login com usuário:', username);
         
         AuthModel.verificarUsuario(username)
             .then(user => {
                 if (!user) {
-                    console.log('Usuário não encontrado');
+                    console.log('❌ Usuário não encontrado');
                     return res.render("auth/login", { 
                         error: "Usuário não encontrado!",
                         username: username
                     });
                 }
 
-                console.log('Usuário encontrado, verificando senha...');
+                console.log('✅ Usuário encontrado:', user.usuario);
+                console.log('📸 Foto do perfil no banco:', user.foto_perfil);
                 
                 // Comparar senha
                 bcrypt.compare(password, user.senha)
                     .then(match => {
                         if (!match) {
-                            console.log('Senha incorreta');
+                            console.log('❌ Senha incorreta');
                             return res.render("auth/login", { 
                                 error: "Senha incorreta!",
                                 username: username
                             });
                         }
 
-                        console.log('Login bem-sucedido para:', user.usuario);
+                        console.log('🎉 Login bem-sucedido para:', user.usuario);
                         
-                        // DADOS ATUALIZADOS - INCLUINDO TIPO DE USUÁRIO
+                        //  SESSÃO COMPLETA PARA TODOS OS USUÁRIOS 
                         req.session.user = {
                             id: user.id_usuario,
                             usuario: user.usuario,
@@ -206,24 +207,30 @@ class AuthController {
                             email: user.email,
                             tipo: user.tipo, // 'admin' ou 'usuario'
                             turma: user.turma,
-                            foto_perfil: user.foto_perfil
+                            foto_perfil: user.foto_perfil || null //  GARANTIR que existe
                         };
 
-                        console.log('Tipo de usuário:', user.tipo);
-                        console.log('📸 Foto do perfil carregada na sessão:', user.foto_perfil);
-                        
+                        console.log('📋 Dados da sessão criados:', {
+                            id: req.session.user.id,
+                            usuario: req.session.user.usuario,
+                            tipo: req.session.user.tipo,
+                            foto_perfil: req.session.user.foto_perfil
+                        });
+
+                        //  REDIRECIONAMENTO CORRETO 
+                        console.log('🔄 Redirecionando para a página inicial...');
                         res.redirect("/");
                     })
                     .catch(err => {
-                        console.error('Erro ao comparar senha:', err);
+                        console.error('💥 Erro ao comparar senha:', err);
                         res.render("auth/login", { 
-                            error: "Erro no servidor",
+                            error: "Erro no servidor durante a autenticação",
                             username: username
                         });
                     });
             })
             .catch(err => {
-                console.error('Erro ao buscar usuário:', err);
+                console.error('💥 Erro ao buscar usuário:', err);
                 res.render("auth/login", { 
                     error: "Erro no servidor",
                     username: username

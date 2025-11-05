@@ -24,26 +24,36 @@ app.locals.formatarNumero = function(num) {
     return numero.toFixed(1).replace('.', ',');
 };
 
-// Middleware de permissão para usuários comuns (APENAS para rotas específicas)
+// MIDDLEWARE SIMPLIFICADO E FUNCIONAL 
 app.use((req, res, next) => {
-    // Lista de rotas que usuários comuns podem acessar livremente
-    const allowedRoutes = [
-        '/auth/logout',
-        '/perfil',
-        '/perfil/atualizar',
-        '/perfil/upload-foto'
+    console.log('🔐 Rota:', req.method, req.path);
+    console.log('👤 Usuário na sessão:', req.session.user ? req.session.user.usuario : 'Nenhum');
+    console.log('🎯 Tipo de usuário:', req.session.user ? req.session.user.tipo : 'Nenhum');
+
+    // Rotas públicas que não precisam de autenticação
+    const publicRoutes = [
+        '/login',
+        '/criar_conta',
+        '/auth/login',
+        '/auth/criar_conta',
+        '/auth/recuperar-senha',
+        '/auth/logout'
     ];
-    
-    // Se for uma rota permitida ou se não for usuário comum, passa direto
-    if (allowedRoutes.includes(req.path) || 
-        !req.session.user || 
-        req.session.user.tipo !== 'usuario') {
+
+    // Se é uma rota pública, passa direto
+    if (publicRoutes.includes(req.path)) {
         return next();
     }
-    
-    // Para outras rotas, aplica as restrições
-    const { requireUserViewOnly } = require('./middlewares/permissionMiddleware');
-    requireUserViewOnly(req, res, next);
+
+    //  SE NÃO ESTÁ AUTENTICADO, REDIRECIONA PARA LOGIN 
+    if (!req.session.user) {
+        console.log('🚫 Usuário não autenticado - redirecionando para login');
+        return res.redirect('/auth/login');
+    }
+
+    // SE ESTÁ AUTENTICADO, PASSA DIRETO 
+    console.log('✅ Usuário autenticado - acesso permitido');
+    next();
 });
 
 // Configuração do Multer para upload de arquivos
@@ -73,8 +83,9 @@ const upload = multer({
 
 // Debug da sessão
 app.use((req, res, next) => {
-    console.log('Sessão atual:', req.session);
-    console.log('Usuário na sessão:', req.session.user);
+    console.log('📝 Rota atual:', req.method, req.path);
+    console.log('👤 Usuário na sessão:', req.session.user ? req.session.user.usuario : 'Nenhum');
+    console.log('🔐 Tipo de usuário:', req.session.user ? req.session.user.tipo : 'Nenhum');
     next();
 });
 
@@ -93,17 +104,6 @@ app.use(express.json());
 // Importar middleware de autenticação
 const { requireAuth } = require('./middlewares/authMiddleware');
 
-// Middleware de permissão para usuários comuns
-app.use((req, res, next) => {
-    const { requireUserViewOnly } = require('./middlewares/permissionMiddleware');
-    
-    if (req.session.user && req.session.user.tipo === 'usuario') {
-        requireUserViewOnly(req, res, next);
-    } else {
-        next();
-    }
-});
-
 // Rotas de autenticação (não protegidas)
 const authRoutes = require('./routes/auth');
 app.use('/auth', authRoutes);
@@ -113,15 +113,7 @@ app.post('/criar_conta', (req, res) => {
     AuthController.processarCriarConta(req, res);
 });
 
-// ⚠️ REMOVA ESTA ROTA DAQUI - ELA ESTÁ CONFLITANDO
-// Rota raiz redireciona para home
-// app.get('/', requireAuth, (req, res) => {
-//     res.render('home/index', { 
-//         user: req.session.user 
-//     });
-// });
-
-// Rotas principais (protegidas) - ESTA É A ROTA CORRETA QUE USA O HomeController
+// Rotas principais (protegidas)
 const indexRoutes = require('./routes/index');
 app.use('/', requireAuth, indexRoutes);
 
@@ -131,7 +123,7 @@ app.use('/perfil', requireAuth, perfilRoutes);
 
 // Middleware de erro
 app.use((err, req, res, next) => {
-    console.error(err.stack);
+    console.error('💥 Erro no servidor:', err.stack);
     
     if (err instanceof multer.MulterError) {
         if (err.code === 'LIMIT_FILE_SIZE') {
@@ -156,5 +148,5 @@ app.use((req, res) => {
 // Iniciar servidor
 const PORT = process.env.PORT || 3010;
 app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
+    console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });

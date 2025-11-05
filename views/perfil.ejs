@@ -779,270 +779,392 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Elementos do DOM
-            const changePhotoBtn = document.getElementById('changePhotoBtn');
-            const photoUploadContainer = document.getElementById('photoUploadContainer');
-            const photoFile = document.getElementById('photoFile');
-            const photoPreview = document.getElementById('photoPreview');
-            const uploadPhotoBtn = document.getElementById('uploadPhotoBtn');
-            const cancelUploadBtn = document.getElementById('cancelUploadBtn');
-            const profileImage = document.getElementById('profileImage');
-            const tabSenha = document.getElementById('tabSenha');
-            const formAlterarSenhaSection = document.getElementById('formAlterarSenhaSection');
-            const formAlterarSenha = document.getElementById('formAlterarSenha');
-            const formEditarPerfil = document.getElementById('formEditarPerfil');
-            
-            // Abrir modal de upload
-            if (changePhotoBtn) {
-                changePhotoBtn.addEventListener('click', function() {
-                    photoUploadContainer.style.display = 'flex';
-                    // Preencher o preview com a imagem atual
-                    photoPreview.src = profileImage.src;
-                });
-            }
-            
-            // Fechar modal
-            if (cancelUploadBtn) {
-                cancelUploadBtn.addEventListener('click', function() {
-                    photoUploadContainer.style.display = 'none';
-                });
-            }
-            
-            // Fechar modal clicando fora
-            if (photoUploadContainer) {
-                photoUploadContainer.addEventListener('click', function(e) {
-                    if (e.target === photoUploadContainer) {
-                        photoUploadContainer.style.display = 'none';
-                    }
-                });
-            }
-            
-            // Preview da imagem selecionada
-            if (photoFile) {
-                photoFile.addEventListener('change', function(e) {
-                    const file = e.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        
-                        reader.onload = function(e) {
-                            photoPreview.src = e.target.result;
-                        }
-                        
-                        reader.readAsDataURL(file);
-                    }
-                });
-            }
-            
-            // No perfil.ejs, substitua a função de upload por esta:
-            if (uploadPhotoBtn) {
-                uploadPhotoBtn.addEventListener('click', function() {
-                    const fileInput = document.getElementById('photoFile');
-                    if (fileInput.files.length === 0) {
-                        alert('Por favor, selecione uma imagem primeiro.');
-                        return;
-                    }
-                    
-                    const formData = new FormData();
-                    formData.append('profilePhoto', fileInput.files[0]);
-                    
-                    // Mostrar loading
-                    uploadPhotoBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
-                    uploadPhotoBtn.disabled = true;
-                    
-                    fetch('/perfil/upload-foto', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            // Se a resposta não for OK, tentar ler como texto primeiro
-                            return response.text().then(text => {
-                                throw new Error(text || 'Erro no servidor');
-                            });
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data.success) {
-                            // Atualizar a imagem do perfil com timestamp para evitar cache
-                            if (profileImage) {
-                                profileImage.src = data.fotoUrl + '&t=' + new Date().getTime();
-                            }
-                            photoUploadContainer.style.display = 'none';
-                            showToast(data.message, 'success');
-                            
-                            // Recarregar a página após 1 segundo para atualizar tudo
-                            setTimeout(() => {
-                                location.reload();
-                            }, 1000);
-                        } else {
-                            throw new Error(data.error || 'Erro desconhecido');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Erro no upload:', error);
-                        let errorMessage = 'Erro ao fazer upload da foto';
-                        
-                        try {
-                            const errorData = JSON.parse(error.message);
-                            errorMessage = errorData.error || errorMessage;
-                        } catch (e) {
-                            if (error.message.includes('Unexpected token')) {
-                                errorMessage = 'Erro no servidor. Tente novamente.';
-                            } else {
-                                errorMessage = error.message || errorMessage;
-                            }
-                        }
-                        
-                        showToast(errorMessage, 'danger');
-                    })
-                    .finally(() => {
-                        // Restaurar botão
-                        uploadPhotoBtn.innerHTML = '<i class="fas fa-check"></i> Salvar Foto';
-                        uploadPhotoBtn.disabled = false;
-                    });
-                });
-            }
-
-            // Adicione esta função de toast no perfil.ejs
-            function showToast(message, type = 'success') {
-                // Criar container se não existir
-                let toastContainer = document.getElementById('toast-container');
-                if (!toastContainer) {
-                    toastContainer = document.createElement('div');
-                    toastContainer.id = 'toast-container';
-                    toastContainer.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 10000; max-width: 300px;';
-                    document.body.appendChild(toastContainer);
-                }
-                
-                const toast = document.createElement('div');
-                const bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500';
-                
-                toast.className = `${bgColor} text-white px-4 py-3 rounded-lg shadow-lg mb-2 transition-all duration-300 transform translate-x-full`;
-                toast.innerHTML = `
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'} mr-2"></i>
-                            <span>${message}</span>
-                        </div>
-                        <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-200">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                `;
-                
-                toastContainer.appendChild(toast);
-                
-                // Animar entrada
-                setTimeout(() => {
-                    toast.classList.remove('translate-x-full');
-                }, 10);
-                
-                // Auto-remover após 4 segundos
-                setTimeout(() => {
-                    if (toast.parentElement) {
-                        toast.classList.add('translate-x-full');
-                        setTimeout(() => {
-                            if (toast.parentElement) {
-                                toast.remove();
-                            }
-                        }, 300);
-                    }
-                }, 4000);
-            }
-            
-            // Navegação entre abas
-            const tabButtons = document.querySelectorAll('nav button');
-            tabButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Remove a classe ativa de todos os botões
-                    tabButtons.forEach(btn => {
-                        btn.classList.remove('tab-active');
-                        btn.classList.remove('text-[#2c3e50]');
-                        btn.classList.add('text-gray-600');
-                    });
-                    
-                    // Adiciona a classe ativa ao botão clicado
-                    this.classList.add('tab-active');
-                    this.classList.add('text-[#2c3e50]');
-                    this.classList.remove('text-gray-600');
-                    
-                    // Mostrar/ocultar seções
-                    if (this.id === 'tabSenha') {
-                        formAlterarSenhaSection.style.display = 'block';
-                        document.getElementById('formEditarPerfil').style.display = 'none';
-                    } else {
-                        formAlterarSenhaSection.style.display = 'none';
-                        document.getElementById('formEditarPerfil').style.display = 'block';
-                    }
-                });
-            });
-            
-            // Formulário de alteração de senha - SUBMISSÃO NORMAL (SEM AJAX)
-            if (formAlterarSenha) {
-                formAlterarSenha.addEventListener('submit', function(e) {
-                    // Validação client-side
-                    const senhaAtual = this.querySelector('input[name="senhaAtual"]').value;
-                    const novaSenha = this.querySelector('input[name="novaSenha"]').value;
-                    const confirmarSenha = this.querySelector('input[name="confirmarSenha"]').value;
-                    
-                    // Validar se as senhas coincidem
-                    if (novaSenha !== confirmarSenha) {
-                        e.preventDefault();
-                        alert('As senhas não coincidem!');
-                        return;
-                    }
-                    
-                    // Validar comprimento da senha
-                    if (novaSenha.length < 6) {
-                        e.preventDefault();
-                        alert('A senha deve ter pelo menos 6 caracteres!');
-                        return;
-                    }
-                    
-                    // Se passou na validação, o formulário será enviado normalmente
-                    // O backend vai tratar a resposta e redirecionar
-                });
-            }
-            
-            // Formulário de edição de perfil - SUBMISSÃO NORMAL (SEM AJAX)
-            if (formEditarPerfil) {
-                formEditarPerfil.addEventListener('submit', function(e) {
-                    // Validação client-side básica
-                    const nome = this.querySelector('input[name="nome"]').value;
-                    const sobrenome = this.querySelector('input[name="sobrenome"]').value;
-                    const email = this.querySelector('input[name="email"]').value;
-                    const turma = this.querySelector('select[name="turma"]').value;
-                    
-                    if (!nome || !sobrenome || !email || !turma) {
-                        e.preventDefault();
-                        alert('Por favor, preencha todos os campos obrigatórios!');
-                        return;
-                    }
-                    
-                    // Validar email
-                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    if (!emailRegex.test(email)) {
-                        e.preventDefault();
-                        alert('Por favor, insira um email válido!');
-                        return;
-                    }
-                    
-                    // Se passou na validação, o formulário será enviado normalmente
-                    // O backend vai tratar a resposta e redirecionar
-                });
-            }
-            
-            // Botão "Ver todas" atividades
-            const viewAllBtn = document.querySelector('.view-all-btn');
-            if (viewAllBtn) {
-                viewAllBtn.addEventListener('click', function() {
-                    alert('Redirecionando para página de atividades...');
-                    // window.location.href = '/atividades';
-                });
+       document.addEventListener('DOMContentLoaded', function() {
+    console.log('🔧 Script do perfil inicializado');
+    
+    // Elementos do DOM
+    const changePhotoBtn = document.getElementById('changePhotoBtn');
+    const photoUploadContainer = document.getElementById('photoUploadContainer');
+    const photoFile = document.getElementById('photoFile');
+    const photoPreview = document.getElementById('photoPreview');
+    const uploadPhotoBtn = document.getElementById('uploadPhotoBtn');
+    const cancelUploadBtn = document.getElementById('cancelUploadBtn');
+    const profileImage = document.getElementById('profileImage');
+    const tabSenha = document.getElementById('tabSenha');
+    const formAlterarSenhaSection = document.getElementById('formAlterarSenhaSection');
+    const formAlterarSenha = document.getElementById('formAlterarSenha');
+    const formEditarPerfil = document.getElementById('formEditarPerfil');
+    
+    // Abrir modal de upload
+    if (changePhotoBtn) {
+        changePhotoBtn.addEventListener('click', function() {
+            console.log('📷 Abrindo modal de upload de foto');
+            photoUploadContainer.style.display = 'flex';
+            // Preencher o preview com a imagem atual
+            photoPreview.src = profileImage.src;
+        });
+    }
+    
+    // Fechar modal
+    if (cancelUploadBtn) {
+        cancelUploadBtn.addEventListener('click', function() {
+            console.log('❌ Fechando modal de upload');
+            photoUploadContainer.style.display = 'none';
+            // Limpar seleção de arquivo
+            if (photoFile) photoFile.value = '';
+        });
+    }
+    
+    // Fechar modal clicando fora
+    if (photoUploadContainer) {
+        photoUploadContainer.addEventListener('click', function(e) {
+            if (e.target === photoUploadContainer) {
+                console.log('❌ Fechando modal (clique fora)');
+                photoUploadContainer.style.display = 'none';
+                if (photoFile) photoFile.value = '';
             }
         });
+    }
+    
+    // Preview da imagem selecionada
+    if (photoFile) {
+        photoFile.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            console.log('🖼️ Arquivo selecionado:', file ? file.name : 'Nenhum');
+            
+            if (file) {
+                // Validações da imagem
+                if (!file.type.startsWith('image/')) {
+                    alert('❌ Por favor, selecione apenas arquivos de imagem!');
+                    this.value = '';
+                    return;
+                }
+                
+                // Validar tamanho (máximo 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('❌ A imagem deve ter no máximo 5MB!');
+                    this.value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    photoPreview.src = e.target.result;
+                    console.log('✅ Preview da imagem atualizado');
+                };
+                
+                reader.onerror = function() {
+                    console.error('❌ Erro ao ler arquivo para preview');
+                    alert('Erro ao carregar a imagem selecionada.');
+                };
+                
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+    
+    // Upload de foto - VERSÃO CORRIGIDA E MELHORADA
+    if (uploadPhotoBtn) {
+        uploadPhotoBtn.addEventListener('click', function() {
+            const fileInput = document.getElementById('photoFile');
+            
+            if (!fileInput || fileInput.files.length === 0) {
+                alert('❌ Por favor, selecione uma imagem primeiro.');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            console.log('🚀 Iniciando upload do arquivo:', file.name);
+
+            // Validações finais antes do upload
+            if (!file.type.startsWith('image/')) {
+                alert('❌ Arquivo selecionado não é uma imagem válida!');
+                return;
+            }
+
+            if (file.size > 5 * 1024 * 1024) {
+                alert('❌ A imagem é muito grande! Máximo: 5MB');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('profilePhoto', file);
+
+            // Mostrar estado de loading
+            const originalText = uploadPhotoBtn.innerHTML;
+            uploadPhotoBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+            uploadPhotoBtn.disabled = true;
+
+            console.log('📤 Enviando requisição para o servidor...');
+            
+            fetch('/perfil/upload-foto', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                console.log('📨 Resposta recebida, status:', response.status);
+                
+                if (!response.ok) {
+                    // Se a resposta não for OK, tentar obter mais informações
+                    return response.text().then(text => {
+                        console.error('❌ Resposta de erro:', text);
+                        throw new Error(`Erro no servidor (${response.status}): ${text}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('✅ Resposta JSON do servidor:', data);
+                
+                if (data.success) {
+                    showToast(data.message, 'success');
+                    
+                    // Atualizar a imagem do perfil imediatamente
+                    if (profileImage && data.fotoUrl) {
+                        const newSrc = data.fotoUrl + '?t=' + new Date().getTime();
+                        profileImage.src = newSrc;
+                        console.log('🖼️ Imagem do perfil atualizada:', newSrc);
+                    }
+                    
+                    // Fechar modal e limpar
+                    photoUploadContainer.style.display = 'none';
+                    fileInput.value = '';
+                    
+                    // Recarregar a página após um breve delay para mostrar o feedback
+                    console.log('🔄 Agendando recarregamento da página...');
+                    setTimeout(() => {
+                        console.log('🔄 Recarregando página...');
+                        location.reload();
+                    }, 1500);
+                    
+                } else {
+                    throw new Error(data.message || 'Erro desconhecido do servidor');
+                }
+            })
+            .catch(error => {
+                console.error('❌ Erro no processo de upload:', error);
+                
+                let errorMessage = 'Erro ao fazer upload da foto';
+                if (error.message.includes('Failed to fetch')) {
+                    errorMessage = 'Erro de conexão. Verifique sua internet.';
+                } else if (error.message.includes('404')) {
+                    errorMessage = 'Serviço não encontrado. Tente novamente.';
+                } else if (error.message.includes('500')) {
+                    errorMessage = 'Erro interno do servidor. Tente novamente.';
+                } else {
+                    errorMessage = error.message;
+                }
+                
+                showToast(errorMessage, 'danger');
+            })
+            .finally(() => {
+                // Restaurar estado original do botão
+                uploadPhotoBtn.innerHTML = originalText;
+                uploadPhotoBtn.disabled = false;
+                console.log('🔄 Botão de upload restaurado');
+            });
+        });
+    }
+
+    // Função para mostrar notificações toast
+    function showToast(message, type = 'success') {
+        console.log('💬 Exibindo toast:', type, message);
+        
+        // Criar container se não existir
+        let toastContainer = document.getElementById('toast-container');
+        if (!toastContainer) {
+            toastContainer = document.createElement('div');
+            toastContainer.id = 'toast-container';
+            toastContainer.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 10000;
+                max-width: 400px;
+            `;
+            document.body.appendChild(toastContainer);
+        }
+        
+        const toast = document.createElement('div');
+        const bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500';
+        const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle';
+        
+        toast.className = `${bgColor} text-white px-4 py-3 rounded-lg shadow-lg mb-2 transition-all duration-300 transform translate-x-full`;
+        toast.innerHTML = `
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <i class="fas ${icon} mr-3"></i>
+                    <span class="font-medium">${message}</span>
+                </div>
+                <button class="ml-4 text-white hover:text-gray-200 transition-colors">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
+        
+        // Adicionar evento para fechar o toast
+        const closeBtn = toast.querySelector('button');
+        closeBtn.addEventListener('click', function() {
+            toast.classList.add('translate-x-full');
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.remove();
+                }
+            }, 300);
+        });
+        
+        toastContainer.appendChild(toast);
+        
+        // Animar entrada
+        setTimeout(() => {
+            toast.classList.remove('translate-x-full');
+        }, 10);
+        
+        // Auto-remover após 5 segundos
+        setTimeout(() => {
+            if (toast.parentElement) {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => {
+                    if (toast.parentElement) {
+                        toast.remove();
+                    }
+                }, 300);
+            }
+        }, 5000);
+    }
+    
+    // Navegação entre abas (se houver múltiplas abas)
+    const tabButtons = document.querySelectorAll('nav button');
+    if (tabButtons.length > 0) {
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                console.log('📑 Alternando para aba:', this.id || this.textContent);
+                
+                // Remove a classe ativa de todos os botões
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('tab-active');
+                    btn.classList.remove('text-[#2c3e50]');
+                    btn.classList.add('text-gray-600');
+                });
+                
+                // Adiciona a classe ativa ao botão clicado
+                this.classList.add('tab-active');
+                this.classList.add('text-[#2c3e50]');
+                this.classList.remove('text-gray-600');
+                
+                // Mostrar/ocultar seções baseado na aba
+                if (this.id === 'tabSenha' && formAlterarSenhaSection) {
+                    formAlterarSenhaSection.style.display = 'block';
+                    if (formEditarPerfil) formEditarPerfil.style.display = 'none';
+                } else {
+                    if (formAlterarSenhaSection) formAlterarSenhaSection.style.display = 'none';
+                    if (formEditarPerfil) formEditarPerfil.style.display = 'block';
+                }
+            });
+        });
+    }
+    
+    // Formulário de alteração de senha
+    if (formAlterarSenha) {
+        formAlterarSenha.addEventListener('submit', function(e) {
+            console.log('🔐 Validando formulário de alteração de senha');
+            
+            const senhaAtual = this.querySelector('input[name="senhaAtual"]').value;
+            const novaSenha = this.querySelector('input[name="novaSenha"]').value;
+            const confirmarSenha = this.querySelector('input[name="confirmarSenha"]').value;
+            
+            // Validar se as senhas coincidem
+            if (novaSenha !== confirmarSenha) {
+                e.preventDefault();
+                showToast('As senhas não coincidem!', 'danger');
+                return;
+            }
+            
+            // Validar comprimento da senha
+            if (novaSenha.length < 6) {
+                e.preventDefault();
+                showToast('A senha deve ter pelo menos 6 caracteres!', 'danger');
+                return;
+            }
+            
+            // Validar se a nova senha é diferente da atual
+            if (novaSenha === senhaAtual) {
+                e.preventDefault();
+                showToast('A nova senha deve ser diferente da senha atual!', 'danger');
+                return;
+            }
+            
+            console.log('✅ Validação de senha passou - enviando formulário');
+        });
+    }
+    
+    // Formulário de edição de perfil
+    if (formEditarPerfil) {
+        formEditarPerfil.addEventListener('submit', function(e) {
+            console.log('👤 Validando formulário de edição de perfil');
+            
+            const nome = this.querySelector('input[name="nome"]').value.trim();
+            const sobrenome = this.querySelector('input[name="sobrenome"]').value.trim();
+            const email = this.querySelector('input[name="email"]').value.trim();
+            const turma = this.querySelector('select[name="turma"]').value;
+            
+            // Validação básica de campos obrigatórios
+            if (!nome || !sobrenome || !email || !turma) {
+                e.preventDefault();
+                showToast('Por favor, preencha todos os campos obrigatórios!', 'danger');
+                return;
+            }
+            
+            // Validar email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                e.preventDefault();
+                showToast('Por favor, insira um email válido!', 'danger');
+                return;
+            }
+            
+            // Validar comprimento do nome
+            if (nome.length < 2 || sobrenome.length < 2) {
+                e.preventDefault();
+                showToast('Nome e sobrenome devem ter pelo menos 2 caracteres!', 'danger');
+                return;
+            }
+            
+            console.log('✅ Validação de perfil passou - enviando formulário');
+        });
+    }
+    
+    // Botão "Ver todas" atividades (se existir)
+    const viewAllBtn = document.querySelector('.view-all-btn');
+    if (viewAllBtn) {
+        viewAllBtn.addEventListener('click', function() {
+            console.log('📊 Redirecionando para página de atividades...');
+            // window.location.href = '/atividades';
+        });
+    }
+    
+    // Adicionar alguns estilos dinâmicos para melhor UX
+    const style = document.createElement('style');
+    style.textContent = `
+        #toast-container .bg-green-500 {
+            background-color: #10B981;
+        }
+        #toast-container .bg-red-500 {
+            background-color: #EF4444;
+        }
+        .fa-spinner {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    console.log('✅ Script do perfil carregado com sucesso!');
+});
     </script>
 </body>
 </html>
