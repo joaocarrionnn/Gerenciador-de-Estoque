@@ -490,7 +490,7 @@ router.get('/api/produtos/:id/pdfs', requireAuth, (req, res) => {
 
 
 // API PARA DELETAR UM PDF
-router.delete('/api/produtos/pdfs/:pdfId', requireAuth, (req, res) => {
+router.delete('/api/produtos/pdfs/:pdfId', requireAuth,requireAdmin, (req, res) => {
     const pdfId = req.params.pdfId;
     
     // Primeiro buscar o arquivo para deletá-lo do sistema
@@ -1016,29 +1016,6 @@ router.get('/api/produtos/:id/historico-renovacoes', requireAuth, (req, res) => 
     });
 });
 
-// MIDDLEWARE PARA VERIFICAR VALIDADE AO REGISTRAR ENTRADA
-/*
-const verificarValidadeProduto = (req, res, next) => {
-    const { reagent, expirationDate } = req.body;
-    
-    if (expirationDate) {
-        const hoje = new Date();
-        const dataValidade = new Date(expirationDate);
-        
-        if (dataValidade < hoje) {
-            return res.json({
-                success: false,
-                message: '⚠️ Atenção: A data de validade informada já está vencida. Considere renovar o produto.',
-                data_vencida: true
-            });
-        }
-    }
-    
-    next();
-};
-*/
-
-
 
 
 // API PARA ESTATÍSTICAS DE VALIDADE
@@ -1134,7 +1111,7 @@ router.post('/api/opcoes/:campo', requireAuth, (req, res) => {
 
 
 // ROTA PARA SAÍDA DE REAGENTES
-router.get('/saida-reagentes', requireAuth, (req, res) => {
+router.get('/saida-reagentes', requireAuth,requireAdmin, (req, res) => {
     // Buscar produtos disponíveis do banco
     const produtosQuery = `
         SELECT 
@@ -1171,7 +1148,7 @@ router.get('/saida-reagentes', requireAuth, (req, res) => {
 });
 
 // API PARA REGISTRAR SAÍDA DE REAGENTE (VERSÃO COM PROMISES)
-router.post('/api/output', requireAuth, (req, res) => {
+router.post('/api/output', requireAuth,requireAdmin, (req, res) => {
     const { reagent, quantity, responsible, project, notes } = req.body;
     
     console.log('📤 Registrando saída:', { reagent, quantity, responsible });
@@ -1286,7 +1263,7 @@ router.post('/api/output', requireAuth, (req, res) => {
 
 
 // API PARA MOVIMENTAÇÕES
-router.get('/api/movements', requireAuth, (req, res) => {
+router.get('/api/movements', requireAuth,requireAdmin, (req, res) => {
     // Verificar se a tabela existe
     const checkTableQuery = `
         SELECT COUNT(*) as table_exists 
@@ -1330,7 +1307,7 @@ router.get('/api/movements', requireAuth, (req, res) => {
 
 
 // API PARA MOVIMENTAÇÕES DE SAÍDA (ESPECÍFICA)
-router.get('/api/output-movements', requireAuth, (req, res) => {
+router.get('/api/output-movements', requireAuth,requireAdmin, (req, res) => {
     // Verificar se a tabela existe
     const checkTableQuery = `
         SELECT COUNT(*) as table_exists 
@@ -1373,7 +1350,7 @@ router.get('/api/output-movements', requireAuth, (req, res) => {
 });
 
 // API PARA MOVIMENTAÇÕES DE ENTRADA
-router.get('/api/input-movements', requireAuth, (req, res) => {
+router.get('/api/input-movements', requireAuth,requireAdmin, (req, res) => {
     const query = `
         SELECT 
             m.id_movimentacao as id,
@@ -1401,7 +1378,7 @@ router.get('/api/input-movements', requireAuth, (req, res) => {
 });
 
 // API PARA ESTATÍSTICAS
-router.get('/api/statistics', requireAuth, (req, res) => {
+router.get('/api/statistics', requireAuth,requireAdmin, (req, res) => {
     const today = new Date().toISOString().split('T')[0];
     
     // Verificar tabela movimentacoes
@@ -1519,7 +1496,7 @@ router.get('/api/statistics', requireAuth, (req, res) => {
 });
 
 // ROTA PARA ENTRADA DE REAGENTES
-router.get('/entrada-reagentes', requireAuth, (req, res) => {
+router.get('/entrada-reagentes', requireAuth,requireAdmin, (req, res) => {
     // Buscar todos os produtos para o dropdown
     const produtosQuery = `
         SELECT 
@@ -1758,7 +1735,7 @@ router.post('/api/input', requireAuth, uploadProductWithPDFs, (req, res) => {
 
 
 // API PARA MOVIMENTAÇÕES DE ENTRADA
-router.get('/api/input-movements', requireAuth, (req, res) => {
+router.get('/api/input-movements', requireAuth,requireAdmin, (req, res) => {
     // Verificar se a tabela existe
     const checkTableQuery = `
         SELECT COUNT(*) as table_exists 
@@ -1801,7 +1778,7 @@ router.get('/api/input-movements', requireAuth, (req, res) => {
 });
 
 // API PARA ESTATÍSTICAS DE ENTRADA
-router.get('/api/input-statistics', requireAuth, (req, res) => {
+router.get('/api/input-statistics', requireAuth,requireAdmin, (req, res) => {
     const today = new Date().toISOString().split('T')[0];
 
     // Buscar produtos com estoque baixo
@@ -1897,7 +1874,7 @@ router.get('/api/input-statistics', requireAuth, (req, res) => {
 
 
 // API PARA TODAS AS MOVIMENTAÇÕES DE ENTRADA (COM PAGINAÇÃO)
-router.get('/api/all-input-movements', requireAuth, (req, res) => {
+router.get('/api/all-input-movements', requireAuth,requireAdmin, (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const offset = (page - 1) * limit;
@@ -1954,7 +1931,7 @@ router.get('/api/all-input-movements', requireAuth, (req, res) => {
 });
 
 // API PARA TODAS AS MOVIMENTAÇÕES (ENTRADAS E SAÍDAS)
-router.get('/api/all-movements', requireAuth, (req, res) => {
+router.get('/api/all-movements', requireAuth,requireAdmin, (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 15;
     const offset = (page - 1) * limit;
@@ -2032,7 +2009,7 @@ router.get('/api/all-movements', requireAuth, (req, res) => {
 });
 
 // API PARA ESTATÍSTICAS DAS MOVIMENTAÇÕES
-router.get('/api/movements-statistics', requireAuth, (req, res) => {
+router.get('/api/movements-statistics', requireAuth,requireAdmin, (req, res) => {
     // Contar totais por tipo
     const totalsQuery = `
         SELECT 
@@ -2097,14 +2074,14 @@ router.get('/api/movements-statistics', requireAuth, (req, res) => {
 });
 
 // ROTA PARA PÁGINA DE MOVIMENTAÇÕES
-router.get('/movimentacoes', requireAuth, (req, res) => {
+router.get('/movimentacoes', requireAuth,requireAdmin, (req, res) => {
     res.render('movimentacoes', { 
         user: req.session.user
     });
 });
 
 // API PARA ÚLTIMAS MOVIMENTAÇÕES (TODOS OS TIPOS)
-router.get('/api/recent-movements', requireAuth, (req, res) => {
+router.get('/api/recent-movements', requireAuth,requireAdmin, (req, res) => {
     // Verificar se a tabela existe
     const checkTableQuery = `
         SELECT COUNT(*) as table_exists 
@@ -2115,49 +2092,6 @@ router.get('/api/recent-movements', requireAuth, (req, res) => {
 
     db.query(checkTableQuery, (err, result) => {
         if (err || result[0].table_exists === 0) {
-            // Dados mockados se a tabela não existir
-            return res.json([
-                {
-                    id: 1,
-                    reagent: 'Ácido Clorídrico P.A.',
-                    type: 'saida',
-                    quantity: 2.5,
-                    unit: 'L',
-                    responsible: 'João Silva',
-                    project: 'Projeto A',
-                    date: new Date().toISOString()
-                },
-                {
-                    id: 2,
-                    reagent: 'Hidróxido de Sódio',
-                    type: 'entrada',
-                    quantity: 5.0,
-                    unit: 'kg',
-                    responsible: 'Maria Santos',
-                    project: 'Fornecedor: Química Ltda',
-                    date: new Date(Date.now() - 86400000).toISOString()
-                },
-                {
-                    id: 3,
-                    reagent: 'Sulfato de Cobre II',
-                    type: 'saida',
-                    quantity: 1.0,
-                    unit: 'kg',
-                    responsible: 'Pedro Oliveira',
-                    project: 'Projeto B',
-                    date: new Date(Date.now() - 172800000).toISOString()
-                },
-                {
-                    id: 4,
-                    reagent: 'Ácido Sulfúrico',
-                    type: 'entrada',
-                    quantity: 3.0,
-                    unit: 'L',
-                    responsible: 'Ana Costa',
-                    project: 'Fornecedor: LabSupply',
-                    date: new Date(Date.now() - 259200000).toISOString()
-                }
-            ]);
         }
 
         // Buscar dados reais - últimas 4 movimentações de qualquer tipo
@@ -2202,7 +2136,7 @@ router.get('/logout', requireAuth, (req, res) => {
 
 
 // ROTA PARA RELATÓRIOS - ATUALIZADA E CORRIGIDA
-router.get('/relatorios', requireAuth, (req, res) => {
+router.get('/relatorios', requireAuth,requireAdmin, (req, res) => {
     // Buscar estatísticas do banco
     const totalReagentsQuery = 'SELECT COUNT(*) as total FROM produtos';
     const lowStockQuery = 'SELECT COUNT(*) as total FROM produtos WHERE quantidade <= estoque_minimo AND quantidade > 0';
@@ -2404,7 +2338,7 @@ router.get('/relatorios', requireAuth, (req, res) => {
 });
 
 // API PARA BUSCAR REAGENTES VENCIDOS COM FILTROS
-router.get('/api/relatorios/reagentes-vencidos', requireAuth, (req, res) => {
+router.get('/api/relatorios/reagentes-vencidos', requireAuth,requireAdmin, (req, res) => {
     const {
         startDate,
         endDate,
@@ -2520,7 +2454,7 @@ router.get('/api/relatorios/reagentes-vencidos', requireAuth, (req, res) => {
 });
 
 // API PARA ESTATÍSTICAS DE REAGENTES VENCIDOS
-router.get('/api/relatorios/estatisticas-vencidos', requireAuth, (req, res) => {
+router.get('/api/relatorios/estatisticas-vencidos', requireAuth,requireAdmin, (req, res) => {
     const query = `
         SELECT 
             COUNT(*) as total_vencidos,
@@ -2560,7 +2494,7 @@ router.get('/api/relatorios/estatisticas-vencidos', requireAuth, (req, res) => {
 });
 
 // API PARA EXPORTAR REAGENTES VENCIDOS EM EXCEL
-router.get('/api/relatorios/exportar-vencidos-excel', requireAuth, (req, res) => {
+router.get('/api/relatorios/exportar-vencidos-excel', requireAuth,requireAdmin, (req, res) => {
     const {
         startDate,
         endDate,
@@ -2637,7 +2571,7 @@ router.get('/api/relatorios/exportar-vencidos-excel', requireAuth, (req, res) =>
 });
 
 // API PARA GERAR PDF DE REAGENTES VENCIDOS
-router.get('/api/relatorios/gerar-pdf-vencidos', requireAuth, (req, res) => {
+router.get('/api/relatorios/gerar-pdf-vencidos', requireAuth,requireAdmin, (req, res) => {
     const {
         startDate,
         endDate,
@@ -2721,7 +2655,7 @@ router.get('/api/relatorios/gerar-pdf-vencidos', requireAuth, (req, res) => {
 });
 
 // API PARA REAGENTES QUE VENCERÃO EM BREVE (ALERTA)
-router.get('/api/relatorios/reagentes-proximo-vencimento', requireAuth, (req, res) => {
+router.get('/api/relatorios/reagentes-proximo-vencimento', requireAuth,requireAdmin, (req, res) => {
     const days = parseInt(req.query.days) || 30;
     
     const query = `
@@ -2785,7 +2719,7 @@ router.put('/api/produtos/:id/data-validade', requireAuth, (req, res) => {
 
 
 // API PARA ESTATÍSTICAS DOS RELATÓRIOS - CORRIGIDA
-router.get('/api/relatorios/stats', requireAuth, (req, res) => {
+router.get('/api/relatorios/stats', requireAuth,requireAdmin, (req, res) => {
     const totalReagentsQuery = 'SELECT COUNT(*) as total FROM produtos';
     const lowStockQuery = 'SELECT COUNT(*) as total FROM produtos WHERE quantidade <= estoque_minimo AND quantidade > 0';
     
@@ -2835,7 +2769,7 @@ router.get('/api/relatorios/stats', requireAuth, (req, res) => {
 
 
 // API PARA DADOS DO GRÁFICO DE MOVIMENTAÇÃO - CORRIGIDA
-router.get('/api/relatorios/movimentacao-mensal', requireAuth, (req, res) => {
+router.get('/api/relatorios/movimentacao-mensal', requireAuth,requireAdmin, (req, res) => {
     const query = `
         SELECT 
             MONTH(data_movimentacao) as mes,
@@ -2881,7 +2815,7 @@ router.get('/api/relatorios/movimentacao-mensal', requireAuth, (req, res) => {
 });
 
 // API PARA DADOS DO GRÁFICO DE CATEGORIAS
-router.get('/api/relatorios/distribuicao-categorias', requireAuth, (req, res) => {
+router.get('/api/relatorios/distribuicao-categorias', requireAuth,requireAdmin, (req, res) => {
     const query = `
         SELECT 
             tipo as categoria,
@@ -2918,7 +2852,7 @@ router.get('/api/relatorios/distribuicao-categorias', requireAuth, (req, res) =>
 
 
 // API PARA DADOS DETALHADOS DE MOVIMENTAÇÃO - CORRIGIDA
-router.get('/api/relatorios/movimentacao-detalhada', requireAuth, (req, res) => {
+router.get('/api/relatorios/movimentacao-detalhada', requireAuth,requireAdmin, (req, res) => {
     const { year = new Date().getFullYear(), month, type } = req.query;
     
     let whereClause = 'WHERE YEAR(data_movimentacao) = ?';
@@ -3014,7 +2948,7 @@ router.get('/api/relatorios/movimentacao-detalhada', requireAuth, (req, res) => 
 });
 
 // API PARA ÚLTIMAS MOVIMENTAÇÕES - CORRIGIDA
-router.get('/api/relatorios/ultimas-movimentacoes', requireAuth, (req, res) => {
+router.get('/api/relatorios/ultimas-movimentacoes', requireAuth,requireAdmin, (req, res) => {
     const { year = new Date().getFullYear(), month, type } = req.query;
     
     let whereClause = 'WHERE YEAR(m.data_movimentacao) = ?';
@@ -3056,7 +2990,7 @@ router.get('/api/relatorios/ultimas-movimentacoes', requireAuth, (req, res) => {
 });
 
 // API PARA ÚLTIMAS MOVIMENTAÇÕES
-router.get('/api/relatorios/ultimas-movimentacoes', requireAuth, (req, res) => {
+router.get('/api/relatorios/ultimas-movimentacoes', requireAuth,requireAdmin, (req, res) => {
     const { year = new Date().getFullYear(), month, type } = req.query;
     
     let whereClause = 'WHERE YEAR(m.data_movimentacao) = ?';
@@ -3098,7 +3032,7 @@ router.get('/api/relatorios/ultimas-movimentacoes', requireAuth, (req, res) => {
 });
 
 // ROTA PARA PÁGINA DE MOVIMENTAÇÃO DETALHADA
-router.get('/relatorios/movimentacao', requireAuth, (req, res) => {
+router.get('/relatorios/movimentacao', requireAuth,requireAdmin, (req, res) => {
     res.render('relatorios-movimentacao', { 
         user: req.session.user
     });
@@ -3107,7 +3041,7 @@ router.get('/relatorios/movimentacao', requireAuth, (req, res) => {
 
 
 // ROTA PARA BUSCAR DADOS DE UMA MOVIMENTAÇÃO ESPECÍFICA
-router.get('/api/movimentacoes/:id', requireAuth, (req, res) => {
+router.get('/api/movimentacoes/:id', requireAuth,requireAdmin, (req, res) => {
     const movimentacaoId = req.params.id;
     
     console.log('🔍 Buscando movimentação ID:', movimentacaoId);
@@ -3165,7 +3099,7 @@ router.get('/api/movimentacoes/:id', requireAuth, (req, res) => {
 
 
 // ROTA PARA EXCLUIR MOVIMENTAÇÃO (CORRIGIDA PARA MYSQL2)
-router.delete('/api/movimentacoes/:id', requireAuth, (req, res) => {
+router.delete('/api/movimentacoes/:id', requireAuth,requireAdmin, (req, res) => {
     const movimentacaoId = req.params.id;
     
     console.log('🗑️ Tentando excluir movimentação ID:', movimentacaoId);
@@ -3317,7 +3251,7 @@ router.delete('/api/movimentacoes/:id', requireAuth, (req, res) => {
 
 
 // ROTA PARA ATUALIZAR MOVIMENTAÇÃO
-router.put('/api/movimentacoes/:id', requireAuth, (req, res) => {
+router.put('/api/movimentacoes/:id', requireAuth,requireAdmin, (req, res) => {
     const movimentacaoId = req.params.id;
     const { 
         quantidade, 
@@ -3514,7 +3448,7 @@ router.put('/api/movimentacoes/:id', requireAuth, (req, res) => {
 
 
 // API PARA MOVIMENTAÇÕES COM PAGINAÇÃO E FILTROS
-router.get('/api/relatorios/movimentacoes', requireAuth, (req, res) => {
+router.get('/api/relatorios/movimentacoes', requireAuth,requireAdmin, (req, res) => {
     const { year = new Date().getFullYear(), month, type, reagent, page = 1, limit = 15 } = req.query;
     
     let whereClause = 'WHERE YEAR(m.data_movimentacao) = ?';
@@ -3594,7 +3528,7 @@ router.get('/api/relatorios/movimentacoes', requireAuth, (req, res) => {
 });
 
 // API PARA ESTATÍSTICAS DO REAGENTE
-router.get('/api/relatorios/estatisticas-reagente', requireAuth, (req, res) => {
+router.get('/api/relatorios/estatisticas-reagente', requireAuth,requireAdmin, (req, res) => {
     const { reagent } = req.query;
     
     if (!reagent) {
@@ -3632,7 +3566,7 @@ router.get('/api/relatorios/estatisticas-reagente', requireAuth, (req, res) => {
 
 
 // ROTA PARA PÁGINA DE CATEGORIAS
-router.get('/relatorios/categorias', requireAuth, (req, res) => {
+router.get('/relatorios/categorias', requireAuth,requireAdmin, (req, res) => {
     res.render('relatorios-categorias', { 
         user: req.session.user
     });
@@ -3644,7 +3578,7 @@ router.get('/relatorios/categorias', requireAuth, (req, res) => {
 
 
 // API PARA LISTA DE CATEGORIAS
-router.get('/api/relatorios/lista-categorias', requireAuth, (req, res) => {
+router.get('/api/relatorios/lista-categorias', requireAuth,requireAdmin, (req, res) => {
     const query = `
         SELECT DISTINCT tipo 
         FROM produtos 
@@ -3664,7 +3598,7 @@ router.get('/api/relatorios/lista-categorias', requireAuth, (req, res) => {
 });
 
 // API PARA DADOS DETALHADOS DAS CATEGORIAS
-router.get('/api/relatorios/dados-categorias', requireAuth, (req, res) => {
+router.get('/api/relatorios/dados-categorias', requireAuth,requireAdmin, (req, res) => {
     const { category, stockStatus, periculosidade, search } = req.query;
     
     let whereClause = 'WHERE 1=1';
@@ -3809,7 +3743,7 @@ router.get('/api/relatorios/dados-categorias', requireAuth, (req, res) => {
 });
 
 // API PARA REAGENTES COM FILTROS
-router.get('/api/relatorios/reagentes', requireAuth, (req, res) => {
+router.get('/api/relatorios/reagentes', requireAuth,requireAdmin, (req, res) => {
     const { category, stockStatus, periculosidade, search, page = 1, limit = 15 } = req.query;
     
     let whereClause = 'WHERE 1=1';
@@ -3903,7 +3837,7 @@ router.get('/api/relatorios/reagentes', requireAuth, (req, res) => {
 
 
 // API PARA ITENS COM ESTOQUE CRÍTICO (ORDENADO POR QUANTIDADE)
-router.get('/api/relatorios/estoque-critico', requireAuth, (req, res) => {
+router.get('/api/relatorios/estoque-critico', requireAuth,requireAdmin, (req, res) => {
     const criticalStockQuery = `
         SELECT 
             nome as reagent,

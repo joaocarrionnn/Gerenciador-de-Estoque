@@ -1487,11 +1487,13 @@ function carregarPDFsDoProduto(productId) {
                                download>
                                 <i class="fas fa-download"></i>
                             </a>
+                            <% if (user && user.tipo === 'admin') { %>
                             <button class="pdf-delete-btn" 
                                     title="Excluir PDF"
                                     onclick="excluirPDF(${pdf.id}, ${productId})">
                                 <i class="fas fa-trash"></i>
                             </button>
+                            <% } %>
                         </div>
                     </div>
                 `;

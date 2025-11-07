@@ -784,7 +784,7 @@
             <!-- Header da Página -->
             <div class="section-header">
                 <h1 class="section-title">
-                    <i class="fas fa-flask"></i>
+                    <i class="fas fa-vial"></i>
                     Vidrarias de Laboratório
                 </h1>
                 <% if (user && user.tipo === 'admin') { %>
@@ -960,11 +960,6 @@
                         <button type="button" onclick="closeAllMovementsModal()" 
                                 class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                             Fechar
-                        </button>
-                        <button type="button" onclick="exportMovements()"
-                                class="px-4 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 flex items-center">
-                            <i class="fas fa-download mr-2"></i>
-                            Exportar
                         </button>
                     </div>
                 </div>
@@ -1925,10 +1920,7 @@
             document.getElementById('allMovementsTable').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Exportar movimentações (placeholder)
-        function exportMovements() {
-            showToast('Funcionalidade de exportação em desenvolvimento', 'info');
-        }
+        
 
         // Configurar event listeners para os filtros
         document.addEventListener('DOMContentLoaded', function() {
