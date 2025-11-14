@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
     <%- include('./partials/head'); %>
+    
     <style>
         :root {
             --primary: #2d3748;
@@ -1231,12 +1232,19 @@ function formatFileSize(bytes) {
             return texto;
         }
         
-        // Para outros campos, aplica a formatação normal (primeira letra maiúscula)
+        // Para outros campos, aplica formatação inteligente que respeita acentos
         return texto
-            .split('-')
-            .map(palavra => palavra.charAt(0).toUpperCase() + palavra.slice(1))
-            .join(' ')
-            .replace(/\b\w/g, l => l.toUpperCase());
+            .toLowerCase() // Primeiro converte tudo para minúsculas
+            .split(' ') // Divide por espaços
+            .map(palavra => {
+                // Se a palavra estiver vazia, retorna como está
+                if (!palavra) return palavra;
+                
+                // Capitaliza apenas a primeira letra de cada palavra
+                // Isso evita problemas com letras após acentos
+                return palavra.charAt(0).toUpperCase() + palavra.slice(1);
+            })
+            .join(' '); // Junta novamente com espaços
     }
 
     // Adicionar nova opção
