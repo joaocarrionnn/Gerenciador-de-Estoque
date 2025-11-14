@@ -1370,6 +1370,14 @@ async function loadChartData() {
 // Função para inicializar os gráficos
 async function initCharts() {
     const chartData = await loadChartData();
+    
+    // Detectar se é tema escuro
+    const isDarkTheme = document.documentElement.getAttribute('data-theme') === 'dark';
+    
+    // Cores dinâmicas baseadas no tema
+    const textColor = isDarkTheme ? '#f1f5f9' : '#2d3748';
+    const gridColor = isDarkTheme ? '#334155' : '#e2e8f0';
+    const backgroundColor = isDarkTheme ? '#1e293b' : '#ffffff';
 
     // Destruir gráficos existentes
     if (movementChart) movementChart.destroy();
@@ -1409,10 +1417,21 @@ async function initCharts() {
                 plugins: {
                     legend: {
                         position: 'top',
+                        labels: {
+                            color: textColor,
+                            font: {
+                                size: 12
+                            }
+                        }
                     },
                     title: {
                         display: true,
-                        text: 'Movimentação Mensal - ' + new Date().getFullYear()
+                        text: 'Movimentação Mensal - ' + new Date().getFullYear(),
+                        color: textColor,
+                        font: {
+                            size: 16,
+                            weight: 'bold'
+                        }
                     }
                 },
                 scales: {
@@ -1420,20 +1439,49 @@ async function initCharts() {
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text: 'Quantidade de Movimentações'
+                            text: 'Quantidade de Movimentações',
+                            color: textColor,
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        },
+                        ticks: {
+                            color: textColor,
+                            font: {
+                                size: 11
+                            }
+                        },
+                        grid: {
+                            color: gridColor,
+                            borderColor: gridColor
                         }
                     },
                     x: {
                         title: {
                             display: true,
-                            text: 'Meses'
+                            text: 'Meses',
+                            color: textColor,
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        },
+                        ticks: {
+                            color: textColor,
+                            font: {
+                                size: 11
+                            }
+                        },
+                        grid: {
+                            color: gridColor,
+                            borderColor: gridColor
                         }
                     }
                 }
             }
         });
     }
-
     // Gráfico de Categorias
     const categoryCtx = document.getElementById('categoryChart')?.getContext('2d');
     if (categoryCtx) {
@@ -1445,7 +1493,7 @@ async function initCharts() {
                     data: chartData.categoryData.values,
                     backgroundColor: chartData.categoryData.colors,
                     borderWidth: 2,
-                    borderColor: '#ffffff'
+                    borderColor: isDarkTheme ? '#334155' : '#ffffff'
                 }]
             },
             options: {
@@ -1454,16 +1502,47 @@ async function initCharts() {
                 plugins: {
                     legend: {
                         position: 'right',
+                        labels: {
+                            color: textColor,
+                            font: {
+                                size: 11
+                            }
+                        }
                     },
                     title: {
                         display: true,
-                        text: 'Distribuição por Categoria'
+                        text: 'Distribuição por Categoria',
+                        color: textColor,
+                        font: {
+                            size: 16,
+                            weight: 'bold'
+                        }
                     }
                 }
             }
         });
     }
 }
+
+
+// Função para atualizar cores dos gráficos quando o tema mudar
+function updateChartThemes() {
+    if (movementChart || categoryChart) {
+        // Destruir e recriar os gráficos com as novas cores
+        initCharts();
+    }
+}
+
+// Observar mudanças no tema
+const chartThemeObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'data-theme') {
+            setTimeout(updateChartThemes, 100);
+        }
+    });
+});
+
+chartThemeObserver.observe(document.documentElement, { attributes: true });
 
 // Função para carregar estatísticas em tempo real
 async function loadRealTimeStats() {

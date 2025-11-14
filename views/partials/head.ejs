@@ -22,7 +22,8 @@
 
 <!-- Font Awesome para ícones -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+<!-- Sistema de Tema -->
+<%- include('./theme'); %>
 <!-- Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,11 +36,11 @@
     body {
         font-family: 'Inter', sans-serif;
     }
-    
+
     .sidebar {
         transition: all 0.3s ease;
     }
-    
+
     @media (max-width: 768px) {
         .sidebar {
             transform: translateX(-100%);
@@ -47,11 +48,11 @@
             z-index: 50;
             height: 100vh;
         }
-        
+
         .sidebar.active {
             transform: translateX(0);
         }
-        
+
         .overlay {
             display: none;
             position: fixed;
@@ -62,7 +63,7 @@
             background-color: rgba(0, 0, 0, 0.5);
             z-index: 40;
         }
-        
+
         .overlay.active {
             display: block;
         }

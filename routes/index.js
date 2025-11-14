@@ -14,7 +14,7 @@ const HomeController = require('../controllers/HomeController');
 router.get('/', requireAuth, HomeController.index, (req, res) => {
     // Buscar últimos produtos
     const productsQuery = 'SELECT * FROM produtos ORDER BY data_criacao DESC LIMIT 5';
-    
+
     db.query(productsQuery, (err, productsResults) => {
         if (err) {
             console.error('Erro ao buscar produtos:', err);
@@ -65,7 +65,7 @@ router.get('/', requireAuth, HomeController.index, (req, res) => {
                             { tipo: 'Solventes', quantidade: 0, porcentagem: 0 },
                             { tipo: 'Sais', quantidade: 0, porcentagem: 0 }
                         ];
-                        
+
                         const stats = {
                             total_produtos: productsResults.length,
                             total_estoque: productsResults.reduce((sum, product) => sum + (product.quantidade || 0), 0),
@@ -133,7 +133,7 @@ router.get('/criar_conta', (req, res) => {
 // Rota para exibir produtos (com suporte a pesquisa avançada)
 router.get('/produtos', requireAuth, (req, res) => {
 
-    
+
     const {
         search,
         searchType = 'name',
@@ -272,9 +272,9 @@ router.get('/produtos', requireAuth, (req, res) => {
             orderClause += 'nome ASC';
             break;
     }
-    
+
     query += orderClause;
-    
+
     db.query(query, queryParams, (err, results) => {
         if (err) {
             console.error('Erro ao buscar produtos:', err);
@@ -295,7 +295,7 @@ router.get('/produtos', requireAuth, (req, res) => {
                 orderBy: orderBy || 'nome'
             });
         }
-        
+
         res.render('produtos', {
             user: req.session.user,
             produtos: results || [],
@@ -313,7 +313,7 @@ router.get('/produtos', requireAuth, (req, res) => {
             orderBy: orderBy || 'nome'
         });
 
-        
+
     });
 });
 
@@ -322,8 +322,8 @@ router.get('/produtos', requireAuth, (req, res) => {
 router.get('/produtos/adicionar', requireAuth, requireAdmin, (req, res) => {
     res.render('adicionar', {
         user: req.session.user,
-        formData: null, 
-        error: null 
+        formData: null,
+        error: null
     });
 });
 
@@ -345,7 +345,7 @@ router.post('/produtos/adicionar', requireAuth, requireAdmin, uploadProductWithP
         availability,
         supplier,
         purchaseDate,
-        expiryDate, 
+        expiryDate,
         notes
     } = req.body;
 
@@ -371,14 +371,14 @@ router.post('/produtos/adicionar', requireAuth, requireAdmin, uploadProductWithP
         availability === 'available' ? 1 : 0,
         supplier,
         purchaseDate,
-        expiryDate || null, 
+        expiryDate || null,
         notes
-];
+    ];
 
     db.query(query, values, (err, result) => {
         if (err) {
             console.error('Erro ao adicionar produto:', err);
-            
+
             // Deletar arquivos enviados em caso de erro
             if (req.files && req.files.length > 0) {
                 req.files.forEach(file => {
@@ -388,7 +388,7 @@ router.post('/produtos/adicionar', requireAuth, requireAdmin, uploadProductWithP
                     });
                 });
             }
-            
+
             return res.render('adicionar', {
                 user: req.session.user,
                 error: 'Erro ao adicionar produto',
@@ -397,7 +397,7 @@ router.post('/produtos/adicionar', requireAuth, requireAdmin, uploadProductWithP
             });
         }
 
-        
+
 
         const productId = result.insertId;
         console.log('✅ Produto adicionado com ID:', productId);
@@ -405,7 +405,7 @@ router.post('/produtos/adicionar', requireAuth, requireAdmin, uploadProductWithP
         // Se houver PDFs, salvar no banco
         if (req.files && req.files.length > 0) {
             console.log(`📄 ${req.files.length} PDF(s) detectado(s)`);
-            
+
             const pdfInsertQuery = `
                 INSERT INTO produto_pdfs 
                 (id_produto, nome_arquivo, nome_original, caminho_arquivo, tamanho_arquivo, usuario_upload)
@@ -428,7 +428,7 @@ router.post('/produtos/adicionar', requireAuth, requireAdmin, uploadProductWithP
 
                 db.query(pdfInsertQuery, pdfValues, (pdfErr) => {
                     filesProcessed++;
-                    
+
                     if (pdfErr) {
                         console.error(`❌ Erro ao salvar PDF ${index + 1}:`, pdfErr);
                         filesWithError++;
@@ -439,7 +439,7 @@ router.post('/produtos/adicionar', requireAuth, requireAdmin, uploadProductWithP
                     // Quando todos os arquivos forem processados
                     if (filesProcessed === req.files.length) {
                         let successMessage = 'Produto adicionado com sucesso!';
-                        
+
                         if (filesWithError === 0) {
                             successMessage += ` ${req.files.length} PDF(s) anexado(s).`;
                         } else if (filesWithError < req.files.length) {
@@ -462,7 +462,7 @@ router.post('/produtos/adicionar', requireAuth, requireAdmin, uploadProductWithP
 // API PARA LISTAR PDFs DE UM PRODUTO
 router.get('/api/produtos/:id/pdfs', requireAuth, (req, res) => {
     const productId = req.params.id;
-    
+
     const query = `
         SELECT 
             id,
@@ -490,12 +490,12 @@ router.get('/api/produtos/:id/pdfs', requireAuth, (req, res) => {
 
 
 // API PARA DELETAR UM PDF
-router.delete('/api/produtos/pdfs/:pdfId', requireAuth,requireAdmin, (req, res) => {
+router.delete('/api/produtos/pdfs/:pdfId', requireAuth, requireAdmin, (req, res) => {
     const pdfId = req.params.pdfId;
-    
+
     // Primeiro buscar o arquivo para deletá-lo do sistema
     const selectQuery = 'SELECT caminho_arquivo FROM produto_pdfs WHERE id = ?';
-    
+
     db.query(selectQuery, [pdfId], (err, results) => {
         if (err) {
             console.error('Erro ao buscar PDF:', err);
@@ -510,7 +510,7 @@ router.delete('/api/produtos/pdfs/:pdfId', requireAuth,requireAdmin, (req, res) 
 
         // Deletar do banco
         const deleteQuery = 'DELETE FROM produto_pdfs WHERE id = ?';
-        
+
         db.query(deleteQuery, [pdfId], (deleteErr) => {
             if (deleteErr) {
                 console.error('Erro ao deletar PDF do banco:', deleteErr);
@@ -533,9 +533,9 @@ router.delete('/api/produtos/pdfs/:pdfId', requireAuth,requireAdmin, (req, res) 
 // ROTA PARA DOWNLOAD DE PDF
 router.get('/produtos/pdfs/download/:pdfId', requireAuth, (req, res) => {
     const pdfId = req.params.pdfId;
-    
+
     const query = 'SELECT caminho_arquivo, nome_original FROM produto_pdfs WHERE id = ?';
-    
+
     db.query(query, [pdfId], (err, results) => {
         if (err) {
             console.error('Erro ao buscar PDF:', err);
@@ -554,16 +554,16 @@ router.get('/produtos/pdfs/download/:pdfId', requireAuth, (req, res) => {
 // Rota para upload de PDFs em produtos existentes (ADICIONE ESTA ROTA)
 router.post('/api/produtos/:id/pdfs/upload', requireAuth, uploadProductWithPDFs, (req, res) => {
     const productId = req.params.id;
-    
+
     if (!req.files || req.files.length === 0) {
-        return res.status(400).json({ 
-            success: false, 
-            error: 'Nenhum arquivo enviado' 
+        return res.status(400).json({
+            success: false,
+            error: 'Nenhum arquivo enviado'
         });
     }
 
     console.log(`📄 Upload de ${req.files.length} PDF(s) para produto ID:`, productId);
-    
+
     const pdfInsertQuery = `
         INSERT INTO produto_pdfs 
         (id_produto, nome_arquivo, nome_original, caminho_arquivo, tamanho_arquivo, usuario_upload)
@@ -587,11 +587,11 @@ router.post('/api/produtos/:id/pdfs/upload', requireAuth, uploadProductWithPDFs,
 
         db.query(pdfInsertQuery, pdfValues, (pdfErr) => {
             filesProcessed++;
-            
+
             if (pdfErr) {
                 console.error(`❌ Erro ao salvar PDF ${index + 1}:`, pdfErr);
                 filesWithError++;
-                
+
                 const fs = require('fs');
                 fs.unlink(file.path, (unlinkErr) => {
                     if (unlinkErr) console.error('Erro ao deletar arquivo:', unlinkErr);
@@ -604,7 +604,7 @@ router.post('/api/produtos/:id/pdfs/upload', requireAuth, uploadProductWithPDFs,
             if (filesProcessed === req.files.length) {
                 let success = filesWithError === 0;
                 let message = '';
-                
+
                 if (success) {
                     message = `${req.files.length} PDF(s) anexado(s) com sucesso!`;
                 } else if (filesWithError < req.files.length) {
@@ -614,7 +614,7 @@ router.post('/api/produtos/:id/pdfs/upload', requireAuth, uploadProductWithPDFs,
                     message = 'Erro ao anexar PDFs.';
                 }
 
-                res.json({ 
+                res.json({
                     success: success,
                     message: message,
                     uploadedFiles: uploadedFiles,
@@ -631,9 +631,9 @@ router.post('/api/produtos/:id/pdfs/upload', requireAuth, uploadProductWithPDFs,
 // ROTA PARA VISUALIZAR PDF (CORRIGIDA)
 router.get('/produtos/pdfs/visualizar/:pdfId', requireAuth, (req, res) => {
     const pdfId = req.params.pdfId;
-    
+
     const query = 'SELECT caminho_arquivo, nome_original FROM produto_pdfs WHERE id = ?';
-    
+
     db.query(query, [pdfId], (err, results) => {
         if (err) {
             console.error('Erro ao buscar PDF:', err);
@@ -646,9 +646,9 @@ router.get('/produtos/pdfs/visualizar/:pdfId', requireAuth, (req, res) => {
 
         const file = results[0];
         const filePath = file.caminho_arquivo;
-        
+
         console.log('📁 Tentando acessar arquivo:', filePath); // Debug
-        
+
         // Verificar se o arquivo existe
         const fs = require('fs');
         if (!fs.existsSync(filePath)) {
@@ -659,7 +659,7 @@ router.get('/produtos/pdfs/visualizar/:pdfId', requireAuth, (req, res) => {
         // Configurar headers para visualização no navegador
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `inline; filename="${file.nome_original}"`);
-        
+
         // Enviar o arquivo - SEM root: '.' pois o caminho já é absoluto
         res.sendFile(filePath, (err) => {
             if (err) {
@@ -675,34 +675,34 @@ router.get('/produtos/pdfs/visualizar/:pdfId', requireAuth, (req, res) => {
 // Rota para deletar produto (versão simplificada)
 router.post('/produtos/deletar/:id', requireAuth, requireAdmin, (req, res) => {
     const productId = req.params.id;
-    
+
     console.log('Tentando deletar produto ID:', productId);
-    
+
     // Primeiro deleta as movimentações relacionadas
     const deleteMovementsQuery = 'DELETE FROM movimentacoes WHERE id_produto = ?';
-    
+
     db.query(deleteMovementsQuery, [productId], (err, movementResult) => {
         if (err) {
             console.error('Erro ao deletar movimentações:', err);
             // Continua mesmo com erro (pode ser que não existam movimentações)
         }
-        
+
         console.log('Movimentações deletadas:', movementResult?.affectedRows || 0);
-        
+
         // Agora deleta o produto
         const deleteProductQuery = 'DELETE FROM produtos WHERE id_produto = ?';
-        
+
         db.query(deleteProductQuery, [productId], (err, productResult) => {
             if (err) {
                 console.error('Erro ao deletar produto:', err);
                 return res.redirect('/produtos?error=Erro ao deletar produto');
             }
-            
+
             if (productResult.affectedRows === 0) {
                 console.log('Produto não encontrado');
                 return res.redirect('/produtos?error=Produto não encontrado');
             }
-            
+
             console.log('Produto deletado com sucesso. Linhas afetadas:', productResult.affectedRows);
             res.redirect('/produtos?success=Produto deletado com sucesso');
         });
@@ -764,29 +764,29 @@ router.post('/produtos/editar/:id', requireAuth, requireAdmin, (req, res) => {
             console.error('Erro ao editar produto:', err);
             return res.redirect(`/produtos/editar/${productId}?error=Erro ao editar produto`);
         }
-        
+
         res.redirect('/produtos?success=Produto editado com sucesso');
     });
-}); 
+});
 
 // Rota para exibir formulário de edição 
 router.get('/produtos/editar/:id', requireAuth, requireAdmin, (req, res) => {
     const productId = req.params.id;
     console.log('🔍 Buscando produto para edição ID:', productId); // Debug
-    
+
     const query = 'SELECT * FROM produtos WHERE id_produto = ?';
-    
+
     db.query(query, [productId], (err, results) => {
         if (err) {
             console.error('Erro ao buscar produto:', err);
             return res.redirect('/produtos?error=Erro ao carregar produto para edição');
         }
-        
+
         if (results.length === 0) {
             console.log('❌ Produto não encontrado ID:', productId);
             return res.redirect('/produtos?error=Produto não encontrado');
         }
-        
+
         console.log('✅ Produto encontrado:', results[0].nome);
         res.render('editar-produto', {
             user: req.session.user,
@@ -832,11 +832,11 @@ router.get('/api/produtos/vencidos', requireAuth, (req, res) => {
 // API PARA RENOVAR PRODUTO VENCIDO
 router.post('/api/produtos/:id/renovar', requireAuth, (req, res) => {
     const productId = req.params.id;
-    const { 
-        nova_data_validade, 
-        nova_quantidade, 
+    const {
+        nova_data_validade,
+        nova_quantidade,
         observacoes,
-        criar_novo_produto = false 
+        criar_novo_produto = false
     } = req.body;
 
     const usuario = req.session.user.nome || req.session.user.usuario;
@@ -993,7 +993,7 @@ router.post('/api/produtos/:id/renovar', requireAuth, (req, res) => {
 // API PARA OBTER HISTÓRICO DE RENOVAÇÕES
 router.get('/api/produtos/:id/historico-renovacoes', requireAuth, (req, res) => {
     const productId = req.params.id;
-    
+
     const query = `
         SELECT 
             hr.*,
@@ -1051,13 +1051,13 @@ router.get('/api/produtos/estatisticas-validade', requireAuth, (req, res) => {
 
 
 
- // ------------------//
+// ------------------//
 // API para buscar opções existentes
 router.get('/api/opcoes/:campo', requireAuth, (req, res) => {
     const campo = req.params.campo;
     let query = '';
-    
-    switch(campo) {
+
+    switch (campo) {
         case 'productType':
             query = 'SELECT DISTINCT tipo as valor FROM produtos WHERE tipo IS NOT NULL AND tipo != "" ORDER BY tipo';
             break;
@@ -1076,7 +1076,7 @@ router.get('/api/opcoes/:campo', requireAuth, (req, res) => {
         default:
             return res.json([]);
     }
-    
+
     db.query(query, (err, results) => {
         if (err) {
             console.error(`Erro ao buscar opções para ${campo}:`, err);
@@ -1090,19 +1090,19 @@ router.get('/api/opcoes/:campo', requireAuth, (req, res) => {
 router.post('/api/opcoes/:campo', requireAuth, (req, res) => {
     const campo = req.params.campo;
     const { novaOpcao } = req.body;
-    
+
     if (!novaOpcao || novaOpcao.trim() === '') {
         return res.status(400).json({ success: false, message: 'Opção não pode estar vazia' });
     }
-    
+
     // Aqui você pode salvar em uma tabela de opções personalizadas se quiser
     // Por enquanto, apenas retornamos sucesso
     console.log(`Nova opção adicionada para ${campo}:`, novaOpcao);
-    
-    res.json({ 
-        success: true, 
+
+    res.json({
+        success: true,
         message: 'Opção adicionada com sucesso',
-        opcao: novaOpcao 
+        opcao: novaOpcao
     });
 });
 
@@ -1111,7 +1111,7 @@ router.post('/api/opcoes/:campo', requireAuth, (req, res) => {
 
 
 // ROTA PARA SAÍDA DE REAGENTES
-router.get('/saida-reagentes', requireAuth,requireAdmin, (req, res) => {
+router.get('/saida-reagentes', requireAuth, requireAdmin, (req, res) => {
     // Buscar produtos disponíveis do banco
     const produtosQuery = `
         SELECT 
@@ -1127,7 +1127,7 @@ router.get('/saida-reagentes', requireAuth,requireAdmin, (req, res) => {
         WHERE disponivel = 1 
         ORDER BY nome
     `;
-    
+
     db.query(produtosQuery, (err, produtosResults) => {
         if (err) {
             console.error('Erro ao buscar produtos:', err);
@@ -1148,9 +1148,9 @@ router.get('/saida-reagentes', requireAuth,requireAdmin, (req, res) => {
 });
 
 // API PARA REGISTRAR SAÍDA DE REAGENTE (VERSÃO COM PROMISES)
-router.post('/api/output', requireAuth,requireAdmin, (req, res) => {
+router.post('/api/output', requireAuth, requireAdmin, (req, res) => {
     const { reagent, quantity, responsible, project, notes } = req.body;
-    
+
     console.log('📤 Registrando saída:', { reagent, quantity, responsible });
 
     // Validações
@@ -1238,7 +1238,7 @@ router.post('/api/output', requireAuth,requireAdmin, (req, res) => {
             }
 
             console.log('✅ Saída registrada com sucesso para o produto:', produto.nome);
-            
+
             res.json({
                 success: true,
                 message: `✅ Saída de ${quantidadeSaida} ${produto.unidade_medida} de ${produto.nome} registrada com sucesso!`,
@@ -1263,7 +1263,7 @@ router.post('/api/output', requireAuth,requireAdmin, (req, res) => {
 
 
 // API PARA MOVIMENTAÇÕES
-router.get('/api/movements', requireAuth,requireAdmin, (req, res) => {
+router.get('/api/movements', requireAuth, requireAdmin, (req, res) => {
     // Verificar se a tabela existe
     const checkTableQuery = `
         SELECT COUNT(*) as table_exists 
@@ -1307,7 +1307,7 @@ router.get('/api/movements', requireAuth,requireAdmin, (req, res) => {
 
 
 // API PARA MOVIMENTAÇÕES DE SAÍDA (ESPECÍFICA)
-router.get('/api/output-movements', requireAuth,requireAdmin, (req, res) => {
+router.get('/api/output-movements', requireAuth, requireAdmin, (req, res) => {
     // Verificar se a tabela existe
     const checkTableQuery = `
         SELECT COUNT(*) as table_exists 
@@ -1350,7 +1350,7 @@ router.get('/api/output-movements', requireAuth,requireAdmin, (req, res) => {
 });
 
 // API PARA MOVIMENTAÇÕES DE ENTRADA
-router.get('/api/input-movements', requireAuth,requireAdmin, (req, res) => {
+router.get('/api/input-movements', requireAuth, requireAdmin, (req, res) => {
     const query = `
         SELECT 
             m.id_movimentacao as id,
@@ -1378,9 +1378,9 @@ router.get('/api/input-movements', requireAuth,requireAdmin, (req, res) => {
 });
 
 // API PARA ESTATÍSTICAS
-router.get('/api/statistics', requireAuth,requireAdmin, (req, res) => {
+router.get('/api/statistics', requireAuth, requireAdmin, (req, res) => {
     const today = new Date().toISOString().split('T')[0];
-    
+
     // Verificar tabela movimentacoes
     const checkTableQuery = `
         SELECT COUNT(*) as table_exists 
@@ -1394,7 +1394,7 @@ router.get('/api/statistics', requireAuth,requireAdmin, (req, res) => {
 
         // Buscar total de produtos
         const totalQuery = 'SELECT COUNT(*) as count FROM produtos WHERE disponivel = 1';
-        
+
         db.query(totalQuery, (err, totalResults) => {
             const totalItems = totalResults[0]?.count || 0;
 
@@ -1449,23 +1449,23 @@ router.get('/api/statistics', requireAuth,requireAdmin, (req, res) => {
 
             // Executar queries
             Promise.all([
-                new Promise(resolve => 
-                    db.query(todayQuery, [today], (err, res) => 
+                new Promise(resolve =>
+                    db.query(todayQuery, [today], (err, res) =>
                         resolve(err ? 0 : res[0].count)
                     )
                 ),
-                new Promise(resolve => 
-                    db.query(weekQuery, (err, res) => 
+                new Promise(resolve =>
+                    db.query(weekQuery, (err, res) =>
                         resolve(err ? 0 : res[0].count)
                     )
                 ),
-                new Promise(resolve => 
-                    db.query(monthQuery, (err, res) => 
+                new Promise(resolve =>
+                    db.query(monthQuery, (err, res) =>
                         resolve(err ? 0 : res[0].count)
                     )
                 ),
-                new Promise(resolve => 
-                    db.query(reagentsQuery, (err, res) => 
+                new Promise(resolve =>
+                    db.query(reagentsQuery, (err, res) =>
                         resolve(err ? [] : res)
                     )
                 )
@@ -1496,7 +1496,7 @@ router.get('/api/statistics', requireAuth,requireAdmin, (req, res) => {
 });
 
 // ROTA PARA ENTRADA DE REAGENTES
-router.get('/entrada-reagentes', requireAuth,requireAdmin, (req, res) => {
+router.get('/entrada-reagentes', requireAuth, requireAdmin, (req, res) => {
     // Buscar todos os produtos para o dropdown
     const produtosQuery = `
         SELECT 
@@ -1509,7 +1509,7 @@ router.get('/entrada-reagentes', requireAuth,requireAdmin, (req, res) => {
         FROM produtos 
         ORDER BY nome
     `;
-    
+
     db.query(produtosQuery, (err, produtosResults) => {
         if (err) {
             console.error('Erro ao buscar produtos:', err);
@@ -1535,10 +1535,10 @@ router.post('/api/input', requireAuth, uploadProductWithPDFs, (req, res) => {
     console.log('Body recebido:', req.body);
     console.log('Tipo do reagent:', typeof req.body.reagent);
     console.log('Valor do reagent:', req.body.reagent);
-    
+
     // Extrair dados do body - AGORA DEPOIS do middleware de upload
     const { reagent, quantity, responsible, supplier, purchaseDate, expirationDate, notes } = req.body;
-    
+
     console.log('📥 Dados processados:', { reagent, quantity, responsible, supplier, expirationDate });
 
     // Validações básicas
@@ -1563,7 +1563,7 @@ router.post('/api/input', requireAuth, uploadProductWithPDFs, (req, res) => {
     if (expirationDate) {
         const hoje = new Date();
         const dataValidade = new Date(expirationDate);
-        
+
         if (dataValidade < hoje) {
             console.log('⚠️ Data de validade vencida:', expirationDate);
             return res.json({
@@ -1627,31 +1627,31 @@ router.post('/api/input', requireAuth, uploadProductWithPDFs, (req, res) => {
             // 2. Calcular nova quantidade do estoque
             const estoqueAtual = parseFloat(produto.quantidade) || 0;
             const novaQuantidade = estoqueAtual + quantidadeEntrada;
-            
+
             console.log(`📊 Estoque atual: ${estoqueAtual}, Entrada: ${quantidadeEntrada}, Novo estoque: ${novaQuantidade}`);
 
             // 3. Atualizar estoque E data de validade se fornecida
             let updateQuery = 'UPDATE produtos SET quantidade = ?, data_atualizacao = CURRENT_TIMESTAMP';
             let updateParams = [novaQuantidade];
-            
+
             if (expirationDate) {
                 updateQuery += ', data_validade = ?';
                 updateParams.push(expirationDate);
                 console.log('📅 Atualizando data de validade:', expirationDate);
             }
-            
+
             updateQuery += ' WHERE id_produto = ?';
             updateParams.push(produto.id_produto);
-            
+
             console.log('🔄 Executando query:', updateQuery);
             console.log('📋 Parâmetros:', updateParams);
-            
+
             const updateResult = await query(updateQuery, updateParams);
             console.log('✅ Estoque atualizado. Linhas afetadas:', updateResult.affectedRows);
 
             // 4. Registrar movimentação de entrada
             try {
-                const observacoesMovimentacao = 
+                const observacoesMovimentacao =
                     `Entrada registrada por ${responsible}. ` +
                     (purchaseDate ? `Data de compra: ${purchaseDate}. ` : '') +
                     (expirationDate ? `Validade: ${expirationDate}. ` : '') +
@@ -1679,7 +1679,7 @@ router.post('/api/input', requireAuth, uploadProductWithPDFs, (req, res) => {
             // 5. Processar PDFs se houver
             if (req.files && req.files.length > 0) {
                 console.log(`📄 Processando ${req.files.length} PDF(s)`);
-                
+
                 const pdfInsertQuery = `
                     INSERT INTO produto_pdfs 
                     (id_produto, nome_arquivo, nome_original, caminho_arquivo, tamanho_arquivo, usuario_upload)
@@ -1687,7 +1687,7 @@ router.post('/api/input', requireAuth, uploadProductWithPDFs, (req, res) => {
                 `;
 
                 const username = req.session.user ? req.session.user.nome || req.session.user.usuario : 'Sistema';
-                
+
                 for (let file of req.files) {
                     try {
                         await query(pdfInsertQuery, [
@@ -1707,7 +1707,7 @@ router.post('/api/input', requireAuth, uploadProductWithPDFs, (req, res) => {
             }
 
             console.log('🎉 Entrada registrada com sucesso!');
-            
+
             res.json({
                 success: true,
                 message: `✅ Entrada de ${quantidadeEntrada} ${produto.unidade_medida} de ${produto.nome} registrada com sucesso!`,
@@ -1735,7 +1735,7 @@ router.post('/api/input', requireAuth, uploadProductWithPDFs, (req, res) => {
 
 
 // API PARA MOVIMENTAÇÕES DE ENTRADA
-router.get('/api/input-movements', requireAuth,requireAdmin, (req, res) => {
+router.get('/api/input-movements', requireAuth, requireAdmin, (req, res) => {
     // Verificar se a tabela existe
     const checkTableQuery = `
         SELECT COUNT(*) as table_exists 
@@ -1778,13 +1778,13 @@ router.get('/api/input-movements', requireAuth,requireAdmin, (req, res) => {
 });
 
 // API PARA ESTATÍSTICAS DE ENTRADA
-router.get('/api/input-statistics', requireAuth,requireAdmin, (req, res) => {
+router.get('/api/input-statistics', requireAuth, requireAdmin, (req, res) => {
     const today = new Date().toISOString().split('T')[0];
 
     // Buscar produtos com estoque baixo
     const lowStockQuery = 'SELECT COUNT(*) as count FROM produtos WHERE quantidade <= estoque_minimo AND quantidade > 0';
     const outOfStockQuery = 'SELECT COUNT(*) as count FROM produtos WHERE quantidade = 0';
-    
+
     // Buscar estatísticas de entrada
     const todayQuery = `
         SELECT COUNT(*) as count 
@@ -1874,7 +1874,7 @@ router.get('/api/input-statistics', requireAuth,requireAdmin, (req, res) => {
 
 
 // API PARA TODAS AS MOVIMENTAÇÕES DE ENTRADA (COM PAGINAÇÃO)
-router.get('/api/all-input-movements', requireAuth,requireAdmin, (req, res) => {
+router.get('/api/all-input-movements', requireAuth, requireAdmin, (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const offset = (page - 1) * limit;
@@ -1931,7 +1931,7 @@ router.get('/api/all-input-movements', requireAuth,requireAdmin, (req, res) => {
 });
 
 // API PARA TODAS AS MOVIMENTAÇÕES (ENTRADAS E SAÍDAS)
-router.get('/api/all-movements', requireAuth,requireAdmin, (req, res) => {
+router.get('/api/all-movements', requireAuth, requireAdmin, (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 15;
     const offset = (page - 1) * limit;
@@ -2009,7 +2009,7 @@ router.get('/api/all-movements', requireAuth,requireAdmin, (req, res) => {
 });
 
 // API PARA ESTATÍSTICAS DAS MOVIMENTAÇÕES
-router.get('/api/movements-statistics', requireAuth,requireAdmin, (req, res) => {
+router.get('/api/movements-statistics', requireAuth, requireAdmin, (req, res) => {
     // Contar totais por tipo
     const totalsQuery = `
         SELECT 
@@ -2037,13 +2037,13 @@ router.get('/api/movements-statistics', requireAuth,requireAdmin, (req, res) => 
     `;
 
     Promise.all([
-        new Promise(resolve => 
+        new Promise(resolve =>
             db.query(totalsQuery, (err, res) => resolve(err ? [] : res))
         ),
-        new Promise(resolve => 
+        new Promise(resolve =>
             db.query(uniqueReagentsQuery, (err, res) => resolve(err ? 0 : res[0].count))
         ),
-        new Promise(resolve => 
+        new Promise(resolve =>
             db.query(monthQuery, (err, res) => resolve(err ? [] : res))
         )
     ]).then(([totals, uniqueReagents, monthStats]) => {
@@ -2074,14 +2074,14 @@ router.get('/api/movements-statistics', requireAuth,requireAdmin, (req, res) => 
 });
 
 // ROTA PARA PÁGINA DE MOVIMENTAÇÕES
-router.get('/movimentacoes', requireAuth,requireAdmin, (req, res) => {
-    res.render('movimentacoes', { 
+router.get('/movimentacoes', requireAuth, requireAdmin, (req, res) => {
+    res.render('movimentacoes', {
         user: req.session.user
     });
 });
 
 // API PARA ÚLTIMAS MOVIMENTAÇÕES (TODOS OS TIPOS)
-router.get('/api/recent-movements', requireAuth,requireAdmin, (req, res) => {
+router.get('/api/recent-movements', requireAuth, requireAdmin, (req, res) => {
     // Verificar se a tabela existe
     const checkTableQuery = `
         SELECT COUNT(*) as table_exists 
@@ -2136,11 +2136,11 @@ router.get('/logout', requireAuth, (req, res) => {
 
 
 // ROTA PARA RELATÓRIOS - ATUALIZADA E CORRIGIDA
-router.get('/relatorios', requireAuth,requireAdmin, (req, res) => {
+router.get('/relatorios', requireAuth, requireAdmin, (req, res) => {
     // Buscar estatísticas do banco
     const totalReagentsQuery = 'SELECT COUNT(*) as total FROM produtos';
     const lowStockQuery = 'SELECT COUNT(*) as total FROM produtos WHERE quantidade <= estoque_minimo AND quantidade > 0';
-    
+
     // Buscar reagentes vencidos
     const expiredReagentsQuery = `
         SELECT COUNT(*) as total 
@@ -2149,7 +2149,7 @@ router.get('/relatorios', requireAuth,requireAdmin, (req, res) => {
         AND data_validade < CURDATE()
         AND quantidade > 0
     `;
-    
+
     // Buscar movimentações do mês atual
     const monthInputsQuery = `
         SELECT COUNT(*) as total 
@@ -2158,7 +2158,7 @@ router.get('/relatorios', requireAuth,requireAdmin, (req, res) => {
         AND YEAR(data_movimentacao) = YEAR(CURDATE()) 
         AND MONTH(data_movimentacao) = MONTH(CURDATE())
     `;
-    
+
     const monthOutputsQuery = `
         SELECT COUNT(*) as total 
         FROM movimentacoes 
@@ -2166,7 +2166,7 @@ router.get('/relatorios', requireAuth,requireAdmin, (req, res) => {
         AND YEAR(data_movimentacao) = YEAR(CURDATE()) 
         AND MONTH(data_movimentacao) = MONTH(CURDATE())
     `;
-    
+
     // Buscar itens com estoque crítico
     const criticalStockQuery = `
         SELECT 
@@ -2213,7 +2213,7 @@ router.get('/relatorios', requireAuth,requireAdmin, (req, res) => {
     db.query(totalReagentsQuery, (err, totalResults) => {
         if (err) {
             console.error('Erro ao buscar total de reagentes:', err);
-            return res.render('relatorios', { 
+            return res.render('relatorios', {
                 user: req.session.user,
                 stats: {},
                 criticalItems: [],
@@ -2224,7 +2224,7 @@ router.get('/relatorios', requireAuth,requireAdmin, (req, res) => {
         db.query(lowStockQuery, (err, lowStockResults) => {
             if (err) {
                 console.error('Erro ao buscar estoque baixo:', err);
-                return res.render('relatorios', { 
+                return res.render('relatorios', {
                     user: req.session.user,
                     stats: {},
                     criticalItems: [],
@@ -2235,7 +2235,7 @@ router.get('/relatorios', requireAuth,requireAdmin, (req, res) => {
             db.query(expiredReagentsQuery, (err, expiredResults) => {
                 if (err) {
                     console.error('Erro ao buscar reagentes vencidos:', err);
-                    return res.render('relatorios', { 
+                    return res.render('relatorios', {
                         user: req.session.user,
                         stats: {},
                         criticalItems: [],
@@ -2246,7 +2246,7 @@ router.get('/relatorios', requireAuth,requireAdmin, (req, res) => {
                 db.query(monthInputsQuery, (err, monthInputsResults) => {
                     if (err) {
                         console.error('Erro ao buscar entradas do mês:', err);
-                        return res.render('relatorios', { 
+                        return res.render('relatorios', {
                             user: req.session.user,
                             stats: {},
                             criticalItems: [],
@@ -2257,7 +2257,7 @@ router.get('/relatorios', requireAuth,requireAdmin, (req, res) => {
                     db.query(monthOutputsQuery, (err, monthOutputsResults) => {
                         if (err) {
                             console.error('Erro ao buscar saídas do mês:', err);
-                            return res.render('relatorios', { 
+                            return res.render('relatorios', {
                                 user: req.session.user,
                                 stats: {},
                                 criticalItems: [],
@@ -2268,7 +2268,7 @@ router.get('/relatorios', requireAuth,requireAdmin, (req, res) => {
                         db.query(criticalStockQuery, (err, criticalItemsResults) => {
                             if (err) {
                                 console.error('Erro ao buscar itens críticos:', err);
-                                return res.render('relatorios', { 
+                                return res.render('relatorios', {
                                     user: req.session.user,
                                     stats: {},
                                     criticalItems: [],
@@ -2279,7 +2279,7 @@ router.get('/relatorios', requireAuth,requireAdmin, (req, res) => {
                             db.query(expiredReagentsListQuery, (err, expiredReagentsResults) => {
                                 if (err) {
                                     console.error('Erro ao buscar reagentes vencidos:', err);
-                                    return res.render('relatorios', { 
+                                    return res.render('relatorios', {
                                         user: req.session.user,
                                         stats: {},
                                         criticalItems: [],
@@ -2322,7 +2322,7 @@ router.get('/relatorios', requireAuth,requireAdmin, (req, res) => {
                                     expiredReagentsList: expiredReagents.length
                                 });
 
-                                res.render('relatorios', { 
+                                res.render('relatorios', {
                                     user: req.session.user,
                                     stats: stats,
                                     criticalItems: criticalItems,
@@ -2338,7 +2338,7 @@ router.get('/relatorios', requireAuth,requireAdmin, (req, res) => {
 });
 
 // API PARA BUSCAR REAGENTES VENCIDOS COM FILTROS
-router.get('/api/relatorios/reagentes-vencidos', requireAuth,requireAdmin, (req, res) => {
+router.get('/api/relatorios/reagentes-vencidos', requireAuth, requireAdmin, (req, res) => {
     const {
         startDate,
         endDate,
@@ -2415,12 +2415,12 @@ router.get('/api/relatorios/reagentes-vencidos', requireAuth,requireAdmin, (req,
     db.query(countQuery, queryParams, (countErr, countResults) => {
         if (countErr) {
             console.error('Erro ao contar reagentes vencidos:', countErr);
-            return res.status(500).json({ 
-                success: false, 
+            return res.status(500).json({
+                success: false,
                 error: 'Erro ao buscar reagentes vencidos',
-                data: [], 
-                total: 0, 
-                totalPages: 0 
+                data: [],
+                total: 0,
+                totalPages: 0
             });
         }
 
@@ -2433,12 +2433,12 @@ router.get('/api/relatorios/reagentes-vencidos', requireAuth,requireAdmin, (req,
         db.query(dataQuery, dataParams, (dataErr, dataResults) => {
             if (dataErr) {
                 console.error('Erro ao buscar reagentes vencidos:', dataErr);
-                return res.status(500).json({ 
-                    success: false, 
+                return res.status(500).json({
+                    success: false,
                     error: 'Erro ao buscar reagentes vencidos',
-                    data: [], 
-                    total: 0, 
-                    totalPages: 0 
+                    data: [],
+                    total: 0,
+                    totalPages: 0
                 });
             }
 
@@ -2454,7 +2454,7 @@ router.get('/api/relatorios/reagentes-vencidos', requireAuth,requireAdmin, (req,
 });
 
 // API PARA ESTATÍSTICAS DE REAGENTES VENCIDOS
-router.get('/api/relatorios/estatisticas-vencidos', requireAuth,requireAdmin, (req, res) => {
+router.get('/api/relatorios/estatisticas-vencidos', requireAuth, requireAdmin, (req, res) => {
     const query = `
         SELECT 
             COUNT(*) as total_vencidos,
@@ -2494,7 +2494,7 @@ router.get('/api/relatorios/estatisticas-vencidos', requireAuth,requireAdmin, (r
 });
 
 // API PARA EXPORTAR REAGENTES VENCIDOS EM EXCEL
-router.get('/api/relatorios/exportar-vencidos-excel', requireAuth,requireAdmin, (req, res) => {
+router.get('/api/relatorios/exportar-vencidos-excel', requireAuth, requireAdmin, (req, res) => {
     const {
         startDate,
         endDate,
@@ -2553,9 +2553,9 @@ router.get('/api/relatorios/exportar-vencidos-excel', requireAuth,requireAdmin, 
     db.query(query, queryParams, (err, results) => {
         if (err) {
             console.error('Erro ao exportar reagentes vencidos:', err);
-            return res.status(500).json({ 
-                success: false, 
-                error: 'Erro ao exportar dados' 
+            return res.status(500).json({
+                success: false,
+                error: 'Erro ao exportar dados'
             });
         }
 
@@ -2571,7 +2571,7 @@ router.get('/api/relatorios/exportar-vencidos-excel', requireAuth,requireAdmin, 
 });
 
 // API PARA GERAR PDF DE REAGENTES VENCIDOS
-router.get('/api/relatorios/gerar-pdf-vencidos', requireAuth,requireAdmin, (req, res) => {
+router.get('/api/relatorios/gerar-pdf-vencidos', requireAuth, requireAdmin, (req, res) => {
     const {
         startDate,
         endDate,
@@ -2631,9 +2631,9 @@ router.get('/api/relatorios/gerar-pdf-vencidos', requireAuth,requireAdmin, (req,
     db.query(query, queryParams, (err, results) => {
         if (err) {
             console.error('Erro ao gerar PDF de vencidos:', err);
-            return res.status(500).json({ 
-                success: false, 
-                error: 'Erro ao gerar PDF' 
+            return res.status(500).json({
+                success: false,
+                error: 'Erro ao gerar PDF'
             });
         }
 
@@ -2655,9 +2655,9 @@ router.get('/api/relatorios/gerar-pdf-vencidos', requireAuth,requireAdmin, (req,
 });
 
 // API PARA REAGENTES QUE VENCERÃO EM BREVE (ALERTA)
-router.get('/api/relatorios/reagentes-proximo-vencimento', requireAuth,requireAdmin, (req, res) => {
+router.get('/api/relatorios/reagentes-proximo-vencimento', requireAuth, requireAdmin, (req, res) => {
     const days = parseInt(req.query.days) || 30;
-    
+
     const query = `
         SELECT 
             nome,
@@ -2692,7 +2692,7 @@ router.put('/api/produtos/:id/data-validade', requireAuth, (req, res) => {
     const { data_validade } = req.body;
 
     const query = 'UPDATE produtos SET data_validade = ? WHERE id_produto = ?';
-    
+
     db.query(query, [data_validade, productId], (err, result) => {
         if (err) {
             console.error('Erro ao atualizar data de validade:', err);
@@ -2719,10 +2719,10 @@ router.put('/api/produtos/:id/data-validade', requireAuth, (req, res) => {
 
 
 // API PARA ESTATÍSTICAS DOS RELATÓRIOS - CORRIGIDA
-router.get('/api/relatorios/stats', requireAuth,requireAdmin, (req, res) => {
+router.get('/api/relatorios/stats', requireAuth, requireAdmin, (req, res) => {
     const totalReagentsQuery = 'SELECT COUNT(*) as total FROM produtos';
     const lowStockQuery = 'SELECT COUNT(*) as total FROM produtos WHERE quantidade <= estoque_minimo AND quantidade > 0';
-    
+
     const monthInputsQuery = `
         SELECT COUNT(*) as total 
         FROM movimentacoes 
@@ -2730,7 +2730,7 @@ router.get('/api/relatorios/stats', requireAuth,requireAdmin, (req, res) => {
         AND YEAR(data_movimentacao) = YEAR(CURDATE()) 
         AND MONTH(data_movimentacao) = MONTH(CURDATE())
     `;
-    
+
     const monthOutputsQuery = `
         SELECT COUNT(*) as total 
         FROM movimentacoes 
@@ -2749,7 +2749,7 @@ router.get('/api/relatorios/stats', requireAuth,requireAdmin, (req, res) => {
         console.log('API Stats - Entradas Mês:', monthInputs);
         console.log('API Stats - Saídas Mês:', monthOutputs);
         console.log('API Stats - Baixo Estoque:', lowStock);
-        
+
         res.json({
             totalReagents,
             lowStock,
@@ -2769,7 +2769,7 @@ router.get('/api/relatorios/stats', requireAuth,requireAdmin, (req, res) => {
 
 
 // API PARA DADOS DO GRÁFICO DE MOVIMENTAÇÃO - CORRIGIDA
-router.get('/api/relatorios/movimentacao-mensal', requireAuth,requireAdmin, (req, res) => {
+router.get('/api/relatorios/movimentacao-mensal', requireAuth, requireAdmin, (req, res) => {
     const query = `
         SELECT 
             MONTH(data_movimentacao) as mes,
@@ -2815,7 +2815,7 @@ router.get('/api/relatorios/movimentacao-mensal', requireAuth,requireAdmin, (req
 });
 
 // API PARA DADOS DO GRÁFICO DE CATEGORIAS
-router.get('/api/relatorios/distribuicao-categorias', requireAuth,requireAdmin, (req, res) => {
+router.get('/api/relatorios/distribuicao-categorias', requireAuth, requireAdmin, (req, res) => {
     const query = `
         SELECT 
             tipo as categoria,
@@ -2838,7 +2838,7 @@ router.get('/api/relatorios/distribuicao-categorias', requireAuth,requireAdmin, 
 
         const labels = results.map(item => item.categoria);
         const values = results.map(item => item.quantidade);
-        
+
         // Cores para as categorias
         const colors = ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EF4444', '#06B6D4'];
 
@@ -2852,9 +2852,9 @@ router.get('/api/relatorios/distribuicao-categorias', requireAuth,requireAdmin, 
 
 
 // API PARA DADOS DETALHADOS DE MOVIMENTAÇÃO - CORRIGIDA
-router.get('/api/relatorios/movimentacao-detalhada', requireAuth,requireAdmin, (req, res) => {
+router.get('/api/relatorios/movimentacao-detalhada', requireAuth, requireAdmin, (req, res) => {
     const { year = new Date().getFullYear(), month, type } = req.query;
-    
+
     let whereClause = 'WHERE YEAR(data_movimentacao) = ?';
     let queryParams = [year];
 
@@ -2948,9 +2948,9 @@ router.get('/api/relatorios/movimentacao-detalhada', requireAuth,requireAdmin, (
 });
 
 // API PARA ÚLTIMAS MOVIMENTAÇÕES - CORRIGIDA
-router.get('/api/relatorios/ultimas-movimentacoes', requireAuth,requireAdmin, (req, res) => {
+router.get('/api/relatorios/ultimas-movimentacoes', requireAuth, requireAdmin, (req, res) => {
     const { year = new Date().getFullYear(), month, type } = req.query;
-    
+
     let whereClause = 'WHERE YEAR(m.data_movimentacao) = ?';
     let queryParams = [year];
 
@@ -2990,9 +2990,9 @@ router.get('/api/relatorios/ultimas-movimentacoes', requireAuth,requireAdmin, (r
 });
 
 // API PARA ÚLTIMAS MOVIMENTAÇÕES
-router.get('/api/relatorios/ultimas-movimentacoes', requireAuth,requireAdmin, (req, res) => {
+router.get('/api/relatorios/ultimas-movimentacoes', requireAuth, requireAdmin, (req, res) => {
     const { year = new Date().getFullYear(), month, type } = req.query;
-    
+
     let whereClause = 'WHERE YEAR(m.data_movimentacao) = ?';
     let queryParams = [year];
 
@@ -3032,8 +3032,8 @@ router.get('/api/relatorios/ultimas-movimentacoes', requireAuth,requireAdmin, (r
 });
 
 // ROTA PARA PÁGINA DE MOVIMENTAÇÃO DETALHADA
-router.get('/relatorios/movimentacao', requireAuth,requireAdmin, (req, res) => {
-    res.render('relatorios-movimentacao', { 
+router.get('/relatorios/movimentacao', requireAuth, requireAdmin, (req, res) => {
+    res.render('relatorios-movimentacao', {
         user: req.session.user
     });
 });
@@ -3041,9 +3041,9 @@ router.get('/relatorios/movimentacao', requireAuth,requireAdmin, (req, res) => {
 
 
 // ROTA PARA BUSCAR DADOS DE UMA MOVIMENTAÇÃO ESPECÍFICA
-router.get('/api/movimentacoes/:id', requireAuth,requireAdmin, (req, res) => {
+router.get('/api/movimentacoes/:id', requireAuth, requireAdmin, (req, res) => {
     const movimentacaoId = req.params.id;
-    
+
     console.log('🔍 Buscando movimentação ID:', movimentacaoId);
 
     const query = `
@@ -3081,7 +3081,7 @@ router.get('/api/movimentacoes/:id', requireAuth,requireAdmin, (req, res) => {
         }
 
         const movimentacao = results[0];
-        
+
         // Formatar a data para o input datetime-local
         const dataMovimentacao = new Date(movimentacao.data_movimentacao);
         const dataFormatada = dataMovimentacao.toISOString().slice(0, 16);
@@ -3099,9 +3099,9 @@ router.get('/api/movimentacoes/:id', requireAuth,requireAdmin, (req, res) => {
 
 
 // ROTA PARA EXCLUIR MOVIMENTAÇÃO (CORRIGIDA PARA MYSQL2)
-router.delete('/api/movimentacoes/:id', requireAuth,requireAdmin, (req, res) => {
+router.delete('/api/movimentacoes/:id', requireAuth, requireAdmin, (req, res) => {
     const movimentacaoId = req.params.id;
-    
+
     console.log('🗑️ Tentando excluir movimentação ID:', movimentacaoId);
 
     // Primeiro, buscar os dados da movimentação para reverter o estoque
@@ -3178,7 +3178,7 @@ router.delete('/api/movimentacoes/:id', requireAuth,requireAdmin, (req, res) => 
 
             // 1. Atualizar o estoque do produto
             const updateEstoqueQuery = 'UPDATE produtos SET quantidade = ? WHERE id_produto = ?';
-            
+
             db.query(updateEstoqueQuery, [novaQuantidade, movimentacao.id_produto], (err, updateResult) => {
                 if (err) {
                     console.error('Erro ao atualizar estoque:', err);
@@ -3194,7 +3194,7 @@ router.delete('/api/movimentacoes/:id', requireAuth,requireAdmin, (req, res) => 
 
                 // 2. Excluir a movimentação
                 const deleteQuery = 'DELETE FROM movimentacoes WHERE id_movimentacao = ?';
-                
+
                 db.query(deleteQuery, [movimentacaoId], (err, deleteResult) => {
                     if (err) {
                         console.error('Erro ao excluir movimentação:', err);
@@ -3251,16 +3251,16 @@ router.delete('/api/movimentacoes/:id', requireAuth,requireAdmin, (req, res) => 
 
 
 // ROTA PARA ATUALIZAR MOVIMENTAÇÃO
-router.put('/api/movimentacoes/:id', requireAuth,requireAdmin, (req, res) => {
+router.put('/api/movimentacoes/:id', requireAuth, requireAdmin, (req, res) => {
     const movimentacaoId = req.params.id;
-    const { 
-        quantidade, 
-        responsavel, 
-        projeto_experimento, 
+    const {
+        quantidade,
+        responsavel,
+        projeto_experimento,
         observacoes,
-        data_movimentacao 
+        data_movimentacao
     } = req.body;
-    
+
     console.log('✏️ Atualizando movimentação ID:', movimentacaoId, req.body);
 
     // Validações
@@ -3358,7 +3358,7 @@ router.put('/api/movimentacoes/:id', requireAuth,requireAdmin, (req, res) => {
 
             // 1. Atualizar o estoque do produto
             const updateEstoqueQuery = 'UPDATE produtos SET quantidade = ? WHERE id_produto = ?';
-            
+
             db.query(updateEstoqueQuery, [novoEstoque, movimentacaoAtual.id_produto], (err, updateResult) => {
                 if (err) {
                     console.error('Erro ao atualizar estoque:', err);
@@ -3448,9 +3448,9 @@ router.put('/api/movimentacoes/:id', requireAuth,requireAdmin, (req, res) => {
 
 
 // API PARA MOVIMENTAÇÕES COM PAGINAÇÃO E FILTROS
-router.get('/api/relatorios/movimentacoes', requireAuth,requireAdmin, (req, res) => {
+router.get('/api/relatorios/movimentacoes', requireAuth, requireAdmin, (req, res) => {
     const { year = new Date().getFullYear(), month, type, reagent, page = 1, limit = 15 } = req.query;
-    
+
     let whereClause = 'WHERE YEAR(m.data_movimentacao) = ?';
     let queryParams = [year];
 
@@ -3479,7 +3479,7 @@ router.get('/api/relatorios/movimentacoes', requireAuth,requireAdmin, (req, res)
         ${whereClause}
     `;
 
-    
+
     // Query para buscar dados
     const dataQuery = `
     SELECT 
@@ -3528,9 +3528,9 @@ router.get('/api/relatorios/movimentacoes', requireAuth,requireAdmin, (req, res)
 });
 
 // API PARA ESTATÍSTICAS DO REAGENTE
-router.get('/api/relatorios/estatisticas-reagente', requireAuth,requireAdmin, (req, res) => {
+router.get('/api/relatorios/estatisticas-reagente', requireAuth, requireAdmin, (req, res) => {
     const { reagent } = req.query;
-    
+
     if (!reagent) {
         return res.json(null);
     }
@@ -3566,8 +3566,8 @@ router.get('/api/relatorios/estatisticas-reagente', requireAuth,requireAdmin, (r
 
 
 // ROTA PARA PÁGINA DE CATEGORIAS
-router.get('/relatorios/categorias', requireAuth,requireAdmin, (req, res) => {
-    res.render('relatorios-categorias', { 
+router.get('/relatorios/categorias', requireAuth, requireAdmin, (req, res) => {
+    res.render('relatorios-categorias', {
         user: req.session.user
     });
 });
@@ -3578,7 +3578,7 @@ router.get('/relatorios/categorias', requireAuth,requireAdmin, (req, res) => {
 
 
 // API PARA LISTA DE CATEGORIAS
-router.get('/api/relatorios/lista-categorias', requireAuth,requireAdmin, (req, res) => {
+router.get('/api/relatorios/lista-categorias', requireAuth, requireAdmin, (req, res) => {
     const query = `
         SELECT DISTINCT tipo 
         FROM produtos 
@@ -3591,16 +3591,16 @@ router.get('/api/relatorios/lista-categorias', requireAuth,requireAdmin, (req, r
             console.error('Erro ao buscar categorias:', err);
             return res.json([]);
         }
-        
+
         const categories = results.map(row => row.tipo);
         res.json(categories);
     });
 });
 
 // API PARA DADOS DETALHADOS DAS CATEGORIAS
-router.get('/api/relatorios/dados-categorias', requireAuth,requireAdmin, (req, res) => {
+router.get('/api/relatorios/dados-categorias', requireAuth, requireAdmin, (req, res) => {
     const { category, stockStatus, periculosidade, search } = req.query;
-    
+
     let whereClause = 'WHERE 1=1';
     let queryParams = [];
 
@@ -3705,7 +3705,7 @@ router.get('/api/relatorios/dados-categorias', requireAuth,requireAdmin, (req, r
                 const stats = statsResults[0];
                 const labels = categoriesResults.map(cat => cat.categoria);
                 const values = categoriesResults.map(cat => cat.totalReagentes);
-                
+
                 // Cores para as categorias
                 const colors = ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EF4444', '#06B6D4', '#84CC16', '#F97316', '#6366F1', '#EC4899'];
 
@@ -3743,9 +3743,9 @@ router.get('/api/relatorios/dados-categorias', requireAuth,requireAdmin, (req, r
 });
 
 // API PARA REAGENTES COM FILTROS
-router.get('/api/relatorios/reagentes', requireAuth,requireAdmin, (req, res) => {
+router.get('/api/relatorios/reagentes', requireAuth, requireAdmin, (req, res) => {
     const { category, stockStatus, periculosidade, search, page = 1, limit = 15 } = req.query;
-    
+
     let whereClause = 'WHERE 1=1';
     let queryParams = [];
 
@@ -3837,7 +3837,7 @@ router.get('/api/relatorios/reagentes', requireAuth,requireAdmin, (req, res) => 
 
 
 // API PARA ITENS COM ESTOQUE CRÍTICO (ORDENADO POR QUANTIDADE)
-router.get('/api/relatorios/estoque-critico', requireAuth,requireAdmin, (req, res) => {
+router.get('/api/relatorios/estoque-critico', requireAuth, requireAdmin, (req, res) => {
     const criticalStockQuery = `
         SELECT 
             nome as reagent,
@@ -4011,17 +4011,17 @@ router.post('/vidracarias/adicionar', requireAuth, requireAdmin, (req, res) => {
 router.get('/vidracarias/editar/:id', requireAuth, requireAdmin, (req, res) => {
     const vidracariaId = req.params.id;
     const query = 'SELECT * FROM vidracarias WHERE id = ?';
-    
+
     db.query(query, [vidracariaId], (err, results) => {
         if (err) {
             console.error('Erro ao buscar vidraria:', err);
             return res.redirect('/vidracarias?error=Erro ao carregar vidraria para edição');
         }
-        
+
         if (results.length === 0) {
             return res.redirect('/vidracarias?error=Vidraria não encontrada');
         }
-        
+
         res.render('editar-vidracaria', {
             user: req.session.user,
             vidracaria: results[0],
@@ -4075,7 +4075,7 @@ router.post('/vidracarias/editar/:id', requireAuth, requireAdmin, (req, res) => 
             console.error('Erro ao editar vidraria:', err);
             return res.redirect(`/vidracarias/editar/${vidracariaId}?error=Erro ao editar vidraria`);
         }
-        
+
         res.redirect('/vidracarias?success=Vidraria editada com sucesso');
     });
 });
@@ -4083,22 +4083,22 @@ router.post('/vidracarias/editar/:id', requireAuth, requireAdmin, (req, res) => 
 // Rota para deletar vidraria
 router.post('/vidracarias/deletar/:id', requireAuth, requireAdmin, (req, res) => {
     const vidracariaId = req.params.id;
-    
+
     console.log('Tentando deletar vidraria ID:', vidracariaId);
-    
+
     const query = 'DELETE FROM vidracarias WHERE id = ?';
-    
+
     db.query(query, [vidracariaId], (err, result) => {
         if (err) {
             console.error('Erro ao deletar vidraria:', err);
             return res.redirect('/vidracarias?error=Erro ao deletar vidraria');
         }
-        
+
         if (result.affectedRows === 0) {
             console.log('Vidraria não encontrada');
             return res.redirect('/vidracarias?error=Vidraria não encontrada');
         }
-        
+
         console.log('Vidraria deletada com sucesso. Linhas afetadas:', result.affectedRows);
         res.redirect('/vidracarias?success=Vidraria deletada com sucesso');
     });
@@ -4110,7 +4110,7 @@ router.get('/api/vidracarias/statistics', requireAuth, (req, res) => {
     const availableQuery = 'SELECT COUNT(*) as available FROM vidracarias WHERE quantidade > 0';
     const lowStockQuery = 'SELECT COUNT(*) as lowStock FROM vidracarias WHERE quantidade > 0 AND quantidade <= estoque_minimo';
     const outOfStockQuery = 'SELECT COUNT(*) as outOfStock FROM vidracarias WHERE quantidade = 0';
-    
+
     const categoriesQuery = `
         SELECT 
             categoria,
@@ -4121,10 +4121,10 @@ router.get('/api/vidracarias/statistics', requireAuth, (req, res) => {
     `;
 
     Promise.all([
-        new Promise(resolve => db.query(totalQuery, (err, res) => resolve(err ? {total: 0} : res[0]))),
-        new Promise(resolve => db.query(availableQuery, (err, res) => resolve(err ? {available: 0} : res[0]))),
-        new Promise(resolve => db.query(lowStockQuery, (err, res) => resolve(err ? {lowStock: 0} : res[0]))),
-        new Promise(resolve => db.query(outOfStockQuery, (err, res) => resolve(err ? {outOfStock: 0} : res[0]))),
+        new Promise(resolve => db.query(totalQuery, (err, res) => resolve(err ? { total: 0 } : res[0]))),
+        new Promise(resolve => db.query(availableQuery, (err, res) => resolve(err ? { available: 0 } : res[0]))),
+        new Promise(resolve => db.query(lowStockQuery, (err, res) => resolve(err ? { lowStock: 0 } : res[0]))),
+        new Promise(resolve => db.query(outOfStockQuery, (err, res) => resolve(err ? { outOfStock: 0 } : res[0]))),
         new Promise(resolve => db.query(categoriesQuery, (err, res) => resolve(err ? [] : res)))
     ]).then(([totalResults, availableResults, lowStockResults, outOfStockResults, categoriesResults]) => {
         res.json({
@@ -4149,7 +4149,7 @@ router.get('/api/vidracarias/statistics', requireAuth, (req, res) => {
 // API para listar vidrarias (JSON)
 router.get('/api/vidracarias/list', requireAuth, (req, res) => {
     const query = 'SELECT * FROM vidracarias ORDER BY nome ASC';
-    
+
     db.query(query, (err, results) => {
         if (err) {
             console.error('Erro ao buscar vidrarias:', err);
@@ -4179,7 +4179,7 @@ router.post('/api/vidracarias/movimentacao', requireAuth, (req, res) => {
         }
 
         // Atualizar estoque da vidraria
-        const updateQuery = tipo === 'retirada' 
+        const updateQuery = tipo === 'retirada'
             ? 'UPDATE vidracarias SET quantidade = GREATEST(0, quantidade - ?) WHERE id = ?'
             : 'UPDATE vidracarias SET quantidade = quantidade + ? WHERE id = ?';
 
@@ -4197,7 +4197,7 @@ router.post('/api/vidracarias/movimentacao', requireAuth, (req, res) => {
 // API para obter últimas movimentações
 router.get('/api/vidracarias/movimentacoes', requireAuth, (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
-    
+
     const query = `
         SELECT 
             mv.*,
@@ -4222,7 +4222,7 @@ router.get('/api/vidracarias/movimentacoes', requireAuth, (req, res) => {
 // Rota para exibir página de movimentação
 router.get('/movimentacao-vidracarias', requireAuth, (req, res) => {
     const query = 'SELECT * FROM vidracarias ORDER BY nome ASC';
-    
+
     db.query(query, (err, results) => {
         if (err) {
             console.error('Erro ao buscar vidrarias:', err);
@@ -4245,17 +4245,17 @@ router.get('/movimentacao-vidracarias', requireAuth, (req, res) => {
 router.get('/vidracarias/movimentar/:id', requireAuth, (req, res) => {
     const vidracariaId = req.params.id;
     const query = 'SELECT * FROM vidracarias WHERE id = ?';
-    
+
     db.query(query, [vidracariaId], (err, results) => {
         if (err) {
             console.error('Erro ao buscar vidraria:', err);
             return res.redirect('/vidracarias?error=Erro ao carregar vidraria');
         }
-        
+
         if (results.length === 0) {
             return res.redirect('/vidracarias?error=Vidraria não encontrada');
         }
-        
+
         res.render('movimentar-vidracaria', {
             user: req.session.user,
             vidracaria: results[0],
@@ -4280,7 +4280,7 @@ router.post('/vidracarias/movimentar/:id', requireAuth, (req, res) => {
     if (projeto) observacao.push(`Projeto: ${projeto}`);
     if (fornecedor) observacao.push(`Fornecedor: ${fornecedor}`);
     if (observacoes) observacao.push(`Obs: ${observacoes}`);
-    
+
     const observacaoFinal = observacao.join(' | ');
 
     // Inserir movimentação
@@ -4297,7 +4297,7 @@ router.post('/vidracarias/movimentar/:id', requireAuth, (req, res) => {
         }
 
         // Atualizar estoque
-        const updateQuery = tipo === 'retirada' 
+        const updateQuery = tipo === 'retirada'
             ? 'UPDATE vidracarias SET quantidade = GREATEST(0, quantidade - ?) WHERE id = ?'
             : 'UPDATE vidracarias SET quantidade = quantidade + ? WHERE id = ?';
 
@@ -4319,9 +4319,9 @@ router.post('/api/vidracarias/movimentacao-rapida', requireAuth, requireAdmin, (
 
     // Validar dados
     if (!vidraria_id || !tipo || !quantidade || !responsavel) {
-        return res.status(400).json({ 
-            success: false, 
-            error: 'Preencha todos os campos obrigatórios' 
+        return res.status(400).json({
+            success: false,
+            error: 'Preencha todos os campos obrigatórios'
         });
     }
 
@@ -4331,24 +4331,24 @@ router.post('/api/vidracarias/movimentacao-rapida', requireAuth, requireAdmin, (
         db.query(checkQuery, [vidraria_id], (checkErr, checkResults) => {
             if (checkErr) {
                 console.error('Erro ao verificar estoque:', checkErr);
-                return res.status(500).json({ 
-                    success: false, 
-                    error: 'Erro ao verificar estoque' 
+                return res.status(500).json({
+                    success: false,
+                    error: 'Erro ao verificar estoque'
                 });
             }
 
             if (checkResults.length === 0) {
-                return res.status(404).json({ 
-                    success: false, 
-                    error: 'Vidraria não encontrada' 
+                return res.status(404).json({
+                    success: false,
+                    error: 'Vidraria não encontrada'
                 });
             }
 
             const estoqueAtual = checkResults[0].quantidade;
             if (parseInt(quantidade) > estoqueAtual) {
-                return res.status(400).json({ 
-                    success: false, 
-                    error: `Quantidade solicitada (${quantidade}) excede o estoque disponível (${estoqueAtual})` 
+                return res.status(400).json({
+                    success: false,
+                    error: `Quantidade solicitada (${quantidade}) excede o estoque disponível (${estoqueAtual})`
                 });
             }
 
@@ -4364,7 +4364,7 @@ router.post('/api/vidracarias/movimentacao-rapida', requireAuth, requireAdmin, (
         if (projeto) observacao.push(`Projeto: ${projeto}`);
         if (fornecedor) observacao.push(`Fornecedor: ${fornecedor}`);
         if (observacoes) observacao.push(`Obs: ${observacoes}`);
-        
+
         const observacaoFinal = observacao.join(' | ');
 
         // Inserir movimentação
@@ -4377,28 +4377,28 @@ router.post('/api/vidracarias/movimentacao-rapida', requireAuth, requireAdmin, (
         db.query(movimentacaoQuery, [vidraria_id, tipo, parseInt(quantidade), usuario, observacaoFinal], (err, result) => {
             if (err) {
                 console.error('Erro ao registrar movimentação:', err);
-                return res.status(500).json({ 
-                    success: false, 
-                    error: 'Erro ao registrar movimentação' 
+                return res.status(500).json({
+                    success: false,
+                    error: 'Erro ao registrar movimentação'
                 });
             }
 
             // Atualizar estoque
-            const updateQuery = tipo === 'retirada' 
+            const updateQuery = tipo === 'retirada'
                 ? 'UPDATE vidracarias SET quantidade = GREATEST(0, quantidade - ?) WHERE id = ?'
                 : 'UPDATE vidracarias SET quantidade = quantidade + ? WHERE id = ?';
 
             db.query(updateQuery, [quantidade, vidraria_id], (updateErr) => {
                 if (updateErr) {
                     console.error('Erro ao atualizar estoque:', updateErr);
-                    return res.status(500).json({ 
-                        success: false, 
-                        error: 'Erro ao atualizar estoque' 
+                    return res.status(500).json({
+                        success: false,
+                        error: 'Erro ao atualizar estoque'
                     });
                 }
 
-                res.json({ 
-                    success: true, 
+                res.json({
+                    success: true,
                     message: 'Movimentação registrada com sucesso',
                     movimentacao_id: result.insertId
                 });
@@ -4410,39 +4410,39 @@ router.post('/api/vidracarias/movimentacao-rapida', requireAuth, requireAdmin, (
 // API para buscar dados completos de uma vidraria - CORRIGIDA E MELHORADA
 router.get('/api/vidracarias/:id', requireAuth, (req, res) => {
     const vidracariaId = req.params.id;
-    
+
     console.log('🔍 Buscando detalhes da vidraria ID:', vidracariaId);
-    
+
     // Verificar se o ID é válido
     if (!vidracariaId || isNaN(vidracariaId)) {
         console.log('❌ ID inválido:', vidracariaId);
-        return res.status(400).json({ 
+        return res.status(400).json({
             success: false,
-            error: 'ID da vidraria inválido' 
+            error: 'ID da vidraria inválido'
         });
     }
 
     const query = 'SELECT * FROM vidracarias WHERE id = ?';
-    
+
     db.query(query, [vidracariaId], (err, results) => {
         if (err) {
             console.error('❌ Erro ao buscar vidraria:', err);
-            return res.status(500).json({ 
+            return res.status(500).json({
                 success: false,
-                error: 'Erro interno ao carregar dados da vidraria' 
+                error: 'Erro interno ao carregar dados da vidraria'
             });
         }
-        
+
         if (results.length === 0) {
             console.log('❌ Vidraria não encontrada ID:', vidracariaId);
-            return res.status(404).json({ 
+            return res.status(404).json({
                 success: false,
-                error: 'Vidraria não encontrada' 
+                error: 'Vidraria não encontrada'
             });
         }
-        
+
         console.log('✅ Vidraria encontrada:', results[0].nome);
-        
+
         // Garantir que estamos enviando JSON
         res.setHeader('Content-Type', 'application/json; charset=utf-8');
         res.json({

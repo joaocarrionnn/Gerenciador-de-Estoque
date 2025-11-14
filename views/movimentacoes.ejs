@@ -769,64 +769,148 @@
         }
 
         function initDetailedChart(data) {
-            const ctx = document.getElementById('detailedMovementChart').getContext('2d');
-            
-            if (detailedChart) {
-                detailedChart.destroy();
-            }
+    const ctx = document.getElementById('detailedMovementChart').getContext('2d');
+    
+    if (detailedChart) {
+        detailedChart.destroy();
+    }
 
-            detailedChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: data.labels || [],
-                    datasets: [
-                        {
-                            label: 'Entradas',
-                            data: data.inputs || [],
-                            backgroundColor: 'rgba(16, 185, 129, 0.7)',
-                            borderColor: '#10B981',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Saídas',
-                            data: data.outputs || [],
-                            backgroundColor: 'rgba(239, 68, 68, 0.7)',
-                            borderColor: '#EF4444',
-                            borderWidth: 1
-                        }
-                    ]
+    // Detectar se é tema escuro
+    const isDarkTheme = document.documentElement.getAttribute('data-theme') === 'dark';
+    
+    // Cores dinâmicas baseadas no tema
+    const textColor = isDarkTheme ? '#f1f5f9' : '#2d3748';
+    const gridColor = isDarkTheme ? '#334155' : '#e2e8f0';
+    const backgroundColor = isDarkTheme ? '#1e293b' : '#ffffff';
+
+    detailedChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: data.labels || [],
+            datasets: [
+                {
+                    label: 'Entradas',
+                    data: data.inputs || [],
+                    backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                    borderColor: '#10B981',
+                    borderWidth: 1
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: `Movimentação Mensal - ${currentYear}`
-                        },
-                        legend: {
-                            position: 'top',
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Quantidade de Movimentações'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Meses'
-                            }
+                {
+                    label: 'Saídas',
+                    data: data.outputs || [],
+                    backgroundColor: 'rgba(239, 68, 68, 0.7)',
+                    borderColor: '#EF4444',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: `Movimentação Mensal - ${currentYear}`,
+                    color: textColor,
+                    font: {
+                        size: 16,
+                        weight: 'bold'
+                    }
+                },
+                legend: {
+                    position: 'top',
+                    labels: {
+                        color: textColor,
+                        font: {
+                            size: 12
                         }
                     }
                 }
-            });
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Quantidade de Movimentações',
+                        color: textColor,
+                        font: {
+                            size: 12,
+                            weight: 'bold'
+                        }
+                    },
+                    ticks: {
+                        color: textColor,
+                        font: {
+                            size: 11
+                        }
+                    },
+                    grid: {
+                        color: gridColor,
+                        borderColor: gridColor
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Meses',
+                        color: textColor,
+                        font: {
+                            size: 12,
+                            weight: 'bold'
+                        }
+                    },
+                    ticks: {
+                        color: textColor,
+                        font: {
+                            size: 11
+                        }
+                    },
+                    grid: {
+                        color: gridColor,
+                        borderColor: gridColor
+                    }
+                }
+            }
         }
+    });
+} 
 
+// Função para atualizar cores do gráfico quando o tema mudar
+function updateChartTheme() {
+    if (detailedChart) {
+        const isDarkTheme = document.documentElement.getAttribute('data-theme') === 'dark';
+        const textColor = isDarkTheme ? '#f1f5f9' : '#2d3748';
+        const gridColor = isDarkTheme ? '#334155' : '#e2e8f0';
+
+        // Atualizar cores do gráfico
+        detailedChart.options.plugins.title.color = textColor;
+        detailedChart.options.plugins.legend.labels.color = textColor;
+        
+        // Atualizar eixo Y
+        detailedChart.options.scales.y.title.color = textColor;
+        detailedChart.options.scales.y.ticks.color = textColor;
+        detailedChart.options.scales.y.grid.color = gridColor;
+        
+        // Atualizar eixo X
+        detailedChart.options.scales.x.title.color = textColor;
+        detailedChart.options.scales.x.ticks.color = textColor;
+        detailedChart.options.scales.x.grid.color = gridColor;
+
+        detailedChart.update();
+    }
+}
+
+// Observar mudanças no tema
+const chartThemeObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'data-theme') {
+            setTimeout(updateChartTheme, 100);
+        }
+    });
+});
+
+chartThemeObserver.observe(document.documentElement, { attributes: true });
         function updateTable(movements, total, currentPage, totalPages) {
             const tbody = document.getElementById('movements-table');
             const tableInfo = document.getElementById('table-info');

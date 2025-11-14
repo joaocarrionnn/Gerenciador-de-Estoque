@@ -1,0 +1,2987 @@
+<!-- views/partials/theme.ejs -->
+<style>
+    :root {
+        /* Tema Claro (padrão) */
+        --bg-primary: #f5f7fb;
+        --bg-secondary: #ffffff;
+        --bg-tertiary: #f8f9fa;
+        --bg-hover: #e9ecef;
+        
+        --text-primary: #2d3748;
+        --text-secondary: #6c757d;
+        --text-tertiary: #9ca3af;
+        
+        --border-color: #e2e8f0;
+        --border-hover: #d1d5db;
+        
+        --card-bg: #ffffff;
+        --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+        --card-shadow-hover: 0 10px 20px rgba(0, 0, 0, 0.1);
+        
+        --input-bg: #ffffff;
+        --input-border: #e2e8f0;
+        --input-focus: #4361ee;
+        
+        --modal-bg: #ffffff;
+        --modal-overlay: rgba(0, 0, 0, 0.5);
+        
+        --primary: #2c3e50;
+        --primary-hover: #3e4b57;
+        --secondary: #6c757d;
+        --success: #28a745;
+        --warning: #ffc107;
+        --danger: #dc3545;
+        --info: #17a2b8;
+    }
+    
+    [data-theme="dark"] {
+        /* Tema Escuro */
+        --bg-primary: #0f172a;
+        --bg-secondary: #1e293b;
+        --bg-tertiary: #334155;
+        --bg-hover: #475569;
+        
+        --text-primary: #f1f5f9;
+        --text-secondary: #cbd5e1;
+        --text-tertiary: #94a3b8;
+        
+        --border-color: #334155;
+        --border-hover: #475569;
+        
+        --card-bg: #1e293b;
+        --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        --card-shadow-hover: 0 10px 20px rgba(0, 0, 0, 0.4);
+        
+        --input-bg: #334155;
+        --input-border: #475569;
+        --input-focus: #60a5fa;
+        
+        --modal-bg: #1e293b;
+        --modal-overlay: rgba(0, 0, 0, 0.7);
+        
+        --primary: #3b82f6;
+        --primary-hover: #60a5fa;
+        --secondary: #94a3b8;
+        --success: #22c55e;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #06b6d4;
+    }
+    
+    /* Aplicar variáveis CSS em todos os elementos principais */
+    body {
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    
+    /* Cards e Containers */
+    .card,
+    .form-card,
+    .products-container,
+    .table-container,
+    .search-container,
+    .stats-card,
+    .chart-card,
+    .action-card,
+    .info-card,
+    .glassware-card,
+    .product-card,
+    .view-card,
+    .enhanced-card,
+    .enhanced-table {
+        background: var(--card-bg) !important;
+        box-shadow: var(--card-shadow) !important;
+        border-color: var(--border-color) !important;
+        transition: all 0.3s ease;
+    }
+    
+    .card:hover,
+    .glassware-card:hover,
+    .product-card:hover,
+    .enhanced-card:hover {
+        box-shadow: var(--card-shadow-hover) !important;
+    }
+    
+    /* Headers e Títulos */
+    .section-title,
+    .card-title,
+    .form-card-title,
+    .table-title,
+    .chart-title,
+    .modal-title,
+    .glassware-name,
+    .product-name {
+        color: var(--text-primary) !important;
+    }
+    
+    /* Texto secundário */
+    .card-title,
+    .detail-label,
+    .filter-label,
+    .search-label,
+    .form-label,
+    .stat-label,
+    .summary-text,
+    .text-muted,
+    .text-gray-500,
+    .text-gray-600,
+    .text-gray-700 {
+        color: var(--text-secondary) !important;
+    }
+    
+    /* Bordas */
+    .card-header,
+    .form-card-header,
+    .table-header,
+    .products-header,
+    .border-b,
+    .border-t,
+    .border-gray-200,
+    .border-gray-300 {
+        border-color: var(--border-color) !important;
+    }
+    
+    /* Inputs e Selects */
+    .form-control,
+    .form-select,
+    .filter-select,
+    .search-input,
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    input[type="date"],
+    input[type="tel"],
+    select,
+    textarea {
+        background-color: var(--input-bg) !important;
+        border-color: var(--input-border) !important;
+        color: var(--text-primary) !important;
+    }
+    
+    .form-control:focus,
+    .form-select:focus,
+    .filter-select:focus,
+    .search-input:focus,
+    input:focus,
+    select:focus,
+    textarea:focus {
+        background-color: var(--input-bg) !important;
+        border-color: var(--input-focus) !important;
+        color: var(--text-primary) !important;
+    }
+    
+    /* Placeholder text */
+    ::placeholder {
+        color: var(--text-tertiary) !important;
+        opacity: 0.8;
+    }
+    
+    /* Modais */
+    .modal-content,
+    .modal-body,
+    .photo-upload-modal {
+        background-color: var(--modal-bg) !important;
+        color: var(--text-primary) !important;
+    }
+    
+    .modal {
+        background-color: var(--modal-overlay) !important;
+    }
+    
+    .modal-header {
+        background: var(--bg-tertiary) !important;
+        border-color: var(--border-color) !important;
+    }
+    
+    .modal-footer {
+        background: var(--bg-tertiary) !important;
+        border-color: var(--border-color) !important;
+    }
+    
+    /* Tabelas */
+    .reagent-table,
+    .glassware-grid {
+        background-color: var(--card-bg) !important;
+    }
+    
+    .reagent-table th {
+        background-color: var(--bg-tertiary) !important;
+        color: var(--text-secondary) !important;
+    }
+    
+    .reagent-table td {
+        border-color: var(--border-color) !important;
+        color: var(--text-primary) !important;
+    }
+    
+    .reagent-table tr:hover,
+    .movement-item:hover,
+    .pdf-item:hover {
+        background-color: var(--bg-hover) !important;
+    }
+    
+    /* Badges e Status */
+    .badge,
+    .status-badge,
+    .glassware-status,
+    .item-badge,
+    .product-category {
+        background-color: var(--bg-tertiary) !important;
+        color: var(--text-primary) !important;
+    }
+    
+    /* Detalhes de Produto */
+    .detail-value,
+    .glassware-detail,
+    .product-details {
+        color: var(--text-primary) !important;
+    }
+    
+    .item-card,
+    .pdf-item,
+    .search-result-item {
+        background-color: var(--bg-tertiary) !important;
+        border-color: var(--border-color) !important;
+    }
+    
+    .item-card:hover,
+    .pdf-item:hover {
+        background-color: var(--bg-hover) !important;
+    }
+    
+    /* Estados vazios */
+    .empty-state,
+    .no-results,
+    .empty-movements {
+        color: var(--text-secondary) !important;
+    }
+    
+    /* Gradientes em tema escuro */
+    [data-theme="dark"] .card-header,
+    [data-theme="dark"] .form-card-header,
+    [data-theme="dark"] .table-header,
+    [data-theme="dark"] .products-header,
+    [data-theme="dark"] .modal-header,
+    [data-theme="dark"] .action-header {
+        background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%) !important;
+    }
+    
+    /* Welcome Card no tema escuro */
+    [data-theme="dark"] .welcome-card {
+        background: linear-gradient(135deg, #1e3a5f 0%, #1e293b 100%) !important;
+    }
+    
+    /* Botões - manter cores originais mas ajustar contraste */
+    .btn,
+    .primary-btn,
+    .search-btn,
+    .btn-action {
+        transition: all 0.3s ease;
+    }
+    
+    [data-theme="dark"] .btn-secondary,
+    [data-theme="dark"] .search-btn.secondary {
+        background-color: var(--bg-tertiary) !important;
+        border-color: var(--border-color) !important;
+        color: var(--text-primary) !important;
+    }
+    
+    [data-theme="dark"] .btn-secondary:hover {
+        background-color: var(--bg-hover) !important;
+    }
+    
+    /* Cores específicas que devem manter-se em ambos os temas */
+    .status-normal,
+    .status-success,
+    .text-success {
+        color: var(--success) !important;
+    }
+    
+    .status-warning,
+    .text-warning {
+        color: var(--warning) !important;
+    }
+    
+    .status-critical,
+    .status-danger,
+    .text-danger {
+        color: var(--danger) !important;
+    }
+    
+    /* PDF e arquivos */
+    .pdf-icon {
+        color: #ef4444 !important;
+    }
+    
+    /* Movimentações */
+    .movement-icon.retirada {
+        background-color: rgba(239, 68, 68, 0.15) !important;
+        color: #ef4444 !important;
+    }
+    
+    .movement-icon.reposicao {
+        background-color: rgba(34, 197, 94, 0.15) !important;
+        color: #22c55e !important;
+    }
+    
+    [data-theme="dark"] .movement-icon.retirada {
+        background-color: rgba(239, 68, 68, 0.25) !important;
+    }
+    
+    [data-theme="dark"] .movement-icon.reposicao {
+        background-color: rgba(34, 197, 94, 0.25) !important;
+    }
+    
+    /* Ajustes para sombras no tema escuro */
+    [data-theme="dark"] .shadow-lg {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5) !important;
+    }
+    
+    [data-theme="dark"] .shadow-md {
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5) !important;
+    }
+    
+    /* Scrollbar personalizada */
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: var(--bg-tertiary);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: var(--border-color);
+        border-radius: 5px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--border-hover);
+    }
+    
+    /* Select options no tema escuro */
+    [data-theme="dark"] select option {
+        background-color: var(--bg-secondary);
+        color: var(--text-primary);
+    }
+    
+    /* Imagens e ícones - ajustar opacidade no tema escuro */
+    [data-theme="dark"] .empty-state i,
+    [data-theme="dark"] .no-results i {
+        opacity: 0.4;
+    }
+    
+    /* Linhas de separação */
+    .form-section,
+    .detail-section {
+        border-color: var(--border-color) !important;
+    }
+    
+    /* ========== TRANSIÇÕES OTIMIZADAS ========== */
+
+/* Apenas para elementos que realmente precisam de transição de tema */
+body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Cards e containers */
+.card,
+.form-card,
+.products-container,
+.table-container,
+.search-container,
+.stats-card,
+.chart-card,
+.action-card,
+.info-card,
+.glassware-card,
+.product-card,
+.view-card,
+.enhanced-card,
+.enhanced-table {
+    transition: background-color 0.3s ease, 
+                border-color 0.3s ease, 
+                box-shadow 0.3s ease;
+}
+
+/* Botões */
+.btn,
+.primary-btn,
+.search-btn,
+.btn-action,
+.theme-toggle-btn {
+    transition: all 0.3s ease;
+}
+
+/* Inputs e formulários */
+.form-control,
+.form-select,
+.filter-select,
+.search-input,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="tel"],
+select,
+textarea {
+    transition: background-color 0.3s ease, 
+                border-color 0.3s ease, 
+                color 0.3s ease,
+                box-shadow 0.3s ease;
+}
+
+/* Modais */
+.modal-content,
+.modal-body,
+.photo-upload-modal {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Tabelas - transições específicas para hover */
+.reagent-table tr,
+.glassware-grid tr,
+.products-table tr,
+.movements-table tr,
+.enhanced-table tr {
+    transition: background-color 0.2s ease;
+}
+
+/* Hovers específicos - sem transição global que atrapalhe */
+.card:hover,
+.glassware-card:hover,
+.product-card:hover,
+.enhanced-card:hover {
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.reagent-table tr:hover,
+.movement-item:hover,
+.pdf-item:hover {
+    transition: background-color 0.2s ease;
+}
+
+/* Botões com hover específico */
+.btn:hover,
+.primary-btn:hover,
+.search-btn:hover,
+.btn-action:hover {
+    transition: all 0.3s ease;
+}
+
+/* Inputs com focus */
+.form-control:focus,
+.form-select:focus,
+.filter-select:focus,
+.search-input:focus,
+input:focus,
+select:focus,
+textarea:focus {
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* ========== RESTAURAR HOVERS E ANIMAÇÕES ========== */
+
+/* Hovers de botões - garantir que funcionem */
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.primary-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Hovers de cards */
+.card:hover,
+.glassware-card:hover,
+.product-card:hover,
+.enhanced-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--card-shadow-hover) !important;
+}
+
+/* Hovers de tabelas */
+.reagent-table tr:hover,
+.glassware-grid tr:hover,
+.products-table tr:hover,
+.movements-table tr:hover,
+.enhanced-table tr:hover {
+    background-color: var(--bg-hover) !important;
+    transform: translateY(0); /* Remove qualquer transform que possa estar atrapalhando */
+}
+
+.reagent-table tr:hover td {
+    background-color: transparent !important; /* Deixa a cor da linha controlar o hover */
+}
+
+/* Hovers de itens de lista */
+.movement-item:hover,
+.pdf-item:hover,
+.search-result-item:hover {
+    background-color: var(--bg-hover) !important;
+    transform: translateX(4px);
+    transition: all 0.2s ease;
+}
+
+/* Hovers específicos para elementos interativos */
+.item-card:hover,
+.pdf-item:hover {
+    background-color: var(--bg-hover) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Botão de tema */
+.theme-toggle-btn:hover {
+    transform: scale(1.1) !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2) !important;
+}
+
+.theme-toggle-btn:active {
+    transform: scale(0.95) !important;
+}
+
+/* Remove transições de elementos que não precisam */
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+    transition: none !important;
+}
+
+/* Elementos de layout que não precisam de transição */
+.container,
+.row,
+.col,
+.grid,
+.flex {
+    transition: none !important;
+}
+
+/* Textos estáticos */
+h1, h2, h3, h4, h5, h6,
+p, span, div, a {
+    transition: color 0.3s ease; /* Apenas cor para textos */
+}
+    /* Footer spacing */
+    [data-theme="dark"] .products-footer,
+    [data-theme="dark"] .table-footer,
+    [data-theme="dark"] .chart-footer {
+        background: var(--bg-tertiary) !important;
+        border-color: var(--border-color) !important;
+    }
+    
+    /* Ajustes para elementos com background fixo */
+    [data-theme="dark"] .bg-gray-50,
+    [data-theme="dark"] .bg-gray-100 {
+        background-color: var(--bg-secondary) !important;
+    }
+    
+    [data-theme="dark"] .bg-white {
+        background-color: var(--card-bg) !important;
+    }
+    
+    /* Placeholder para search */
+    [data-theme="dark"] .search-input::placeholder {
+        color: var(--text-tertiary);
+    }
+    
+    /* Overlay de loading */
+    [data-theme="dark"] .loading-pdfs,
+    [data-theme="dark"] .no-pdfs,
+    [data-theme="dark"] .error-pdfs {
+        color: var(--text-secondary);
+    }
+    /* Progress Label */
+.progress-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary) !important;
+}
+
+/* Movement Title */
+.movement-title {
+    font-weight: 500;
+    margin: 0 0 0.3rem 0;
+    color: var(--text-primary) !important;
+}
+
+/* Outras classes com cores fixas que você mencionou */
+.text-blue-600,
+.text-blue-700,
+.text-gray-800,
+.text-gray-900 {
+    color: var(--text-primary) !important;
+}
+
+.text-gray-500,
+.text-gray-600 {
+    color: var(--text-secondary) !important;
+}
+
+.bg-gray-100,
+.bg-gray-200 {
+    background-color: var(--bg-tertiary) !important;
+}
+
+.bg-white {
+    background-color: var(--card-bg) !important;
+}
+
+/* Regras gerais para garantir consistência em todo o site */
+[data-theme="dark"] * {
+    /* Forçar cores de texto para usar as variáveis */
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .bg-white {
+    background-color: var(--card-bg) !important;
+}
+
+[data-theme="dark"] .bg-gray-50 {
+    background-color: var(--bg-primary) !important;
+}
+
+[data-theme="dark"] .bg-gray-100 {
+    background-color: var(--bg-tertiary) !important;
+}
+
+[data-theme="dark"] .bg-gray-200 {
+    background-color: var(--bg-hover) !important;
+}
+
+/* Cores de texto específicas do Tailwind */
+[data-theme="dark"] .text-gray-800,
+[data-theme="dark"] .text-gray-900 {
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .text-gray-600,
+[data-theme="dark"] .text-gray-700 {
+    color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .text-gray-500 {
+    color: var(--text-tertiary) !important;
+}
+
+/* Bordas */
+[data-theme="dark"] .border-gray-200,
+[data-theme="dark"] .border-gray-300 {
+    border-color: var(--border-color) !important;
+}
+
+/* Sombras */
+[data-theme="dark"] .shadow-sm {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3) !important;
+}
+
+[data-theme="dark"] .shadow {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4) !important;
+}
+
+
+/* Filter Panel */
+.filter-panel {
+    background-color: var(--bg-tertiary) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    padding: 1.5rem;
+}
+
+/* Card Footer */
+.card-footer {
+    padding: 1rem 1.5rem;
+    background-color: var(--bg-tertiary) !important;
+    border-top: 1px solid var(--border-color) !important;
+}
+
+/* Badges com cores específicas - IMPORTANTE */
+.bg-yellow-100 {
+    background-color: rgba(245, 158, 11, 0.15) !important;
+}
+
+.text-yellow-800 {
+    color: rgb(245, 158, 11) !important;
+}
+
+.bg-green-100 {
+    background-color: rgba(34, 197, 94, 0.15) !important;
+}
+
+.text-green-800 {
+    color: rgb(34, 197, 94) !important;
+}
+
+.bg-red-100 {
+    background-color: rgba(239, 68, 68, 0.15) !important;
+}
+
+.text-red-800 {
+    color: rgb(239, 68, 68) !important;
+}
+
+.bg-blue-100 {
+    background-color: rgba(59, 130, 246, 0.15) !important;
+}
+
+.text-blue-800 {
+    color: rgb(59, 130, 246) !important;
+}
+
+.bg-gray-100 {
+    background-color: var(--bg-tertiary) !important;
+}
+
+.text-gray-800 {
+    color: var(--text-primary) !important;
+}
+
+/* Input Group Text */
+.input-group-text {
+    background-color: var(--bg-tertiary) !important;
+    border: 1px solid var(--input-border) !important;
+    border-left: none !important;
+    padding: 0.75rem 1rem;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    color: var(--text-secondary) !important;
+}
+
+/* Hover em Tabelas - CORREÇÃO GERAL */
+.reagent-table tr:hover,
+.table-hover tbody tr:hover,
+.glassware-grid tr:hover,
+.products-table tr:hover,
+.movements-table tr:hover,
+.enhanced-table tr:hover {
+    background-color: var(--bg-hover) !important;
+}
+
+/* Hover específico para outras tabelas */
+[data-theme="dark"] .reagent-table tr:hover {
+    background-color: var(--bg-hover) !important;
+
+
+}
+
+/* Cobertura completa para cores Tailwind no tema escuro */
+[data-theme="dark"] .bg-yellow-100 { background-color: rgba(245, 158, 11, 0.15) !important; }
+[data-theme="dark"] .bg-green-100 { background-color: rgba(34, 197, 94, 0.15) !important; }
+[data-theme="dark"] .bg-red-100 { background-color: rgba(239, 68, 68, 0.15) !important; }
+[data-theme="dark"] .bg-blue-100 { background-color: rgba(59, 130, 246, 0.15) !important; }
+[data-theme="dark"] .bg-indigo-100 { background-color: rgba(99, 102, 241, 0.15) !important; }
+[data-theme="dark"] .bg-purple-100 { background-color: rgba(168, 85, 247, 0.15) !important; }
+[data-theme="dark"] .bg-pink-100 { background-color: rgba(236, 72, 153, 0.15) !important; }
+
+[data-theme="dark"] .text-yellow-800 { color: rgb(245, 158, 11) !important; }
+[data-theme="dark"] .text-green-800 { color: rgb(34, 197, 94) !important; }
+[data-theme="dark"] .text-red-800 { color: rgb(239, 68, 68) !important; }
+[data-theme="dark"] .text-blue-800 { color: rgb(59, 130, 246) !important; }
+[data-theme="dark"] .text-indigo-800 { color: rgb(99, 102, 241) !important; }
+[data-theme="dark"] .text-purple-800 { color: rgb(168, 85, 247) !important; }
+[data-theme="dark"] .text-pink-800 { color: rgb(236, 72, 153) !important; }
+
+/* Input Groups completos */
+.input-group {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+}
+
+.input-group .form-control {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: none;
+}
+
+.input-group .input-group-text {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-left: none;
+}
+
+[data-theme="dark"] .input-group-text {
+    background-color: var(--bg-tertiary) !important;
+    border-color: var(--input-border) !important;
+    color: var(--text-secondary) !important;
+}
+
+/* Estilos para upload de PDF */
+.pdf-upload-section {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: var(--bg-tertiary) !important;
+    border-radius: 8px;
+    border: 1px dashed var(--border-color) !important;
+}
+
+.pdf-upload-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.pdf-upload-title {
+    font-weight: 600;
+    color: var(--text-primary) !important;
+    font-size: 1rem;
+}
+
+.pdf-upload-area {
+    border: 2px dashed var(--success) !important;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    background-color: var(--card-bg) !important;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+.pdf-upload-area:hover {
+    background-color: var(--bg-hover) !important;
+    border-color: var(--primary-hover) !important;
+}
+
+.pdf-upload-area.dragover {
+    background-color: rgba(59, 130, 246, 0.1) !important;
+    border-color: var(--primary) !important;
+}
+
+.pdf-icon {
+    font-size: 3rem;
+    color: #e53e3e !important; /* Mantém a cor vermelha do PDF */
+    margin-bottom: 1rem;
+}
+
+.pdf-upload-text {
+    color: var(--text-secondary) !important;
+    margin-bottom: 0.5rem;
+}
+
+.pdf-upload-hint {
+    color: var(--text-tertiary) !important;
+    font-size: 0.875rem;
+}
+
+.pdf-file-input {
+    display: none;
+}
+
+.pdf-preview {
+    margin-top: 1rem;
+    display: none;
+}
+
+.pdf-preview-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem;
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+}
+
+.pdf-preview-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.pdf-preview-icon {
+    color: #e53e3e !important; /* Mantém a cor vermelha do PDF */
+    font-size: 1.5rem;
+}
+
+.pdf-preview-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.pdf-preview-name {
+    font-weight: 500;
+    color: var(--text-primary) !important;
+}
+
+.pdf-preview-size {
+    font-size: 0.875rem;
+    color: var(--text-secondary) !important;
+}
+
+.pdf-remove-btn {
+    background: none;
+    border: none;
+    color: var(--danger) !important;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.pdf-remove-btn:hover {
+    background-color: rgba(239, 68, 68, 0.15) !important;
+}
+
+/* Versões específicas para tema escuro */
+[data-theme="dark"] .pdf-upload-area:hover {
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--primary) !important;
+}
+
+[data-theme="dark"] .pdf-upload-area.dragover {
+    background-color: rgba(59, 130, 246, 0.2) !important;
+    border-color: var(--primary) !important;
+}
+
+[data-theme="dark"] .pdf-remove-btn:hover {
+    background-color: rgba(239, 68, 68, 0.25) !important;
+}
+
+.reagent-table tr:hover td {
+    background-color: var(--bg-hover) !important;
+}
+
+/* ========== REGRAS ESPECÍFICAS PARA O PERFIL ========== */
+
+/* Header do perfil - não aplicar tema escuro */
+header {
+    background-color: #2c3e50 !important; /* Mantém a cor original */
+}
+
+/* Cards do perfil */
+.perfil-card,
+.profile-card {
+    background: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Títulos e textos do perfil */
+.perfil-title,
+.profile-title,
+.profile-name {
+    color: var(--text-primary) !important;
+}
+
+.profile-details,
+.profile-info {
+    color: var(--text-secondary) !important;
+}
+
+/* Abas de navegação */
+.tab-active {
+    border-bottom-color: var(--primary) !important;
+    color: var(--primary) !important;
+}
+
+/* Inputs do perfil */
+.perfil-input,
+.profile-input {
+    background-color: var(--input-bg) !important;
+    border-color: var(--input-border) !important;
+    color: var(--text-primary) !important;
+}
+
+.perfil-input:focus,
+.profile-input:focus {
+    border-color: var(--input-focus) !important;
+}
+
+/* Botões do perfil */
+.perfil-btn,
+.profile-btn {
+    background-color: var(--primary) !important;
+    color: white !important;
+}
+
+.perfil-btn:hover,
+.profile-btn:hover {
+    background-color: var(--primary-hover) !important;
+}
+
+/* Sistema de busca do admin */
+.admin-search-container {
+    background-color: var(--card-bg) !important;
+}
+
+.admin-search-input {
+    background-color: var(--input-bg) !important;
+    border-color: var(--input-border) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Badges e status no perfil */
+.profile-badge,
+.user-type-badge {
+    background-color: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Gradientes específicos */
+[data-theme="dark"] .profile-header-gradient {
+    background: linear-gradient(120deg, #334155, #1e293b) !important;
+}
+
+/* Cards de informação */
+.info-card,
+.stats-card {
+    background: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Seções específicas */
+.profile-section,
+.perfil-section {
+    background-color: var(--bg-secondary) !important;
+}
+
+/* Override para elementos que devem manter cores específicas */
+.icon-custom {
+    color: var(--primary) !important;
+}
+
+.focus-custom:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+/* Garantir que o header não mude */
+header,
+.navbar,
+.main-header {
+    background-color: #2c3e50 !important; /* Cor original do header */
+    color: white !important;
+}
+
+header *,
+.navbar *,
+.main-header * {
+    color: white !important;
+}
+
+/* Botão de alternância de tema no header - manter visível */
+.theme-toggle-header {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+}
+
+.theme-toggle-header:hover {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* ========== CORREÇÕES PARA CLASSES UTILITÁRIAS DO PERFIL ========== */
+
+/* Flex utilities - manter layout */
+.flex { display: flex; }
+.-mb-px { margin-bottom: -1px; }
+.overflow-x-auto { overflow-x: auto; }
+.rounded-t-lg { border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem; }
+.rounded-full { border-radius: 9999px; }
+.text-xs { font-size: 0.75rem; }
+.font-medium { font-weight: 500; }
+.flex-shrink-0 { flex-shrink: 0; }
+.w-8 { width: 2rem; }
+.h-8 { height: 2rem; }
+.mr-3 { margin-right: 0.75rem; }
+.w-full { width: 100%; }
+.max-w-xs { max-width: 20rem; }
+.p-4 { padding: 1rem; }
+.rounded-lg { border-radius: 0.5rem; }
+
+/* Cores específicas que precisam ser convertidas para variáveis */
+.inline-flex { display: inline-flex; }
+.items-center { align-items: center; }
+.px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+.py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+
+/* Substituir cores fixas por variáveis CSS */
+.bg-\[\#e8ebee\] {
+    background-color: var(--bg-tertiary) !important;
+}
+
+.text-\[\#225c96\] {
+    color: var(--primary) !important;
+}
+
+.bg-blue-50 {
+    background-color: rgba(59, 130, 246, 0.1) !important;
+}
+
+.border-blue-200 {
+    border-color: rgba(59, 130, 246, 0.2) !important;
+}
+
+/* Text colors com variáveis */
+.text-gray-600 {
+    color: var(--text-secondary) !important;
+}
+
+/* Versões específicas para tema escuro */
+[data-theme="dark"] .bg-blue-50 {
+    background-color: rgba(59, 130, 246, 0.15) !important;
+}
+
+[data-theme="dark"] .border-blue-200 {
+    border-color: rgba(59, 130, 246, 0.3) !important;
+}
+
+[data-theme="dark"] .text-gray-600 {
+    color: var(--text-secondary) !important;
+}
+
+/* Classes de alinhamento */
+.justify-start { justify-content: flex-start; }
+.justify-center { justify-content: center; }
+
+/* Garantir que ícones mantenham cores específicas */
+[data-theme="dark"] .text-\[\#225c96\] i,
+[data-theme="dark"] .icon-custom {
+    color: var(--primary) !important;
+}
+
+/* Badges e elementos de status */
+.badge-admin,
+.badge-user {
+    background-color: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Hover states para elementos interativos */
+.bg-\[\#e8ebee\]:hover {
+    background-color: var(--bg-hover) !important;
+}
+
+/* Container de informações com fundo colorido */
+.info-container {
+    background-color: var(--bg-tertiary) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+/* Texto em containers coloridos */
+.info-container .text-gray-600 {
+    color: var(--text-secondary) !important;
+}
+
+/* Ajustes específicos para o sistema de busca */
+.search-result-item .bg-\[\#e8ebee\] {
+    background-color: var(--bg-tertiary) !important;
+}
+
+.search-result-item .text-\[\#225c96\] {
+    color: var(--primary) !important;
+}
+
+/* ========== CORREÇÕES PARA CLASSES DE PDF E FORM-ACTIONS ========== */
+
+/* Estados de PDF */
+.loading-pdfs,
+.no-pdfs,
+.error-pdfs {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-secondary) !important;
+    background: var(--card-bg) !important;
+    border-radius: 8px;
+    border: 1px solid var(--border-color) !important;
+}
+
+.loading-pdfs i,
+.no-pdfs i,
+.error-pdfs i {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    display: block;
+    color: var(--text-tertiary) !important;
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    gap: 15px;
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg-tertiary) !important;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+/* Versões específicas para tema escuro */
+[data-theme="dark"] .loading-pdfs,
+[data-theme="dark"] .no-pdfs,
+[data-theme="dark"] .error-pdfs {
+    background: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .loading-pdfs i,
+[data-theme="dark"] .no-pdfs i,
+[data-theme="dark"] .error-pdfs i {
+    color: var(--text-tertiary) !important;
+}
+
+[data-theme="dark"] .form-actions {
+    background-color: var(--bg-tertiary) !important;
+}
+
+/* Estados de loading específicos */
+.loading-pdfs {
+    background: linear-gradient(90deg, 
+        var(--card-bg) 0%, 
+        var(--bg-tertiary) 50%, 
+        var(--card-bg) 100%) !important;
+    background-size: 200% 100% !important;
+    animation: loadingShimmer 2s infinite !important;
+}
+
+@keyframes loadingShimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* Estados de erro com cores específicas */
+.error-pdfs {
+    border-left: 4px solid var(--danger) !important;
+}
+
+.no-pdfs {
+    border-left: 4px solid var(--warning) !important;
+}
+
+/* Ícones com cores semânticas */
+.error-pdfs i {
+    color: var(--danger) !important;
+}
+
+.no-pdfs i {
+    color: var(--warning) !important;
+}
+
+.loading-pdfs i {
+    color: var(--primary) !important;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* 1. Estados de loading, empty e error */
+.loading-pdfs,
+.no-pdfs,
+.error-pdfs,
+.empty-state,
+.no-results,
+.empty-movements,
+.loading-state,
+.error-state,
+.empty-container {
+    background: var(--card-bg) !important;
+    color: var(--text-secondary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.loading-pdfs i,
+.no-pdfs i,
+.error-pdfs i,
+.empty-state i,
+.no-results i,
+.empty-movements i {
+    color: var(--text-tertiary) !important;
+}
+
+/* 2. Form actions e grupos de botões */
+.form-actions,
+.btn-group,
+.button-group,
+.form-buttons {
+    background-color: var(--bg-tertiary) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* 3. Headers e footers de cards */
+.card-header,
+.card-footer,
+.form-card-header,
+.form-card-footer,
+.table-header,
+.table-footer,
+.products-header,
+.products-footer {
+    background-color: var(--bg-tertiary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+/* 4. Painéis e seções */
+.filter-panel,
+.side-panel,
+.action-panel,
+.control-panel,
+.settings-panel {
+    background-color: var(--bg-tertiary) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* 5. Itens de lista e grids */
+.list-item,
+.grid-item,
+.item-entry,
+.entry-item,
+.data-item {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+.list-item:hover,
+.grid-item:hover,
+.item-entry:hover,
+.entry-item:hover,
+.data-item:hover {
+    background-color: var(--bg-hover) !important;
+}
+
+/* 6. Badges e tags */
+.badge,
+.tag,
+.label,
+.status-badge,
+.type-badge,
+.category-badge {
+    background-color: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* 7. Alertas e notificações */
+.alert,
+.notification,
+.message,
+.toast,
+.feedback {
+    background-color: var(--bg-tertiary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.alert-success {
+    background-color: rgba(34, 197, 94, 0.1) !important;
+    border-color: var(--success) !important;
+    color: var(--success) !important;
+}
+
+.alert-error,
+.alert-danger {
+    background-color: rgba(239, 68, 68, 0.1) !important;
+    border-color: var(--danger) !important;
+    color: var(--danger) !important;
+}
+
+.alert-warning {
+    background-color: rgba(245, 158, 11, 0.1) !important;
+    border-color: var(--warning) !important;
+    color: var(--warning) !important;
+}
+
+.alert-info {
+    background-color: rgba(59, 130, 246, 0.1) !important;
+    border-color: var(--info) !important;
+    color: var(--info) !important;
+}
+
+/* 8. Modais e overlays */
+.modal-header,
+.modal-footer,
+.modal-body,
+.dialog-header,
+.dialog-footer,
+.popup-header,
+.popup-footer {
+    background-color: var(--modal-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* 9. Input groups e form groups */
+.input-group,
+.form-group,
+.field-group,
+.control-group {
+    background-color: transparent !important;
+}
+
+.input-group-text,
+.form-group-text,
+.field-addon {
+    background-color: var(--bg-tertiary) !important;
+    border-color: var(--input-border) !important;
+    color: var(--text-secondary) !important;
+}
+
+/* 10. Tabelas e grids */
+.table,
+.data-table,
+.results-table,
+.grid-table {
+    background-color: var(--card-bg) !important;
+}
+
+.table th,
+.data-table th,
+.results-table th {
+    background-color: var(--bg-tertiary) !important;
+    color: var(--text-secondary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.table td,
+.data-table td,
+.results-table td {
+    background-color: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.table tr:hover,
+.data-table tr:hover,
+.results-table tr:hover {
+    background-color: var(--bg-hover) !important;
+}
+
+/* 11. Navegação e abas */
+.nav,
+.navigation,
+.tabs,
+.tab-nav {
+    background-color: var(--bg-tertiary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.nav-item,
+.tab-item,
+.nav-link,
+.tab-link {
+    background-color: transparent !important;
+    color: var(--text-secondary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.nav-item.active,
+.tab-item.active,
+.nav-link.active,
+.tab-link.active {
+    background-color: var(--primary) !important;
+    color: white !important;
+}
+
+/* 12. Sidebars e menus */
+.sidebar,
+.menu,
+.sidenav,
+.navbar {
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.sidebar-item,
+.menu-item,
+.nav-item {
+    background-color: transparent !important;
+    color: var(--text-primary) !important;
+}
+
+.sidebar-item:hover,
+.menu-item:hover,
+.nav-item:hover {
+    background-color: var(--bg-hover) !important;
+}
+
+/* 13. Progress bars e indicators */
+.progress,
+.progress-bar,
+.indicator,
+.meter {
+    background-color: var(--bg-tertiary) !important;
+}
+
+.progress-bar-fill,
+.indicator-fill,
+.meter-fill {
+    background-color: var(--primary) !important;
+}
+
+/* 14. Tooltips e popovers */
+.tooltip,
+.popover {
+    background-color: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+    box-shadow: var(--card-shadow) !important;
+}
+
+/* 15. Dropdowns e selects */
+.dropdown,
+.select,
+.dropdown-menu,
+.select-menu {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.dropdown-item,
+.select-item,
+.option-item {
+    background-color: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+}
+
+.dropdown-item:hover,
+.select-item:hover,
+.option-item:hover {
+    background-color: var(--bg-hover) !important;
+}
+
+/* 16. Paginação */
+.pagination,
+.page-nav {
+    background-color: transparent !important;
+}
+
+.page-item,
+.page-link {
+    background-color: var(--bg-tertiary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.page-item.active .page-link {
+    background-color: var(--primary) !important;
+    color: white !important;
+}
+
+.page-item:hover .page-link {
+    background-color: var(--bg-hover) !important;
+}
+
+/* 17. Breadcrumbs */
+.breadcrumb,
+.breadcrumbs {
+    background-color: transparent !important;
+}
+
+.breadcrumb-item {
+    color: var(--text-secondary) !important;
+}
+
+.breadcrumb-item.active {
+    color: var(--text-primary) !important;
+}
+
+/* 18. Accordions e collapses */
+.accordion,
+.collapse {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+.accordion-header,
+.collapse-header {
+    background-color: var(--bg-tertiary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.accordion-body,
+.collapse-body {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* 19. Stats e métricas */
+.stats,
+.metrics,
+.counter,
+.stat-card {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+.stat-value,
+.metric-value,
+.counter-value {
+    color: var(--text-primary) !important;
+}
+
+.stat-label,
+.metric-label,
+.counter-label {
+    color: var(--text-secondary) !important;
+}
+
+/* 20. Loaders e spinners */
+.loader,
+.spinner,
+.loading {
+    background-color: transparent !important;
+}
+
+.loader::after,
+.spinner::after {
+    border-color: var(--primary) transparent transparent transparent !important;
+}
+
+/* 21. Separadores e divisores */
+.separator,
+.divider,
+.hr {
+    background-color: var(--border-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* 22. Avatares e thumbnails */
+.avatar,
+.thumbnail,
+.img-thumbnail {
+    background-color: var(--bg-tertiary) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* 23. Code blocks e pre */
+.code,
+.pre,
+.code-block,
+.pre-block {
+    background-color: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* 24. Blockquotes e citações */
+.blockquote,
+.quote,
+.citation {
+    background-color: var(--bg-tertiary) !important;
+    border-color: var(--primary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* 25. Help text e descrições */
+.help-text,
+.description,
+.hint,
+.helper {
+    color: var(--text-tertiary) !important;
+}
+
+/* ========== CORREÇÕES ESPECÍFICAS PARA CORES FIXAS ========== */
+
+/* Override para qualquer elemento com cores fixas */
+[class*="bg-white"],
+[class*="bg-gray-50"],
+[class*="bg-gray-100"],
+[class*="bg-gray-200"] {
+    background-color: var(--card-bg) !important;
+}
+
+[class*="text-gray-"],
+[class*="text-slate-"],
+[class*="text-zinc-"],
+[class*="text-neutral-"] {
+    color: var(--text-primary) !important;
+}
+
+[class*="border-gray-"],
+[class*="border-slate-"],
+[class*="border-zinc-"],
+[class*="border-neutral-"] {
+    border-color: var(--border-color) !important;
+}
+
+/* Override para cores específicas do Tailwind */
+.bg-slate-50, .bg-slate-100, .bg-slate-200,
+.bg-zinc-50, .bg-zinc-100, .bg-zinc-200,
+.bg-neutral-50, .bg-neutral-100, .bg-neutral-200 {
+    background-color: var(--bg-tertiary) !important;
+}
+
+.text-slate-500, .text-slate-600, .text-slate-700,
+.text-zinc-500, .text-zinc-600, .text-zinc-700,
+.text-neutral-500, .text-neutral-600, .text-neutral-700 {
+    color: var(--text-secondary) !important;
+}
+
+/* ========== CORREÇÃO PARA FILTER-SECTION ========== */
+
+.filter-section {
+    background-color: var(--bg-tertiary) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 8px !important;
+    padding: 1rem 1.5rem !important;
+    margin-bottom: 1.5rem !important;
+    color: var(--text-primary) !important;
+}
+
+.filter-section .filter-title,
+.filter-section .section-title,
+.filter-section h3,
+.filter-section h4 {
+    color: var(--text-primary) !important;
+}
+
+.filter-section .filter-label,
+.filter-section .form-label,
+.filter-section label {
+    color: var(--text-secondary) !important;
+}
+
+.filter-section .form-control,
+.filter-section .form-select,
+.filter-section input,
+.filter-section select {
+    background-color: var(--input-bg) !important;
+    border-color: var(--input-border) !important;
+    color: var(--text-primary) !important;
+}
+
+.filter-section .form-control:focus,
+.filter-section .form-select:focus,
+.filter-section input:focus,
+.filter-section select:focus {
+    border-color: var(--input-focus) !important;
+    background-color: var(--input-bg) !important;
+}
+
+.filter-section .btn {
+    background-color: var(--primary) !important;
+    color: white !important;
+    border-color: var(--primary) !important;
+}
+
+.filter-section .btn:hover {
+    background-color: var(--primary-hover) !important;
+}
+
+.filter-section .btn-secondary {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.filter-section .btn-secondary:hover {
+    background-color: var(--bg-hover) !important;
+}
+
+/* Versões específicas para tema escuro */
+[data-theme="dark"] .filter-section {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .filter-section .card {
+    background: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Se tiver sub-seções dentro do filter-section */
+.filter-section .filter-group,
+.filter-section .form-group,
+.filter-section .input-group {
+    background-color: transparent !important;
+}
+
+.filter-section .input-group-text {
+    background-color: var(--bg-tertiary) !important;
+    border-color: var(--input-border) !important;
+    color: var(--text-secondary) !important;
+}
+
+/* Para filter-sections com diferentes variações */
+.filter-section.collapsed,
+.filter-section.expanded {
+    background-color: var(--bg-tertiary) !important;
+}
+
+.filter-section.with-shadow {
+    box-shadow: var(--card-shadow) !important;
+}
+
+.filter-section.with-shadow:hover {
+    box-shadow: var(--card-shadow-hover) !important;
+}
+
+/* Se o filter-section tiver header */
+.filter-section-header {
+    background-color: var(--bg-tertiary) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.filter-section-body {
+    background-color: transparent !important;
+    color: var(--text-primary) !important;
+}
+
+.filter-section-footer {
+    background-color: var(--bg-tertiary) !important;
+    border-top: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Garantir especificidade máxima */
+html body .filter-section,
+html body [data-theme="dark"] .filter-section {
+    background-color: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Override para qualquer estilo inline */
+.filter-section[style*="background-color"] {
+    background-color: var(--bg-tertiary) !important;
+}
+
+.filter-section[style*="color"] {
+    color: var(--text-primary) !important;
+}
+
+.filter-section[style*="border-color"] {
+    border-color: var(--border-color) !important;
+}
+/* ========== CORREÇÕES PARA CHART.JS NO TEMA ESCURO ========== */
+
+/* Textos dos gráficos */
+.chartjs-render-monitor,
+.chartjs-size-monitor {
+    color: var(--text-primary) !important;
+}
+
+/* Eixos e labels do gráfico */
+.chartjs-grid,
+.chartjs-scale,
+.chartjs-axis {
+    color: var(--text-secondary) !important;
+}
+
+/* Títulos e legendas */
+.chartjs-legend,
+.chartjs-title {
+    color: var(--text-primary) !important;
+}
+
+/* Linhas de grid */
+.chartjs-grid-line {
+    stroke: var(--border-color) !important;
+}
+
+/* Texto dos ticks */
+.chartjs-tick {
+    color: var(--text-secondary) !important;
+    fill: var(--text-secondary) !important;
+}
+
+/* Fundo do canvas */
+canvas {
+    background-color: var(--card-bg) !important;
+}
+
+/* ========== CORREÇÕES PARA MOVEMENT ICONS E CORES TRADICIONAIS ========== */
+
+/* Movement icons - cores tradicionais verde e vermelho */
+.movement-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+
+        
+.movement-out {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+        
+
+/* Versões para tema escuro - mantendo verde e vermelho tradicionais */
+[data-theme="dark"] .movement-in {
+    background-color: rgba(39, 196, 97, 0.459) !important;
+    color: #22c55e !important;
+}
+
+[data-theme="dark"] .movement-out {
+    background-color: rgba(239, 68, 68, 0.411) !important;
+    color: #ef4444 !important;
+}
+
+/* ========== CORREÇÕES PARA BORDAS E EFEITOS MAIS SUAVES ========== */
+
+/* Cards com bordas suaves */
+[data-theme="dark"] .card,
+[data-theme="dark"] .glassware-card,
+[data-theme="dark"] .product-card {
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+[data-theme="dark"] .card:hover,
+[data-theme="dark"] .glassware-card:hover,
+[data-theme="dark"] .product-card:hover {
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.4) !important;
+    border-color: var(--border-hover) !important;
+}
+
+/* Inputs com foco suave */
+[data-theme="dark"] .form-control:focus,
+[data-theme="dark"] .form-select:focus {
+    border-color: var(--input-focus) !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+/* Tabelas com hover corrigido */
+[data-theme="dark"] .reagent-table th {
+    background-color: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+[data-theme="dark"] .reagent-table tr:hover {
+    background-color: var(--bg-hover) !important;
+    transform: none !important;
+}
+
+/* Headers de card com gradiente suave */
+[data-theme="dark"] .card-header,
+[data-theme="dark"] .form-card-header {
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+/* Botões secundários */
+[data-theme="dark"] .btn-secondary {
+    background-color: var(--bg-tertiary) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+    background-color: var(--bg-hover) !important;
+}
+
+/* Alertas com cores tradicionais */
+[data-theme="dark"] .alert-success {
+    background-color: rgba(34, 197, 94, 0.1) !important;
+    border-left: 4px solid var(--success) !important;
+    color: var(--success) !important;
+}
+
+[data-theme="dark"] .alert-error {
+    background-color: rgba(239, 68, 68, 0.1) !important;
+    border-left: 4px solid var(--danger) !important;
+    color: var(--danger) !important;
+}
+
+[data-theme="dark"] .alert-warning {
+    background-color: rgba(245, 158, 11, 0.1) !important;
+    border-left: 4px solid var(--warning) !important;
+    color: var(--warning) !important;
+}
+
+/* Barra de progresso  */
+[data-theme="dark"] .progress-bar {
+    background-color: var(--primary) !important;
+    box-shadow: none !important;
+}
+
+/* Badges com estilo tradicional */
+[data-theme="dark"] .badge-success,
+[data-theme="dark"] .status-success {
+    background-color: rgba(34, 197, 94, 0.15) !important;
+    color: #22c55e !important;
+}
+
+[data-theme="dark"] .badge-warning,
+[data-theme="dark"] .status-warning {
+    background-color: rgba(245, 158, 11, 0.15) !important;
+    color: #f59e0b !important;
+}
+
+[data-theme="dark"] .badge-danger,
+[data-theme="dark"] .status-danger {
+    background-color: rgba(239, 68, 68, 0.15) !important;
+    color: #ef4444 !important;
+}
+
+/* ========== CORREÇÃO COMPLETA PARA BOTÕES DE AÇÃO ========== */
+
+.action-buttons {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.btn-action {
+    padding: 0.5rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ========== TEMA CLARO ========== */
+
+
+
+
+
+/* ========== TEMA ESCURO ========== */
+
+[data-theme="dark"] .btn-edit {
+    background-color: rgba(96, 165, 250, 0.2) !important;
+    color: #60a5fa !important; /* Azul mais claro no escuro */
+    border: 1px solid rgba(96, 165, 250, 0.3) !important;
+}
+
+[data-theme="dark"] .btn-edit:hover {
+    background-color: #60a5fa !important;
+    color: #0f172a !important; /* Texto escuro no hover para contraste */
+    border-color: #60a5fa !important;
+    transform: translateY(-1px);
+}
+
+[data-theme="dark"] .btn-delete {
+    background-color: rgba(248, 113, 113, 0.2) !important;
+    color: #f87171 !important; /* Vermelho mais claro no escuro */
+    border: 1px solid rgba(248, 113, 113, 0.3) !important;
+}
+
+[data-theme="dark"] .btn-delete:hover {
+    background-color: #f87171 !important;
+    color: #0f172a !important; /* Texto escuro no hover para contraste */
+    border-color: #f87171 !important;
+    transform: translateY(-1px);
+}
+
+/* ========== MELHORIAS VISUAIS ========== */
+
+/* Efeito de foco para acessibilidade */
+.btn-action:focus {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}
+
+/* Garantir que ícones tenham transição suave */
+.btn-action i {
+    transition: color 0.2s ease;
+}
+
+/* Estados ativos */
+.btn-action:active {
+    transform: translateY(0);
+    transition: all 0.1s;
+}
+
+/* ========== TEMA CLARO ORIGINAL ========== */
+
+:root {
+    /* Cores principais do tema claro */
+    --primary: #2c3e50;
+    --primary-hover: #34495e;
+    --secondary: #6c757d;
+    --success: #28a745;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --info: #17a2b8;
+    
+    /* Cores de fundo */
+    --bg-primary: #f8f9fa;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #f5f7fb;
+    --bg-hover: #e9ecef;
+    
+    /* Cores de texto */
+    --text-primary: #2d3748;
+    --text-secondary: #6c757d;
+    --text-tertiary: #9ca3af;
+    
+    /* Cores de borda */
+    --border-color: #e2e8f0;
+    --border-hover: #d1d5db;
+    
+    /* Cores de componentes */
+    --card-bg: #ffffff;
+    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+    --card-shadow-hover: 0 10px 20px rgba(0, 0, 0, 0.1);
+    
+    --input-bg: #ffffff;
+    --input-border: #e2e8f0;
+    --input-focus: #4361ee;
+    
+    --modal-bg: #ffffff;
+    --modal-overlay: rgba(0, 0, 0, 0.5);
+}
+
+/* ========== CARDS NO TEMA CLARO - ESTILO ORIGINAL ========== */
+
+/* Cards principais */
+.card,
+.stats-card,
+.chart-card,
+.enhanced-card,
+.table-container {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--card-shadow) !important;
+    border-radius: 12px !important;
+}
+
+/* Hover dos cards */
+.card:hover,
+.stats-card:hover,
+.enhanced-card:hover {
+    box-shadow: var(--card-shadow-hover) !important;
+    transform: translateY(-2px);
+    border-color: var(--border-hover) !important;
+}
+
+/* Stats cards com bordas coloridas */
+.stats-card.blue {
+    border-left: 4px solid var(--primary) !important;
+}
+
+.stats-card.green {
+    border-left: 4px solid var(--success) !important;
+}
+
+.stats-card.red {
+    border-left: 4px solid var(--danger) !important;
+}
+
+.stats-card.purple {
+    border-left: 4px solid #8b5cf6 !important;
+}
+
+/* Headers de cards */
+.card-header,
+.table-header,
+.form-card-header {
+    background: var(--bg-tertiary) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+
+
+
+/* ========== TABELAS NO TEMA CLARO - ESTILO ORIGINAL ========== */
+
+.reagent-table th {
+    background-color: var(--bg-tertiary) !important;
+    color: var(--text-secondary) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.reagent-table td {
+    border-bottom: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.reagent-table tr:hover {
+    background-color: var(--bg-hover) !important;
+}
+
+/* ========== BADGES E STATUS - ESTILO ORIGINAL ========== */
+
+.status-badge {
+    background-color: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.status-normal {
+    background-color: rgba(40, 167, 69, 0.1) !important;
+    color: var(--success) !important;
+    border-color: rgba(40, 167, 69, 0.2) !important;
+}
+
+.status-warning {
+    background-color: rgba(255, 193, 7, 0.1) !important;
+    color: var(--warning) !important;
+    border-color: rgba(255, 193, 7, 0.2) !important;
+}
+
+.status-critical {
+    background-color: rgba(220, 53, 69, 0.1) !important;
+    color: var(--danger) !important;
+    border-color: rgba(220, 53, 69, 0.2) !important;
+}
+
+
+
+
+
+/* ========== INPUTS E FORMULÁRIOS - ESTILO ORIGINAL ========== */
+
+.form-control,
+.form-select {
+    background-color: var(--input-bg) !important;
+    border: 1px solid var(--input-border) !important;
+    color: var(--text-primary) !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--input-focus) !important;
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1) !important;
+}
+
+/* ========== TEMA ESCURO - MANTENDO O ESTILO ORIGINAL ========== */
+
+[data-theme="dark"] {
+    /* Cores principais mantendo o estilo tradicional */
+    --primary: #3b82f6;
+    --primary-hover: #60a5fa;
+    --success: #22c55e;
+    --warning: #eab308;
+    --danger: #ef4444;
+    --info: #06b6d4;
+    
+    /* Cores de fundo escuras */
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-tertiary: #334155;
+    --bg-hover: #475569;
+    
+    /* Cores de texto claras */
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-tertiary: #94a3b8;
+    
+    /* Cores de borda escuras */
+    --border-color: #334155;
+    --border-hover: #475569;
+    
+    /* Cores de componentes escuros */
+    --card-bg: #1e293b;
+    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    --card-shadow-hover: 0 10px 20px rgba(0, 0, 0, 0.4);
+    
+    --input-bg: #334155;
+    --input-border: #475569;
+    --input-focus: #60a5fa;
+    
+    --modal-bg: #1e293b;
+    --modal-overlay: rgba(0, 0, 0, 0.7);
+}
+
+/* ========== GARANTIR QUE O TEMA CLARO SEJA APLICADO ========== */
+
+/* Reset para garantir que o tema claro seja o padrão */
+:root:not([data-theme="dark"]) {
+    /* Todas as variáveis já estão definidas acima para o tema claro */
+}
+
+/* Forçar cores específicas no tema claro */
+body:not([data-theme="dark"]) {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Garantir que cards tenham bordas visíveis no tema claro */
+:not([data-theme="dark"]) .card,
+:not([data-theme="dark"]) .stats-card,
+:not([data-theme="dark"]) .chart-card,
+:not([data-theme="dark"]) .enhanced-card {
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--card-shadow) !important;
+}
+
+.quantity-display {
+    font-weight: 500;
+    color: var(--text-primary);
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    display: inline-block;
+    transition: all 0.2s ease;
+}
+
+/* Versão específica para tema escuro */
+[data-theme="dark"] .quantity-display {
+    background: var(--bg-secondary);
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+}
+
+/* Para a versão de warning */
+.warning-quantity {
+    background: rgba(255, 193, 7, 0.15) !important;
+    color: var(--warning) !important;
+    border-color: rgba(255, 193, 7, 0.3) !important;
+    font-weight: 600;
+}
+
+[data-theme="dark"] .warning-quantity {
+    background: rgba(255, 193, 7, 0.2) !important;
+    border-color: rgba(255, 193, 7, 0.4) !important;
+}
+
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.category-card {
+    background: linear-gradient(135deg, var(--card-bg) 0%, var(--bg-tertiary) 100%);
+    border-radius: 16px;
+    padding: 1.75rem;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.category-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.category-name {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.category-name i {
+    color: var(--primary);
+    font-size: 1.25rem;
+}
+
+.category-percentage {
+    font-size: 1.1rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary), var(--info));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.category-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.category-stat {
+    text-align: center;
+    padding: 0.75rem;
+    border-radius: 10px;
+    background: var(--bg-tertiary);
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+}
+
+.category-stat:hover {
+    background: var(--bg-hover);
+    transform: translateY(-2px);
+}
+
+.category-stat-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 0.25rem;
+    color: var(--text-primary);
+}
+
+.category-stat-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.progress-container {
+    margin: 1.25rem 0;
+}
+
+.progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.progress {
+    height: 8px;
+    background-color: var(--bg-tertiary);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.8s ease;
+    background: linear-gradient(90deg, var(--primary), var(--info));
+}
+
+.reagents-list {
+    margin-top: 1.25rem;
+    border-top: 1px solid var(--border-color);
+    padding-top: 1.25rem;
+}
+
+.reagents-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.reagent-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.85rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    background: var(--bg-tertiary);
+    transition: all 0.3s ease;
+    border-left: 3px solid var(--primary);
+}
+
+.reagent-item:hover {
+    background: var(--bg-hover) !important; /* Forçar uso da variável */
+    transform: translateX(3px);
+    border-left-color: var(--primary-hover);
+}
+
+/* Versão específica para tema escuro */
+[data-theme="dark"] .reagent-item:hover {
+    background: var(--bg-hover) !important;
+    border-left-color: var(--primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Se ainda estiver com problema, use estas regras mais específicas */
+html body [data-theme="dark"] .reagent-item:hover,
+body [data-theme="dark"] .reagent-item:hover {
+    background-color: var(--bg-hover) !important;
+    background-image: none !important;
+}
+
+/* Reset de qualquer background inline que possa estar causando o problema */
+[data-theme="dark"] .reagent-item[style*="background"]:hover {
+    background-color: var(--bg-hover) !important;
+    background-image: none !important;
+}
+
+.reagent-item:last-child {
+    margin-bottom: 0;
+}
+
+.reagent-info {
+    flex: 1;
+}
+
+.reagent-name {
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+    color: var(--text-primary);
+}
+
+.reagent-details {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.reagent-stock {
+    text-align: right;
+}
+
+.stock-value {
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+    color: var(--text-primary);
+}
+
+.stock-status {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+/* Status de estoque */
+.stock-normal {
+    background: rgba(34, 197, 94, 0.15);
+    color: var(--success);
+}
+
+.stock-warning {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--warning);
+}
+
+.stock-critical {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--danger);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-secondary);
+}
+
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+    color: var(--text-tertiary);
+}
+
+.empty-state h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.empty-state p {
+    font-size: 0.9rem;
+    max-width: 400px;
+    margin: 0 auto;
+    color: var(--text-secondary);
+}
+
+/* Versões específicas para tema escuro */
+[data-theme="dark"] .category-card {
+    background: linear-gradient(135deg, var(--card-bg) 0%, var(--bg-secondary) 100%);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .category-stat {
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .reagent-item {
+    background: var(--bg-secondary);
+    border-left-color: var(--primary);
+}
+
+[data-theme="dark"] .stock-normal {
+    background: rgba(34, 197, 94, 0.2);
+}
+
+[data-theme="dark"] .stock-warning {
+    background: rgba(245, 158, 11, 0.2);
+}
+
+[data-theme="dark"] .stock-critical {
+    background: rgba(239, 68, 68, 0.2);
+}
+
+.category-stat {
+    text-align: center;
+    padding: 0.75rem;
+    border-radius: 10px;
+    background: var(--bg-tertiary);
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+}
+
+.category-stat:hover {
+    background: var(--bg-hover) !important;
+    transform: translateY(-2px);
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Versão específica para tema escuro */
+[data-theme="dark"] .category-stat:hover {
+    background: var(--bg-hover) !important;
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Correção agressiva se necessário */
+html body [data-theme="dark"] .category-stat:hover,
+body [data-theme="dark"] .category-stat:hover {
+    background-color: var(--bg-hover) !important;
+    background-image: none !important;
+}
+
+/* Reset de qualquer background inline */
+[data-theme="dark"] .category-stat[style*="background"]:hover {
+    background-color: var(--bg-hover) !important;
+    background-image: none !important;
+}
+
+/* ========== CORREÇÕES PARA GRÁFICOS NO TEMA ESCURO ========== */
+
+/* Textos dos gráficos */
+.chartjs-render-monitor,
+.chartjs-size-monitor {
+    color: var(--text-primary) !important;
+}
+
+/* Eixos e labels do gráfico */
+.chartjs-grid,
+.chartjs-scale,
+.chartjs-axis {
+    color: var(--text-secondary) !important;
+}
+
+/* Títulos e legendas */
+.chartjs-legend,
+.chartjs-title {
+    color: var(--text-primary) !important;
+}
+
+/* Linhas de grid */
+.chartjs-grid-line {
+    stroke: var(--border-color) !important;
+}
+
+/* Texto dos ticks */
+.chartjs-tick {
+    color: var(--text-secondary) !important;
+    fill: var(--text-secondary) !important;
+}
+
+/* Fundo do canvas */
+canvas {
+    background-color: var(--card-bg) !important;
+}
+
+
+</style>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+    // Sistema de Tema Escuro
+    (function() {
+        'use strict';
+        
+        // Constantes
+        const THEME_KEY = 'app-theme';
+        const THEME_LIGHT = 'light';
+        const THEME_DARK = 'dark';
+        
+        // Classe para gerenciar o tema
+        class ThemeManager {
+            constructor() {
+                this.currentTheme = this.loadTheme();
+                this.init();
+            }
+            
+            init() {
+                // Aplicar tema imediatamente
+                this.applyTheme(this.currentTheme, false);
+                
+                // Aguardar DOM carregar para criar controles
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', () => this.createThemeControls());
+                } else {
+                    this.createThemeControls();
+                }
+            }
+            
+            loadTheme() {
+                // Tentar carregar tema salvo
+                const savedTheme = localStorage.getItem(THEME_KEY);
+                
+                if (savedTheme) {
+                    return savedTheme;
+                }
+                
+                // Detectar preferência do sistema
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    return THEME_DARK;
+                }
+                
+                return THEME_LIGHT;
+            }
+            
+            saveTheme(theme) {
+                localStorage.setItem(THEME_KEY, theme);
+            }
+            
+            applyTheme(theme, animate = true) {
+                // Adicionar classe de transição se necessário
+                if (animate) {
+                    document.documentElement.style.transition = 'background-color 0.3s ease, color 0.3s ease';
+                }
+                
+                // Aplicar tema
+                if (theme === THEME_DARK) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
+                }
+                
+                this.currentTheme = theme;
+                this.saveTheme(theme);
+                
+                // Atualizar controles de tema
+                this.updateThemeControls();
+                
+                // Remover transição após aplicar
+                if (animate) {
+                    setTimeout(() => {
+                        document.documentElement.style.transition = '';
+                    }, 300);
+                }
+            }
+            
+            toggleTheme() {
+                const newTheme = this.currentTheme === THEME_LIGHT ? THEME_DARK : THEME_LIGHT;
+                this.applyTheme(newTheme, true);
+                
+                // Feedback visual
+                this.showThemeChangeNotification(newTheme);
+            }
+            
+            createThemeControls() {
+                // Não criar se já existir
+                if (document.getElementById('theme-toggle-btn')) {
+                    return;
+                }
+                
+                // Criar botão de alternância de tema
+                const themeToggle = document.createElement('button');
+                themeToggle.id = 'theme-toggle-btn';
+                themeToggle.className = 'theme-toggle-btn';
+                themeToggle.setAttribute('aria-label', 'Alternar tema');
+                themeToggle.innerHTML = this.getThemeIcon();
+                
+                // Estilos do botão
+                const style = document.createElement('style');
+                style.textContent = `
+                    .theme-toggle-btn {
+                        position: fixed;
+                        bottom: 20px;
+                        right: 20px;
+                        width: 56px;
+                        height: 56px;
+                        border-radius: 50%;
+                        background: var(--primary);
+                        color: white;
+                        border: none;
+                        cursor: pointer;
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 24px;
+                        z-index: 1000;
+                        transition: all 0.3s ease;
+                    }
+                    
+                    .theme-toggle-btn:hover {
+                        transform: scale(1.1);
+                        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+                    }
+                    
+                    .theme-toggle-btn:active {
+                        transform: scale(0.95);
+                    }
+                    
+                    .theme-notification {
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        padding: 12px 20px;
+                        background: var(--card-bg);
+                        color: var(--text-primary);
+                        border-radius: 8px;
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                        z-index: 10000;
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        font-size: 14px;
+                        font-weight: 500;
+                        animation: slideInRight 0.3s ease;
+                    }
+                    
+                    @keyframes slideInRight {
+                        from {
+                            opacity: 0;
+                            transform: translateX(100px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateX(0);
+                        }
+                    }
+                    
+                    @media (max-width: 768px) {
+                        .theme-toggle-btn {
+                            bottom: 80px;
+                            right: 15px;
+                            width: 48px;
+                            height: 48px;
+                            font-size: 20px;
+                        }
+                    }
+                `;
+                
+                document.head.appendChild(style);
+                document.body.appendChild(themeToggle);
+                
+                // Event listener
+                themeToggle.addEventListener('click', () => this.toggleTheme());
+            }
+            
+            updateThemeControls() {
+                const themeToggle = document.getElementById('theme-toggle-btn');
+                if (themeToggle) {
+                    themeToggle.innerHTML = this.getThemeIcon();
+                }
+            }
+            
+            getThemeIcon() {
+                if (this.currentTheme === THEME_DARK) {
+                    return '<i class="fas fa-sun"></i>';
+                }
+                return '<i class="fas fa-moon"></i>';
+            }
+            
+            showThemeChangeNotification(theme) {
+                // Remover notificação existente
+                const existing = document.querySelector('.theme-notification');
+                if (existing) {
+                    existing.remove();
+                }
+                
+                // Criar nova notificação
+                const notification = document.createElement('div');
+                notification.className = 'theme-notification';
+                notification.innerHTML = `
+                    <i class="fas ${theme === THEME_DARK ? 'fa-moon' : 'fa-sun'}"></i>
+                    <span>Tema ${theme === THEME_DARK ? 'Escuro' : 'Claro'} ativado</span>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // Remover após 3 segundos
+                setTimeout(() => {
+                    notification.style.animation = 'slideInRight 0.3s ease reverse';
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 300);
+                }, 3000);
+            }
+        }
+        
+        // Inicializar gerenciador de tema
+        window.themeManager = new ThemeManager();
+        
+        // Detectar mudanças na preferência do sistema
+        if (window.matchMedia) {
+            const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+            mediaQuery.addEventListener('change', (e) => {
+                // Apenas aplicar se o usuário não tiver definido uma preferência manual
+                const savedTheme = localStorage.getItem(THEME_KEY);
+                if (!savedTheme) {
+                    window.themeManager.applyTheme(e.matches ? THEME_DARK : THEME_LIGHT, true);
+                }
+            });
+        }
+    })();
+
+    
+    </script>
