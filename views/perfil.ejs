@@ -691,8 +691,8 @@ select:focus-visible {
               
                 <div class="lg:col-span-2 space-y-6">
                     <div class="card p-0 overflow-hidden">
-                        <div class="border-b border-gray-200 bg-[#e8ebee]">
-                            <nav class="flex -mb-px overflow-x-auto">
+                        <div class="border-b border-gray-200 bg-[#e8ebee] rounded-t-lg">
+                            <nav class="flex -mb-px overflow-x-auto rounded-t-lg">
                                 <button class="px-4 py-3 md:px-6 md:py-4 text-sm font-medium tab-active flex items-center whitespace-nowrap">
                                     <i class="fas fa-user-circle mr-2 icon-custom"></i> Informações Pessoais
                                 </button>
@@ -802,7 +802,7 @@ select:focus-visible {
   
                 <div class="lg:col-span-1 space-y-6">
                     <div class="card p-0 overflow-hidden">
-                        <div class="profile-header-gradient h-24 relative">
+                        <div class="profile-header-gradient h-24 relative rounded-t-lg">
                             <div class="absolute -bottom-12 left-1/2 transform -translate-x-1/2">
                                 <div class="relative">
                                     <div class="w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-white bg-white shadow-lg" id="profileImageContainer">
@@ -853,104 +853,104 @@ select:focus-visible {
                 </div>
 
                 <!-- Card de Administração (Só aparece para administradores) -->
-<% if (user.tipo === 'admin') { %>
-    <div class="lg:col-span-3">
-        <div class="card">
-            <div class="border-b border-gray-200 bg-[#e8ebee]">
-                <nav class="flex -mb-px overflow-x-auto">
-                    <button class="px-4 py-3 md:px-6 md:py-4 text-sm font-medium tab-active flex items-center whitespace-nowrap text-[#2c3e50]">
-                        <i class="fas fa-shield-alt mr-2 icon-custom"></i> Administração
-                    </button>
-                </nav>
-            </div>
-            
-            <div class="p-6 md:p-8">
-                <div class="mb-8 text-center">
-                    <h2 class="text-xl md:text-2xl font-bold text-[#2c3e50] flex items-center justify-center">
-                        <i class="fas fa-user-plus mr-3 icon-custom"></i> Gerenciar Usuários
-                    </h2>
-                    <p class="text-gray-600 mt-2">Promova usuários comuns para administradores</p>
-                </div>
-                
-                <!-- Sistema de Busca e Promoção -->
-                <div class="max-w-2xl mx-auto space-y-6">
-                    <!-- Campo de Busca -->
-                    <div class="space-y-3">
-                        <label class="block text-sm font-medium text-[#2c3e50] flex items-center">
-                            <i class="fas fa-search mr-2 icon-custom"></i> Buscar Usuário
-                        </label>
-                        
-                        <div class="search-container relative">
-                            <div class="relative">
-                                <input 
-                                    type="text" 
-                                    id="searchUserInput" 
-                                    class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#225c96] focus:border-[#225c96] transition-all bg-white"
-                                    placeholder="Digite nome, usuário ou email..."
-                                    autocomplete="off"
-                                >
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <i class="fas fa-user text-gray-400"></i>
-                                </div>
+                <% if (user.tipo === 'admin') { %>
+                    <div class="lg:col-span-3">
+                        <div class="card">
+                            <div class="border-b border-gray-200 bg-[#e8ebee] rounded-t-lg">
+                                <nav class="flex -mb-px overflow-x-auto rounded-t-lg">
+                                    <button class="px-4 py-3 md:px-6 md:py-4 text-sm font-medium tab-active flex items-center whitespace-nowrap text-[#2c3e50]">
+                                        <i class="fas fa-shield-alt mr-2 icon-custom"></i> Administração
+                                    </button>
+                                </nav>
                             </div>
                             
-                            <!-- Resultados da Busca -->
-                            <div id="searchResults" class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-50 overflow-hidden">
-                                <!-- Os resultados serão inseridos aqui via JavaScript -->
-                            </div>
-                        </div>
-                        
-                        <!-- Overlay para Mobile -->
-                        <div id="searchOverlay" class="search-overlay"></div>
-                    </div>
-                    
-                    <!-- Informações do Usuário Selecionado -->
-                    <div id="userInfo" class="hidden p-4 bg-gray-50 rounded-lg border border-gray-200 transition-all duration-300">
-                        <div class="flex items-center justify-between flex-col sm:flex-row gap-4">
-                            <div class="flex items-center space-x-3 flex-1 min-w-0">
-                                <div class="w-12 h-12 rounded-full bg-[#e8ebee] flex items-center justify-center flex-shrink-0">
-                                    <i class="fas fa-user text-[#225c96] text-lg"></i>
+                            <div class="p-6 md:p-8">
+                                <div class="mb-8 text-center">
+                                    <h2 class="text-xl md:text-2xl font-bold text-[#2c3e50] flex items-center justify-center">
+                                        <i class="fas fa-user-plus mr-3 icon-custom"></i> Gerenciar Usuários
+                                    </h2>
+                                    <p class="text-gray-600 mt-2">Promova usuários comuns para administradores</p>
                                 </div>
-                                <div class="min-w-0 flex-1">
-                                    <h4 id="selectedUserName" class="font-semibold text-[#2c3e50] text-base truncate"></h4>
-                                    <p id="selectedUserEmail" class="text-sm text-gray-600 mt-1 truncate"></p>
-                                    <p id="selectedUserType" class="text-xs text-gray-500 mt-1"></p>
+                                
+                                <!-- Sistema de Busca e Promoção -->
+                                <div class="max-w-2xl mx-auto space-y-6">
+                                    <!-- Campo de Busca -->
+                                    <div class="space-y-3">
+                                        <label class="block text-sm font-medium text-[#2c3e50] flex items-center">
+                                            <i class="fas fa-search mr-2 icon-custom"></i> Buscar Usuário
+                                        </label>
+                                        
+                                        <div class="search-container relative">
+                                            <div class="relative">
+                                                <input 
+                                                    type="text" 
+                                                    id="searchUserInput" 
+                                                    class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#225c96] focus:border-[#225c96] transition-all bg-white"
+                                                    placeholder="Digite nome, usuário ou email..."
+                                                    autocomplete="off"
+                                                >
+                                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                    <i class="fas fa-user text-gray-400"></i>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Resultados da Busca -->
+                                            <div id="searchResults" class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-50 overflow-hidden">
+                                                <!-- Os resultados serão inseridos aqui via JavaScript -->
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Overlay para Mobile -->
+                                        <div id="searchOverlay" class="search-overlay"></div>
+                                    </div>
+                                    
+                                    <!-- Informações do Usuário Selecionado -->
+                                    <div id="userInfo" class="hidden p-4 bg-gray-50 rounded-lg border border-gray-200 transition-all duration-300">
+                                        <div class="flex items-center justify-between flex-col sm:flex-row gap-4">
+                                            <div class="flex items-center space-x-3 flex-1 min-w-0">
+                                                <div class="w-12 h-12 rounded-full bg-[#e8ebee] flex items-center justify-center flex-shrink-0">
+                                                    <i class="fas fa-user text-[#225c96] text-lg"></i>
+                                                </div>
+                                                <div class="min-w-0 flex-1">
+                                                    <h4 id="selectedUserName" class="font-semibold text-[#2c3e50] text-base truncate"></h4>
+                                                    <p id="selectedUserEmail" class="text-sm text-gray-600 mt-1 truncate"></p>
+                                                    <p id="selectedUserType" class="text-xs text-gray-500 mt-1"></p>
+                                                </div>
+                                            </div>
+                                            
+                                            <button 
+                                                id="promoteUserBtn" 
+                                                class="px-4 py-2 bg-[#225c96] text-white rounded-lg hover:bg-[#1a2530] transition-all flex items-center text-sm font-medium whitespace-nowrap w-full sm:w-auto justify-center"
+                                            >
+                                                <i class="fas fa-shield-alt mr-2"></i> 
+                                                <span class="btn-text">Promover</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Mensagens de Feedback -->
+                                    <div id="promotionMessage" class="hidden"></div>
+                                    
+                                    <!-- Instruções de Uso -->
+                                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                        <div class="flex items-start space-x-3">
+                                            <i class="fas fa-info-circle text-blue-500 mt-0.5"></i>
+                                            <div class="text-sm text-blue-700">
+                                                <p class="font-medium">Como funciona:</p>
+                                                <ul class="mt-1 space-y-1">
+                                                    <li>• Digite o nome, usuário ou email do usuário desejado</li>
+                                                    <li>• Selecione o usuário na lista de resultados</li>
+                                                    <li>• Clique em "Promover" para tornar o usuário um administrador</li>
+                                                    <li>• Ou em "Rebaixar" para remover privilégios de administrador</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            
-                            <button 
-                                id="promoteUserBtn" 
-                                class="px-4 py-2 bg-[#225c96] text-white rounded-lg hover:bg-[#1a2530] transition-all flex items-center text-sm font-medium whitespace-nowrap w-full sm:w-auto justify-center"
-                            >
-                                <i class="fas fa-shield-alt mr-2"></i> 
-                                <span class="btn-text">Promover</span>
-                            </button>
                         </div>
                     </div>
-                    
-                    <!-- Mensagens de Feedback -->
-                    <div id="promotionMessage" class="hidden"></div>
-                    
-                    <!-- Instruções de Uso -->
-                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                        <div class="flex items-start space-x-3">
-                            <i class="fas fa-info-circle text-blue-500 mt-0.5"></i>
-                            <div class="text-sm text-blue-700">
-                                <p class="font-medium">Como funciona:</p>
-                                <ul class="mt-1 space-y-1">
-                                    <li>• Digite o nome, usuário ou email do usuário desejado</li>
-                                    <li>• Selecione o usuário na lista de resultados</li>
-                                    <li>• Clique em "Promover" para tornar o usuário um administrador</li>
-                                    <li>• Ou em "Rebaixar" para remover privilégios de administrador</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-<% } %>
+                <% } %>
             </div>
             <div class="footer-spacing"></div>
         </div>
