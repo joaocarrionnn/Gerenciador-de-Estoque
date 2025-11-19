@@ -1099,22 +1099,27 @@
                                         
                                         <div class="detail-item">
                                             <span class="detail-label">Status</span>
-                                            <% let statusClass = 'status-normal';
-                                            let statusText = 'Disponível';
-                                            let statusIcon = 'fa-check-circle';
-                                            
-                                            if (produto.quantidade <= (produto.estoque_minimo || 10)) {
-                                                statusClass = 'status-warning';
-                                                statusText = 'Baixo Estoque';
-                                                statusIcon = 'fa-exclamation-triangle';
-                                            }
-                                            
-                                            if (produto.quantidade === 0) {
-                                                statusClass = 'status-critical';
-                                                statusText = 'Esgotado';
-                                                statusIcon = 'fa-times-circle';
-                                            }
-                                            %>
+                                            <% 
+                                                let statusClass, statusText, statusIcon;
+
+                                                // ORDEM CORRETA: Verificar zerado PRIMEIRO
+                                                const quantidadeNum = parseFloat(produto.quantidade) || 0;
+                                                const estoqueMinimoNum = parseFloat(produto.estoque_minimo) || 10;
+
+                                                if (quantidadeNum === 0) {
+                                                    statusClass = 'status-critical';
+                                                    statusText = 'Esgotado';
+                                                    statusIcon = 'fa-times-circle';
+                                                } else if (quantidadeNum <= estoqueMinimoNum) {
+                                                    statusClass = 'status-warning';
+                                                    statusText = 'Baixo Estoque';
+                                                    statusIcon = 'fa-exclamation-triangle';
+                                                } else {
+                                                    statusClass = 'status-normal';
+                                                    statusText = 'Disponível';
+                                                    statusIcon = 'fa-check-circle';
+                                                }
+                                                %>
                                             <span class="status-badge <%= statusClass %>">
                                                 <i class="fas <%= statusIcon %>"></i> <%= statusText %>
                                             </span>

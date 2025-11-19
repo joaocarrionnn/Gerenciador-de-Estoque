@@ -12,8 +12,19 @@ const HomeController = require('../controllers/HomeController');
 
 // Rotas públicas (acessíveis a todos)
 router.get('/', requireAuth, HomeController.index, (req, res) => {
+
     // Buscar últimos produtos
-    const productsQuery = 'SELECT * FROM produtos ORDER BY data_criacao DESC LIMIT 5';
+    const productsQuery = `
+    SELECT * FROM produtos 
+    ORDER BY 
+    CASE 
+        WHEN quantidade = 0 THEN 1  -- Produtos esgotados primeiro
+        WHEN quantidade <= estoque_minimo THEN 2  -- Depois estoque baixo
+        ELSE 3  -- Por último estoque normal
+    END,
+    data_criacao DESC 
+    LIMIT 10
+    `;
 
     db.query(productsQuery, (err, productsResults) => {
         if (err) {
@@ -272,6 +283,8 @@ router.get('/produtos', requireAuth, (req, res) => {
             orderClause += 'nome ASC';
             break;
     }
+
+    
 
     query += orderClause;
 

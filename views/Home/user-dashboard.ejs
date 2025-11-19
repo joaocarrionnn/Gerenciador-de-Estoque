@@ -285,13 +285,19 @@ body {
     width: 22px;
     height: 22px;
     border-radius: 5px;
-    background-color: #e9ecef;
+    background-color: var(--bg-tertiary) !important;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #6c757d;
+    color: var(--text-secondary) !important;
     font-size: 0.7rem;
     flex-shrink: 0;
+}
+
+/* Versão específica para tema escuro */
+[data-theme="dark"] .detail-item .detail-icon {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-tertiary) !important;
 }
 
 /* Estado vazio melhorado */

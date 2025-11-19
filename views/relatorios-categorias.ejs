@@ -528,13 +528,18 @@
             document.getElementById('critical-stock').textContent = data.criticalStock || 0;
         }
 
-        // Função para inicializar gráfico de categorias
+       // Função para inicializar gráfico de categorias
         function initCategoriesChart(data) {
             const ctx = document.getElementById('categoriesChart').getContext('2d');
             
             if (categoriesChart) {
                 categoriesChart.destroy();
             }
+
+            // Obter cores do tema atual
+            const isDarkTheme = document.documentElement.getAttribute('data-theme') === 'dark';
+            const textColor = isDarkTheme ? '#f1f5f9' : '#2d3748';
+            const gridColor = isDarkTheme ? '#334155' : '#e2e8f0';
 
             categoriesChart = new Chart(ctx, {
                 type: 'doughnut',
@@ -544,7 +549,7 @@
                         data: data.values || [],
                         backgroundColor: data.colors || [],
                         borderWidth: 2,
-                        borderColor: '#ffffff'
+                        borderColor: isDarkTheme ? '#1e293b' : '#ffffff'
                     }]
                 },
                 options: {
@@ -553,15 +558,69 @@
                     plugins: {
                         legend: {
                             position: 'right',
+                            labels: {
+                                color: textColor,
+                                font: {
+                                    size: 12
+                                },
+                                padding: 15
+                            }
                         },
                         title: {
                             display: true,
-                            text: 'Distribuição de Reagentes por Categoria'
+                            text: 'Distribuição de Reagentes por Categoria',
+                            color: textColor,
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: isDarkTheme ? '#1e293b' : '#ffffff',
+                            titleColor: textColor,
+                            bodyColor: textColor,
+                            borderColor: isDarkTheme ? '#475569' : '#e2e8f0',
+                            borderWidth: 1
                         }
                     }
                 }
             });
         }
+
+        // Função para atualizar cores do gráfico quando o tema mudar
+        function updateChartTheme() {
+            if (!categoriesChart) return;
+            
+            const isDarkTheme = document.documentElement.getAttribute('data-theme') === 'dark';
+            const textColor = isDarkTheme ? '#f1f5f9' : '#2d3748';
+            
+            // Atualizar cores do gráfico
+            categoriesChart.options.plugins.legend.labels.color = textColor;
+            categoriesChart.options.plugins.title.color = textColor;
+            categoriesChart.options.plugins.tooltip.backgroundColor = isDarkTheme ? '#1e293b' : '#ffffff';
+            categoriesChart.options.plugins.tooltip.titleColor = textColor;
+            categoriesChart.options.plugins.tooltip.bodyColor = textColor;
+            categoriesChart.options.plugins.tooltip.borderColor = isDarkTheme ? '#475569' : '#e2e8f0';
+            
+            // Atualizar bordas do dataset
+            categoriesChart.data.datasets[0].borderColor = isDarkTheme ? '#1e293b' : '#ffffff';
+            
+            categoriesChart.update();
+        }
+
+        // Observar mudanças de tema
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.attributeName === 'data-theme') {
+                    setTimeout(updateChartTheme, 100);
+                }
+            });
+        });
+
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['data-theme']
+        });
 
         // Função para criar badge de status
         function getStockStatusBadge(quantidade, estoqueMinimo) {
@@ -622,15 +681,7 @@
                             </div>
                         </div>
                         
-                        <div class="progress-container">
-                            <div class="progress-label">
-                                <span>Percentual do Total</span>
-                                <span>${percentage}%</span>
-                            </div>
-                            <div class="progress">
-                                <div class="progress-bar" style="width: ${percentage}%"></div>
-                            </div>
-                        </div>
+        
                         
                         ${category.reagentes && category.reagentes.length > 0 ? `
                             <div class="reagents-list">
@@ -701,6 +752,9 @@
                 updateStats(categoriesData);
                 initCategoriesChart(categoriesData);
                 updateCategoriesCards(categoriesData.categories);
+                
+                // Atualizar tema do gráfico após carregamento
+                setTimeout(updateChartTheme, 500);
             }
         }
 

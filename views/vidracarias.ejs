@@ -164,12 +164,14 @@
             border-radius: 14px;
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
+            transition: box-shadow 0.3s ease, border-color 0.3s ease;
+            border: 1px solid transparent;
+            position: relative;
         }
-        
+
         .glassware-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            border-color: rgba(44, 62, 80, 0.1);
         }
         
         .glassware-image {
@@ -300,6 +302,8 @@
             padding: 1.2rem 1.8rem;
             background-color: white;
             border-bottom: 1px solid #e2e8f0;
+            position: relative;
+            z-index: 1;
         }
         
         .search-input {
@@ -377,7 +381,7 @@
             list-style: none;
             padding: 0;
             margin: 0;
-            max-height: 400px;
+            max-height: 250px;
             overflow-y: auto;
         }
 
@@ -621,30 +625,54 @@
             right: 1rem;
         }
 
-        .menu-btn {
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: #6b7280;
-        }
+        .btn-add {
+    background: rgba(46, 204, 113, 0.1);
+    color: #2ecc71;
+    border: 1px solid #2ecc71;
+    flex: 1;
+    min-width: 120px;
+    /* PROPRIEDADES DE ALTURA E PADDING */
+    height: 42px; /* ou a altura que você usa no tema claro */
+    padding: 8px 16px; /* ou o padding que você usa no tema claro */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
 
-        .menu-btn:hover {
-            background: #f8f9fa;
-            border-color: #d1d5db;
-            color: #374151;
-            transform: scale(1.05);
-        }
+.btn-add:hover {
+    background: #2ecc71;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(46, 204, 113, 0.3);
+}
 
-        .menu-btn i {
-            font-size: 0.875rem;
-        }
+/* TEMA ESCURO - MESMA ALTURA E ESTILO */
+[data-theme="dark"] .btn-add {
+    background: rgba(46, 204, 113, 0.15) !important;
+    color: #2ecc71 !important;
+    border: 1px solid #2ecc71 !important;
+    /* MESMAS PROPRIEDADES DE ALTURA */
+    height: 42px !important;
+    padding: 8px 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    border-radius: 8px !important;
+}
+
+[data-theme="dark"] .btn-add:hover {
+    background: #2ecc71 !important;
+    color: white !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(46, 204, 113, 0.4) !important;
+}
 
         .detail-grid {
             display: grid;
@@ -775,55 +803,65 @@
             margin: auto;
         }
 
-        /* ========== CORREÇÃO PARA CARDS INTERNOS ========== */
+        .card-body {
+            padding: 1.5rem !important;
+        }
 
-.card-body {
-    padding: 1.5rem !important;
-    background-color: var(--card-bg) !important;
-}
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+        }
 
-/* Estilo específico para as estatísticas */
-.stat-item {
-    text-align: center;
-    padding: 1rem;
-}
+        .stat-value {
+            font-size: 2rem !important;
+            font-weight: 700 !important;
+            margin-bottom: 0.5rem !important;
+        }
 
-.stat-value {
-    font-size: 2rem !important;
-    font-weight: 700 !important;
-    margin-bottom: 0.5rem !important;
-    color: var(--text-primary) !important;
-}
+        .stat-label {
+            font-size: 0.875rem !important;
+            color: #6c757d !important;
+            font-weight: 500 !important;
+        }
 
-.stat-label {
-    font-size: 0.875rem !important;
-    color: var(--text-secondary) !important;
-    font-weight: 500 !important;
-}
+        .stat-value.text-success {
+            color: var(--success) !important;
+        }
 
-/* Garantir que as cores sejam aplicadas */
-.stat-value.text-success {
-    color: var(--success) !important;
-}
+        .stat-value.text-warning {
+            color: var(--warning) !important;
+        }
 
-.stat-value.text-warning {
-    color: var(--warning) !important;
-}
+        .stat-value.text-danger {
+            color: var(--danger) !important;
+        }
 
-.stat-value.text-danger {
-    color: var(--danger) !important;
-}
+        @media (max-width: 768px) {
+            .stat-item {
+                padding: 0.75rem;
+            }
+            
+            .stat-value {
+                font-size: 1.5rem !important;
+            }
+        }
 
-/* Layout responsivo para as estatísticas */
-@media (max-width: 768px) {
-    .stat-item {
-        padding: 0.75rem;
-    }
-    
-    .stat-value {
-        font-size: 1.5rem !important;
-    }
-}
+        .search-container {
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .search-container .movement-list {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .search-container .movement-item {
+            flex-shrink: 0;
+            transform: none !important;
+        }
     </style>
 </head>
 <body>
@@ -1504,7 +1542,8 @@
             const movementsList = document.getElementById('movementsList');
             if (!movementsList) return;
 
-            fetch('/api/vidracarias/movimentacoes?limit=8')
+            // ALTERADO: mudar de 8 para 3
+            fetch('/api/vidracarias/movimentacoes?limit=3')
                 .then(response => response.json())
                 .then(movimentacoes => {
                     const lastUpdate = document.getElementById('lastUpdate');
@@ -1608,6 +1647,14 @@
             
             document.getElementById('addModal')?.addEventListener('click', function(e) {
                 if (e.target === this) closeAddModal();
+            });
+            
+            document.getElementById('allMovementsModal')?.addEventListener('click', function(e) {
+                if (e.target === this) closeAllMovementsModal();
+            });
+            
+            document.getElementById('detailsModal')?.addEventListener('click', function(e) {
+                if (e.target === this) closeDetailsModal();
             });
             
             document.addEventListener('keydown', function(e) {
@@ -1970,8 +2017,6 @@
             document.getElementById('allMovementsTable').scrollIntoView({ behavior: 'smooth' });
         }
 
-        
-
         // Configurar event listeners para os filtros
         document.addEventListener('DOMContentLoaded', function() {
             // Filtros do modal de todas as movimentações
@@ -1979,11 +2024,6 @@
             document.getElementById('filterType')?.addEventListener('change', applyFilters);
             document.getElementById('filterStartDate')?.addEventListener('change', applyFilters);
             document.getElementById('filterEndDate')?.addEventListener('change', applyFilters);
-            
-            // Fechar modal clicando fora
-            document.getElementById('allMovementsModal')?.addEventListener('click', function(e) {
-                if (e.target === this) closeAllMovementsModal();
-            });
         });
 
         // Funções para o modal de detalhes
@@ -2119,13 +2159,6 @@
             };
             return categorias[categoria] || categoria;
         }
-
-        // Adicionar event listeners para o modal de detalhes
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('detailsModal')?.addEventListener('click', function(e) {
-                if (e.target === this) closeDetailsModal();
-            });
-        });
     </script>
 </body>
 </html>

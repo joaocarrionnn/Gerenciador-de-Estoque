@@ -602,11 +602,13 @@ p, span, div, a {
     [data-theme="dark"] .error-pdfs {
         color: var(--text-secondary);
     }
-    /* Progress Label */
+/* Progress Label */
 .progress-label {
     font-size: 0.875rem;
     font-weight: 500;
-    color: var(--text-secondary) !important;
+    color: var(--text-primary) !important;
+    background: transparent !important;
+    background-image: none !important;
 }
 
 /* Movement Title */
@@ -2709,6 +2711,312 @@ body [data-theme="dark"] .category-stat:hover {
 canvas {
     background-color: var(--card-bg) !important;
 }
+/* ========== CORREÇÃO PARA BARRAS DE PROGRESSO ========== */
+
+/* Container das informações de progresso - SEM COR DE FUNDO */
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    background: transparent !important; /* CRÍTICO: Sem fundo */
+    background-color: transparent !important;
+    background-image: none !important;
+}
+
+/* Label do progresso - SEM COR DE FUNDO */
+.progress-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary) !important;
+    background: transparent !important; /* CRÍTICO: Sem fundo */
+    background-color: transparent !important;
+    background-image: none !important;
+}
+
+/* Valor da porcentagem - SEM COR DE FUNDO */
+.progress-value {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary) !important;
+    background: transparent !important; /* CRÍTICO: Sem fundo */
+    background-color: transparent !important;
+    background-image: none !important;
+}
+
+/* Barra de progresso externa (container cinza) */
+.progress-bar {
+    height: 10px;
+    background: var(--bg-tertiary) !important;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Preenchimento da barra - COM CORES */
+.progress-fill {
+    height: 100%;
+    border-radius: 10px;
+    position: relative;
+    transition: width 0.8s ease;
+}
+
+/* Cores específicas para cada barra */
+.progress-primary {
+    background: linear-gradient(90deg, #df42ff93, #dc2dff) !important;
+}
+
+.progress-success {
+    background: linear-gradient(90deg, var(--success), #1e7e34) !important;
+}
+
+.progress-warning {
+    background: linear-gradient(90deg, var(--warning), #e0a800) !important;
+}
+
+/* CORREÇÃO: Barra azul/ciano - use esta classe nas barras */
+.progress-fill.progress-info {
+    background: linear-gradient(90deg, var(--info), #138496) !important;
+}
+
+.progress-info-bar {
+    background: linear-gradient(90deg, var(--info), #138496) !important;
+}
+
+.progress-secondary {
+    background: linear-gradient(90deg, var(--secondary), #545b62) !important;
+}
+
+/* Garantir que .progress-fill sempre tenha cor quando combinado com classe de cor */
+.progress-fill.progress-primary,
+.progress-fill.progress-success,
+.progress-fill.progress-warning,
+.progress-fill.progress-info,
+.progress-fill.progress-info-bar,
+.progress-fill.progress-secondary {
+    background-color: transparent; /* Remove fundo sólido */
+}
+
+/* Forçar especificidade para a barra azul */
+.progress-bar .progress-fill.progress-info {
+    background: linear-gradient(90deg, #17a2b8, #138496) !important;
+}
+
+[data-theme="dark"] .progress-bar .progress-fill.progress-info {
+    background: linear-gradient(90deg, #06b6d4, #0891b2) !important;
+}
+
+/* Estatísticas adicionais - SEM COR DE FUNDO */
+.progress-stats {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--text-tertiary) !important;
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+/* Ícones de categoria - SEM COR DE FUNDO */
+.category-icon {
+    font-size: 0.9rem;
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+.acid-icon { color: #e74c3c !important; }
+.base-icon { color: #3498db !important; }
+.solvent-icon { color: #2ecc71 !important; }
+
+/* ========== CORREÇÕES ESPECÍFICAS PARA TEMA ESCURO ========== */
+
+[data-theme="dark"] .progress-info,
+[data-theme="dark"] .progress-label,
+[data-theme="dark"] .progress-value,
+[data-theme="dark"] .progress-stats {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+}
+
+[data-theme="dark"] .progress-bar {
+    background: var(--bg-tertiary) !important;
+}
+
+/* ========== GARANTIR ESPECIFICIDADE MÁXIMA ========== */
+
+/* Resetar qualquer estilo inline que possa estar causando problema */
+.progress-info[style*="background"] {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+}
+
+.progress-label[style*="background"] {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+}
+
+.progress-value[style*="background"] {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+}
+
+/* Força máxima - usar !important em tudo */
+html body .progress-info,
+html body .progress-label,
+html body .progress-value,
+html body .progress-stats {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+}
+
+html body [data-theme="dark"] .progress-info,
+html body [data-theme="dark"] .progress-label,
+html body [data-theme="dark"] .progress-value,
+html body [data-theme="dark"] .progress-stats {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+}
+/* ========== BOTÃO ADICIONAR - TEMA ESCURO ========== */
+
+[data-theme="dark"] .btn-add {
+    background-color: var(--primary);
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    position: relative; /* Adicionado para o efeito ::before */
+    overflow: hidden; /* Adicionado para conter o efeito ::before */
+}
+
+[data-theme="dark"] .btn-add::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.7s ease;
+}
+
+[data-theme="dark"] .btn-add:hover::before {
+    left: 100%;
+}
+
+[data-theme="dark"] .btn-add:hover {
+    transform: translateY(-1px); /* Alterado de -3px para -1px */
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); /* Alterado para combinar com o botão normal */
+    color: white;
+    background: var(--primary-hover);
+}
+
+[data-theme="dark"] .btn-add:active {
+    transform: translateY(0); /* Alterado de -1px para 0 */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+[data-theme="dark"] .btn-add i {
+    font-size: 16px; /* Alterado de 1.1rem para 16px */
+    transition: transform 0.3s ease;
+}
+
+[data-theme="dark"] .btn-add:hover i {
+    transform: scale(1.1);
+}
+
+/* Adicione isso no seu theme.ejs */
+.text-gray-400 {
+    color: var(--text-tertiary) !important;
+}
+
+/* Para garantir que funcione em ambos os temas */
+[data-theme="dark"] .text-gray-400 {
+    color: var(--text-tertiary) !important;
+}
+
+:root:not([data-theme="dark"]) .text-gray-400 {
+    color: #9ca3af !important; /* Cor original do gray-400 */
+}
+
+
+.card-title-main .title-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--primary) 0%, #3f37c9 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary) !important; /* Alterado para variável */
+    font-size: 0.9rem;
+}
+
+/* Versão específica para tema escuro */
+[data-theme="dark"] .card-title-main .title-icon {
+    color: #1e293b !important; /* Cor escura para contraste no tema escuro */
+    background: linear-gradient(135deg, var(--primary) 0%, #60a5fa 100%) !important;
+}
+
+/* Versão para tema claro */
+:root:not([data-theme="dark"]) .card-title-main .title-icon {
+    color: #ffffff !important; /* Branco para contraste no tema claro */
+}
+
+
+
+.card-title-main .title-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+}
+
+/* Tema claro - sem background, ícone preto */
+:root:not([data-theme="dark"]) .card-title-main .title-icon {
+    background: none !important;
+    color: #000000 !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+/* Tema escuro - com gradiente, ícone branco */
+[data-theme="dark"] .card-title-main .title-icon {
+    background: linear-gradient(135deg, var(--primary) 0%, #3f37c9 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+
+/* Correção para textos do Chart.js */
+.chartjs-render-monitor,
+.chartjs-legend,
+.chartjs-title,
+.chartjs-tick {
+    color: var(--text-primary) !important;
+    fill: var(--text-primary) !important;
+}
+
+.chartjs-grid-line {
+    stroke: var(--border-color) !important;
+}
 
 
 </style>
@@ -2750,7 +3058,7 @@ canvas {
 
 
 
-    <script>
+<script>
     // Sistema de Tema Escuro
     (function() {
         'use strict';
