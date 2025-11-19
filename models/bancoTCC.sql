@@ -33,9 +33,14 @@ CREATE TABLE IF NOT EXISTS `movimentacoes` (
   PRIMARY KEY (`id_movimentacao`),
   KEY `id_produto` (`id_produto`),
   CONSTRAINT `movimentacoes_ibfk_1` FOREIGN KEY (`id_produto`) REFERENCES `produtos` (`id_produto`)
-) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Copiando dados para a tabela sistema_estoque.movimentacoes: ~0 rows (aproximadamente)
+-- Copiando dados para a tabela sistema_estoque.movimentacoes: ~2 rows (aproximadamente)
+INSERT INTO `movimentacoes` (`id_movimentacao`, `id_produto`, `tipo`, `quantidade`, `unidade_medida`, `responsavel`, `projeto_experimento`, `observacoes`, `data_movimentacao`) VALUES
+	(72, 50, 'entrada', 0.10, 'L', 'ca', NULL, 'Entrada registrada por ca. ', '2025-11-19 11:20:45'),
+	(73, 47, 'saida', 1.00, 'L', 'a', '', 'Saída registrada por a', '2025-11-19 12:11:50'),
+	(74, 48, 'entrada', 1.00, 'kg', 'car', NULL, 'Entrada registrada por car. ', '2025-11-19 13:04:03'),
+	(75, 48, 'saida', 0.70, 'kg', 'a', '', 'Saída registrada por a', '2025-11-19 13:23:24');
 
 -- Copiando estrutura para tabela sistema_estoque.movimentacoes_vidracarias
 CREATE TABLE IF NOT EXISTS `movimentacoes_vidracarias` (
@@ -49,9 +54,15 @@ CREATE TABLE IF NOT EXISTS `movimentacoes_vidracarias` (
   PRIMARY KEY (`id`),
   KEY `vidraria_id` (`vidraria_id`),
   CONSTRAINT `movimentacoes_vidracarias_ibfk_1` FOREIGN KEY (`vidraria_id`) REFERENCES `vidracarias` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Copiando dados para a tabela sistema_estoque.movimentacoes_vidracarias: ~0 rows (aproximadamente)
+-- Copiando dados para a tabela sistema_estoque.movimentacoes_vidracarias: ~1 rows (aproximadamente)
+INSERT INTO `movimentacoes_vidracarias` (`id`, `vidraria_id`, `tipo`, `quantidade`, `usuario`, `observacao`, `data_movimentacao`) VALUES
+	(6, 8, 'reposicao', 1, 'joao Carrion', 'Fornecedor: a', '2025-11-19 12:10:54'),
+	(7, 8, 'retirada', 1, 'joao Carrion', '', '2025-11-19 13:40:44'),
+	(8, 8, 'retirada', 1, 'joao Carrion', '', '2025-11-19 13:40:52'),
+	(9, 8, 'retirada', 1, 'joao Carrion', '', '2025-11-19 13:40:59'),
+	(10, 8, 'reposicao', 1, 'joao Carrion', '', '2025-11-19 13:41:04');
 
 -- Copiando estrutura para tabela sistema_estoque.produtos
 CREATE TABLE IF NOT EXISTS `produtos` (
@@ -77,15 +88,16 @@ CREATE TABLE IF NOT EXISTS `produtos` (
   `data_criacao` timestamp NOT NULL DEFAULT current_timestamp(),
   `data_atualizacao` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id_produto`)
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Copiando dados para a tabela sistema_estoque.produtos: ~6 rows (aproximadamente)
 INSERT INTO `produtos` (`id_produto`, `nome`, `tipo`, `descricao`, `grau_periculosidade`, `orgao_regulador`, `instrucoes_seguranca`, `quantidade`, `estoque_minimo`, `unidade_medida`, `localizacao`, `disponivel`, `fornecedor`, `data_aquisicao`, `data_validade`, `data_validade_nova`, `produto_renovado`, `id_produto_original`, `observacoes`, `data_criacao`, `data_atualizacao`) VALUES
-	(47, 'Acetato de Etila', 'solvente', 'CH₃COOCH₂CH₃ - Pureza: 99,5% - Densidade: 0,897 g/cm³ - MM: 88,11 g/mol', 'alto', 'policia-federal', 'Inflamável e irritante. Armazenar em local ventilado, longe de fontes de ignição.', 1.00, 1, 'L', 'Armário 1 – Prateleira 1 – Posição 1', 1, 'Synth', NULL, '2020-07-06', NULL, 0, NULL, 'Classificação GHS: Inflamável, irritante. Volume do frasco: 1000 ml', '2025-11-05 18:33:45', '2025-11-05 18:33:45'),
-	(48, 'Bicarbonato de Sódio', 'reagente_quimico', 'NaHCO₃ - Pureza: 99,7-100,3% - MM: 84,01 g/mol', 'baixo', 'policia-federal', 'Armazenar em local seco e arejado.', 1.00, 1, 'kg', 'Armário 6 - Prateleira 2 - Posição 2', 1, 'Dinâmica', NULL, '2028-08-08', NULL, 0, NULL, 'Volume do frasco: 1000g. Quantidade mínima: 0,5Kg. Quantidade máxima: 1Kg', '2025-11-05 18:33:45', '2025-11-05 18:33:45'),
+	(47, 'Acetato de Etila', 'solvente', 'CH₃COOCH₂CH₃ - Pureza: 99,5% - Densidade: 0,897 g/cm³ - MM: 88,11 g/mol', 'alto', 'policia-federal', 'Inflamável e irritante. Armazenar em local ventilado, longe de fontes de ignição.', 0.00, 1, 'L', 'Armário 1 – Prateleira 1 – Posição 1', 1, 'Synth', NULL, '2020-07-06', NULL, 0, NULL, 'Classificação GHS: Inflamável, irritante. Volume do frasco: 1000 ml', '2025-11-05 18:33:45', '2025-11-19 12:11:50'),
+	(48, 'Bicarbonato de Sódio', 'reagente_quimico', 'NaHCO₃ - Pureza: 99,7-100,3% - MM: 84,01 g/mol', 'baixo', 'policia-federal', 'Armazenar em local seco e arejado.', 1.30, 1, 'kg', 'Armário 6 - Prateleira 2 - Posição 2', 1, 'Dinâmica', NULL, '2028-08-08', NULL, 0, NULL, 'Volume do frasco: 1000g. Quantidade mínima: 0,5Kg. Quantidade máxima: 1Kg', '2025-11-05 18:33:45', '2025-11-19 13:23:24'),
 	(49, 'Hidróxido de Sódio', 'base', 'NaOH - Pureza: 49% - Densidade: 1,5-1,54 g/cm³ - MM: 40,00 g/mol', 'alto', 'policia-civil', 'Corrosivo. Usar equipamento de proteção individual. Manipular em capela.', 1.00, 2, 'L', 'Armário 2 – Prateleira 2 – Posição 1', 1, 'Êxodo científica', NULL, '2027-09-25', NULL, 0, NULL, 'Classificação GHS: corrosivo para metais. Volume do frasco: 1000ml. Quantidade mínima: 2Kg. Quantidade máxima: 5Kg', '2025-11-05 18:33:45', '2025-11-05 18:33:45'),
-	(50, 'Ácido Clorídrico', 'acido', 'HCl - Pureza: 37,1% - Densidade: 1,188 g/cm³ - MM: 36,46 g/mol', 'alto', 'policia-federal', 'Corrosivo. Manipular em capela com exaustor. Usar luvas e óculos de proteção.', 1.00, 1, 'L', 'Armário 3 – Prateleira 2 – Posição 1', 1, 'Reatec', NULL, '2026-03-31', NULL, 0, NULL, 'Volume do frasco: 1000ml. Quantidade mínima: 1L. Quantidade máxima: 4L', '2025-11-05 18:33:45', '2025-11-05 18:33:45'),
-	(51, 'Ácido Sulfúrico', 'acido', 'H₂SO₄ - Pureza: 90,0-91,0% - Densidade: 1,815-1,821 g/ml - MM: 98,08 g/mol', 'extremo', 'policia-federal', 'Altamente corrosivo. Manipular exclusivamente em capela. Usar equipamento de proteção completo.', 1.00, 1, 'L', 'Armário 3 – Prateleira 3 – Posição 2', 1, 'Química Moderna', NULL, NULL, NULL, 0, NULL, 'Classificação GHS: corrosivo, tóxico, irritante. Volume do frasco: 1000ml. Quantidade mínima: 1L. Quantidade máxima: 4L', '2025-11-05 18:33:45', '2025-11-05 18:33:45');
+	(50, 'Ácido Clorídrico', 'acido', 'HCl - Pureza: 37,1% - Densidade: 1,188 g/cm³ - MM: 36,46 g/mol', 'alto', 'policia-federal', 'Corrosivo. Manipular em capela com exaustor. Usar luvas e óculos de proteção.', 1.00, 1, 'L', 'Armário 3 – Prateleira 2 – Posição 1', 1, 'Reatec', '0000-00-00', '2025-11-12', NULL, 0, NULL, 'Volume do frasco: 1000ml. Quantidade mínima: 1L. Quantidade máxima: 4L', '2025-11-05 18:33:45', '2025-11-19 13:30:35'),
+	(51, 'Ácido Sulfúrico', 'acido', 'H₂SO₄ - Pureza: 90,0-91,0% - Densidade: 1,815-1,821 g/ml - MM: 98,08 g/mol', 'extremo', 'policia-federal', 'Altamente corrosivo. Manipular exclusivamente em capela. Usar equipamento de proteção completo.', 1.00, 1, 'L', 'Armário 3 – Prateleira 3 – Posição 2', 1, 'Química Moderna', NULL, NULL, NULL, 0, NULL, 'Classificação GHS: corrosivo, tóxico, irritante. Volume do frasco: 1000ml. Quantidade mínima: 1L. Quantidade máxima: 4L', '2025-11-05 18:33:45', '2025-11-05 18:33:45'),
+	(52, 'Cloreto de Bário Dihidratado', 'sal', '', 'alto', 'não tem', '', 1000.00, 500, 'gramas', '', 1, '', '0000-00-00', NULL, NULL, 0, NULL, '', '2025-11-19 17:20:56', '2025-11-19 17:20:56');
 
 -- Copiando estrutura para tabela sistema_estoque.produto_pdfs
 CREATE TABLE IF NOT EXISTS `produto_pdfs` (
@@ -104,9 +116,11 @@ CREATE TABLE IF NOT EXISTS `produto_pdfs` (
   KEY `idx_produto_id` (`id_produto`),
   KEY `idx_data_upload` (`data_upload`),
   CONSTRAINT `produto_pdfs_ibfk_1` FOREIGN KEY (`id_produto`) REFERENCES `produtos` (`id_produto`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Copiando dados para a tabela sistema_estoque.produto_pdfs: ~0 rows (aproximadamente)
+INSERT INTO `produto_pdfs` (`id`, `id_produto`, `nome_arquivo`, `nome_original`, `caminho_arquivo`, `tamanho_arquivo`, `tipo_documento`, `descricao`, `data_upload`, `usuario_upload`) VALUES
+	(15, 47, 'product-1763557476873-135880109-Boletim__1_.pdf', 'Boletim (1).pdf', 'U:\\Users\\55926559839\\Desktop\\Gerenciador-de-Estoque\\public\\uploads\\product-pdfs\\product-1763557476873-135880109-Boletim__1_.pdf', 91479, NULL, NULL, '2025-11-19 13:04:36', 'joao Carrion');
 
 -- Copiando estrutura para tabela sistema_estoque.usuarios
 CREATE TABLE IF NOT EXISTS `usuarios` (
@@ -144,7 +158,7 @@ INSERT INTO `usuarios` (`id_usuario`, `nome_completo`, `usuario`, `email`, `tele
 	(8, 'joao1', 'joao1', 'joao1@gmail.com', NULL, '88888888888', '$2b$10$XcVhaz9wxQYDK48gUn9QseyDhL6/0SQQnlFgFJIS3NlGnqRnBr.PS', '$2b$10$A1U8ZwgvliEoEUje/gr8Iepbx2nPkF5qi/iI1bLPahGTL2KIRyLn2', 'quimica1A', NULL, 'aprovado', 'usuario', '2025-10-22 17:07:09', NULL, NULL),
 	(9, 'João Miguel', 'joao miguel', 'joaomiguelcg54@gmail.com', '', '55926559839', '$2b$10$pMmcU6BIws99CHRDwH2IVeyL9IBj.HOKEUkG6wFWa/dwC76bhmN5.', '$2b$10$a36R3KhfRX8/eOociNyrvOitfgObJwL96I3zh/H0TIZXd/S5kh92i', 'quimica2A', 'profile-1762344701717-957083961.jpg', 'aprovado', 'usuario', '2025-10-29 12:59:39', '2025-11-05 14:01:29', NULL),
 	(10, 'Carrion rei das curvas', 'carriola', 'carrionzinxl@gmail.com', NULL, '41251543154', '$2b$10$/Bb5dOwNPAO.P4sYqg3l3OaltcCGRdIKmB1gJfeo6kINQkM9Zby2e', '$2b$10$AJw.jV4c9GD91Wd/wfFUJuvFLcFjwOLTVbMEEEptxBTs5o046IHmK', 'quimica1A', NULL, 'aprovado', 'usuario', '2025-10-31 19:22:29', NULL, NULL),
-	(11, 'João Vitor', 'jaovls', 'jaovls@gmail.com', NULL, '21212121221', '$2b$10$FqORegC7zVvAKq/6IWtIT.CPUuN8QwMXwUBf.3V1ly8Yl2G0x2Uiu', '$2b$10$htWUmo7ET4gI60BmzvYtGePBgFKqgRGPWVY/i5g/YvJawF2vRE6.y', 'quimica1B', 'profile-1762343543296-33584110.webp', 'aprovado', 'usuario', '2025-11-05 11:50:57', '2025-11-05 18:38:12', NULL),
+	(11, 'João Vitor', 'jaovls', 'jaovls@gmail.com', NULL, '21212121221', '$2b$10$FqORegC7zVvAKq/6IWtIT.CPUuN8QwMXwUBf.3V1ly8Yl2G0x2Uiu', '$2b$10$htWUmo7ET4gI60BmzvYtGePBgFKqgRGPWVY/i5g/YvJawF2vRE6.y', 'quimica1B', 'profile-1762343543296-33584110.webp', 'aprovado', 'admin', '2025-11-05 11:50:57', '2025-11-19 19:24:28', NULL),
 	(12, 'João Gabriel Policate', 'Policate', 'joao.policate@aluno.senai.br', NULL, '47803167829', '$2b$10$DV65DhGERsuyBH./fXyM.eOw4fdlO8E.Kq4AsHUeJ67GrZVpgtaSC', '$2b$10$mbjDdgzZ6uxQh2XUhl7CBO1xnIIPkImAU9MRJQhBmMSqIWF8j2.Ve', 'quimica2B', 'profile-1762365432376-374099110.jpg', 'aprovado', 'usuario', '2025-11-05 11:52:08', '2025-11-05 18:38:40', NULL),
 	(13, 'adan', 'car', 'mail@gmail.com', NULL, '63636215621', '$2b$10$oCy1iIxWss3xfjr5Fs76jOeDW/mPYnmXqP32kxf3KkAeLi2M4MrDu', '$2b$10$r5Dxp57N4lLM5pnWOItP9.DKaHCbYlSJqFHL0KZ1tcoiN6UAHdYXi', 'quimica1B', NULL, 'aprovado', 'usuario', '2025-11-05 13:46:22', NULL, NULL);
 
@@ -165,9 +179,11 @@ CREATE TABLE IF NOT EXISTS `vidracarias` (
   `data_criacao` timestamp NOT NULL DEFAULT current_timestamp(),
   `data_atualizacao` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Copiando dados para a tabela sistema_estoque.vidracarias: ~0 rows (aproximadamente)
+-- Copiando dados para a tabela sistema_estoque.vidracarias: ~1 rows (aproximadamente)
+INSERT INTO `vidracarias` (`id`, `nome`, `categoria`, `capacidade`, `material`, `descricao`, `quantidade`, `estoque_minimo`, `localizacao`, `fornecedor`, `data_aquisicao`, `observacoes`, `data_criacao`, `data_atualizacao`) VALUES
+	(8, 'aa', 'transferencia', 'aa', 'vidro', 'a', 9, 5, 'a', '', '0000-00-00', '', '2025-11-19 12:10:34', '2025-11-19 13:41:04');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
