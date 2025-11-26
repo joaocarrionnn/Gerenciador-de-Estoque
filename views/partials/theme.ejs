@@ -3018,7 +3018,326 @@ html body [data-theme="dark"] .progress-stats {
     stroke: var(--border-color) !important;
 }
 
+/* ========== CORREÇÃO PARA BADGES E STATUS ========== */
 
+/* Badge base - aplicar variáveis de tema */
+.bg-gray-500 {
+    background-color: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+/* Badge para status "esgotado" - SEMPRE VERMELHO */
+.bg-red-500,
+.status-esgotado,
+.badge-esgotado {
+    background-color: rgba(239, 68, 68, 0.15) !important;
+    color: #ef4444 !important;
+    border: 1px solid rgba(239, 68, 68, 0.3) !important;
+}
+
+/* Versão específica para tema escuro do badge vermelho */
+[data-theme="dark"] .bg-red-500,
+[data-theme="dark"] .status-esgotado,
+[data-theme="dark"] .badge-esgotado {
+    background-color: rgba(239, 68, 68, 0.25) !important;
+    color: #f87171 !important;
+    border: 1px solid rgba(239, 68, 68, 0.4) !important;
+}
+
+/* Badges para outros status */
+.bg-green-500 {
+    background-color: rgba(34, 197, 94, 0.15) !important;
+    color: #16a34a !important;
+    border: 1px solid rgba(34, 197, 94, 0.3) !important;
+}
+
+.bg-yellow-500 {
+    background-color: rgba(245, 158, 11, 0.15) !important;
+    color: #ca8a04 !important;
+    border: 1px solid rgba(245, 158, 11, 0.3) !important;
+}
+
+.bg-blue-500 {
+    background-color: rgba(59, 130, 246, 0.15) !important;
+    color: #2563eb !important;
+    border: 1px solid rgba(59, 130, 246, 0.3) !important;
+}
+
+/* Versões para tema escuro */
+[data-theme="dark"] .bg-green-500 {
+    background-color: rgba(34, 197, 94, 0.25) !important;
+    color: #4ade80 !important;
+}
+
+[data-theme="dark"] .bg-yellow-500 {
+    background-color: rgba(245, 158, 11, 0.25) !important;
+    color: #facc15 !important;
+}
+
+[data-theme="dark"] .bg-blue-500 {
+    background-color: rgba(59, 130, 246, 0.25) !important;
+    color: #60a5fa !important;
+}
+
+/* ========== CORREÇÃO PARA BADGE LARANJA ========== */
+
+/* Badge laranja - tema claro (original) */
+.bg-orange-100 {
+    background-color: rgba(254, 215, 170, 0.8) !important; /* orange-100 */
+}
+
+.text-orange-800 {
+    color: rgb(154, 52, 18) !important; /* orange-800 */
+}
+
+/* Badge laranja - tema escuro (ajustado para melhor visibilidade) */
+[data-theme="dark"] .bg-orange-100 {
+    background-color: rgba(251, 146, 60, 0.2) !important; /* Laranja mais escuro e translúcido */
+    border: 1px solid rgba(251, 146, 60, 0.3) !important;
+}
+
+[data-theme="dark"] .text-orange-800 {
+    color: rgb(251, 146, 60) !important; /* orange-500 para melhor visibilidade no escuro */
+}
+
+/* Hover states */
+.bg-orange-100:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    transition: all 0.2s ease;
+}
+
+[data-theme="dark"] .bg-orange-100:hover {
+    background-color: rgba(251, 146, 60, 0.3) !important;
+}
+
+/* ========== CORREÇÃO PARA TEXTOS COLORIDOS NO TEMA ESCURO ========== */
+
+/* Texto azul - tema claro (original) */
+[style*="color: rgb(67, 97, 238)"],
+[style*="color: #4361ee"],
+.text-blue-custom {
+    color: rgb(67, 97, 238) !important; /* Azul original */
+    font-weight: bold !important;
+}
+
+/* Texto azul - tema escuro (ajustado) */
+[data-theme="dark"] [style*="color: rgb(67, 97, 238)"],
+[data-theme="dark"] [style*="color: #4361ee"],
+[data-theme="dark"] .text-blue-custom {
+    color: #60a5fa !important; /* Azul mais claro para tema escuro */
+    font-weight: bold !important;
+}
+
+/* Override para garantir que textos com style inline funcionem */
+[data-theme="dark"] [style*="color: rgb(67, 97, 238)"] {
+    color: #60a5fa !important;
+}
+
+/* ========== CORREÇÃO PARA ÍCONES .text-primary ========== */
+
+/* Ícone .text-primary - tema claro */
+.text-primary {
+    color: var(--primary) !important;
+}
+
+/* Ícone .text-primary - tema escuro */
+[data-theme="dark"] .text-primary {
+    color: var(--primary) !important; /* Usa a variável do tema escuro */
+}
+
+/* Garantir que ícones Font Awesome herdem a cor */
+.fas.text-primary,
+.far.text-primary,
+.fab.text-primary {
+    color: var(--primary) !important;
+}/* ========== CORREÇÃO ESPECÍFICA PARA ÍCONES DE GRÁFICO ========== */
+
+/* Ícone fa-chart-line com text-primary */
+.fa-chart-line.text-primary {
+    color: var(--primary) !important;
+}
+
+[data-theme="dark"] .fa-chart-line.text-primary {
+    color: #3b82f6 !important; /* Azul específico para tema escuro */
+}
+
+/* Override máximo para garantir */
+html body .fa-chart-line.text-primary,
+html body [data-theme="dark"] .fa-chart-line.text-primary {
+    color: var(--primary) !important;
+}/* ========== CORES ESPECÍFICAS PARA STATS ========== */
+
+:root {
+    /* Tema Claro */
+    --primary: #2c3e50 !important; /* Azul escuro */
+}
+
+[data-theme="dark"] {
+    /* Tema Escuro */
+    --primary: #3b82f6 !important; /* Azul vibrante */
+}
+
+/* Garantir que stats-value tenha boa legibilidade */
+.stats-value {
+    font-weight: 700 !important;
+    transition: color 0.3s ease !important;
+}
+
+/* ========== CORREÇÃO PARA ALERTAS ========== */
+
+/* Alert base */
+.alert {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Alert warning - tema claro */
+.alert-warning {
+    background-color: rgba(255, 193, 7, 0.15) !important;
+    border-left: 4px solid #ffc107 !important;
+    color: #856404 !important;
+}
+
+/* Alert warning - tema escuro */
+[data-theme="dark"] .alert-warning {
+    background-color: rgba(255, 193, 7, 0.2) !important;
+    border-left: 4px solid #eab308 !important;
+    color: #fef08a !important; /* Amarelo claro para melhor contraste */
+}
+
+/* Garantir que textos dentro do alert sejam visíveis */
+[data-theme="dark"] .alert-warning,
+[data-theme="dark"] .alert-warning * {
+    color: #fef08a !important;
+}
+
+/* Override para garantir especificidade */
+html body .alert-warning {
+    background-color: rgba(255, 193, 7, 0.15) !important;
+    border-left: 4px solid #ffc107 !important;
+}
+
+html body [data-theme="dark"] .alert-warning {
+    background-color: rgba(255, 193, 7, 0.2) !important;
+    border-left: 4px solid #eab308 !important;
+}
+
+/* Classe específica para o botão */
+.btn-animated {
+    padding: 0.5rem 1rem;
+    background-color: #225c96;
+    color: white;
+    border-radius: 0.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.btn-animated:hover {
+    background-color: #1a2530;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.btn-animated:active {
+    transform: translateY(0);
+    transition: all 0.1s ease;
+}
+
+/* Versão responsiva */
+@media (min-width: 768px) {
+    .btn-animated {
+        padding: 0.75rem 1.5rem;
+    }
+}/* ========== CORREÇÃO ESPECÍFICA PARA O BOTÃO ANIMADO ========== */
+
+.btn-animated {
+    padding: 0.5rem 1rem !important;
+    background-color: #225c96 !important;
+    color: white !important;
+    border-radius: 0.5rem !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: none !important;
+    cursor: pointer !important;
+    font-weight: 500 !important;
+    text-decoration: none !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.btn-animated:hover {
+    background-color: #1a2530 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2) !important;
+}
+
+.btn-animated:active {
+    transform: translateY(0) !important;
+    transition: all 0.1s ease !important;
+}
+
+.btn-animated:focus {
+    outline: 2px solid #225c96 !important;
+    outline-offset: 2px !important;
+}
+
+/* Efeito de brilho no hover */
+.btn-animated::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.7s ease;
+}
+
+.btn-animated:hover::before {
+    left: 100%;
+}
+
+/* Versão responsiva */
+@media (min-width: 768px) {
+    .btn-animated {
+        padding: 0.75rem 1.5rem !important;
+    }
+}
+
+/* Garantir que o ícone tenha transição */
+.btn-animated i {
+    transition: transform 0.3s ease !important;
+}
+
+.btn-animated:hover i {
+    transform: scale(1.1) !important;
+}
+
+/* Override máximo para garantir funcionamento */
+html body .btn-animated,
+html body [data-theme="dark"] .btn-animated {
+    background-color: #225c96 !important;
+    color: white !important;
+}
+
+html body .btn-animated:hover,
+html body [data-theme="dark"] .btn-animated:hover {
+    background-color: #008a45 !important;
+    color: white !important;
+}
 </style>
     
 
