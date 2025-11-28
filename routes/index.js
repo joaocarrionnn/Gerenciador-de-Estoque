@@ -4469,6 +4469,12 @@ router.get('/api/vidracarias/:id', requireAuth, (req, res) => {
 // =============================================
 
 
-
+// Rota para a landing page (pública - acessível sem autenticação)
+router.get('/landing', (req, res) => {
+    res.render('landing', {
+        title: 'Sistema de Gerenciamento de Reagentes',
+        user: null // Não requer usuário logado
+    });
+});
 
 module.exports = router;

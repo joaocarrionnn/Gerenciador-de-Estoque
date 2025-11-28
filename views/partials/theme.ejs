@@ -3135,55 +3135,6 @@ html body [data-theme="dark"] .progress-stats {
     color: #60a5fa !important;
 }
 
-/* ========== CORREÇÃO PARA ÍCONES .text-primary ========== */
-
-/* Ícone .text-primary - tema claro */
-.text-primary {
-    color: var(--primary) !important;
-}
-
-/* Ícone .text-primary - tema escuro */
-[data-theme="dark"] .text-primary {
-    color: var(--primary) !important; /* Usa a variável do tema escuro */
-}
-
-/* Garantir que ícones Font Awesome herdem a cor */
-.fas.text-primary,
-.far.text-primary,
-.fab.text-primary {
-    color: var(--primary) !important;
-}/* ========== CORREÇÃO ESPECÍFICA PARA ÍCONES DE GRÁFICO ========== */
-
-/* Ícone fa-chart-line com text-primary */
-.fa-chart-line.text-primary {
-    color: var(--primary) !important;
-}
-
-[data-theme="dark"] .fa-chart-line.text-primary {
-    color: #3b82f6 !important; /* Azul específico para tema escuro */
-}
-
-/* Override máximo para garantir */
-html body .fa-chart-line.text-primary,
-html body [data-theme="dark"] .fa-chart-line.text-primary {
-    color: var(--primary) !important;
-}/* ========== CORES ESPECÍFICAS PARA STATS ========== */
-
-:root {
-    /* Tema Claro */
-    --primary: #2c3e50 !important; /* Azul escuro */
-}
-
-[data-theme="dark"] {
-    /* Tema Escuro */
-    --primary: #3b82f6 !important; /* Azul vibrante */
-}
-
-/* Garantir que stats-value tenha boa legibilidade */
-.stats-value {
-    font-weight: 700 !important;
-    transition: color 0.3s ease !important;
-}
 
 /* ========== CORREÇÃO PARA ALERTAS ========== */
 
@@ -3217,42 +3168,7 @@ html body [data-theme="dark"] .fa-chart-line.text-primary {
     color: #fef08a !important;
 }
 
-/* Override para garantir especificidade */
-html body .alert-warning {
-    background-color: rgba(255, 193, 7, 0.15) !important;
-    border-left: 4px solid #ffc107 !important;
-}
 
-html body [data-theme="dark"] .alert-warning {
-    background-color: rgba(255, 193, 7, 0.2) !important;
-    border-left: 4px solid #eab308 !important;
-}
-
-/* Classe específica para o botão */
-.btn-animated {
-    padding: 0.5rem 1rem;
-    background-color: #225c96;
-    color: white;
-    border-radius: 0.5rem;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    cursor: pointer;
-    font-weight: 500;
-}
-
-.btn-animated:hover {
-    background-color: #1a2530;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-}
-
-.btn-animated:active {
-    transform: translateY(0);
-    transition: all 0.1s ease;
-}
 
 /* Versão responsiva */
 @media (min-width: 768px) {
@@ -3335,7 +3251,7 @@ html body [data-theme="dark"] .btn-animated {
 
 html body .btn-animated:hover,
 html body [data-theme="dark"] .btn-animated:hover {
-    background-color: #008a45 !important;
+    background-color: #225c96 !important;
     color: white !important;
 }
 </style>
