@@ -399,7 +399,7 @@
         }
        
         .feature-card:hover .feature-icon {
-            background: var(--secondary);
+            background: #3f678d;
             transform: scale(1.05);
         }
        
@@ -727,59 +727,62 @@
             color: var(--secondary);
         }
 
-        /* ===== FOOTER ===== */
+        /* ===== FOOTER MINIMALISTA ===== */
         .footer {
             background: var(--surface);
-            padding: 4rem 0 2rem;
+            padding: 3rem 0 1.5rem;
+            border-top: 1px solid var(--border);
         }
-       
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
         .footer-content {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 4rem;
-            margin-bottom: 3rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 2rem;
         }
-       
+
         .footer-brand h3 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
+            font-size: 2.4rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
         }
-       
+
         .footer-brand p {
             color: var(--text-light);
-            line-height: 1.6;
+            line-height: 1.5;
+            max-width: 400px;
+            margin: 0 auto;
         }
-       
-        .footer-links h4 {
-            font-size: 1rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-        }
-       
-        .footer-links ul {
-            list-style: none;
-        }
-       
-        .footer-links li {
-            margin-bottom: 0.75rem;
-        }
-       
-        .footer-links a {
-            color: var(--text-light);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-       
-        .footer-links a:hover {
-            color: var(--primary);
-        }
-       
+
         .footer-bottom {
-            padding-top: 2rem;
+            padding-top: 1.5rem;
             border-top: 1px solid var(--border);
             text-align: center;
             color: var(--text-light);
+            font-size: 0.875rem;
+        }
+
+        .footer-bottom p {
+            margin: 0;
+        }
+
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .footer {
+                padding: 2rem 0 1rem;
+            }
+            
+            .footer-brand p {
+                max-width: 300px;
+            }
         }
 
         /* ===== RESPONSIVO ===== */
@@ -1138,12 +1141,7 @@
                 </div>
                 <span>SistemaLab+</span>
             </a>
-           
-            <ul class="nav-links">
-                <li><a href="#features">Recursos</a></li>
-                <li><a href="#demo">Demonstração</a></li>
-                <li><a href="#pricing">Preços</a></li>
-            </ul>
+
            
             <div class="nav-cta">
                 <a href="/login" class="btn btn-ghost">Entrar</a>
@@ -1427,37 +1425,10 @@
                     <h3>SistemaLab+</h3>
                     <p>Sistema completo de gerenciamento de reagentes para laboratórios modernos.</p>
                 </div>
-               
-                <div class="footer-links">
-                    <h4>Produto</h4>
-                    <ul>
-                        <li><a href="#features">Recursos</a></li>
-                        <li><a href="#pricing">Preços</a></li>
-                        <li><a href="#demo">Demonstração</a></li>
-                    </ul>
-                </div>
-               
-                <div class="footer-links">
-                    <h4>Suporte</h4>
-                    <ul>
-                        <li><a href="#help">Central de Ajuda</a></li>
-                        <li><a href="#docs">Documentação</a></li>
-                        <li><a href="#contact">Contato</a></li>
-                    </ul>
-                </div>
-               
-                <div class="footer-links">
-                    <h4>Empresa</h4>
-                    <ul>
-                        <li><a href="#about">Sobre Nós</a></li>
-                        <li><a href="#blog">Blog</a></li>
-                        <li><a href="#privacy">Privacidade</a></li>
-                    </ul>
-                </div>
             </div>
            
             <div class="footer-bottom">
-                <p>&copy; 2025 SistemaLab+. Todos os direitos reservados.</p>
+                <p>&copy; 2025 Triple J. Todos os direitos reservados.</p>
             </div>
         </div>
     </footer>
