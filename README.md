@@ -46,12 +46,11 @@ Antes de começar, você vai precisar ter instalado em sua máquina:
 
 ## 🚀 Como rodar o projeto
 
+````
 1. Clone o repositório:
 
 ```bash
 git clone https://github.com/joaocarrionnn/Gerenciador-de-Estoque.git
-````
-
 2. Entre na pasta do projeto:
 
 ```bash
@@ -73,7 +72,7 @@ npm start
 5. Abra seu navegador e acesse:
 
 ```
-http://localhost:3000
+http://localhost:3010
 ```
 
 ---
