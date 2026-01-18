@@ -42,7 +42,7 @@ Antes de começar, você vai precisar ter instalado em sua máquina:
 
 1. Clone o repositório:
 
-```bash
+
 git clone https://github.com/joaocarrionnn/Gerenciador-de-Estoque.git
 ````
 
@@ -81,5 +81,4 @@ http://localhost:3010
 * **Jaovls**
 * **Policate**
 
-```
-```
+
