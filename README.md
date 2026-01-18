@@ -1,5 +1,3 @@
-
-
 ````markdown
 # Gerenciador de Estoque
 
@@ -11,27 +9,23 @@ Este projeto serve como um gerenciador de estoque básico para pequenos negócio
 
 ## 🧩 Funcionalidades
 
-- Cadastro de produtos
-- Visualização de estoque disponível
-- Atualização de informações dos produtos
-- Organização por categorias
-- Interface web simples com EJS
-- Rotas para CRUD completo de produtos
+- Cadastro de produtos  
+- Visualização de estoque disponível  
+- Atualização de informações dos produtos  
+- Organização por categorias  
+- Interface web simples com EJS  
+- CRUD completo de produtos  
 
 ---
 
 ## 🧠 Tecnologias utilizadas
 
-✔️ Node.js  
-✔️ Express.js  
-✔️ EJS (template engine)  
-✔️ JavaScript  
-✔️ CSS (pasta `public` para recursos estáticos)  
-✔️ MVC (padrão de organização do projeto)
-
-📌 Linguagens principais do código:  
-- **EJS (~80% do projeto)**  
-- **JavaScript (~19%)** :contentReference[oaicite:2]{index=2}
+- Node.js  
+- Express.js  
+- EJS (Template Engine)  
+- JavaScript  
+- CSS (arquivos estáticos na pasta `public`)  
+- Arquitetura MVC  
 
 ---
 
@@ -39,18 +33,19 @@ Este projeto serve como um gerenciador de estoque básico para pequenos negócio
 
 Antes de começar, você vai precisar ter instalado em sua máquina:
 
-- **Node.js** (versão 14 ou superior)
-- **Git** para clonar o repositório
+- **Node.js** (versão 14 ou superior)  
+- **Git**  
 
 ---
 
 ## 🚀 Como rodar o projeto
 
-````
 1. Clone o repositório:
 
 ```bash
 git clone https://github.com/joaocarrionnn/Gerenciador-de-Estoque.git
+````
+
 2. Entre na pasta do projeto:
 
 ```bash
@@ -71,19 +66,20 @@ npm start
 
 5. Abra seu navegador e acesse:
 
-```
+```text
 http://localhost:3010
 ```
 
----
+> ℹ️ Certifique-se de que a porta `3010` não esteja sendo usada por outro programa.
+> Caso queira alterar a porta, edite o arquivo `app.js`.
 
+---
 
 ## 🧑‍💻 Autores
 
-**João Carrion**
-**Jaovls**
-**Policate**
+* **João Carrion**
+* **Jaovls**
+* **Policate**
 
-
-
-
+```
+```
